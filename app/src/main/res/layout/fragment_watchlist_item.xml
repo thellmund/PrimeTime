@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_margin">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="2dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/movie_poster"
+                android:scaleType="centerCrop" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@color/cover_overlay"
+                android:orientation="horizontal"
+                android:padding="@dimen/activity_margin">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Title -->
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp" />
+
+                    <!-- Movie length -->
+                    <LinearLayout
+                        android:id="@+id/runtime_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_margin"
+                        android:layout_marginTop="8dp"
+                        tools:ignore="UseCompoundDrawables">
+
+                        <ImageView
+                            android:id="@+id/runtime_icon"
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/ic_access_time_white_24dp" />
+
+                        <TextView
+                            android:id="@+id/runtime_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/watched_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/activity_margin"
+                            android:layout_marginRight="@dimen/activity_margin"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/watched_it"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/white" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/remove_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/remove"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/white" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/notification_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/activity_margin"
+                    android:src="@drawable/ic_notifications_active_white_24dp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>

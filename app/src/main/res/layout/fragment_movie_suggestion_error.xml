@@ -1,0 +1,59 @@
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="@dimen/activity_margin"
+    tools:context=".ui.main.SuggestionErrorFragment">
+
+    <!-- Artwork container -->
+    <ImageView
+        android:id="@+id/error_image"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_height="100dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/introduction_error" />
+
+    <!-- Error title -->
+    <TextView
+        android:id="@+id/error_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/error_image"
+        android:layout_marginTop="@dimen/activity_margin"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/error_text"
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@android:color/white" />
+
+    <!-- Error text -->
+    <TextView
+        android:id="@+id/error_text"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/error_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.1"
+        android:text="@string/try_again_in_seconds"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_width="match_parent" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/error_btn"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/error_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/activity_margin"
+        android:text="@string/try_again"
+        android:textColor="@color/app_color"
+        android:textSize="16sp" />
+
+</android.support.percent.PercentRelativeLayout>

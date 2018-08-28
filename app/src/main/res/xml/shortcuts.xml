@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="watchlist"
+        android:enabled="true"
+        android:icon="@drawable/watchlist_shortcut_icon_red"
+        android:shortcutDisabledMessage="@string/watchlist"
+        android:shortcutLongLabel="@string/watchlist"
+        android:shortcutShortLabel="@string/watchlist">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.hellmund.primetime.ui.main.MainActivity"
+            android:targetPackage="com.hellmund.primetime" >
+            <extra android:name="intent" android:value="watchlist" />
+        </intent>
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="now_playing"
+        android:enabled="true"
+        android:icon="@drawable/now_playing_shortcut_icon_red"
+        android:shortcutDisabledMessage="@string/now_playing"
+        android:shortcutLongLabel="@string/now_playing"
+        android:shortcutShortLabel="@string/now_playing">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.hellmund.primetime.ui.main.MainActivity"
+            android:targetPackage="com.hellmund.primetime" >
+            <extra android:name="intent" android:value="now_playing" />
+        </intent>
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="upcoming"
+        android:enabled="true"
+        android:icon="@drawable/upcoming_shortcut_icon_red"
+        android:shortcutDisabledMessage="@string/upcoming"
+        android:shortcutLongLabel="@string/upcoming"
+        android:shortcutShortLabel="@string/upcoming">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.hellmund.primetime.ui.main.MainActivity"
+            android:targetPackage="com.hellmund.primetime" >
+            <extra android:name="intent" android:value="upcoming" />
+        </intent>
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="search"
+        android:enabled="true"
+        android:icon="@drawable/search_shortcut_icon_red"
+        android:shortcutDisabledMessage="@string/search"
+        android:shortcutLongLabel="@string/search"
+        android:shortcutShortLabel="@string/search">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.hellmund.primetime.ui.search.SearchActivity"
+            android:targetPackage="com.hellmund.primetime" >
+            <extra android:name="intent" android:value="search" />
+        </intent>
+    </shortcut>
+</shortcuts>

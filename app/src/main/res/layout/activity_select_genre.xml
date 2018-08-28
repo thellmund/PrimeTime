@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".ui.SelectGenreActivity">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="@dimen/activity_margin"
+        android:layout_marginRight="@dimen/activity_margin"
+        android:layout_marginTop="@dimen/activity_margin"
+        android:text="@string/select_genres_header"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button"
+        android:layout_below="@+id/header"
+        android:choiceMode="multipleChoice" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/button"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="6dp"
+        android:layout_marginEnd="@dimen/activity_margin"
+        android:layout_marginRight="@dimen/activity_margin"
+        android:layout_marginTop="6dp"
+        android:alpha="0.5"
+        android:clickable="false"
+        android:enabled="false"
+        android:text="@string/save"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>

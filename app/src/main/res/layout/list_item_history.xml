@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_margin"
+        android:layout_marginStart="@dimen/activity_margin"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_margin"
+        android:paddingTop="@dimen/activity_margin">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/snackbar_button"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:alpha="0.7"
+        android:contentDescription="@string/access_open_rating_dialog"
+        android:padding="@dimen/activity_margin"
+        android:src="@drawable/ic_more_vert_white_24dp" />
+
+</LinearLayout>

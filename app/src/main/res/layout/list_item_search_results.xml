@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/activity_margin">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/poster_placeholder" />
+
+        <ImageView
+            android:id="@+id/poster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/access_movie_poster"
+            android:scaleType="centerCrop" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lineSpacingMultiplier="1.05"
+            android:maxLines="5"
+            android:textColor="@color/description_text"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.hellmund.primetime">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning,ManifestResource">
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".ui.AboutActivity"
+            android:label="@string/title_activity_about">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.main.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.main.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.introduction.IntroductionActivity"
+            android:label="@string/title_activity_introduction" />
+        <activity
+            android:name=".ui.SplashScreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+        <activity
+            android:name=".ui.SelectGenreActivity"
+            android:label="@string/select_genres_header" />
+        <activity
+            android:name=".ui.selectmovies.SelectMoviesActivity"
+            android:label="@string/title_activity_select_movie" />
+        <activity
+            android:name=".ui.history.HistoryActivity"
+            android:label="@string/title_activity_history">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.main.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.search.SearchActivity"
+            android:windowSoftInputMode="stateVisible">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.main.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.watchlist.WatchlistActivity"
+            android:label="@string/watchlist" />
+
+        <receiver android:name=".utils.NotificationPublisher" />
+
+        <activity
+            android:name=".ui.home.HomeActivity"
+            android:exported="true"
+            android:label="@string/app_name" />
+    </application>
+
+</manifest>
