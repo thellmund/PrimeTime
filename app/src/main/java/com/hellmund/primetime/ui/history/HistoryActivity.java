@@ -1,67 +1,41 @@
 package com.hellmund.primetime.ui.history;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.model.HistoryMovie;
-import com.hellmund.primetime.ui.main.MainActivity;
-import com.hellmund.primetime.utils.Constants;
-import com.hellmund.primetime.utils.DownloadUtils;
-import com.hellmund.primetime.utils.PrefUtils;
-import com.hellmund.primetime.utils.UiUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class HistoryActivity extends AppCompatActivity
-        implements HistoryAdapter.OnInteractionListener {
+        /*implements HistoryAdapter.OnInteractionListener*/ {
 
-    private static final String LOG_TAG = "HistoryActivity";
+    /*private static final String LOG_TAG = "HistoryActivity";
 
     private ArrayList<HistoryMovie> mHistory;
 
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
     @BindView(R.id.progress_container) LinearLayout mProgressContainer;
-    @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.progress_bar) ProgressBar mProgressBar;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        ButterKnife.bind(this);
-        initToolbar();
+        /*ButterKnife.bind(this);
+        initToolbar();*/
 
-        mHistory = new ArrayList<>(); // History.get();
-        displayHistory();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.contentFrame, HistoryFragment.newInstance())
+                    .commit();
+        }
+
+        /*mHistory = new ArrayList<>(); // History.get();
+        displayHistory();*/
     }
 
-    private void initToolbar() {
+    /*private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -155,7 +129,7 @@ public class HistoryActivity extends AppCompatActivity
 
     @Override
     public void onOpenDialog(final int position) {
-        /*final HistoryMovie movie = mHistory.get(position);
+        final HistoryMovie movie = mHistory.get(position);
         final String[] options = getDialogOptions(position);
 
         new AlertDialog.Builder(this)
@@ -166,7 +140,7 @@ public class HistoryActivity extends AppCompatActivity
                     } else if (which == 1) {
                         showSimilarMovies(movie);
                     }
-                }).create().show();*/
+                }).create().show();
     }
 
     @Override
@@ -211,13 +185,12 @@ public class HistoryActivity extends AppCompatActivity
     }
 
     private String[] getDialogOptions(int position) {
-        /*if (mHistory.get(position).isUpdating()) {
+        if (mHistory.get(position).isUpdating()) {
             return new String[] {getString(R.string.show_similar_movies)};
         } else {
             return new String[] {getString(R.string.edit_rating),
                                  getString(R.string.show_similar_movies)};
-        }*/
-        return new String[] {};
+        }
     }
 
     private static class DownloadHistoryTaskLoader
@@ -265,6 +238,6 @@ public class HistoryActivity extends AppCompatActivity
             super.deliverResult(mResults);
         }
 
-    }
+    }*/
 
 }

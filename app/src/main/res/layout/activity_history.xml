@@ -20,29 +20,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!-- Progress bar container -->
-    <LinearLayout
-        android:id="@+id/progress_container"
+    <FrameLayout
+        android:id="@+id/contentFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey_background"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="visible">
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center" />
-
-    </LinearLayout>
-
-    <!-- Main content container -->
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:background="@color/background" />
 
 </LinearLayout>

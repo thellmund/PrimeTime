@@ -14,8 +14,7 @@ class HistoryItemTouchHelper extends ItemTouchHelper.Callback {
     private HistoryAdapter mAdapter;
     private Drawable mBackground;
 
-    HistoryItemTouchHelper(HistoryActivity activity, HistoryAdapter adapter) {
-        Context context = activity.getApplicationContext();
+    HistoryItemTouchHelper(Context context, HistoryAdapter adapter) {
         mAdapter = adapter;
         mBackground = ContextCompat.getDrawable(context, android.R.color.transparent);
     }

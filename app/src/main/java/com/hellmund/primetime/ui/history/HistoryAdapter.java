@@ -25,8 +25,8 @@ class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
     private Context mContext;
     private ArrayList<HistoryMovie> mItems;
 
-    HistoryAdapter(Context context, ArrayList<HistoryMovie> items) {
-        mParent = (OnInteractionListener) context;
+    HistoryAdapter(Context context, OnInteractionListener listener, ArrayList<HistoryMovie> items) {
+        mParent = listener;
         mContext = context;
         mItems = items;
     }
