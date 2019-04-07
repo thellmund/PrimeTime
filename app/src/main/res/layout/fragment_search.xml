@@ -4,19 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.hellmund.primetime.ui.search.SearchActivity">
+    tools:context=".ui.search.SearchFragment">
 
-    <FrameLayout
-        android:id="@+id/contentFrame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <!-- TOOLBAR -->
-    <!--<android.support.design.widget.AppBarLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -40,12 +34,13 @@
                     android:gravity="center_vertical"
                     android:hint="@string/search"
                     android:imeOptions="actionSearch|flagNoExtractUi"
+                    android:importantForAutofill="no"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:paddingEnd="2dp"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
                     android:paddingStart="2dp"
+                    android:paddingLeft="2dp"
+                    android:paddingEnd="2dp"
+                    android:paddingRight="2dp"
                     android:textColor="@android:color/white"
                     android:textColorHint="#b3ffffff"
                     android:textCursorDrawable="@null" />
@@ -67,20 +62,15 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <!-- TOOLBAR -->
     <FrameLayout
         android:id="@+id/content_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@color/background">
 
-        &lt;!&ndash; RESULTS LIST VIEW &ndash;&gt;
-        <ListView
-            android:id="@+id/results_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
-        &lt;!&ndash; LOADING PLACEHOLDER &ndash;&gt;
+        <!-- RESULTS LIST VIEW -->
         <LinearLayout
             android:id="@+id/loading_container"
             android:layout_width="match_parent"
@@ -100,7 +90,7 @@
 
         </LinearLayout>
 
-        &lt;!&ndash; NO RESULTS PLACEHOLDER &ndash;&gt;
+        <!-- LOADING PLACEHOLDER -->
         <LinearLayout
             android:id="@+id/placeholder_container"
             android:layout_width="match_parent"
@@ -129,6 +119,13 @@
 
         </LinearLayout>
 
-    </FrameLayout>-->
+        <!-- NO RESULTS PLACEHOLDER -->
+        <ListView
+            android:id="@+id/results_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
 </LinearLayout>

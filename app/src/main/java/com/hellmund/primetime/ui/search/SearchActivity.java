@@ -1,81 +1,65 @@
 package com.hellmund.primetime.ui.search;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.model.SearchResult;
-import com.hellmund.primetime.ui.main.MainActivity;
-import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.DownloadManager;
-import com.hellmund.primetime.utils.UiUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnEditorAction;
-import butterknife.OnItemClick;
-import butterknife.OnItemLongClick;
-import butterknife.OnTextChanged;
 
 public class SearchActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "SearchActivity";
 
-    private static final int DISPLAY_LIST = 1;     /* List with query results */
-    private static final int DISPLAY_LOADING = 2;  /* Loading indicator */
-    private static final int DISPLAY_EMPTY = 3;    /* Placeholder with no results */
+    public static final int DISPLAY_LIST = 1;     /* List with query results */
+    public static final int DISPLAY_LOADING = 2;  /* Loading indicator */
+    public static final int DISPLAY_EMPTY = 3;    /* Placeholder with no results */
 
-    private static final float ENABLED = 1.0f;
-    private static final float DISABLED = 0.7f;
+    public static final float ENABLED = 1.0f;
+    public static final float DISABLED = 0.7f;
 
-    @BindView(R.id.search_box) EditText mSearchBar;
-    @BindView(R.id.search_clear) ImageView mClearButton;
-    @BindView(R.id.content_container) FrameLayout mContent;
+    /*
+    @BindView(R.id.search_box)
+    EditText mSearchBar;
+    @BindView(R.id.search_clear)
+    ImageView mClearButton;
+    @BindView(R.id.content_container)
+    FrameLayout mContent;
 
-    @BindView(R.id.results_list) ListView mListView;
-    @BindView(R.id.placeholder_container) LinearLayout mPlaceholder;
-    @BindView(R.id.loading_container) LinearLayout mLoadingIndicator;
+    @BindView(R.id.results_list)
+    ListView mListView;
+    @BindView(R.id.placeholder_container)
+    LinearLayout mPlaceholder;
+    @BindView(R.id.loading_container) LinearLayout mLoadingIndicator;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        getWindow().setBackgroundDrawable(null);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.contentFrame, SearchFragment.newInstance())
+                    .commit();
+        }
+
+        /*getWindow().setBackgroundDrawable(null);
         ButterKnife.bind(this);
 
         initToolbar();
 
         if (savedInstanceState != null) {
             restoreInstanceState(savedInstanceState);
-        }
+        }*/
     }
 
-    @Override
+    /*@Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         ArrayList<SearchResult> results = null;
         int topItem = 0;
@@ -186,11 +170,11 @@ public class SearchActivity extends AppCompatActivity {
         options.add(getString(R.string.show_more_like_this));
         options.add(getString(R.string.show_less_like_this));
 
-        /*
+        *//*
         if (!Watchlist.contains(result.getID()) && !History.contains(result.getID())) {
             options.add(getString(R.string.add_to_watchlist));
         }
-        */
+        *//*
 
         final String[] items = options.toArray(new String[options.size()]);
 
@@ -343,9 +327,9 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onLoaderReset(Loader<ArrayList<SearchResult>> loader) {}
         });
-    }
+    }*/
 
-    private static class QueryTaskLoader extends AsyncTaskLoader<ArrayList<SearchResult>> {
+    public static class QueryTaskLoader extends AsyncTaskLoader<ArrayList<SearchResult>> {
 
         private ArrayList<SearchResult> mResults;
         private String mQuery;
@@ -377,12 +361,12 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private static class DownloadRuntimeReleaseLoader extends AsyncTaskLoader<Long[]> {
+    public static class DownloadRuntimeReleaseLoader extends AsyncTaskLoader<Long[]> {
 
         private Long[] mResults;
         private int mId;
 
-        DownloadRuntimeReleaseLoader(Context context, int id) {
+        public DownloadRuntimeReleaseLoader(Context context, int id) {
             super(context);
             this.mId = id;
         }

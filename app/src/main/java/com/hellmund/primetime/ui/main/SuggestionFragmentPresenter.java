@@ -19,12 +19,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.model.GenreRecommendation;
 import com.hellmund.primetime.model.Movie;
 import com.hellmund.primetime.model.PersonalRecommendation;
 import com.hellmund.primetime.utils.DownloadManager;
 import com.hellmund.primetime.utils.DownloadUtils;
-import com.hellmund.primetime.utils.GenreUtils;
 
 class SuggestionFragmentPresenter {
 
@@ -74,8 +72,9 @@ class SuggestionFragmentPresenter {
                 return movie.getReferrerName();
             }
         } else {
-            final int id = ((GenreRecommendation) mMovie).getGenreReferrerID();
-            return GenreUtils.getGenreName(mContext, id);
+            return "Lorem ipsum";
+            // final int id = ((GenreRecommendation) mMovie).getGenreReferrerID();
+            // return GenreUtils.getGenreName(mContext, id);
         }
     }
 
