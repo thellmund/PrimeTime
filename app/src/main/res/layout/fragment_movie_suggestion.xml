@@ -112,6 +112,26 @@
                 android:paddingRight="@dimen/activity_margin">
 
                 <!-- Title -->
+                <TextView
+                    android:id="@+id/movie_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/movie_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lineSpacingMultiplier="1.1"
+                    android:maxLines="2"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
                 <LinearLayout
                     android:id="@+id/genres_container"
                     android:layout_width="match_parent"
@@ -143,7 +163,6 @@
 
                 </LinearLayout>
 
-                <!-- Description -->
                 <LinearLayout
                     android:id="@+id/referrer_container"
                     android:layout_width="match_parent"
@@ -174,7 +193,6 @@
 
                 </LinearLayout>
 
-                <!-- Genres -->
                 <LinearLayout
                     android:id="@+id/infos_container"
                     android:layout_width="wrap_content"
@@ -183,45 +201,13 @@
                     android:orientation="horizontal"
                     android:visibility="gone">
 
-                    <!-- Movie rating icon -->
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
+                        android:layout_width="@dimen/default_space"
+                        android:layout_height="@dimen/default_space"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="@dimen/small_space"
                         android:src="@drawable/ic_star_white_24dp" />
 
-                    <!-- Movie rating text -->
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:src="@drawable/ic_access_time_white_24dp" />
-
-                    <!-- Movie runtime icon -->
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:src="@drawable/ic_today_white_24dp" />
-
-                    <!-- Movie runtime text -->
-                    <TextView
-                        android:id="@+id/runtime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginRight="20dp"
-                        android:text="@string/loading"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp" />
-
-                    <!-- Movie release year icon -->
                     <TextView
                         android:id="@+id/rating"
                         android:layout_width="wrap_content"
@@ -232,7 +218,30 @@
                         android:textColor="@android:color/white"
                         android:textSize="16sp" />
 
-                    <!-- Movie release year text -->
+                    <ImageView
+                        android:layout_width="@dimen/default_space"
+                        android:layout_height="@dimen/default_space"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/small_space"
+                        android:src="@drawable/ic_access_time_white_24dp" />
+
+                    <TextView
+                        android:id="@+id/runtime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginRight="20dp"
+                        android:text="@string/loading"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="@dimen/default_space"
+                        android:layout_height="@dimen/default_space"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/small_space"
+                        android:src="@drawable/ic_today_white_24dp" />
+
                     <TextView
                         android:id="@+id/release"
                         android:layout_width="wrap_content"
@@ -243,7 +252,6 @@
 
                 </LinearLayout>
 
-                <!-- Referrer -->
                 <LinearLayout
                     android:id="@+id/action_buttons"
                     android:layout_width="match_parent"
@@ -268,28 +276,6 @@
                         android:textSize="16sp" />
 
                 </LinearLayout>
-
-                <!-- Movie container: rating, runtime, release year -->
-                <TextView
-                    android:id="@+id/movie_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:maxLines="1"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp" />
-
-                <!-- Borderless buttons -->
-                <TextView
-                    android:id="@+id/movie_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lineSpacingMultiplier="1.1"
-                    android:maxLines="2"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp" />
 
             </LinearLayout>
 

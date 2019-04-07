@@ -77,6 +77,7 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher,
 
     private fun initSearch() {
         search_box.setOnEditorActionListener(this)
+        search_box.addTextChangedListener(this)
         search_box.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 searchResultsContainer.visibility = View.VISIBLE
@@ -139,8 +140,7 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher,
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        val alpha = if (s.toString().isEmpty()) 0f else 1f
-        search_clear.alpha = alpha
+        search_clear.visibility = if (s.toString().isEmpty()) View.INVISIBLE else View.VISIBLE
     }
 
     override fun afterTextChanged(s: Editable?) = Unit
@@ -300,6 +300,11 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher,
         } else {
             inputMethodManager.hideSoftInputFromWindow(search_box.windowToken, 0)
         }
+    }
+
+    override fun onDestroyView() {
+        search_box.removeTextChangedListener(this)
+        super.onDestroyView()
     }
 
     companion object {

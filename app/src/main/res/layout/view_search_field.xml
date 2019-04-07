@@ -20,7 +20,7 @@
         android:hint="@string/search"
         android:imeOptions="actionSearch|flagNoExtractUi"
         android:importantForAutofill="no"
-        android:inputType="text"
+        android:inputType="text|textCapSentences"
         android:maxLines="1"
         android:paddingStart="2dp"
         android:paddingLeft="2dp"
@@ -36,11 +36,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:alpha="0"
         android:contentDescription="@string/clear_search"
         android:paddingLeft="@dimen/activity_margin"
         android:paddingRight="@dimen/activity_margin"
         android:src="@drawable/ic_clear_white_24dp"
-        android:tint="@android:color/black" />
+        android:visibility="invisible" />
 
 </LinearLayout>
