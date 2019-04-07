@@ -18,16 +18,6 @@ public class WatchlistMovie implements Parcelable {
     private boolean deleted;
     private boolean notificationsActivated;
 
-    /*public WatchlistMovie(RealmWatchlistMovie movie) {
-        this.id = movie.getId();
-        this.title = movie.getTitle();
-        this.posterURL = movie.getPosterUrl();
-        this.runtime = movie.getRuntime();
-        this.releaseDate = movie.getReleaseDate();
-        this.timestamp = movie.getTimestamp();
-        this.notificationsActivated = movie.getNotificationsActivated();
-    }*/
-
     private WatchlistMovie(Parcel in) {
         id = in.readInt();
         title = in.readString();

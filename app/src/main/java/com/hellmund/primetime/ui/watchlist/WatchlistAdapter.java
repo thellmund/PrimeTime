@@ -7,12 +7,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.hellmund.primetime.utils.DeviceUtils;
 
-class WatchlistAdapter extends FragmentStatePagerAdapter {
+public class WatchlistAdapter extends FragmentStatePagerAdapter {
 
     private Context mContext;
     private int mCount;
 
-    WatchlistAdapter(FragmentManager fragmentManager, Context context, int count) {
+    public WatchlistAdapter(FragmentManager fragmentManager, Context context, int count) {
         super(fragmentManager);
         this.mContext = context;
         this.mCount = count;
@@ -20,7 +20,7 @@ class WatchlistAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return WatchlistFragment.newInstance(mContext, position);
+        return WatchlistMovieFragment.newInstance(mContext, position);
     }
 
     @Override

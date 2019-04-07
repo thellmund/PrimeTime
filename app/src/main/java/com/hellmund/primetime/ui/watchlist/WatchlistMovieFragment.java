@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class WatchlistFragment extends Fragment {
+public class WatchlistMovieFragment extends Fragment {
 
     private OnInteractionListener mCallback;
     private Context mContext;
@@ -45,8 +45,8 @@ public class WatchlistFragment extends Fragment {
     @BindView(R.id.runtime_text) TextView mRuntimeTextView;
     @BindView(R.id.watched_button) AppCompatTextView mWatchedItButton;
 
-    public static WatchlistFragment newInstance(Context context, int position) {
-        WatchlistFragment fragment = new WatchlistFragment();
+    public static WatchlistMovieFragment newInstance(Context context, int position) {
+        WatchlistMovieFragment fragment = new WatchlistMovieFragment();
         fragment.setContext(context);
         Bundle args = new Bundle();
         args.putInt(Constants.POS, position);

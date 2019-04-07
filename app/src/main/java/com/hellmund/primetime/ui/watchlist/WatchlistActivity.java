@@ -1,54 +1,42 @@
 package com.hellmund.primetime.ui.watchlist;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.widget.LinearLayout;
 
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.model.WatchlistMovie;
-import com.hellmund.primetime.utils.Constants;
-import com.hellmund.primetime.utils.UiUtils;
-
-import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnPageChange;
-import me.relex.circleindicator.CircleIndicator;
+import com.hellmund.primetime.watchlist.WatchlistFragment;
 
 public class WatchlistActivity extends AppCompatActivity
-        implements WatchlistFragment.OnInteractionListener {
+        /*implements WatchlistMovieFragment.OnInteractionListener*/ {
 
-    @BindView(R.id.content) LinearLayout mContent;
+    /*@BindView(R.id.content) LinearLayout mContent;
     @BindView(R.id.view_pager) ViewPager mViewPager;
     @BindView(R.id.indicator2) CircleIndicator mIndicator;
     @BindView(R.id.placeholder) LinearLayout mPlaceholder;
 
-    private ArrayList<WatchlistMovie> mMovies;
+    private ArrayList<WatchlistMovie> mMovies;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watchlist);
 
-        ButterKnife.bind(this);
-        initToolbar();
+        /*ButterKnife.bind(this);*/
+        /*initToolbar();*/
 
-        mMovies = new ArrayList<>(); // Watchlist.get();
-        toggleListAndPlaceholder();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.contentFrame, WatchlistFragment.newInstance())
+                    .commit();
+        }
+
+        /*mMovies = new ArrayList<>(); // Watchlist.get();
+        toggleListAndPlaceholder();*/
     }
 
-    private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    /*private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -215,6 +203,6 @@ public class WatchlistActivity extends AppCompatActivity
     @Override
     public WatchlistMovie onGetMovie(int position) {
         return mMovies.get(position);
-    }
+    }*/
 
 }
