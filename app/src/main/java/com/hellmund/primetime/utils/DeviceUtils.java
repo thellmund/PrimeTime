@@ -3,7 +3,6 @@ package com.hellmund.primetime.utils;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -13,6 +12,8 @@ import android.telephony.TelephonyManager;
 import com.hellmund.primetime.BuildConfig;
 
 import java.util.Locale;
+
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class DeviceUtils {
 
@@ -62,8 +63,7 @@ public class DeviceUtils {
     }
 
     public static boolean isLandscapeMode(Context context) {
-        return context.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
+        return context.getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE;
     }
 
 }

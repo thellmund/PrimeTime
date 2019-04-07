@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.hellmund.primetime.ui.search.SearchActivity">
+    tools:context=".search.SearchActivity">
 
     <FrameLayout
         android:id="@+id/contentFrame"

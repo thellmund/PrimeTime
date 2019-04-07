@@ -108,7 +108,7 @@
     <string name="email_dev">E-mail the developer</string>
     <string name="welcome_header">Welcome to PrimeTime</string>
 
-    <string name="welcome_text">Find movies that you’ll love.</string>
+    <string name="welcome_text">Find movies that you’ll love</string>
     <string name="couldnt_add_rating">Rating couldn’t be added.</string>
     <string name="go_to_recommendations">Go to my recommendations</string>
     <string name="added_on">%1$s on %2$s</string>

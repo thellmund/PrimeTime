@@ -11,9 +11,7 @@ import android.view.*
 import android.view.animation.AlphaAnimation
 import com.hellmund.primetime.R
 import com.hellmund.primetime.model.WatchlistMovie
-import com.hellmund.primetime.ui.history.HistoryActivity
-import com.hellmund.primetime.ui.watchlist.WatchlistAdapter
-import com.hellmund.primetime.ui.watchlist.WatchlistMovieFragment
+import com.hellmund.primetime.history.HistoryActivity
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.UiUtils
 import kotlinx.android.synthetic.main.fragment_watchlist.*

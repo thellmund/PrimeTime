@@ -67,7 +67,7 @@
     <string name="recommendation_settings">Empfehlungen</string>
     <string name="couldnt_add_rating">Bewertung konnte nicht hinzugefügt werden.</string>
     <string name="welcome_header">Willkommen bei PrimeTime</string>
-    <string name="welcome_text">Entdecke Filme, die du lieben wirst.</string>
+    <string name="welcome_text">Entdecke Filme, die du lieben wirst</string>
     <string name="go_to_recommendations">Zu den Empfehlungen</string>
     <string name="liked">Positiv bewertet</string>
     <string name="disliked">Negativ bewertet</string>

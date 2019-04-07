@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:padding="@dimen/activity_margin"
-    tools:context=".ui.main.SuggestionErrorFragment">
+    tools:context=".main.SuggestionErrorFragment">
 
     <!-- Artwork container -->
     <ImageView
