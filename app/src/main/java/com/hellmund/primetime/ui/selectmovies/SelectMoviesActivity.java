@@ -17,7 +17,6 @@ import android.widget.GridView;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.model.Sample;
-import com.hellmund.primetime.model.realm.History;
 import com.hellmund.primetime.ui.main.MainActivity;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.DeviceUtils;
@@ -180,7 +179,7 @@ public class SelectMoviesActivity extends AppCompatActivity
                 results.add(mSamples.get(i));
             }
         }
-        History.addSamples(results);
+        // History.addSamples(results);
     }
 
     private static class DownloadMoviesLoader extends AsyncTaskLoader<ArrayList<Sample>> {

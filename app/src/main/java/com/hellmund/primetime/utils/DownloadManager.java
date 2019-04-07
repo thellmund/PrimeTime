@@ -9,7 +9,6 @@ import com.hellmund.primetime.model.Movie;
 import com.hellmund.primetime.model.MovieFactory;
 import com.hellmund.primetime.model.Sample;
 import com.hellmund.primetime.model.SearchResult;
-import com.hellmund.primetime.model.realm.History;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +24,7 @@ import java.util.Set;
 public class DownloadManager {
 
     public static ArrayList<Movie> downloadPersonalRecommendations(Context context) {
-        ArrayList<HistoryMovie> history = History.getLatestLiked();
+        ArrayList<HistoryMovie> history = new ArrayList<>(); // History.getLatestLiked();
         ArrayList<Movie> results = new ArrayList<>();
         final int length = Math.min(history.size(), 10);
 

@@ -3,8 +3,6 @@ package com.hellmund.primetime.utils;
 import android.content.Context;
 
 import com.hellmund.primetime.model.Movie;
-import com.hellmund.primetime.model.realm.History;
-import com.hellmund.primetime.model.realm.Watchlist;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +28,7 @@ class ResultBuilder {
     }
 
     private boolean isUnknown(int id) {
-        return !Watchlist.contains(id) && !History.contains(id);
+        return true; // !Watchlist.contains(id) && !History.contains(id);
     }
 
     ResultBuilder removeKnown() {

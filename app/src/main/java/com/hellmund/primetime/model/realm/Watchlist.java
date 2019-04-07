@@ -102,8 +102,7 @@ public class Watchlist {
 
     public static boolean contains(int id) {
         Realm realm = Realm.getDefaultInstance();
-        final boolean onWatchlist =
-                realm.where(RealmWatchlistMovie.class).equalTo("id", id).findFirst() != null;
+        final boolean onWatchlist = realm.where(RealmWatchlistMovie.class).equalTo("id", id).findFirst() != null;
         realm.close();
         return onWatchlist;
     }

@@ -71,11 +71,12 @@ public class SuggestionFragment extends Fragment {
 
     private SuggestionFragmentPresenter mPresenter;
 
-    public static SuggestionFragment newInstance(int position) {
+    public static SuggestionFragment newInstance(int position, OnInteractionListener listener) {
         SuggestionFragment fragment = new SuggestionFragment();
         Bundle args = new Bundle();
         args.putInt(Constants.POS, position);
         fragment.setArguments(args);
+        fragment.mCallback = listener;
         return fragment;
     }
 
@@ -85,7 +86,7 @@ public class SuggestionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         this.setRetainInstance(true);
 
-        mCallback = (OnInteractionListener) getContext();
+        mPresenter = new SuggestionFragmentPresenter(this);
         final int position = getArguments().getInt(Constants.POS);
 
         Movie movie;
@@ -96,7 +97,6 @@ public class SuggestionFragment extends Fragment {
             movie = mCallback.onGetRecommendation(position);
         }
 
-        mPresenter = new SuggestionFragmentPresenter(this);
         mPresenter.setPosition(position);
         mPresenter.setMovie(movie);
 
@@ -109,11 +109,10 @@ public class SuggestionFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(LOG_TAG, "Called onCreateView() for SuggestionFragment");
 
-        ViewGroup view = (ViewGroup) inflater.inflate(
-                R.layout.fragment_movie_suggestion, container, false);
+        View view = inflater.inflate(R.layout.fragment_movie_suggestion, container, false);
         mUnbinder = ButterKnife.bind(this, view);
 
-        final int color = ContextCompat.getColor(getContext(), R.color.colorAccent);
+        final int color = ContextCompat.getColor(requireContext(), R.color.colorAccent);
         mProgressBar.getIndeterminateDrawable()
                     .setColorFilter(color, android.graphics.PorterDuff.Mode.MULTIPLY);
 
@@ -228,7 +227,7 @@ public class SuggestionFragment extends Fragment {
     }
 
     private void updateWatchlistButton() {
-        if (mCallback == null) {
+        if (mCallback == null || mPresenter == null) {
             return;
         }
 
@@ -249,7 +248,9 @@ public class SuggestionFragment extends Fragment {
                 mWatchlistButton.setText(R.string.added_to_watchlist);
                 break;
             case Constants.NOT_WATCHED:
-                mWatchlistButton.setText(R.string.add_to_watchlist);
+                if (mWatchlistButton != null) {
+                    mWatchlistButton.setText(R.string.add_to_watchlist);
+                }
                 break;
         }
     }
@@ -259,9 +260,6 @@ public class SuggestionFragment extends Fragment {
 
         switch (watchedStatus) {
             case Constants.WATCHED:
-                mWatchlistButton.getBackground()
-                        .setColorFilter(darkerColor, PorterDuff.Mode.MULTIPLY);
-                break;
             case Constants.ON_WATCHLIST:
                 mWatchlistButton.getBackground()
                         .setColorFilter(darkerColor, PorterDuff.Mode.MULTIPLY);

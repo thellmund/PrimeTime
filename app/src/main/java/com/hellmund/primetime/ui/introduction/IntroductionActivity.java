@@ -34,7 +34,7 @@ public class IntroductionActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_introduction);
 
-        getWindow().setBackgroundDrawable(null);
+        // getWindow().setBackgroundDrawable(null);
         ButterKnife.bind(this);
 
         if (DeviceUtils.isLandscapeMode(this)) {

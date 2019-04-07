@@ -13,9 +13,12 @@ class SuggestionsAdapter extends FragmentStatePagerAdapter {
     private int mViewState;
     private int mCount;
     private Context mContext;
+    private SuggestionFragment.OnInteractionListener listener;
 
-    SuggestionsAdapter(FragmentManager fragmentMgr, Context context, int viewState, int count) {
+    SuggestionsAdapter(FragmentManager fragmentMgr, Context context, int viewState, int count,
+                       SuggestionFragment.OnInteractionListener listener) {
         super(fragmentMgr);
+        this.listener = listener;
         this.mContext = context;
         this.mViewState = viewState;
         this.mCount = count;
@@ -26,7 +29,7 @@ class SuggestionsAdapter extends FragmentStatePagerAdapter {
         if (mViewState == Constants.IDEAL_STATE && position == mCount - 1) {
             return DiscoverMoreFragment.newInstance();
         } else if (mViewState == Constants.IDEAL_STATE) {
-            return SuggestionFragment.newInstance(position);
+            return SuggestionFragment.newInstance(position, listener);
         } else {
             return SuggestionErrorFragment.newInstance(mViewState);
         }

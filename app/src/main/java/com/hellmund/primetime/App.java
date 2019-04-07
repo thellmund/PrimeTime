@@ -13,5 +13,6 @@ public class App extends Application {
         super.onCreate();
         Realm.init(this);
         NotificationUtils.createChannel(this);
+        NotificationUtils.scheduleNotifications(this);
     }
 }

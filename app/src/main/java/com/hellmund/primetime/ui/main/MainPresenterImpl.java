@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -23,13 +24,14 @@ import com.hellmund.primetime.utils.GenreUtils;
 import com.hellmund.primetime.utils.PrefUtils;
 import com.hellmund.primetime.utils.UiUtils;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-class MainPresenterImpl implements MainPresenter, Parcelable {
+class MainPresenterImpl implements MainContract.Presenter, Parcelable {
 
     private ArrayList<Movie> mRecommendations;
     private int mRecommendationsType;
@@ -37,14 +39,23 @@ class MainPresenterImpl implements MainPresenter, Parcelable {
     private String mMovieTitle;
     private int mMovieID;
 
-    private MainView mView;
-    private MainActivity mActivity;
+    private MainContract.View mView;
+    private FragmentActivity mActivity;
     private Context mContext;
 
-    MainPresenterImpl(MainActivity activity) {
-        this.mContext = activity.getApplicationContext();
+    MainPresenterImpl(FragmentActivity activity) {
         this.mActivity = activity;
-        this.mView = activity;
+        this.mContext = activity;
+    }
+
+    @Override
+    public void attachView(@NotNull MainContract.View view) {
+        mView = view;
+    }
+
+    @Override
+    public void detachView() {
+        mView = null;
     }
 
     private MainPresenterImpl(Parcel in) {
@@ -54,10 +65,10 @@ class MainPresenterImpl implements MainPresenter, Parcelable {
         mMovieID = in.readInt();
     }
 
-    void restoreState(MainActivity activity) {
+    void restoreState(FragmentActivity activity) {
         this.mContext = activity.getApplicationContext();
         this.mActivity = activity;
-        this.mView = activity;
+        // this.mView = activity;
     }
 
     public static final Creator<MainPresenterImpl> CREATOR = new Creator<MainPresenterImpl>() {
@@ -74,8 +85,7 @@ class MainPresenterImpl implements MainPresenter, Parcelable {
 
     @Override
     public void loadIndices() {
-        SharedPreferences sharedPrefs =
-                PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mRecommendationsType = sharedPrefs.getInt(
                 Constants.RECOMM_TYPE, Constants.PERSONALIZED_RECOMMENDATION);
 
@@ -219,7 +229,8 @@ class MainPresenterImpl implements MainPresenter, Parcelable {
         Watchlist.remove(id);
     }
 
-    void downloadRecommendationsAsync() {
+    @Override
+    public void downloadRecommendationsAsync() {
         mView.onDownloadStart();
 
         mActivity.getSupportLoaderManager().initLoader(Constants.RECOMMENDATIONS_LOADER, null,
@@ -303,7 +314,7 @@ class MainPresenterImpl implements MainPresenter, Parcelable {
 
     @Override
     public boolean onWatchlist(int id) {
-        return Watchlist.contains(id);
+        return false; // Watchlist.contains(id);
     }
 
     @Override

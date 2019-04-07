@@ -3,6 +3,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".ui.main.SuggestionFragment">
 
     <ImageView
@@ -23,6 +24,71 @@
         android:layout_height="match_parent">
 
         <!-- Movie information -->
+        <LinearLayout
+            android:id="@+id/show_more"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bottom_bar"
+            android:background="@color/cover_overlay"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/activity_margin"
+            android:paddingLeft="@dimen/activity_margin"
+            android:paddingTop="@dimen/activity_margin"
+            android:paddingEnd="@dimen/activity_margin"
+            android:paddingRight="@dimen/activity_margin">
+
+            <ImageView
+                android:id="@+id/show_more_icon"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:alpha="0.85"
+                android:src="@drawable/ic_keyboard_arrow_up_white_24dp" />
+
+            <TextView
+                android:id="@+id/show_more_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.85"
+                android:text="@string/show_more"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textStyle="italic" />
+
+        </LinearLayout>
+
+        <!-- Show more -->
+        <LinearLayout
+            android:id="@+id/bottom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/cover_overlay"
+            android:orientation="horizontal"
+            android:padding="@dimen/activity_margin">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/movie_add_watchlist_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/add_to_watchlist"
+                android:textSize="16sp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/rating_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/activity_margin"
+                android:layout_marginLeft="@dimen/activity_margin"
+                android:src="@drawable/ic_thumbs_up_down_white_24dp" />
+
+        </LinearLayout>
+
+        <!-- Bottom bar -->
         <ScrollView
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
@@ -39,43 +105,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingEnd="@dimen/activity_margin"
-                android:paddingLeft="@dimen/activity_margin"
-                android:paddingRight="@dimen/activity_margin"
                 android:paddingStart="@dimen/activity_margin"
-                android:paddingTop="@dimen/activity_margin">
+                android:paddingLeft="@dimen/activity_margin"
+                android:paddingTop="@dimen/activity_margin"
+                android:paddingEnd="@dimen/activity_margin"
+                android:paddingRight="@dimen/activity_margin">
 
                 <!-- Title -->
-                <TextView
-                    android:id="@+id/movie_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:maxLines="1"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp" />
-
-                <!-- Description -->
-                <TextView
-                    android:id="@+id/movie_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lineSpacingMultiplier="1.1"
-                    android:maxLines="2"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp" />
-
-                <!-- Genres -->
                 <LinearLayout
                     android:id="@+id/genres_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="@dimen/activity_margin"
                     android:layout_marginEnd="5dp"
                     android:layout_marginRight="5dp"
-                    android:layout_marginTop="@dimen/activity_margin"
+                    android:layout_marginBottom="5dp"
                     android:orientation="horizontal"
                     android:visibility="gone">
 
@@ -99,7 +143,7 @@
 
                 </LinearLayout>
 
-                <!-- Referrer -->
+                <!-- Description -->
                 <LinearLayout
                     android:id="@+id/referrer_container"
                     android:layout_width="match_parent"
@@ -130,7 +174,7 @@
 
                 </LinearLayout>
 
-                <!-- Movie container: rating, runtime, release year -->
+                <!-- Genres -->
                 <LinearLayout
                     android:id="@+id/infos_container"
                     android:layout_width="wrap_content"
@@ -149,15 +193,13 @@
                         android:src="@drawable/ic_star_white_24dp" />
 
                     <!-- Movie rating text -->
-                    <TextView
-                        android:id="@+id/rating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginRight="20dp"
-                        android:text="@string/loading"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp" />
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_access_time_white_24dp" />
 
                     <!-- Movie runtime icon -->
                     <ImageView
@@ -166,7 +208,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="8dp"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/ic_access_time_white_24dp" />
+                        android:src="@drawable/ic_today_white_24dp" />
 
                     <!-- Movie runtime text -->
                     <TextView
@@ -180,13 +222,15 @@
                         android:textSize="16sp" />
 
                     <!-- Movie release year icon -->
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:src="@drawable/ic_today_white_24dp" />
+                    <TextView
+                        android:id="@+id/rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginRight="20dp"
+                        android:text="@string/loading"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp" />
 
                     <!-- Movie release year text -->
                     <TextView
@@ -199,7 +243,7 @@
 
                 </LinearLayout>
 
-                <!-- Borderless buttons -->
+                <!-- Referrer -->
                 <LinearLayout
                     android:id="@+id/action_buttons"
                     android:layout_width="match_parent"
@@ -225,74 +269,31 @@
 
                 </LinearLayout>
 
+                <!-- Movie container: rating, runtime, release year -->
+                <TextView
+                    android:id="@+id/movie_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
+
+                <!-- Borderless buttons -->
+                <TextView
+                    android:id="@+id/movie_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lineSpacingMultiplier="1.1"
+                    android:maxLines="2"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
             </LinearLayout>
 
         </ScrollView>
-
-        <!-- Show more -->
-        <LinearLayout
-            android:id="@+id/show_more"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/bottom_bar"
-            android:background="@color/cover_overlay"
-            android:orientation="horizontal"
-            android:paddingEnd="@dimen/activity_margin"
-            android:paddingLeft="@dimen/activity_margin"
-            android:paddingRight="@dimen/activity_margin"
-            android:paddingStart="@dimen/activity_margin"
-            android:paddingTop="@dimen/activity_margin">
-
-            <ImageView
-                android:id="@+id/show_more_icon"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:alpha="0.85"
-                android:src="@drawable/ic_keyboard_arrow_up_white_24dp" />
-
-            <TextView
-                android:id="@+id/show_more_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0.85"
-                android:text="@string/show_more"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:textStyle="italic" />
-
-        </LinearLayout>
-
-        <!-- Bottom bar -->
-        <LinearLayout
-            android:id="@+id/bottom_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/cover_overlay"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_margin">
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/movie_add_watchlist_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/add_to_watchlist"
-                android:textSize="16sp" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/rating_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/activity_margin"
-                android:layout_marginStart="@dimen/activity_margin"
-                android:src="@drawable/ic_thumbs_up_down_white_24dp" />
-
-        </LinearLayout>
 
     </RelativeLayout>
 
