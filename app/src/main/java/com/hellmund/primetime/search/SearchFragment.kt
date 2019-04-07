@@ -136,7 +136,12 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher,
     }
 
     override fun onReselected() {
-        toggleKeyboard(true)
+        val current = requireFragmentManager().findFragmentById(R.id.contentFrame)
+        if (current is SearchFragment) {
+            toggleKeyboard(true)
+        } else {
+            requireFragmentManager().popBackStack()
+        }
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

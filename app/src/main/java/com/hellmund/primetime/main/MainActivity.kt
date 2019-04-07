@@ -3,7 +3,6 @@ package com.hellmund.primetime.main
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
 import com.hellmund.primetime.R
 import com.hellmund.primetime.search.SearchFragment
 import com.hellmund.primetime.utils.Constants.SEARCH_INTENT
@@ -18,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         FragmentLifecycleCallback(this)
     }
 
-    private val fragments = mapOf<MenuItem, Fragment>()
+    private val fragmentsCache = FragmentsCache()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallback, false)
 
         bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
-            val fragment = fragments[menuItem] ?: createFragment(menuItem)
+            val fragment = fragmentsCache.getOrCreate(menuItem)
             showFragment(fragment)
             true
         }
@@ -37,6 +36,9 @@ class MainActivity : AppCompatActivity() {
             val fragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
             if (fragment is Reselectable) {
                 fragment.onReselected()
+            } else {
+                // TODO
+                supportFragmentManager.popBackStack()
             }
         }
 
@@ -54,15 +56,6 @@ class MainActivity : AppCompatActivity() {
             WATCHLIST_INTENT -> openWatchlist()
             SEARCH_INTENT -> openSearch()
             else -> openSearch(intent)
-        }
-    }
-
-    private fun createFragment(menuItem: MenuItem): Fragment {
-        return when (menuItem.itemId) {
-            R.id.home -> MainFragment.newInstance()
-            R.id.search -> SearchFragment.newInstance()
-            R.id.watchlist -> WatchlistFragment.newInstance()
-            else -> throw IllegalStateException()
         }
     }
 
@@ -92,7 +85,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun findFragment(klass: Class<*>): Fragment? {
-        return fragments.values.firstOrNull { it::class == klass }
+        return fragmentsCache.get(klass)
     }
 
     override fun onBackPressed() {
