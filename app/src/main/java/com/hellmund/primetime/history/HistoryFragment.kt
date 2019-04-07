@@ -41,12 +41,12 @@ class HistoryFragment : Fragment(), HistoryAdapter.OnInteractionListener {
     }
 
     private fun toggleProgressBar() {
-        /*if (progress_container.visibility == View.GONE) {
+        /*if (progress_bar.visibility == View.GONE) {
             recycler_view.visibility = View.GONE
-            progress_container.visibility = View.VISIBLE
+            progress_bar.visibility = View.VISIBLE
         } else {
             recycler_view.visibility = View.VISIBLE
-            progress_container.visibility = View.GONE
+            progress_bar.visibility = View.GONE
         }*/
     }
 
