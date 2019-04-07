@@ -35,8 +35,9 @@
                 android:value="com.hellmund.primetime.main.MainActivity" />
         </activity>
         <activity
-            android:name=".onboarding.IntroductionActivity"
-            android:label="@string/title_activity_introduction" />
+            android:name=".introduction.IntroductionActivity"
+            android:label="@string/title_activity_introduction"
+            android:theme="@style/AppTheme.Introduction" />
         <activity
             android:name=".splash.SplashScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -53,10 +54,10 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".onboarding.SelectGenreActivity"
+            android:name=".selectgenres.SelectGenreActivity"
             android:label="@string/select_genres_header" />
         <activity
-            android:name=".onboarding.SelectMoviesActivity"
+            android:name=".selectmovies.SelectMoviesActivity"
             android:label="@string/title_activity_select_movie" />
         <activity
             android:name="com.hellmund.primetime.history.HistoryActivity"

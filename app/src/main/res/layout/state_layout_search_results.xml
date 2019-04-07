@@ -3,8 +3,7 @@
     android:id="@+id/searchResultsContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/background"
-    android:visibility="gone">
+    android:background="@color/background">
 
     <!-- RESULTS LIST VIEW -->
     <LinearLayout

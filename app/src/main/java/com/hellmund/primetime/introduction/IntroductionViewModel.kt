@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding
+package com.hellmund.primetime.introduction
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData

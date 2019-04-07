@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding
+package com.hellmund.primetime.introduction
 
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.hellmund.primetime.R
+import com.hellmund.primetime.selectgenres.SelectGenreActivity
 import com.hellmund.primetime.utils.DeviceUtils.isLandscapeMode
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.activity_introduction.*

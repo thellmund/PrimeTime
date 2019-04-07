@@ -1,20 +1,20 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".onboarding.SelectMoviesActivity">
+    android:orientation="vertical"
+    tools:context=".selectmovies.SelectMoviesActivity">
 
     <TextView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="10dp"
         android:layout_marginLeft="@dimen/activity_margin"
-        android:layout_marginRight="@dimen/activity_margin"
         android:layout_marginTop="@dimen/activity_margin"
+        android:layout_marginRight="@dimen/activity_margin"
+        android:layout_marginBottom="10dp"
         android:text="@string/select_movies_header"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
@@ -23,102 +23,52 @@
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
-        android:layout_marginBottom="10dp"
         android:layout_marginLeft="@dimen/activity_margin"
-        android:layout_marginRight="@dimen/activity_margin"
         android:layout_marginTop="5dp"
+        android:layout_marginRight="@dimen/activity_margin"
+        android:layout_marginBottom="10dp"
         android:text="@string/select_movies_text"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
 
-    <GridView
-        android:id="@+id/grid_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/button"
-        android:layout_below="@+id/description"
-        android:clipToPadding="false"
-        android:horizontalSpacing="@dimen/activity_margin"
-        android:numColumns="3"
-        android:padding="@dimen/activity_margin"
-        android:scrollbars="none"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="@dimen/activity_margin"
-        android:visibility="gone" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/button"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="6dp"
-        android:layout_marginEnd="@dimen/activity_margin"
-        android:layout_marginRight="@dimen/activity_margin"
-        android:layout_marginTop="6dp"
-        android:alpha="0.5"
-        android:clickable="false"
-        android:text="@string/finish"
-        android:textAllCaps="true"
-        android:textColor="@android:color/white" />
-
-    <!-- ERROR CONTAINER -->
-    <LinearLayout
-        android:id="@+id/error_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/button"
-        android:layout_below="@+id/description"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/error_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="225dp"
-            android:paddingEnd="50dp"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
-            android:paddingStart="50dp"
-            android:src="@drawable/introduction_error" />
-
-        <TextView
-            android:id="@+id/error_header"
+        <GridView
+            android:id="@+id/grid_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:text="@string/error_text"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/error_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:gravity="center"
-            android:text="@string/error_select_movie"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:horizontalSpacing="@dimen/activity_margin"
+            android:numColumns="3"
+            android:paddingStart="@dimen/default_space"
+            android:paddingTop="@dimen/default_space"
+            android:paddingEnd="@dimen/default_space"
+            android:paddingBottom="80dp"
+            android:scrollbars="none"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="@dimen/activity_margin"
+            android:visibility="gone" />
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/error_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            android:id="@+id/button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="80dp"
-            android:layout_marginRight="80dp"
-            android:layout_marginTop="30dp"
-            app:backgroundTint="@color/darkgrey_background" />
-        
-    </LinearLayout>
+            android:layout_height="64dp"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/small_space"
+            android:clickable="false"
+            android:text="@string/finish"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@color/colorAccent" />
 
-</RelativeLayout>
+    </FrameLayout>
+
+    <include
+        android:id="@+id/error_container"
+        layout="@layout/view_samples_error"
+        android:visibility="gone" />
+
+</LinearLayout>

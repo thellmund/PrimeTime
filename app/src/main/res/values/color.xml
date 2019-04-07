@@ -6,6 +6,8 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#009688</color>
 
+    <color name="buttonDisabled">#00675b</color>
+
     <color name="cover_overlay">#99000000</color>
     <color name="background">#303030</color>
 

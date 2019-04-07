@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding
+package com.hellmund.primetime.introduction
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater

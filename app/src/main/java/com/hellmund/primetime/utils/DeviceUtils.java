@@ -17,12 +17,12 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class DeviceUtils {
 
-    static String getApiKey() {
+    public static String getApiKey() {
         return BuildConfig.API_KEY;
     }
 
     @SuppressLint("HardwareIds")
-    static String getDeviceID(Context context) {
+    public static String getDeviceID(Context context) {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
@@ -49,7 +49,7 @@ public class DeviceUtils {
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
-    static String getUserLang() {
+    public static String getUserLang() {
         String lang = Locale.getDefault().getLanguage();
         final String DEFAULT_LANG = "en";
 

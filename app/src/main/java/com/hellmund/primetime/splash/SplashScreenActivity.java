@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.onboarding.IntroductionActivity;
+import com.hellmund.primetime.introduction.IntroductionActivity;
 import com.hellmund.primetime.main.MainActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {

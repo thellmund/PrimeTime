@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding;
+package com.hellmund.primetime.selectmovies;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,12 +12,12 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.model.Sample;
+import com.hellmund.primetime.model2.Sample;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.DownloadUtils;
 import com.hellmund.primetime.utils.UiUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,10 +25,10 @@ import butterknife.ButterKnife;
 public class SamplesAdapter extends BaseAdapter {
 
     private Context mContext;
-    private ArrayList<Sample> mSamples;
+    private List<Sample> mSamples;
     private OnInteractionListener mCallback;
 
-    SamplesAdapter(Activity activity, ArrayList<Sample> samples) {
+    SamplesAdapter(Activity activity, List<Sample> samples) {
         this.mContext = activity.getApplicationContext();
         this.mSamples = samples;
         this.mCallback = (OnInteractionListener) activity;
@@ -51,7 +51,7 @@ public class SamplesAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        if (mSamples.get(position).isSelected()) {
+        if (mSamples.get(position).getSelected()) {
             holder.container.setAlpha(Constants.ENABLED);
         } else {
             holder.container.setAlpha(Constants.DISABLED);
@@ -59,7 +59,7 @@ public class SamplesAdapter extends BaseAdapter {
 
         holder.container.setOnClickListener(v -> {
             mCallback.onItemSelected(v, position);
-            mSamples.get(position).toggleSelection();
+            mSamples.get(position).toggleSelected();
         });
 
         holder.container.setOnLongClickListener(v -> {

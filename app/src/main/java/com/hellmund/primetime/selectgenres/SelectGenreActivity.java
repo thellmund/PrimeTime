@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding;
+package com.hellmund.primetime.selectgenres;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.model.Genre;
+import com.hellmund.primetime.selectmovies.SelectMoviesActivity;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.GenreUtils;
 
@@ -47,6 +48,9 @@ public class SelectGenreActivity extends Activity {
         ButterKnife.bind(this);
 
         setListContent();
+
+        // TODO
+        // When selecting the first two genres, slide in the next button from the bottom
     }
 
     private void setListContent() {
@@ -77,11 +81,8 @@ public class SelectGenreActivity extends Activity {
     @OnItemClick(R.id.list_view)
     void onItemClick() {
         final boolean isEnabled = mListView.getCheckedItemCount() >= MIN_COUNT;
-        final float alpha = isEnabled ? Constants.ENABLED : Constants.DISABLED;
-
         mSaveButton.setClickable(isEnabled);
         mSaveButton.setEnabled(isEnabled);
-        mSaveButton.setAlpha(alpha);
     }
 
     @OnClick(R.id.button)
