@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.model.HistoryMovie;
-import com.hellmund.primetime.model.realm.History;
 import com.hellmund.primetime.ui.main.MainActivity;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.DownloadUtils;
@@ -58,13 +57,8 @@ public class HistoryActivity extends AppCompatActivity
         ButterKnife.bind(this);
         initToolbar();
 
-        mHistory = History.get();
-
-        if (mHistory != null) {
-            displayHistory();
-        } else {
-            downloadHistory();
-        }
+        mHistory = new ArrayList<>(); // History.get();
+        displayHistory();
     }
 
     private void initToolbar() {
@@ -91,7 +85,7 @@ public class HistoryActivity extends AppCompatActivity
                                        ArrayList<HistoryMovie> results) {
                 if (results != null) {
                     mHistory = results;
-                    History.addAll(results);
+                    // History.addAll(results);
                     PrefUtils.setHasDownloadedHistoryInRealm(HistoryActivity.this);
                     displayHistory();
                 } else {
@@ -124,7 +118,7 @@ public class HistoryActivity extends AppCompatActivity
     }
 
     private void fillListViewContent() {
-        if (mHistory.isEmpty()) {
+        if (true) {
             return;
         }
 
@@ -161,7 +155,7 @@ public class HistoryActivity extends AppCompatActivity
 
     @Override
     public void onOpenDialog(final int position) {
-        final HistoryMovie movie = mHistory.get(position);
+        /*final HistoryMovie movie = mHistory.get(position);
         final String[] options = getDialogOptions(position);
 
         new AlertDialog.Builder(this)
@@ -172,7 +166,7 @@ public class HistoryActivity extends AppCompatActivity
                     } else if (which == 1) {
                         showSimilarMovies(movie);
                     }
-                }).create().show();
+                }).create().show();*/
     }
 
     @Override
@@ -210,19 +204,20 @@ public class HistoryActivity extends AppCompatActivity
         mRecyclerView.getAdapter().notifyItemChanged(position);
 
         new Handler().postDelayed(() -> {
-            History.changeRating(movie.getID(), newRating);
+            // History.changeRating(movie.getID(), newRating);
             movie.setUpdating(false);
             mRecyclerView.getAdapter().notifyItemChanged(position);
         }, 500);
     }
 
     private String[] getDialogOptions(int position) {
-        if (mHistory.get(position).isUpdating()) {
+        /*if (mHistory.get(position).isUpdating()) {
             return new String[] {getString(R.string.show_similar_movies)};
         } else {
             return new String[] {getString(R.string.edit_rating),
                                  getString(R.string.show_similar_movies)};
-        }
+        }*/
+        return new String[] {};
     }
 
     private static class DownloadHistoryTaskLoader

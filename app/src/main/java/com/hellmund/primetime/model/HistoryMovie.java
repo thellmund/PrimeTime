@@ -6,7 +6,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.model.realm.RealmHistoryMovie;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.DateUtils;
 
@@ -21,13 +20,13 @@ public class HistoryMovie implements Parcelable {
     private long timestamp;
     private boolean isUpdating;
 
-    public HistoryMovie(RealmHistoryMovie realmMovie) {
+    /*public HistoryMovie(RealmHistoryMovie realmMovie) {
         this.id = realmMovie.getId();
         this.title = realmMovie.getTitle();
         this.rating = realmMovie.getRating();
         this.timestamp = realmMovie.getTimestamp();
         this.isUpdating = false;
-    }
+    }*/
 
     private HistoryMovie(Parcel in) {
         this.id = in.readInt();

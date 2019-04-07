@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.hellmund.primetime.model.WatchlistMovie;
-import com.hellmund.primetime.model.realm.Watchlist;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,7 +16,7 @@ public class NotificationPublisher extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (isCorrectTime() && NotificationUtils.areNotificationsEnabled(context)) {
-            ArrayList<WatchlistMovie> releases = Watchlist.getReleasesToday();
+            ArrayList<WatchlistMovie> releases = new ArrayList<>(); // Watchlist.getReleasesToday();
             if (releases.isEmpty()) {
                 return;
             }

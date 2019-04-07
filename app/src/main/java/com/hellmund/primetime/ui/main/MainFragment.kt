@@ -7,12 +7,14 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.view.*
-import com.hellmund.primetime.R
 import com.hellmund.primetime.model.Movie
+import com.hellmund.primetime.ui.SettingsActivity
+import com.hellmund.primetime.ui.history.HistoryActivity
 import com.hellmund.primetime.ui.search.SearchActivity
 import com.hellmund.primetime.ui.watchlist.WatchlistActivity
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
+
 
 class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInteractionListener,
         SuggestionErrorFragment.OnInteractionListener, DiscoverMoreFragment.OnInteractionListener {
@@ -34,7 +36,7 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        return inflater.inflate(com.hellmund.primetime.R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,12 +85,12 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
 
     override fun onOpenRatingDialog(position: Int) {
         val options = arrayOf(
-                getString(R.string.show_more_like_this),
-                getString(R.string.show_less_like_this)
+                getString(com.hellmund.primetime.R.string.show_more_like_this),
+                getString(com.hellmund.primetime.R.string.show_less_like_this)
         )
 
         AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.adjust_recommendations))
+                .setTitle(getString(com.hellmund.primetime.R.string.adjust_recommendations))
                 .setItems(options) { _, which ->
                     val rating = if (which == 0) Constants.LIKE else Constants.DISLIKE
                     presenter.addMovieRating(position, rating)
@@ -187,16 +189,16 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
 
     private fun displayRatingSnackbar(position: Int, id: Int, rating: Int) {
         val message = if (rating == Constants.LIKE) {
-            getString(R.string.will_more_like_this)
+            getString(com.hellmund.primetime.R.string.will_more_like_this)
         } else {
-            getString(R.string.will_less_like_this)
+            getString(com.hellmund.primetime.R.string.will_less_like_this)
         }
 
         val movie = presenter.getMovieAt(position)
         // History.add(movie, rating)
 
         Snackbar.make(suggestions, message, Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo) {
+                .setAction(com.hellmund.primetime.R.string.undo) {
                     suggestions.currentItem = position
                     presenter.showUndoToast(id, rating)
                     // History.remove(id);
@@ -224,13 +226,13 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
                     }
 
                     if (!DeviceUtils.isConnected(requireContext())) {
-                        UiUtils.showToast(requireContext(), getString(R.string.not_connected))
+                        UiUtils.showToast(requireContext(), getString(com.hellmund.primetime.R.string.not_connected))
                     } else {
                         handleGenreDialogInput(selected, which)
                     }
                 }
                 .setCancelable(true)
-                .setNegativeButton(R.string.close) { dialog, _ -> dialog.dismiss() }
+                .setNegativeButton(com.hellmund.primetime.R.string.close) { dialog, _ -> dialog.dismiss() }
                 .show()
     }
 
@@ -246,7 +248,7 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
 
     private fun refreshRecommendations() {
         if (!DeviceUtils.isConnected(requireContext())) {
-            UiUtils.showToast(requireContext(), getString(R.string.not_connected))
+            UiUtils.showToast(requireContext(), getString(com.hellmund.primetime.R.string.not_connected))
             return
         }
 
@@ -267,10 +269,10 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
         val length = nonGenreCategories + GenreUtils.getGenres(requireContext()).size
 
         val categories = arrayOfNulls<String>(length)
-        categories[0] = getString(R.string.personalized_recommendations)
-        categories[1] = getString(R.string.movie_based_recommendations)
-        categories[2] = getString(R.string.now_playing)
-        categories[3] = getString(R.string.upcoming)
+        categories[0] = getString(com.hellmund.primetime.R.string.personalized_recommendations)
+        categories[1] = getString(com.hellmund.primetime.R.string.movie_based_recommendations)
+        categories[2] = getString(com.hellmund.primetime.R.string.now_playing)
+        categories[3] = getString(com.hellmund.primetime.R.string.upcoming)
 
         System.arraycopy(genreTitles, 0, categories, nonGenreCategories, genreTitles.size)
         return categories as Array<String>
@@ -286,9 +288,50 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
         startActivity(intent)
     }
 
+    private fun openHistory() {
+        val intent = Intent(requireContext(), HistoryActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun openSettings() {
+        val intent = Intent(requireContext(), SettingsActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_main, menu)
+        inflater?.inflate(com.hellmund.primetime.R.menu.menu_main, menu)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            com.hellmund.primetime.R.id.action_watchlist -> {
+                openWatchlist()
+                return true
+            }
+            com.hellmund.primetime.R.id.action_genre_recommendations -> {
+                openGenresDialog()
+                return true
+            }
+            com.hellmund.primetime.R.id.action_refresh -> {
+                refreshRecommendations()
+                return true
+            }
+            com.hellmund.primetime.R.id.action_history -> {
+                openHistory()
+                return true
+            }
+            com.hellmund.primetime.R.id.action_settings -> {
+                openSettings()
+                return true
+            }
+            android.R.id.home -> {
+                requireActivity().onBackPressed()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+
     }
 
     override fun onStop() {

@@ -3,7 +3,6 @@ package com.hellmund.primetime.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.hellmund.primetime.model.realm.RealmWatchlistMovie;
 import com.hellmund.primetime.utils.DateUtils;
 
 import java.util.Date;
@@ -19,7 +18,7 @@ public class WatchlistMovie implements Parcelable {
     private boolean deleted;
     private boolean notificationsActivated;
 
-    public WatchlistMovie(RealmWatchlistMovie movie) {
+    /*public WatchlistMovie(RealmWatchlistMovie movie) {
         this.id = movie.getId();
         this.title = movie.getTitle();
         this.posterURL = movie.getPosterUrl();
@@ -27,7 +26,7 @@ public class WatchlistMovie implements Parcelable {
         this.releaseDate = movie.getReleaseDate();
         this.timestamp = movie.getTimestamp();
         this.notificationsActivated = movie.getNotificationsActivated();
-    }
+    }*/
 
     private WatchlistMovie(Parcel in) {
         id = in.readInt();

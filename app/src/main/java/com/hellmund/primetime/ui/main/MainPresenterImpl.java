@@ -14,8 +14,6 @@ import android.support.v4.content.Loader;
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.model.HistoryMovie;
 import com.hellmund.primetime.model.Movie;
-import com.hellmund.primetime.model.realm.History;
-import com.hellmund.primetime.model.realm.Watchlist;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.DeviceUtils;
 import com.hellmund.primetime.utils.DownloadManager;
@@ -203,7 +201,7 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
 
     @Override
     public ArrayList<HistoryMovie> getHistory() {
-        return History.get();
+        return new ArrayList<>(); // History.get();
     }
 
     @Override
@@ -214,7 +212,7 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
 
     @Override
     public void saveInWatchlistOnDevice(Movie movie) {
-        Watchlist.add(movie);
+        // Watchlist.add(movie);
     }
 
     @Override
@@ -226,7 +224,7 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
 
     @Override
     public void removeFromWatchlist(int id) {
-        Watchlist.remove(id);
+        // Watchlist.remove(id);
     }
 
     @Override
@@ -289,7 +287,7 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
             @Override
             public void onLoadFinished(
                     Loader<ArrayList<HistoryMovie>> loader, ArrayList<HistoryMovie> results) {
-                History.addAll(results);
+                // History.addAll(results);
                 PrefUtils.setHasDownloadedHistoryInRealm(mContext);
                 downloadRecommendationsAsync();
             }

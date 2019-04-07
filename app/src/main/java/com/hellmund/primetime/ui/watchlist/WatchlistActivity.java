@@ -14,8 +14,6 @@ import android.widget.LinearLayout;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.model.WatchlistMovie;
-import com.hellmund.primetime.model.realm.History;
-import com.hellmund.primetime.model.realm.Watchlist;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.UiUtils;
 
@@ -45,7 +43,7 @@ public class WatchlistActivity extends AppCompatActivity
         ButterKnife.bind(this);
         initToolbar();
 
-        mMovies = Watchlist.get();
+        mMovies = new ArrayList<>(); // Watchlist.get();
         toggleListAndPlaceholder();
     }
 
@@ -137,8 +135,8 @@ public class WatchlistActivity extends AppCompatActivity
     }
 
     private void rateMovie(final WatchlistMovie movie, final int position, int rating) {
-        History.add(movie, rating);
-        Watchlist.remove(movie.getID());
+        // History.add(movie, rating);
+        // Watchlist.remove(movie.getID());
 
         mMovies.get(position).delete();
         final int newPosition = getPositionOfNextItem(position);
@@ -155,8 +153,8 @@ public class WatchlistActivity extends AppCompatActivity
         Snackbar.make(mViewPager, message, Snackbar.LENGTH_LONG)
                 .setActionTextColor(ContextCompat.getColor(this, R.color.colorAccent))
                 .setAction(R.string.undo, v -> {
-                    History.remove(movie.getID());
-                    Watchlist.restore(movie);
+                    // History.remove(movie.getID());
+                    // Watchlist.restore(movie);
                     movie.undelete();
                     restoreInViewPager(movie, position);
                 })
@@ -169,7 +167,7 @@ public class WatchlistActivity extends AppCompatActivity
         final int newPosition = getPositionOfNextItem(position);
         movie.delete();
 
-        Watchlist.remove(movie.getID());
+        // Watchlist.remove(movie.getID());
         scrollToNextPosition(newPosition);
         displayRemoveSnackbar(movie, position);
     }
@@ -186,7 +184,7 @@ public class WatchlistActivity extends AppCompatActivity
     private void displayRemoveSnackbar(WatchlistMovie movie, int position) {
         Snackbar.make(mViewPager, R.string.watchlist_removed, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo, v -> {
-                    Watchlist.restore(movie);
+                    // Watchlist.restore(movie);
                     movie.undelete();
                     restoreInViewPager(movie, position);
                 })
