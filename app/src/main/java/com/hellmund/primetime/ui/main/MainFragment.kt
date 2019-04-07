@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.view.*
+import com.hellmund.primetime.R
 import com.hellmund.primetime.model.Movie
 import com.hellmund.primetime.ui.SettingsActivity
 import com.hellmund.primetime.ui.history.HistoryActivity
@@ -14,7 +15,6 @@ import com.hellmund.primetime.ui.search.SearchActivity
 import com.hellmund.primetime.ui.watchlist.WatchlistActivity
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
-
 
 class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInteractionListener,
         SuggestionErrorFragment.OnInteractionListener, DiscoverMoreFragment.OnInteractionListener {
@@ -116,12 +116,6 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
 
         if (presenter.onWatchlist(id)) {
             return Constants.ON_WATCHLIST
-        }
-
-        if (PrefUtils.hasDownloadedHistoryInRealm(requireContext())) {
-            /*if (History.contains(id)) {
-                return Constants.WATCHED
-            }*/
         }
 
         return Constants.NOT_WATCHED
@@ -300,28 +294,19 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(com.hellmund.primetime.R.menu.menu_main, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            com.hellmund.primetime.R.id.action_watchlist -> {
-                openWatchlist()
-                return true
-            }
-            com.hellmund.primetime.R.id.action_genre_recommendations -> {
+            R.id.action_genre_recommendations -> {
                 openGenresDialog()
                 return true
             }
-            com.hellmund.primetime.R.id.action_refresh -> {
+            R.id.action_refresh -> {
                 refreshRecommendations()
                 return true
             }
-            com.hellmund.primetime.R.id.action_history -> {
-                openHistory()
-                return true
-            }
-            com.hellmund.primetime.R.id.action_settings -> {
+            R.id.action_settings -> {
                 openSettings()
                 return true
             }

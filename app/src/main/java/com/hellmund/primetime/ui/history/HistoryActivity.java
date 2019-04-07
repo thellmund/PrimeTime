@@ -2,6 +2,7 @@ package com.hellmund.primetime.ui.history;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.hellmund.primetime.R;
 
@@ -21,8 +22,8 @@ public class HistoryActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        /*ButterKnife.bind(this);
-        initToolbar();*/
+        /*ButterKnife.bind(this);*/
+        initToolbar();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager()
@@ -33,6 +34,15 @@ public class HistoryActivity extends AppCompatActivity
 
         /*mHistory = new ArrayList<>(); // History.get();
         displayHistory();*/
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     /*private void initToolbar() {

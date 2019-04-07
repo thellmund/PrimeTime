@@ -1,18 +1,17 @@
 package com.hellmund.primetime.watchlist
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.AlphaAnimation
 import com.hellmund.primetime.R
 import com.hellmund.primetime.model.WatchlistMovie
+import com.hellmund.primetime.ui.history.HistoryActivity
 import com.hellmund.primetime.ui.watchlist.WatchlistAdapter
 import com.hellmund.primetime.ui.watchlist.WatchlistMovieFragment
 import com.hellmund.primetime.utils.Constants
@@ -22,6 +21,11 @@ import kotlinx.android.synthetic.main.fragment_watchlist.*
 class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListener, ViewPager.OnPageChangeListener {
 
     private val movies = mutableListOf<WatchlistMovie>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -172,13 +176,23 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
         return movies[position]
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_watchlist, menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            requireActivity().onBackPressed()
-            return true
+        when (item.itemId) {
+            android.R.id.home -> requireActivity().onBackPressed()
+            R.id.history -> openHistory()
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun openHistory() {
+        val intent = Intent(requireContext(), HistoryActivity::class.java)
+        startActivity(intent)
+
     }
 
     companion object {

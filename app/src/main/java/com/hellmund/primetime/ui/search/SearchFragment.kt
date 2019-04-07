@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -27,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 import org.jetbrains.anko.inputMethodManager
 import java.util.*
 
-class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher {
+class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher, MainActivity.Reselectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +60,20 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher 
             displayRatingDialog(position)
             true
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (requireActivity() as AppCompatActivity).supportActionBar?.show()
+    }
+
+    override fun onReselected() {
+        toggleKeyboard(true)
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
