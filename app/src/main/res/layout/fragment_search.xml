@@ -1,131 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".search.SearchFragment">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/categoriesRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingTop="88dp"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
-            <LinearLayout
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+        <!-- SEARCH RESULTS -->
+        <include
+            layout="@layout/state_layout_search_results"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-                <EditText
-                    android:id="@+id/search_box"
-                    android:layout_width="0dp"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:cursorVisible="true"
-                    android:gravity="center_vertical"
-                    android:hint="@string/search"
-                    android:imeOptions="actionSearch|flagNoExtractUi"
-                    android:importantForAutofill="no"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:paddingStart="2dp"
-                    android:paddingLeft="2dp"
-                    android:paddingEnd="2dp"
-                    android:paddingRight="2dp"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="#b3ffffff"
-                    android:textCursorDrawable="@null" />
+    </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/search_clear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:alpha="0.5"
-                    android:contentDescription="@string/clear_search"
-                    android:paddingLeft="@dimen/activity_margin"
-                    android:paddingRight="@dimen/activity_margin"
-                    android:src="@drawable/ic_clear_white_24dp" />
-
-            </LinearLayout>
-
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <!-- TOOLBAR -->
     <FrameLayout
-        android:id="@+id/content_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/background">
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_search_field_gradient">
 
-        <!-- RESULTS LIST VIEW -->
-        <LinearLayout
-            android:id="@+id/loading_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="top"
-            android:orientation="vertical"
-            android:padding="30dp"
-            android:visibility="gone">
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp" />
-
-        </LinearLayout>
-
-        <!-- LOADING PLACEHOLDER -->
-        <LinearLayout
-            android:id="@+id/placeholder_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="30dp"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/no_results_found"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/try_again_search_text"
-                android:textColor="@android:color/secondary_text_dark"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <!-- NO RESULTS PLACEHOLDER -->
-        <ListView
-            android:id="@+id/results_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
+        <include layout="@layout/view_search_field" />
 
     </FrameLayout>
 
-</LinearLayout>
+
+</FrameLayout>

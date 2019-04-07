@@ -54,7 +54,7 @@
         android:shortcutShortLabel="@string/search">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hellmund.primetime.search.SearchActivity"
+            android:targetClass="com.hellmund.primetime.main.MainActivity"
             android:targetPackage="com.hellmund.primetime" >
             <extra android:name="intent" android:value="search" />
         </intent>

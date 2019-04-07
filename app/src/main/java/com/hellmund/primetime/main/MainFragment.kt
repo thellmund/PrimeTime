@@ -9,11 +9,12 @@ import android.support.v7.app.AlertDialog
 import android.view.*
 import com.hellmund.primetime.R
 import com.hellmund.primetime.model.Movie
-import com.hellmund.primetime.settings.SettingsActivity
-import com.hellmund.primetime.history.HistoryActivity
 import com.hellmund.primetime.search.SearchActivity
+import com.hellmund.primetime.settings.SettingsActivity
+import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.DeviceUtils
+import com.hellmund.primetime.utils.UiUtils
 import com.hellmund.primetime.watchlist.WatchlistActivity
-import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInteractionListener,
@@ -44,29 +45,20 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
         presenter.attachView(this)
         presenter.loadIndices()
 
-        val intent = requireActivity().intent
-        if (intent.extras != null) {
-            val extra = intent.extras.getString("intent")
-            if (extra != null) {
-                presenter.handleShortcutOpen(extra)
-            }
-        }
-
         setToolbarSubtitle()
 
         if (savedInstanceState != null) {
             restoreInstanceState(savedInstanceState)
         }
 
-        if (displaySingleMovieRecommendation()) {
+        val intentExtra = arguments?.getString(KEY_INTENT)
+        if (intentExtra != null) {
+            setupIntentRecommendations(intentExtra)
+        } else if (displaySingleMovieRecommendation()) {
             setupSingleMovieRecommendations()
         }
 
-        if (!PrefUtils.hasDownloadedHistoryInRealm(requireContext())) { // || History.get().isEmpty()) {
-            presenter.downloadHistoryAndRecommendations()
-        } else {
-            presenter.downloadRecommendationsAsync()
-        }
+        presenter.downloadRecommendationsAsync()
     }
 
     override fun onResume() {
@@ -146,6 +138,10 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
         setToolbarSubtitle()
     }
 
+    private fun setupIntentRecommendations(intentExtra: String) {
+        presenter.setupCategoryRecommendations(intentExtra)
+    }
+
     override fun onDownloadStart() {
         progressBar.visibility = View.VISIBLE
         suggestions.visibility = View.GONE
@@ -206,38 +202,9 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
         presenter.downloadRecommendationsAsync()
     }
 
-    override fun openGenresDialog() {
-        val genres = buildGenresList()
-        val adapter = GenresDialogAdapter(requireContext(), genres)
-
-        AlertDialog.Builder(requireContext())
-                .setAdapter(adapter) { dialog, which ->
-                    val selected = adapter.getItem(which)
-
-                    if (presenter.genreAlreadySelected(selected)) {
-                        dialog.dismiss()
-                        return@setAdapter
-                    }
-
-                    if (!DeviceUtils.isConnected(requireContext())) {
-                        UiUtils.showToast(requireContext(), getString(com.hellmund.primetime.R.string.not_connected))
-                    } else {
-                        handleGenreDialogInput(selected, which)
-                    }
-                }
-                .setCancelable(true)
-                .setNegativeButton(com.hellmund.primetime.R.string.close) { dialog, _ -> dialog.dismiss() }
-                .show()
-    }
-
-    private fun handleGenreDialogInput(selected: String, which: Int) {
-        if (which == 1) {
-            openSearch()
-        } else {
-            presenter.handleGenreDialogInput(selected, which)
-            setToolbarSubtitle()
-            refreshRecommendations()
-        }
+    override fun openCategories() {
+        val activity = requireActivity() as MainActivity
+        activity.openSearch()
     }
 
     private fun refreshRecommendations() {
@@ -250,28 +217,6 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
         presenter.downloadRecommendationsAsync()
     }
 
-    private fun buildGenresList(): Array<String> {
-        val nonGenreCategories = 4
-
-        val genres = GenreUtils.getGenres(requireContext())
-        val genreTitles = arrayOfNulls<String>(genres.size)
-
-        for (i in genres.indices) {
-            genreTitles[i] = genres[i].name
-        }
-
-        val length = nonGenreCategories + GenreUtils.getGenres(requireContext()).size
-
-        val categories = arrayOfNulls<String>(length)
-        categories[0] = getString(com.hellmund.primetime.R.string.personalized_recommendations)
-        categories[1] = getString(com.hellmund.primetime.R.string.movie_based_recommendations)
-        categories[2] = getString(com.hellmund.primetime.R.string.now_playing)
-        categories[3] = getString(com.hellmund.primetime.R.string.upcoming)
-
-        System.arraycopy(genreTitles, 0, categories, nonGenreCategories, genreTitles.size)
-        return categories as Array<String>
-    }
-
     override fun openSearch() {
         val intent = Intent(requireContext(), SearchActivity::class.java)
         startActivity(intent)
@@ -279,11 +224,6 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
 
     override fun openWatchlist() {
         val intent = Intent(requireContext(), WatchlistActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun openHistory() {
-        val intent = Intent(requireContext(), HistoryActivity::class.java)
         startActivity(intent)
     }
 
@@ -297,24 +237,20 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_genre_recommendations -> {
-                openGenresDialog()
-                return true
-            }
+        return when (item.itemId) {
             R.id.action_refresh -> {
                 refreshRecommendations()
-                return true
+                true
             }
             R.id.action_settings -> {
                 openSettings()
-                return true
+                true
             }
             android.R.id.home -> {
                 requireActivity().onBackPressed()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
 
     }
@@ -325,8 +261,14 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
     }
 
     companion object {
+
+        private const val KEY_INTENT = "KEY_INTENT"
+
         @JvmStatic
-        fun newInstance() = MainFragment()
+        fun newInstance(intent: String? = null) = MainFragment().apply {
+            arguments = Bundle().apply { putString(KEY_INTENT, intent) }
+        }
+
     }
 
 }

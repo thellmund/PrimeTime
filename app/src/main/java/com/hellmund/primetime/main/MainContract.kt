@@ -13,7 +13,6 @@ interface MainContract {
         fun onEmpty()
         fun onMovieRatingAdded(id: Int, rating: Int)
         fun tryDownloadAgain()
-        fun openGenresDialog()
         fun openSearch()
         fun openWatchlist()
     }
@@ -31,6 +30,7 @@ interface MainContract {
         fun handleGenreDialogInput(selected: String, which: Int)
         fun getHistory(): ArrayList<HistoryMovie>
         fun setupSingleMovieRecommendations(id: Int, title: String)
+        fun setupCategoryRecommendations(category: String)
         fun addToWatchlist(position: Int)
         fun saveInWatchlistOnDevice(movie: Movie)
         fun addMovieRating(position: Int, rating: Int)

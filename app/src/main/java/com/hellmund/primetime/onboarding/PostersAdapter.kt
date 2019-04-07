@@ -9,10 +9,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.hellmund.primetime.R
 import kotlinx.android.synthetic.main.list_item_introduction_bg.view.*
 
-class PostersAdapter2(
+class PostersAdapter(
         private val requestManager: RequestManager,
         private val posterUrls: List<String>
-) : RecyclerView.Adapter<PostersAdapter2.ViewHolder>() {
+) : RecyclerView.Adapter<PostersAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)

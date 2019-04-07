@@ -32,7 +32,7 @@ public class DiscoverMoreFragment extends Fragment {
 
     @OnClick(R.id.discover_more_btn)
     public void discoverMore() {
-        mCallback.openGenresDialog();
+        mCallback.openCategories();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class DiscoverMoreFragment extends Fragment {
     }
 
     public interface OnInteractionListener {
-        void openGenresDialog();
+        void openCategories();
     }
 
 }

@@ -176,12 +176,26 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
         }
     }
 
-
     @Override
     public void setupSingleMovieRecommendations(int id, String title) {
         this.mRecommendationsType = Constants.MOVIE_RECOMMENDATION;
         this.mMovieID = id;
         this.mMovieTitle = title;
+    }
+
+    @Override
+    public void setupCategoryRecommendations(@NotNull String category) {
+        switch (category) {
+            case "Now playing":
+                mRecommendationsType = Constants.NOW_PLAYING_RECOMMENDATION;
+                break;
+            case "Upcoming":
+                mRecommendationsType = Constants.UPCOMING_RECOMMENDATION;
+                break;
+            default:
+                mRecommendationsType = Constants.GENRE_RECOMMENDATION;
+                mGenreID = GenreUtils.getGenreID(mContext, category);
+        }
     }
 
     @Override

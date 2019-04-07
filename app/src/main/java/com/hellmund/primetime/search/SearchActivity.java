@@ -45,7 +45,7 @@ public class SearchActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.contentFrame, SearchFragment.newInstance())
+                    .replace(R.id.contentFrame, SearchFragment.newInstance(null))
                     .commit();
         }
 

@@ -23,6 +23,7 @@ public class Constants {
     public static final String NOW_PLAYING_INTENT = "now_playing";
     public static final String UPCOMING_INTENT = "upcoming";
     public static final String WATCHLIST_INTENT = "watchlist";
+    public static final String SEARCH_INTENT = "search";
 
     public static final String KEY_INCLUDED = "primetime_my_genres";
     public static final String KEY_EXCLUDED = "primetime_excluded_genres";

@@ -9,6 +9,9 @@ import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -19,12 +22,16 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.hellmund.primetime.R
-import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.main.MainActivity
+import com.hellmund.primetime.main.MainFragment
+import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.search.SearchActivity.*
 import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.GenreUtils
 import com.hellmund.primetime.utils.UiUtils
 import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.state_layout_search_results.*
+import kotlinx.android.synthetic.main.view_search_field.*
 import org.jetbrains.anko.inputMethodManager
 import java.util.*
 
@@ -45,17 +52,72 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initSearch()
+        initCategoriesRecyclerView()
+        initSearchResultsRecyclerView()
+
+        val searchIntent = arguments?.getString(KEY_SEARCH_INTENT)
+        searchIntent?.let {
+            handleSearchIntent(it)
+        }
+    }
+
+    private fun handleSearchIntent(searchIntent: String) {
+        val fragment = MainFragment.newInstance(searchIntent)
+        showFragment(fragment)
+    }
+
+    private fun showFragment(fragment: Fragment) {
+        requireFragmentManager()
+                .beginTransaction()
+                .replace(R.id.contentFrame, fragment)
+                .addToBackStack(null)
+                .commit()
+    }
+
+    private fun initSearch() {
         search_box.setOnEditorActionListener(this)
+        search_box.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                searchResultsContainer.visibility = View.VISIBLE
+                categoriesRecyclerView.visibility = View.GONE
+            }
+        }
+
         search_clear.setOnClickListener {
             if (it.alpha == Constants.ENABLED) {
                 clearSearchBarContent()
                 toggleKeyboard(true)
             }
         }
+    }
 
+    private fun initCategoriesRecyclerView() {
+        val adapter = SearchCategoriesAdapter(buildCategories(), this::onCategorySelected)
+        categoriesRecyclerView.itemAnimator = DefaultItemAnimator()
+        categoriesRecyclerView.adapter = adapter
+        categoriesRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+    }
+
+    private fun onCategorySelected(category: String) {
+        requireFragmentManager()
+                .beginTransaction()
+                .replace(R.id.contentFrame, MainFragment.newInstance(category))
+                .addToBackStack(null)
+                .commit()
+    }
+
+    private fun buildCategories(): List<String> {
+        val categories = listOf(getString(R.string.now_playing), getString(R.string.upcoming))
+        val genres = GenreUtils.getGenres(requireContext()).toList().map { it.name }
+        return categories + genres
+    }
+
+    private fun initSearchResultsRecyclerView() {
         results_list.setOnItemClickListener { _, _, position, _ ->
             showSimilarMovies(position)
         }
+
         results_list.setOnItemLongClickListener { _, _, position, _ ->
             displayRatingDialog(position)
             true
@@ -77,7 +139,7 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher,
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        val alpha = if (s.toString().isEmpty()) DISABLED else ENABLED
+        val alpha = if (s.toString().isEmpty()) 0f else 1f
         search_clear.alpha = alpha
     }
 
@@ -241,8 +303,14 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher,
     }
 
     companion object {
+
+        private const val KEY_SEARCH_INTENT = "KEY_SEARCH_INTENT"
+
         @JvmStatic
-        fun newInstance() = SearchFragment()
+        fun newInstance(extra: String? = null) = SearchFragment().apply {
+            arguments = Bundle().apply { putString(KEY_SEARCH_INTENT, extra) }
+        }
+
     }
 
 }

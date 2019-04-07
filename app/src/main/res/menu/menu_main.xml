@@ -4,12 +4,6 @@
     tools:context=".main.MainActivity">
 
     <item
-        android:id="@+id/action_genre_recommendations"
-        android:icon="@drawable/ic_list_white_24dp"
-        android:title="@string/categories"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/action_refresh"
         android:title="@string/refresh"
         app:showAsAction="never" />

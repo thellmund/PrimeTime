@@ -60,7 +60,7 @@ public class SuggestionErrorFragment extends Fragment {
     @OnClick(R.id.error_btn)
     public void tryDownloadAgain() {
         if (mViewState == Constants.EMPTY_STATE) {
-            mCallback.openGenresDialog();
+            mCallback.openCategories();
         } else {
             mCallback.tryDownloadAgain();
         }
@@ -73,7 +73,7 @@ public class SuggestionErrorFragment extends Fragment {
     }
 
     public interface OnInteractionListener {
-        void openGenresDialog();
+        void openCategories();
         void tryDownloadAgain();
     }
 

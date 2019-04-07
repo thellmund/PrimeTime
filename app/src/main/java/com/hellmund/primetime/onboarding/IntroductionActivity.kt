@@ -25,7 +25,7 @@ class IntroductionActivity : FragmentActivity() {
     }
 
     private fun displayResults(results: List<String>) {
-        val adapter = PostersAdapter2(Glide.with(this), results)
+        val adapter = PostersAdapter(Glide.with(this), results)
         gridView.itemAnimator = DefaultItemAnimator()
         gridView.adapter = adapter
         gridView.isEnabled = false
