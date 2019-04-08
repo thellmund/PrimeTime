@@ -13,7 +13,7 @@ import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.jetbrains.anko.support.v4.defaultSharedPreferences
 
-class MainFragment : Fragment(), SuggestionFragment.ViewPagerHost {
+class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.ViewPagerHost {
 
     private val genreProvider: GenresProvider by lazy {
         RealGenresProvider(defaultSharedPreferences)
@@ -171,7 +171,10 @@ class MainFragment : Fragment(), SuggestionFragment.ViewPagerHost {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
 
+    override fun onReselected() {
+        suggestions.scrollToStart()
     }
 
     companion object {

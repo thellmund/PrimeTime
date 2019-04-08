@@ -4,12 +4,13 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.hellmund.primetime.model.Genre
+import com.hellmund.primetime.model2.Genre
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.doAsync
 
 data class SelectGenresViewState(
         val data: List<Genre> = emptyList(),
@@ -55,6 +56,7 @@ class SelectGenresViewModel(
     private fun fetchMovies(): Observable<Result> {
         return repository.fetchGenres()
                 .subscribeOn(Schedulers.io())
+
                 .map { Result.Data(it) as Result }
                 .onErrorReturn { Result.Error(it) }
                 .startWith(Result.Loading)
@@ -75,12 +77,10 @@ class SelectGenresViewModel(
         _viewState.postValue(viewState)
     }
 
-    fun refresh() {
-        refreshRelay.accept(Action.Refresh)
-    }
-
-    fun store(genres: Set<String>) {
-        repository.storeGenres(genres)
+    fun store(genres: List<Genre>) {
+        doAsync {
+            repository.storeGenres(genres)
+        }
     }
 
     override fun onCleared() {

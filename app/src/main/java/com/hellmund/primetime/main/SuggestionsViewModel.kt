@@ -4,11 +4,14 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import com.hellmund.primetime.database.HistoryMovie
+import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.model2.ApiMovie
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 sealed class ViewModelAction {
     object LoadAdditionalInformation : ViewModelAction()
@@ -32,6 +35,7 @@ sealed class Rating(val movie: ApiMovie) {
 
 class SuggestionsViewModel(
         private val repository: RecommendationsRepository,
+        private val historyRepository: HistoryRepository,
         private var movie: ApiMovie
 ) : ViewModel() {
 
@@ -78,8 +82,11 @@ class SuggestionsViewModel(
     }
 
     private fun storeRating(rating: Rating): Observable<ViewModelEvent> {
-        // TODO: Actually store the rating
-        return Observable.just(ViewModelEvent.RatingStored(rating))
+        val historyMovie = HistoryMovie.fromRating(rating)
+        return Observable
+                .fromCallable { historyRepository.store(historyMovie) }
+                .subscribeOn(Schedulers.io())
+                .map { ViewModelEvent.RatingStored(rating) }
     }
 
     fun loadTrailer() {
@@ -110,12 +117,13 @@ class SuggestionsViewModel(
 
     class Factory(
             private val repository: RecommendationsRepository,
+            private val historyRepository: HistoryRepository,
             private val movie: ApiMovie
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SuggestionsViewModel(repository, movie) as T
+            return SuggestionsViewModel(repository, historyRepository, movie) as T
         }
 
     }

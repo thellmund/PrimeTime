@@ -14,12 +14,13 @@ import android.widget.LinearLayout;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.api.ApiClient;
+import com.hellmund.primetime.database.PrimeTimeDatabase;
+import com.hellmund.primetime.history.HistoryRepository;
 import com.hellmund.primetime.main.MainActivity;
 import com.hellmund.primetime.model2.Sample;
+import com.hellmund.primetime.selectgenres.GenresRepository;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.DeviceUtils;
-import com.hellmund.primetime.utils.GenresProvider;
-import com.hellmund.primetime.utils.RealGenresProvider;
 import com.hellmund.primetime.utils.UiUtils;
 
 import java.util.ArrayList;
@@ -63,11 +64,12 @@ public class SelectMoviesActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        GenresProvider genresProvider = new RealGenresProvider(mSharedPrefs);
+        GenresRepository genresRepo = new GenresRepository(ApiClient.getInstance(), PrimeTimeDatabase.getInstance(this));
+        HistoryRepository historyRepository = new HistoryRepository(PrimeTimeDatabase.getInstance(this));
 
-        SelectMoviesRepository repository = new SelectMoviesRepository(ApiClient.getInstance());
+        SelectMoviesRepository repository = new SelectMoviesRepository(ApiClient.getInstance(), historyRepository);
         SelectMoviesViewModel.Factory factory =
-                new SelectMoviesViewModel.Factory(repository, genresProvider);
+                new SelectMoviesViewModel.Factory(repository, genresRepo);
 
         viewModel = ViewModelProviders.of(this, factory).get(SelectMoviesViewModel.class);
         viewModel.getViewState().observe(this, this::render);
@@ -170,8 +172,7 @@ public class SelectMoviesActivity extends AppCompatActivity
                 results.add(mSamples.get(i));
             }
         }
-
-        // TODO History.addSamples(genres);
+        viewModel.store(results);
     }
 
 }

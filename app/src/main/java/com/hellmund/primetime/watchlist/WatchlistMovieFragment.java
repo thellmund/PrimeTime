@@ -1,11 +1,7 @@
 package com.hellmund.primetime.watchlist;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +11,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.model.WatchlistMovie;
-import com.hellmund.primetime.utils.Constants;
+import com.hellmund.primetime.database.WatchlistMovie;
 import com.hellmund.primetime.utils.DateUtils;
-import com.hellmund.primetime.utils.DownloadManager;
 import com.hellmund.primetime.utils.DownloadUtils;
 import com.hellmund.primetime.utils.NotificationUtils;
 import com.hellmund.primetime.utils.UiUtils;
@@ -30,12 +24,10 @@ import butterknife.Unbinder;
 
 public class WatchlistMovieFragment extends Fragment {
 
-    private OnInteractionListener mCallback;
-    private Context mContext;
-    private Unbinder mUnbinder;
+    private static final String KEY_WATCHLIST_MOVIE = "KEY_WATCHLIST_MOVIE";
 
+    private Unbinder mUnbinder;
     private WatchlistMovie mMovie;
-    private int mPosition;
 
     @BindView(R.id.posterImageView) ImageView mImageView;
     @BindView(R.id.notification_icon) ImageView mNotificationIcon;
@@ -45,27 +37,22 @@ public class WatchlistMovieFragment extends Fragment {
     @BindView(R.id.runtime_text) TextView mRuntimeTextView;
     @BindView(R.id.watched_button) AppCompatTextView mWatchedItButton;
 
-    public static WatchlistMovieFragment newInstance(Context context, int position) {
+    public static WatchlistMovieFragment newInstance(WatchlistMovie movie) {
         WatchlistMovieFragment fragment = new WatchlistMovieFragment();
-        fragment.setContext(context);
         Bundle args = new Bundle();
-        args.putInt(Constants.POS, position);
+        args.putParcelable(KEY_WATCHLIST_MOVIE, movie);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public void setContext(Context context) {
-        this.mContext = context;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setRetainInstance(true);
+        setRetainInstance(true);
 
-        mCallback = (OnInteractionListener) mContext;
-        mPosition = getArguments().getInt(Constants.POS);
-        mMovie = mCallback.onGetMovie(mPosition);
+        if (getArguments() != null) {
+            mMovie = getArguments().getParcelable(KEY_WATCHLIST_MOVIE);
+        }
     }
 
     @Override
@@ -75,42 +62,42 @@ public class WatchlistMovieFragment extends Fragment {
                 R.layout.fragment_watchlist_item, container, false);
         mUnbinder = ButterKnife.bind(this, view);
 
-        String posterUrl = DownloadUtils.getPosterURL(mContext, mMovie.getPosterURL());
-        Glide.with(getActivity().getApplicationContext())
+        String posterUrl = DownloadUtils.getPosterURL(requireContext(), mMovie.getPosterURL());
+        Glide.with(requireActivity())
              .load(posterUrl)
              .into(mImageView);
 
         mTitleTextView.setText(mMovie.getTitle());
 
-        if (mMovie.isUnreleased()) {
+        /*if (mMovie.isUnreleased()) {
             setNotificationIcon();
             setMovieOverlay();
         } else if (!mMovie.hasRuntime()) {
             downloadRuntime();
         } else {
             mRuntimeTextView.setText(DateUtils.formatRuntime(mMovie.getRuntime()));
-        }
+        }*/
 
         return view;
     }
 
     private void setMovieOverlay() {
         String releaseDate = DateUtils.getDateInLocalFormat(mMovie.getReleaseDate());
-        String releaseStr = String.format(mContext.getString(R.string.release_on), releaseDate);
+        String releaseStr = String.format(requireContext().getString(R.string.release_on), releaseDate);
         mRuntimeTextView.setText(releaseStr);
         mRuntimeIcon.setImageResource(R.drawable.ic_today_white_24dp);
         mWatchedItButton.setVisibility(View.GONE);
     }
 
     private void setNotificationIcon() {
-        if (NotificationUtils.areNotificationsEnabled(mContext)) {
+        if (NotificationUtils.areNotificationsEnabled(requireContext())) {
             mNotificationIcon.setVisibility(View.VISIBLE);
 
-            if (mMovie.isNotificationsActivated()) {
+            /*if (mMovie.isNotificationsActivated()) {
                 mNotificationIcon.setImageResource(R.drawable.ic_notifications_active_white_24dp);
             } else {
                 mNotificationIcon.setImageResource(R.drawable.ic_notifications_none_white_24dp);
-            }
+            }*/
         } else {
             mNotificationIcon.setVisibility(View.GONE);
         }
@@ -118,7 +105,7 @@ public class WatchlistMovieFragment extends Fragment {
 
     @OnClick(R.id.notification_icon)
     public void onNotificationClick() {
-        final boolean isActivated = !mMovie.isNotificationsActivated();
+        final boolean isActivated = false; // !mMovie.isNotificationsActivated();
         final String releaseDate = DateUtils.getDateInLocalFormat(mMovie.getReleaseDate());
 
         String message;
@@ -139,15 +126,15 @@ public class WatchlistMovieFragment extends Fragment {
 
     @OnClick(R.id.watched_button)
     public void onWatchedIt() {
-        mCallback.onWatchedIt(mPosition);
+        // TODO
     }
 
     @OnClick(R.id.remove_button)
     public void onRemove() {
-        mCallback.onRemove(mPosition);
+        // TODO
     }
 
-    private void downloadRuntime() {
+    /*private void downloadRuntime() {
         getActivity().getSupportLoaderManager().initLoader(mMovie.getID(), null,
                 new LoaderManager.LoaderCallbacks<Integer>() {
             @Override
@@ -170,7 +157,7 @@ public class WatchlistMovieFragment extends Fragment {
             @Override
             public void onLoaderReset(Loader<Integer> loader) {}
         });
-    }
+    }*/
 
     @Override
     public void onDestroyView() {
@@ -178,7 +165,7 @@ public class WatchlistMovieFragment extends Fragment {
         mUnbinder.unbind();
     }
 
-    private static class DownloadRuntimeLoader extends AsyncTaskLoader<Integer> {
+    /*private static class DownloadRuntimeLoader extends AsyncTaskLoader<Integer> {
 
         private Integer mResult;
         private int mId;
@@ -208,7 +195,7 @@ public class WatchlistMovieFragment extends Fragment {
             super.deliverResult(result);
         }
 
-    }
+    }*/
 
     /*
     private static class DownloadRuntimeTask extends AsyncTask<String, Void, String> {

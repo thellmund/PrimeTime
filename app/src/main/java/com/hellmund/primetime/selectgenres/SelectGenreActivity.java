@@ -2,9 +2,7 @@ package com.hellmund.primetime.selectgenres;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -13,12 +11,13 @@ import android.widget.ListView;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.api.ApiClient;
-import com.hellmund.primetime.model.Genre;
+import com.hellmund.primetime.database.AppDatabase;
+import com.hellmund.primetime.database.PrimeTimeDatabase;
+import com.hellmund.primetime.model2.Genre;
 import com.hellmund.primetime.selectmovies.SelectMoviesActivity;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +33,6 @@ public class SelectGenreActivity extends AppCompatActivity {
     @BindView(R.id.button) AppCompatButton mSaveButton;
 
     private SelectGenresViewModel viewModel;
-
     private List<Genre> genres;
 
     @Override
@@ -45,8 +43,8 @@ public class SelectGenreActivity extends AppCompatActivity {
         getWindow().setBackgroundDrawable(null);
         ButterKnife.bind(this);
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        GenresRepository repository = new GenresRepository(ApiClient.getInstance(), sharedPrefs);
+        AppDatabase db = PrimeTimeDatabase.getInstance(this);
+        GenresRepository repository = new GenresRepository(ApiClient.getInstance(), db);
         SelectGenresViewModel.Factory factory = new SelectGenresViewModel.Factory(repository);
 
         viewModel = ViewModelProviders.of(this, factory).get(SelectGenresViewModel.class);
@@ -61,7 +59,6 @@ public class SelectGenreActivity extends AppCompatActivity {
         swipeRefreshLayout.setRefreshing(viewState.isLoading());
         swipeRefreshLayout.setEnabled(false);
         showGenres(viewState.getData());
-        // swipeRefreshLayout.setEnabled(!viewState.isLoading());
 
         // TODO: Error and loading handling (SwipeRefreshLayout)
     }
@@ -87,13 +84,12 @@ public class SelectGenreActivity extends AppCompatActivity {
         final int length = mListView.getCount();
         SparseBooleanArray checkedItems = mListView.getCheckedItemPositions();
 
-        Set<String> includedGenres = new HashSet<>();
+        List<Genre> includedGenres = new ArrayList<>();
 
         for (int i = 0; i < length; i++) {
-            if (checkedItems.get(i)) {
-                final int genreId = genres.get(i).getId();
-                includedGenres.add(Integer.toString(genreId));
-            }
+            final Genre genre = genres.get(i);
+            genre.setPreferred(checkedItems.get(i));
+            includedGenres.add(genre);
         }
 
         viewModel.store(includedGenres);

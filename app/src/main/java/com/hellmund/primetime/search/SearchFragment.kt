@@ -25,7 +25,7 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.main.MainFragment
 import com.hellmund.primetime.main.RecommendationsType
-import com.hellmund.primetime.model.Genre
+import com.hellmund.primetime.model.ApiGenre
 import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.search.SearchActivity.*
 import com.hellmund.primetime.utils.Constants
@@ -106,7 +106,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun onCategorySelected(category: String) {
         val genreId = GenreUtils.getGenreID(requireContext(), category)
-        val genre = Genre(genreId, category)
+        val genre = ApiGenre(genreId, category)
 
         val type = when (category) {
             "Now playing" -> RecommendationsType.NowPlaying

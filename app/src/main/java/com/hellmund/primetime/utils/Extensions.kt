@@ -15,6 +15,10 @@ operator fun CompositeDisposable.plusAssign(disposable: Disposable) {
     add(disposable)
 }
 
+fun ViewPager.scrollToStart() {
+    currentItem = 0
+}
+
 fun ViewPager.scrollToNext() {
     currentItem += 1
 }

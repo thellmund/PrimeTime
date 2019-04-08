@@ -1,6 +1,7 @@
 package com.hellmund.primetime.watchlist
 
 import android.app.AlertDialog
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -10,15 +11,25 @@ import android.support.v4.view.ViewPager
 import android.view.*
 import android.view.animation.AlphaAnimation
 import com.hellmund.primetime.R
-import com.hellmund.primetime.model.WatchlistMovie
+import com.hellmund.primetime.database.PrimeTimeDatabase
+import com.hellmund.primetime.database.WatchlistMovie
 import com.hellmund.primetime.history.HistoryActivity
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.UiUtils
+import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.fragment_watchlist.*
 
-class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListener, ViewPager.OnPageChangeListener {
+class WatchlistFragment : Fragment(),
+        WatchlistMovieFragment.OnInteractionListener, ViewPager.OnPageChangeListener {
 
+    // TODO
     private val movies = mutableListOf<WatchlistMovie>()
+
+    private val viewModel: WatchlistViewModel by lazy {
+        val repository = WatchlistRepository(PrimeTimeDatabase.getInstance(requireContext()))
+        val factory = WatchlistViewModel.Factory(repository)
+        ViewModelProviders.of(this, factory).get(WatchlistViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +46,12 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toggleListAndPlaceholder()
-
+        viewModel.viewState.observe(this, this::render)
         viewPager.setOnPageChangeListener(this)
     }
 
-    private fun toggleListAndPlaceholder() {
-        val adapter = WatchlistAdapter(requireFragmentManager(), requireContext(), movies.size)
+    private fun render(viewState: WatchlistViewState) {
+        val adapter = WatchlistAdapter(requireFragmentManager(), viewState.data)
         viewPager.adapter = adapter
         indicator.setViewPager(viewPager)
 
@@ -69,7 +79,8 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
         val prev = position - 1
         val next = position + 1
 
-        if (prev >= 0 && movies[prev].isDeleted) {
+        // TODO
+        /*if (prev >= 0 && movies[prev].isDeleted) {
             movies.removeAt(prev)
             viewPager.adapter = WatchlistAdapter(requireFragmentManager(), requireContext(), movies.size)
             viewPager.currentItem = prev
@@ -81,7 +92,7 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
             viewPager.adapter = WatchlistAdapter(requireFragmentManager(), requireContext(), movies.size)
             viewPager.currentItem = next
             indicator.setViewPager(viewPager)
-        }
+        }*/
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
@@ -103,7 +114,7 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
     }
 
     private fun rateMovie(movie: WatchlistMovie, position: Int, rating: Int) {
-        movies[position].delete()
+        // movies[position].delete()
         val newPosition = getPositionOfNextItem(position)
         scrollToNextPosition(newPosition)
 
@@ -116,7 +127,7 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
         Snackbar.make(viewPager, message, Snackbar.LENGTH_LONG)
                 .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
                 .setAction(R.string.undo) { _ ->
-                    movie.undelete()
+                    // movie.undelete()
                     restoreInViewPager(movie, position)
                 }
                 .show()
@@ -124,7 +135,7 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
 
     private fun restoreInViewPager(movie: WatchlistMovie, position: Int) {
         movies.add(position, movie)
-        toggleListAndPlaceholder()
+        // TODO toggleListAndPlaceholder()
         viewPager.currentItem = position
     }
 
@@ -145,7 +156,7 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
     private fun scrollToNextPosition(newPosition: Int) {
         if (newPosition == -1) {
             movies.removeAt(0)
-            toggleListAndPlaceholder()
+            // TODO toggleListAndPlaceholder()
         } else {
             viewPager.currentItem = newPosition
         }
@@ -154,7 +165,7 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
     override fun onRemove(position: Int) {
         val movie = movies[position]
         val newPosition = getPositionOfNextItem(position)
-        movie.delete()
+        // movie.delete()
 
         scrollToNextPosition(newPosition)
         displayRemoveSnackbar(movie, position)
@@ -163,7 +174,7 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
     private fun displayRemoveSnackbar(movie: WatchlistMovie, position: Int) {
         Snackbar.make(content, R.string.watchlist_removed, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
-                    movie.undelete()
+                    // movie.undelete()
                     restoreInViewPager(movie, position)
                 }
                 .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))

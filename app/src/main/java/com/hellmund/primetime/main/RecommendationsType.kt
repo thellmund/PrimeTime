@@ -2,7 +2,7 @@ package com.hellmund.primetime.main
 
 import android.content.Context
 import android.os.Parcelable
-import com.hellmund.primetime.model.Genre
+import com.hellmund.primetime.model.ApiGenre
 import com.hellmund.primetime.model2.ApiMovie
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.GenreUtils
@@ -23,7 +23,7 @@ sealed class RecommendationsType : Parcelable {
     object Upcoming : RecommendationsType()
 
     @Parcelize
-    data class ByGenre(val genre: Genre) : RecommendationsType()
+    data class ByGenre(val genre: ApiGenre) : RecommendationsType()
 
     companion object {
 
@@ -34,7 +34,7 @@ sealed class RecommendationsType : Parcelable {
                 Constants.UPCOMING_INTENT -> Upcoming
                 else -> {
                     val genreId = GenreUtils.getGenreID(context, intent)
-                    val genre = Genre(genreId, intent)
+                    val genre = ApiGenre(genreId, intent)
                     ByGenre(genre)
                 }
             }

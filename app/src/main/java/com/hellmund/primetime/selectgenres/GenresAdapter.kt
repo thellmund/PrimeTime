@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
 import com.hellmund.primetime.R
-import com.hellmund.primetime.model.Genre
+import com.hellmund.primetime.model2.Genre
 
 class GenresAdapter @JvmOverloads constructor(
         context: Context,

@@ -4,15 +4,12 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import android.os.Parcelable
-import com.hellmund.primetime.model.Genre
 import com.hellmund.primetime.model2.ApiMovie
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.parcel.Parcelize
 
 data class MainViewState(
         val recommendationsType: RecommendationsType = RecommendationsType.Personalized,

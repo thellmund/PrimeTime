@@ -1,6 +1,7 @@
 package com.hellmund.primetime.history
 
 import android.app.AlertDialog
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -12,15 +13,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hellmund.primetime.R
+import com.hellmund.primetime.database.HistoryMovie
+import com.hellmund.primetime.database.PrimeTimeDatabase
 import com.hellmund.primetime.main.MainActivity
-import com.hellmund.primetime.model.HistoryMovie
 import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.fragment_history.*
-import java.util.*
 
-class HistoryFragment : Fragment(), HistoryAdapter.OnInteractionListener {
+class HistoryFragment : Fragment() {
 
-    private val history = mutableListOf<HistoryMovie>()
+    private val viewModel: HistoryViewModel by lazy {
+        val repository = HistoryRepository(PrimeTimeDatabase.getInstance(requireContext()))
+        val factory = HistoryViewModel.Factory(repository)
+        ViewModelProviders.of(this, factory).get(HistoryViewModel::class.java)
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -32,26 +38,11 @@ class HistoryFragment : Fragment(), HistoryAdapter.OnInteractionListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        displayHistory()
+        viewModel.viewState.observe(this, this::render)
     }
 
-    private fun displayHistory() {
-        fillListViewContent()
-        toggleProgressBar()
-    }
-
-    private fun toggleProgressBar() {
-        /*if (progress_bar.visibility == View.GONE) {
-            recycler_view.visibility = View.GONE
-            progress_bar.visibility = View.VISIBLE
-        } else {
-            recycler_view.visibility = View.VISIBLE
-            progress_bar.visibility = View.GONE
-        }*/
-    }
-
-    private fun fillListViewContent() {
-        val adapter = HistoryAdapter(requireContext(), this, history as ArrayList<HistoryMovie>)
+    private fun render(viewState: HistoryViewState) {
+        val adapter = HistoryAdapter(requireContext(), viewState.data, this::onOpenDialog)
         recycler_view.setHasFixedSize(true)
         recycler_view.adapter = adapter
         recycler_view.layoutManager = LinearLayoutManager(requireContext())
@@ -61,23 +52,22 @@ class HistoryFragment : Fragment(), HistoryAdapter.OnInteractionListener {
         helper.attachToRecyclerView(recycler_view)
     }
 
-    override fun onOpenDialog(position: Int) {
-        val movie = history[position]
-        val options = getDialogOptions(position)
+    private fun onOpenDialog(movie: HistoryMovie) {
+        val options = getDialogOptions(movie)
 
         AlertDialog.Builder(requireContext())
                 .setTitle(movie.title)
                 .setItems(options) { _, which ->
                     if (which == 0) {
-                        openEditRatingDialog(position)
+                        openEditRatingDialog(movie)
                     } else if (which == 1) {
                         showSimilarMovies(movie)
                     }
                 }.create().show()
     }
 
-    private fun getDialogOptions(position: Int): Array<String> {
-        return if (history[position].isUpdating) {
+    private fun getDialogOptions(movie: HistoryMovie): Array<String> {
+        return if (movie.isUpdating) {
             arrayOf(getString(R.string.show_similar_movies))
         } else {
             arrayOf(getString(R.string.edit_rating), getString(R.string.show_similar_movies))
@@ -93,25 +83,22 @@ class HistoryFragment : Fragment(), HistoryAdapter.OnInteractionListener {
         startActivity(intent)
     }
 
-    private fun openEditRatingDialog(position: Int) {
-        val movie = history.get(position)
+    private fun openEditRatingDialog(movie: HistoryMovie) {
         val options = arrayOf(getString(R.string.like), getString(R.string.dislike))
         val checked = if (movie.rating == Constants.LIKE) 0 else 1
 
         AlertDialog.Builder(requireContext())
                 .setTitle(R.string.edit_rating)
                 .setSingleChoiceItems(options, checked, null)
-                .setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }
-                .setPositiveButton(R.string.save) { dialog, which ->
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.save) { dialog, _ ->
                     val dialogListView = (dialog as AlertDialog).listView
                     val selected = dialogListView.checkedItemPosition
 
                     if (selected != checked) {
                         val newRating = if (selected == 0) Constants.LIKE else Constants.DISLIKE
-                        updateRating(movie, position, newRating)
+                        // TODO updateRating(movie, position, newRating)
                     }
-
-                    dialog.dismiss()
                 }
                 .setCancelable(true)
                 .show()
@@ -126,10 +113,6 @@ class HistoryFragment : Fragment(), HistoryAdapter.OnInteractionListener {
             movie.isUpdating = false
             recycler_view.adapter.notifyItemChanged(position)
         }, 500)
-    }
-
-    override fun getContainer(): View {
-        return recycler_view
     }
 
     companion object {

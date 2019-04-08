@@ -1,25 +1,30 @@
 package com.hellmund.primetime.selectgenres
 
-import android.content.SharedPreferences
 import com.hellmund.primetime.api.ApiService
-import com.hellmund.primetime.model.Genre
-import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.database.AppDatabase
+import com.hellmund.primetime.model2.Genre
 import io.reactivex.Observable
 
 class GenresRepository(
         private val apiService: ApiService,
-        private val sharedPrefs: SharedPreferences
+        private val database: AppDatabase
 ) {
 
+    val preferredGenres: Observable<List<Genre>>
+        get() = database.genreDao().getPreferredGenres().toObservable()
+
     fun fetchGenres(): Observable<List<Genre>> {
-        return apiService.genres().map { it.genres }
+        return apiService.genres()
+                .map { it.genres }
+                .map { it.map { genre -> Genre(genre.id, genre.name) } }
     }
 
-    fun storeGenres(genres: Set<String>) {
-        sharedPrefs
+    fun storeGenres(genres: List<Genre>) {
+        database.genreDao().store(*genres.toTypedArray())
+        /*sharedPrefs
                 .edit()
                 .putStringSet(Constants.KEY_INCLUDED, genres)
-                .apply()
+                .apply()*/
     }
 
 }

@@ -31,6 +31,8 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.api.ApiClient;
+import com.hellmund.primetime.database.PrimeTimeDatabase;
+import com.hellmund.primetime.history.HistoryRepository;
 import com.hellmund.primetime.model2.ApiMovie;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.DeviceUtils;
@@ -109,7 +111,8 @@ public class SuggestionFragment extends Fragment {
 
         GenresProvider provider = new RealGenresProvider(PreferenceManager.getDefaultSharedPreferences(requireContext()));
         RecommendationsRepository repository = new RecommendationsRepository(ApiClient.getInstance(), provider);
-        SuggestionsViewModel.Factory factory = new SuggestionsViewModel.Factory(repository, movie);
+        HistoryRepository historyRepository = new HistoryRepository(PrimeTimeDatabase.getInstance(requireContext()));
+        SuggestionsViewModel.Factory factory = new SuggestionsViewModel.Factory(repository, historyRepository, movie);
 
         viewModel = ViewModelProviders.of(this, factory).get(SuggestionsViewModel.class);
         viewModel.getViewModelEvents().observe(this, this::handleViewModelEvent);

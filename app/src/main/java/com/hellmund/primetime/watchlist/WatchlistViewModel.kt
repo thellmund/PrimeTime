@@ -1,98 +1,85 @@
-package com.hellmund.primetime.selectmovies
+package com.hellmund.primetime.watchlist
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.hellmund.primetime.model2.Sample
-import com.hellmund.primetime.selectgenres.GenresRepository
+import com.hellmund.primetime.database.WatchlistMovie
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.jetbrains.anko.doAsync
 
-data class SelectMoviesViewState(
-        val data: List<Sample> = emptyList(),
+data class WatchlistViewState(
+        val data: List<WatchlistMovie> = emptyList(),
         val isLoading: Boolean = false,
         val error: Throwable? = null
-) {
-
-    val isError: Boolean
-        get() = error != null
-
-}
+)
 
 sealed class Action {
-    object Refresh : Action()
+    object Load : Action()
+    data class DatabaseLoaded(val data: List<WatchlistMovie>) : Action()
 }
 
 sealed class Result {
-    object Loading : Result()
-    data class Data(val data: List<Sample>) : Result()
+    data class Data(val data: List<WatchlistMovie>) : Result()
     data class Error(val error: Throwable) : Result()
 }
 
-class SelectMoviesViewModel(
-        private val repository: SelectMoviesRepository,
-        private val genresRepository: GenresRepository
+class WatchlistViewModel(
+        private val repository: WatchlistRepository
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
     private val refreshRelay = PublishRelay.create<Action>()
 
-    private val _viewState = MutableLiveData<SelectMoviesViewState>()
-    val viewState: LiveData<SelectMoviesViewState> = _viewState
+    private val _viewState = MutableLiveData<WatchlistViewState>()
+    val viewState: LiveData<WatchlistViewState> = _viewState
 
     init {
-        val initialViewState = SelectMoviesViewState(isLoading = true)
-        compositeDisposable += refreshRelay
+        val initialViewState = WatchlistViewState(isLoading = true)
+
+        val databaseChanges = repository.getAll()
+                .onErrorReturn { emptyList() }
+                .toObservable()
+                .map { if (it.isNotEmpty()) { Action.DatabaseLoaded(it) } else { Action.Load } }
+
+        val sources = Observable.merge(refreshRelay, databaseChanges)
+
+        compositeDisposable += sources
                 .switchMap(this::processAction)
                 .scan(initialViewState, this::reduceState)
                 .subscribe(this::render)
-        refreshRelay.accept(Action.Refresh)
     }
 
     private fun processAction(action: Action): Observable<Result> {
         return when (action) {
-            Action.Refresh -> fetchMovies()
+            is Action.Load -> fetchMovies()
+            is Action.DatabaseLoaded -> Observable.just(Result.Data(action.data))
         }
     }
 
     private fun fetchMovies(): Observable<Result> {
-        return genresRepository.preferredGenres
-                .flatMap { repository.fetch(it) }
+        return repository.getAll()
                 .subscribeOn(Schedulers.io())
                 .map { Result.Data(it) as Result }
                 .onErrorReturn { Result.Error(it) }
-                .startWith(Result.Loading)
+                .toObservable()
     }
 
     private fun reduceState(
-            viewState: SelectMoviesViewState,
+            viewState: WatchlistViewState,
             result: Result
-    ): SelectMoviesViewState {
+    ): WatchlistViewState {
         return when (result) {
-            Result.Loading -> viewState.copy(isLoading = true, error = null)
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
             is Result.Error -> viewState.copy(isLoading = false, error = result.error)
         }
     }
 
-    private fun render(viewState: SelectMoviesViewState) {
+    private fun render(viewState: WatchlistViewState) {
         _viewState.postValue(viewState)
-    }
-
-    fun refresh() {
-        refreshRelay.accept(Action.Refresh)
-    }
-
-    fun store(movies: List<Sample>) {
-        doAsync {
-            val historyMovies = movies.map { it.toHistoryMovie() }
-            repository.store(historyMovies)
-        }
     }
 
     override fun onCleared() {
@@ -101,13 +88,12 @@ class SelectMoviesViewModel(
     }
 
     class Factory(
-            private val repository: SelectMoviesRepository,
-            private val genresRepository: GenresRepository
+            private val repository: WatchlistRepository
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SelectMoviesViewModel(repository, genresRepository) as T
+            return WatchlistViewModel(repository) as T
         }
 
     }

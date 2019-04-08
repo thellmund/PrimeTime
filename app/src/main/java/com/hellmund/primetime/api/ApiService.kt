@@ -23,7 +23,7 @@ interface ApiService {
 
     @GET("discover/movie")
     fun discoverMovies(
-            @Query("with_genres") withGenres: String? = null,
+            @Query("with_genres") withGenres: Int? = null,
             @Query("sort_by") sortBy: String = "popularity.desc",
             @Query("primary_release_year") releaseYear: Int? = null
     ): Observable<SamplesResponse>
