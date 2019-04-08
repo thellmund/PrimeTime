@@ -37,7 +37,8 @@ import kotlinx.android.synthetic.main.view_search_field.*
 import org.jetbrains.anko.inputMethodManager
 import java.util.*
 
-class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher, MainActivity.Reselectable {
+class SearchFragment : Fragment(), TextWatcher,
+        TextView.OnEditorActionListener, MainActivity.Reselectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

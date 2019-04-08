@@ -17,7 +17,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,8 @@ import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 
 public class SuggestionFragment extends Fragment {
 
-    private static final String LOG_TAG = "SuggestionFragment";
+    // private static final String LOG_TAG = "SuggestionFragment";
+
     private static final String KEY_MOVIE = "KEY_MOVIE";
     private static final int DEFAULT_LINES = 2;
 
@@ -85,11 +85,14 @@ public class SuggestionFragment extends Fragment {
 
     private SuggestionsViewModel viewModel;
 
-    public static SuggestionFragment newInstance(ApiMovie movie) {
+    private ViewPagerHost viewPagerHost;
+
+    public static SuggestionFragment newInstance(ViewPagerHost viewPagerHost, ApiMovie movie) {
         SuggestionFragment fragment = new SuggestionFragment();
         Bundle args = new Bundle();
         args.putParcelable(KEY_MOVIE, movie);
         fragment.setArguments(args);
+        fragment.viewPagerHost = viewPagerHost;
         return fragment;
     }
 
@@ -126,6 +129,9 @@ public class SuggestionFragment extends Fragment {
         } else if (viewModelEvent instanceof ViewModelEvent.ImdbLinkLoaded) {
             ViewModelEvent.ImdbLinkLoaded event = (ViewModelEvent.ImdbLinkLoaded) viewModelEvent;
             openImdb(event.getUrl());
+        } else if (viewModelEvent instanceof ViewModelEvent.RatingStored) {
+            // ViewModelEvent.RatingStored event = (ViewModelEvent.RatingStored) viewModelEvent;
+            viewPagerHost.scrollToNext();
         }
     }
 
@@ -228,7 +234,16 @@ public class SuggestionFragment extends Fragment {
 
     @OnClick(R.id.rating_button)
     public void openRatingDialog() {
-        // mCallback.onOpenRatingDialog(mPresenter.getPosition());
+        String[] options = new String[] {
+                getString(R.string.show_more_like_this),
+                getString(R.string.show_less_like_this)
+        };
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.adjust_recommendations))
+                .setItems(options, (dialog, which) -> viewModel.handleRating(which))
+                .setCancelable(true)
+                .show();
     }
 
     @OnClick({R.id.overlay, R.id.show_more})
@@ -384,7 +399,7 @@ public class SuggestionFragment extends Fragment {
         try {
             // mRuntimeView.setText(mPresenter.getMovie().getPrettyRuntime());
         } catch (IllegalStateException e) {
-            Log.e(LOG_TAG, "Error when displaying additional information", e);
+            // Log.e(LOG_TAG, "Error when displaying additional information", e);
         }
     }
 
@@ -429,6 +444,11 @@ public class SuggestionFragment extends Fragment {
     public void onDestroyView() {
         mUnbinder.unbind();
         super.onDestroyView();
+    }
+
+    interface ViewPagerHost {
+        void scrollToNext();
+        void scrollToPrevious();
     }
 
 }

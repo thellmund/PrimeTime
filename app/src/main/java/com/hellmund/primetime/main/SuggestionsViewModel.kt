@@ -14,6 +14,7 @@ sealed class ViewModelAction {
     object LoadAdditionalInformation : ViewModelAction()
     object LoadTrailer : ViewModelAction()
     object OpenImdb : ViewModelAction()
+    data class StoreRating(val rating: Rating) : ViewModelAction()
 }
 
 sealed class ViewModelEvent {
@@ -21,6 +22,12 @@ sealed class ViewModelEvent {
     object TrailerLoading : ViewModelEvent()
     data class TrailerLoaded(val url: String) : ViewModelEvent()
     data class ImdbLinkLoaded(val url: String) : ViewModelEvent()
+    data class RatingStored(val rating: Rating) : ViewModelEvent()
+}
+
+sealed class Rating(val movie: ApiMovie) {
+    class Like(movie: ApiMovie) : Rating(movie)
+    class Dislike(movie: ApiMovie) : Rating(movie)
 }
 
 class SuggestionsViewModel(
@@ -45,6 +52,7 @@ class SuggestionsViewModel(
             is ViewModelAction.LoadAdditionalInformation -> fetchInformation()
             is ViewModelAction.LoadTrailer -> fetchTrailer()
             is ViewModelAction.OpenImdb -> fetchImdbLink()
+            is ViewModelAction.StoreRating -> storeRating(action.rating)
         }
     }
 
@@ -69,6 +77,11 @@ class SuggestionsViewModel(
         return Observable.just(ViewModelEvent.ImdbLinkLoaded(url))
     }
 
+    private fun storeRating(rating: Rating): Observable<ViewModelEvent> {
+        // TODO: Actually store the rating
+        return Observable.just(ViewModelEvent.RatingStored(rating))
+    }
+
     fun loadTrailer() {
         actionsRelay.accept(ViewModelAction.LoadTrailer)
     }
@@ -79,6 +92,11 @@ class SuggestionsViewModel(
 
     fun openImdb() {
         actionsRelay.accept(ViewModelAction.OpenImdb)
+    }
+
+    fun handleRating(which: Int) {
+        val rating = if (which == 0) Rating.Like(movie) else Rating.Dislike(movie)
+        actionsRelay.accept(ViewModelAction.StoreRating(rating))
     }
 
     private fun render(event: ViewModelEvent) {

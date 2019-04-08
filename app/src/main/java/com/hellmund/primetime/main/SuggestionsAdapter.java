@@ -15,13 +15,15 @@ class SuggestionsAdapter extends FragmentStatePagerAdapter {
 
     private int mViewState;
     private Context mContext;
+    private SuggestionFragment.ViewPagerHost viewPagerHost;
 
     private List<ApiMovie> movies;
 
     SuggestionsAdapter(FragmentManager fragmentMgr, Context context, int viewState,
-                       List<ApiMovie> movies) {
+                       SuggestionFragment.ViewPagerHost viewPagerHost, List<ApiMovie> movies) {
         super(fragmentMgr);
         this.mContext = context;
+        this.viewPagerHost = viewPagerHost;
         this.mViewState = viewState;
         this.movies = movies;
     }
@@ -31,7 +33,7 @@ class SuggestionsAdapter extends FragmentStatePagerAdapter {
         if (mViewState == Constants.IDEAL_STATE && position == movies.size() - 1) {
             return DiscoverMoreFragment.newInstance();
         } else if (mViewState == Constants.IDEAL_STATE) {
-            return SuggestionFragment.newInstance(movies.get(position));
+            return SuggestionFragment.newInstance(viewPagerHost, movies.get(position));
         } else {
             return SuggestionErrorFragment.newInstance(mViewState);
         }

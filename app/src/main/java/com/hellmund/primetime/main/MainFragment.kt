@@ -9,14 +9,11 @@ import android.view.*
 import com.hellmund.primetime.R
 import com.hellmund.primetime.api.ApiClient
 import com.hellmund.primetime.settings.SettingsActivity
-import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.GenresProvider
-import com.hellmund.primetime.utils.RealGenresProvider
-import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.jetbrains.anko.support.v4.defaultSharedPreferences
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), SuggestionFragment.ViewPagerHost {
 
     private val genreProvider: GenresProvider by lazy {
         RealGenresProvider(defaultSharedPreferences)
@@ -41,7 +38,7 @@ class MainFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(com.hellmund.primetime.R.layout.fragment_main, container, false)
+        return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,7 +67,7 @@ class MainFragment : Fragment() {
         val viewStateInt = if (viewState.isError) Constants.ERROR_STATE else Constants.IDEAL_STATE
         // setToolbarSubtitle(viewState.recommendationsType)
 
-        suggestions.adapter = SuggestionsAdapter(requireFragmentManager(), requireContext(), viewStateInt, viewState.data)
+        suggestions.adapter = SuggestionsAdapter(requireFragmentManager(), requireContext(), viewStateInt, this, viewState.data)
         progressBar.visibility = if (viewState.isLoading) View.VISIBLE else View.GONE
         suggestions.visibility = if (viewState.isLoading) View.GONE else View.VISIBLE
     }
@@ -102,11 +99,11 @@ class MainFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.title = title
     }
 
-    private fun displaySingleMovieRecommendation(): Boolean {
+    /*private fun displaySingleMovieRecommendation(): Boolean {
         val shouldDisplay = requireActivity().intent.getBooleanExtra(Constants.SINGLE_MOVIE, false)
         requireActivity().intent.removeExtra(Constants.SINGLE_MOVIE)
         return shouldDisplay
-    }
+    }*/
 
     /*private fun setupSingleMovieRecommendations() {
         val intent = requireActivity().intent
@@ -122,7 +119,7 @@ class MainFragment : Fragment() {
 
     /*private fun onMovieRatingAdded(id: Int, rating: Int) {
         // displayRatingSnackbar(suggestions.currentItem, id, rating)
-        suggestions.currentItem = suggestions.currentItem + 1
+        suggestions.scrollToNext()
     }*/
 
     /*private fun displayRatingSnackbar(position: Int, id: Int, rating: Int) {
@@ -150,8 +147,16 @@ class MainFragment : Fragment() {
         startActivity(intent)
     }
 
+    override fun scrollToPrevious() {
+        suggestions.scrollToPrevious()
+    }
+
+    override fun scrollToNext() {
+        suggestions.scrollToNext()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(com.hellmund.primetime.R.menu.menu_main, menu)
+        inflater?.inflate(R.menu.menu_main, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
