@@ -16,9 +16,9 @@ public class SearchActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "SearchActivity";
 
-    public static final int DISPLAY_LIST = 1;     /* List with query results */
+    public static final int DISPLAY_LIST = 1;     /* List with query genres */
     public static final int DISPLAY_LOADING = 2;  /* Loading indicator */
-    public static final int DISPLAY_EMPTY = 3;    /* Placeholder with no results */
+    public static final int DISPLAY_EMPTY = 3;    /* Placeholder with no genres */
 
     public static final float ENABLED = 1.0f;
     public static final float DISABLED = 0.7f;
@@ -61,19 +61,19 @@ public class SearchActivity extends AppCompatActivity {
 
     /*@Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        ArrayList<SearchResult> results = null;
+        ArrayList<SearchResult> genres = null;
         int topItem = 0;
         int topPadding = 0;
 
         if (mListView.getAdapter() != null) {
-            results = ((SearchAdapter) mListView.getAdapter()).getItems();
+            genres = ((SearchAdapter) mListView.getAdapter()).getItems();
             topItem = mListView.getFirstVisiblePosition();
             View v = mListView.getChildAt(0);
             topPadding = (v == null) ? 0 : (v.getTop() - mListView.getPaddingTop());
         }
 
         savedInstanceState.putInt("viewState", getViewState());
-        savedInstanceState.putParcelableArrayList("results", results);
+        savedInstanceState.putParcelableArrayList("genres", genres);
         savedInstanceState.putInt("topItem", topItem);
         savedInstanceState.putInt("topPadding", topPadding);
         super.onSaveInstanceState(savedInstanceState);
@@ -91,13 +91,13 @@ public class SearchActivity extends AppCompatActivity {
 
     private void restoreInstanceState(Bundle savedInstanceState) {
         final int viewState = savedInstanceState.getInt("viewState");
-        ArrayList<SearchResult> results = savedInstanceState.getParcelableArrayList("results");
+        ArrayList<SearchResult> genres = savedInstanceState.getParcelableArrayList("genres");
 
         final int topItem = savedInstanceState.getInt("topItem");
         final int topPadding = savedInstanceState.getInt("topPadding");
 
-        if (results != null && !results.isEmpty()) {
-            SearchAdapter adapter = new SearchAdapter(SearchActivity.this, results);
+        if (genres != null && !genres.isEmpty()) {
+            SearchAdapter adapter = new SearchAdapter(SearchActivity.this, genres);
             mListView.setAdapter(adapter);
             mListView.setSelectionFromTop(topItem, topPadding);
         }
@@ -204,14 +204,14 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onLoadFinished(Loader<Long[]> loader, Long[] results) {
-                if (results[1] != null) {
-                    final Date releaseDate = new Date(results[1]);
+            public void onLoadFinished(Loader<Long[]> loader, Long[] genres) {
+                if (genres[1] != null) {
+                    final Date releaseDate = new Date(genres[1]);
                     searchResult.setReleaseDate(releaseDate);
                 }
 
-                if (results[0] != null) {
-                    final int runtime = results[0].intValue();
+                if (genres[0] != null) {
+                    final int runtime = genres[0].intValue();
                     searchResult.setRuntime(runtime);
                     //Watchlist.add(searchResult);
                     progressDialog.dismiss();

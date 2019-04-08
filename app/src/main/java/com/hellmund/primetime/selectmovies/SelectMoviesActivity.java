@@ -171,7 +171,7 @@ public class SelectMoviesActivity extends AppCompatActivity
             }
         }
 
-        // TODO History.addSamples(results);
+        // TODO History.addSamples(genres);
     }
 
 }

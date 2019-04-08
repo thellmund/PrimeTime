@@ -301,7 +301,7 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
             @Override
             public void onLoadFinished(
                     Loader<ArrayList<HistoryMovie>> loader, ArrayList<HistoryMovie> results) {
-                // History.addAll(results);
+                // History.addAll(genres);
                 PrefUtils.setHasDownloadedHistoryInRealm(mContext);
                 downloadRecommendationsAsync();
             }

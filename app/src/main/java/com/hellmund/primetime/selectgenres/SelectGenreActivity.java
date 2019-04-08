@@ -1,28 +1,23 @@
 package com.hellmund.primetime.selectgenres;
 
-import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 
 import com.hellmund.primetime.R;
+import com.hellmund.primetime.api.ApiClient;
 import com.hellmund.primetime.model.Genre;
 import com.hellmund.primetime.selectmovies.SelectMoviesActivity;
-import com.hellmund.primetime.utils.Constants;
-import com.hellmund.primetime.utils.GenreUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -30,14 +25,17 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 
-public class SelectGenreActivity extends Activity {
+public class SelectGenreActivity extends AppCompatActivity {
 
     private final static int MIN_COUNT = 2;
 
+    @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.list_view) ListView mListView;
     @BindView(R.id.button) AppCompatButton mSaveButton;
 
-    private Genre[] mGenres;
+    private SelectGenresViewModel viewModel;
+
+    private List<Genre> genres;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,35 +45,29 @@ public class SelectGenreActivity extends Activity {
         getWindow().setBackgroundDrawable(null);
         ButterKnife.bind(this);
 
-        setListContent();
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        GenresRepository repository = new GenresRepository(ApiClient.getInstance(), sharedPrefs);
+        SelectGenresViewModel.Factory factory = new SelectGenresViewModel.Factory(repository);
+
+        viewModel = ViewModelProviders.of(this, factory).get(SelectGenresViewModel.class);
+        viewModel.getViewState().observe(this, this::render);
 
         // TODO
         // When selecting the first two genres, slide in the next button from the bottom
     }
 
-    private void setListContent() {
-        mGenres = GenreUtils.getGenres(this);
+    private void render(SelectGenresViewState viewState) {
+        genres = viewState.getData();
+        swipeRefreshLayout.setRefreshing(viewState.isLoading());
+        swipeRefreshLayout.setEnabled(false);
+        showGenres(viewState.getData());
+        // swipeRefreshLayout.setEnabled(!viewState.isLoading());
 
-        ArrayAdapter<Genre> adapter = new ArrayAdapter<Genre>(
-                getApplicationContext(), R.layout.list_item_multiple_choice, mGenres) {
-            @NonNull
-            @Override
-            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(SelectGenreActivity.this)
-                            .inflate(android.R.layout.simple_list_item_multiple_choice, parent, false);
-                }
+        // TODO: Error and loading handling (SwipeRefreshLayout)
+    }
 
-                CheckedTextView textView = convertView.findViewById(android.R.id.text1);
-                textView.setText(mGenres[position].getName());
-                textView.setTextColor(
-                        ContextCompat.getColor(SelectGenreActivity.this, android.R.color.white));
-
-                return convertView;
-            }
-        };
-
-        mListView.setAdapter(adapter);
+    private void showGenres(List<Genre> genres) {
+        mListView.setAdapter(new GenresAdapter(this, genres));
     }
 
     @OnItemClick(R.id.list_view)
@@ -95,17 +87,16 @@ public class SelectGenreActivity extends Activity {
         final int length = mListView.getCount();
         SparseBooleanArray checkedItems = mListView.getCheckedItemPositions();
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Set<String> genres = sharedPrefs.getStringSet(Constants.KEY_INCLUDED, new HashSet<>());
+        Set<String> includedGenres = new HashSet<>();
 
         for (int i = 0; i < length; i++) {
             if (checkedItems.get(i)) {
-                final int genreID = mGenres[i].getId();
-                genres.add(Integer.toString(genreID));
+                final int genreId = genres.get(i).getId();
+                includedGenres.add(Integer.toString(genreId));
             }
         }
 
-        sharedPrefs.edit().putStringSet(Constants.KEY_INCLUDED, genres).apply();
+        viewModel.store(includedGenres);
     }
 
     private void openMoviesSelection() {

@@ -158,7 +158,7 @@ class MainFragment : Fragment(), MainContract.View, SuggestionFragment.OnInterac
         }
 
         if (suggestions != null) {
-            suggestions.adapter = SuggestionsAdapter(requireFragmentManager(), requireContext(), viewState, size, this)
+            suggestions.adapter = SuggestionsAdapter(requireFragmentManager(), requireContext(), viewState, size, this, this)
             progressBar.visibility = View.GONE
             suggestions.visibility = View.VISIBLE
         }

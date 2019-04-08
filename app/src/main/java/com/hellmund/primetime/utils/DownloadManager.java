@@ -60,7 +60,7 @@ public class DownloadManager {
         ArrayList<Movie> data = new ArrayList<>();
 
         try {
-            JSONArray results = new JSONObject(str).getJSONArray("results");
+            JSONArray results = new JSONObject(str).getJSONArray("genres");
 
             final int length = results.length();
             for (int i = 0; i < length; i++) {
@@ -154,7 +154,7 @@ public class DownloadManager {
 
     private static ArrayList<Sample> getSamples(String resultStr) {
         try {
-            JSONArray results = new JSONObject(resultStr).getJSONArray("results");
+            JSONArray results = new JSONObject(resultStr).getJSONArray("genres");
             final int length = results.length();
 
             ArrayList<Sample> samples = new ArrayList<>();
@@ -175,7 +175,7 @@ public class DownloadManager {
         final String resultStr = DownloadUtils.downloadURL(url);
 
         try {
-            JSONArray results = new JSONObject(resultStr).getJSONArray("results");
+            JSONArray results = new JSONObject(resultStr).getJSONArray("genres");
             int i = 0;
 
             while (i < results.length()) {
@@ -275,7 +275,7 @@ public class DownloadManager {
         try {
             final String url = DownloadUtils.getReleaseDatesURL(id);
             final String responseStr = DownloadUtils.downloadURL(url);
-            JSONArray countries = new JSONObject(responseStr).getJSONArray("results");
+            JSONArray countries = new JSONObject(responseStr).getJSONArray("genres");
 
             String countryCode;
 
@@ -313,7 +313,7 @@ public class DownloadManager {
 
         try {
             String resultStr = DownloadUtils.downloadURL(DownloadUtils.getMostPopularURL());
-            JSONArray results = new JSONObject(resultStr).getJSONArray("results");
+            JSONArray results = new JSONObject(resultStr).getJSONArray("genres");
             final int length = results.length();
             posterUrls = new ArrayList<>();
 
@@ -333,7 +333,7 @@ public class DownloadManager {
 
         try {
             String responseStr = DownloadUtils.downloadURL(DownloadUtils.getQueryURL(query));
-            JSONArray searchResults = new JSONObject(responseStr).getJSONArray("results");
+            JSONArray searchResults = new JSONObject(responseStr).getJSONArray("genres");
             final int length = searchResults.length();
 
             for (int i = 0; i < length; i++) {

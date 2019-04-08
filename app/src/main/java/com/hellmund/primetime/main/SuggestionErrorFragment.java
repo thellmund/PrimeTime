@@ -26,11 +26,13 @@ public class SuggestionErrorFragment extends Fragment {
     @BindView(R.id.error_text) TextView mText;
     @BindView(R.id.error_btn) AppCompatButton mTryAgainButton;
 
-    public static SuggestionErrorFragment newInstance(int viewState) {
+    public static SuggestionErrorFragment newInstance(int viewState,
+                                                      OnInteractionListener listener) {
         SuggestionErrorFragment fragment = new SuggestionErrorFragment();
         Bundle args = new Bundle();
         args.putInt(Constants.VIEW_STATE, viewState);
         fragment.setArguments(args);
+        fragment.mCallback = listener;
         return fragment;
     }
 
@@ -38,7 +40,6 @@ public class SuggestionErrorFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mViewState = getArguments().getInt(Constants.VIEW_STATE);
-        mCallback = (OnInteractionListener) getContext();
     }
 
     @Override

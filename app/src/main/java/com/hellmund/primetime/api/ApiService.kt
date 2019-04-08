@@ -1,6 +1,7 @@
 package com.hellmund.primetime.api
 
 import com.google.gson.GsonBuilder
+import com.hellmund.primetime.model2.GenresResponse
 import com.hellmund.primetime.model2.SamplesResponse
 import io.reactivex.Observable
 import okhttp3.OkHttpClient
@@ -11,6 +12,9 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
+
+    @GET("genre/movie/list")
+    fun genres(): Observable<GenresResponse>
 
     @GET("discover/movie")
     fun discoverMovies(
