@@ -23,6 +23,13 @@ import java.util.Set;
 
 public class DownloadManager {
 
+    /*
+     *
+     * 1. History => similar movies/recommendations
+     * 2. Genres => genre recommendations
+     * 3. Top-rated movies
+     *
+     */
     public static ArrayList<Movie> downloadPersonalRecommendations(Context context) {
         ArrayList<HistoryMovie> history = new ArrayList<>(); // History.getLatestLiked();
         ArrayList<Movie> results = new ArrayList<>();

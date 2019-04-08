@@ -26,7 +26,7 @@ public class DiscoverMoreFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_discover_more, container, false);
         mUnbinder = ButterKnife.bind(this, view);
-        mCallback = (OnInteractionListener) getContext();
+        // mCallback = (OnInteractionListener) getContext();
         return view;
     }
 

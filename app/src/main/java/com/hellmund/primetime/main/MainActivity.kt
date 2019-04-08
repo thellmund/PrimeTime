@@ -36,9 +36,6 @@ class MainActivity : AppCompatActivity() {
             val fragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
             if (fragment is Reselectable) {
                 fragment.onReselected()
-            } else {
-                // TODO
-                supportFragmentManager.popBackStack()
             }
         }
 
@@ -73,7 +70,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openSearch(extra: String? = null) {
-        val fragment = findFragment(SearchFragment::class.java) ?: SearchFragment.newInstance(extra)
+        val fragment = if (extra != null) {
+            val recommendationsType = RecommendationsType.fromIntent(this, extra)
+            SearchFragment.newInstance(recommendationsType)
+        } else {
+            findFragment(SearchFragment::class.java) ?: SearchFragment.newInstance()
+        }
+
+        // val fragment = findFragment(SearchFragment::class.java) ?: SearchFragment.newInstance(extra)
         bottomNavigation.selectedItemId = R.id.search
         showFragment(fragment)
     }

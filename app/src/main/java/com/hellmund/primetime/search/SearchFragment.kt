@@ -24,6 +24,8 @@ import android.widget.TextView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.main.MainFragment
+import com.hellmund.primetime.main.RecommendationsType
+import com.hellmund.primetime.model.Genre
 import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.search.SearchActivity.*
 import com.hellmund.primetime.utils.Constants
@@ -52,18 +54,19 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initSearch()
         initCategoriesRecyclerView()
         initSearchResultsRecyclerView()
 
-        val searchIntent = arguments?.getString(KEY_SEARCH_INTENT)
-        searchIntent?.let {
+        val type = arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE)
+        type?.let {
             handleSearchIntent(it)
         }
     }
 
-    private fun handleSearchIntent(searchIntent: String) {
-        val fragment = MainFragment.newInstance(searchIntent)
+    private fun handleSearchIntent(type: RecommendationsType) {
+        val fragment = MainFragment.newInstance(type)
         showFragment(fragment)
     }
 
@@ -101,9 +104,18 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher,
     }
 
     private fun onCategorySelected(category: String) {
+        val genreId = GenreUtils.getGenreID(requireContext(), category)
+        val genre = Genre(genreId, category)
+
+        val type = when (category) {
+            "Now playing" -> RecommendationsType.NowPlaying
+            "Upcoming" -> RecommendationsType.Upcoming
+            else -> RecommendationsType.ByGenre(genre)
+        }
+
         requireFragmentManager()
                 .beginTransaction()
-                .replace(R.id.contentFrame, MainFragment.newInstance(category))
+                .replace(R.id.contentFrame, MainFragment.newInstance(type))
                 .addToBackStack(null)
                 .commit()
     }
@@ -314,11 +326,13 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener, TextWatcher,
 
     companion object {
 
-        private const val KEY_SEARCH_INTENT = "KEY_SEARCH_INTENT"
+        private const val KEY_RECOMMENDATIONS_TYPE = "KEY_RECOMMENDATIONS_TYPE"
 
         @JvmStatic
-        fun newInstance(extra: String? = null) = SearchFragment().apply {
-            arguments = Bundle().apply { putString(KEY_SEARCH_INTENT, extra) }
+        fun newInstance(type: RecommendationsType? = null): SearchFragment {
+            return SearchFragment().apply {
+                arguments = Bundle().apply { putParcelable(KEY_RECOMMENDATIONS_TYPE, type) }
+            }
         }
 
     }

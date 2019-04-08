@@ -4,11 +4,6 @@
     tools:context=".main.MainActivity">
 
     <item
-        android:id="@+id/action_refresh"
-        android:title="@string/refresh"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_settings"
         android:title="@string/settings"
         app:showAsAction="never" />

@@ -21,7 +21,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/small_space">
 
         <!-- Movie information -->
         <LinearLayout
@@ -64,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/cover_overlay"
+            android:background="@drawable/background_movie_chip_bottom"
             android:orientation="horizontal"
             android:padding="@dimen/activity_margin">
 
@@ -82,6 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/activity_margin"
+                android:layout_marginEnd="@dimen/tiny_space"
                 android:src="@drawable/ic_thumbs_up_down_white_24dp" />
 
         </LinearLayout>
@@ -92,7 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/show_more"
-            android:background="@color/cover_overlay"
+            android:background="@drawable/background_movie_chip_top"
             android:fadingEdgeLength="20dp"
             android:requiresFadingEdge="vertical"
             android:scrollbars="none">
@@ -153,35 +155,6 @@
                         android:id="@+id/genres"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
-                        android:textIsSelectable="true"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/referrer_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <!-- Movie referrer icon -->
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="8dp"
-                        android:src="@drawable/ic_bookmark_white_24dp" />
-
-                    <!-- Movie referrer text -->
-                    <TextView
-                        android:id="@+id/referrer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingMultiplier="1.1"
-                        android:text="@string/loading"
                         android:textColor="@android:color/white"
                         android:textIsSelectable="true"
                         android:textSize="16sp" />

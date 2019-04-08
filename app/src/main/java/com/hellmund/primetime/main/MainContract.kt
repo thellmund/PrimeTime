@@ -6,22 +6,7 @@ import java.util.*
 
 interface MainContract {
 
-    interface View {
-        fun onDownloadStart()
-        fun onSuccess()
-        fun onError()
-        fun onEmpty()
-        fun onMovieRatingAdded(id: Int, rating: Int)
-        fun tryDownloadAgain()
-        fun openSearch()
-        fun openWatchlist()
-    }
-
     interface Presenter {
-        fun attachView(view: View)
-        fun loadIndices()
-        fun handleShortcutOpen(intent: String)
-        fun saveIndices()
         fun getToolbarSubtitle(): String
         fun getRecommendations(): ArrayList<Movie>
         fun setRecommendations(recommendations: ArrayList<Movie>)
@@ -35,8 +20,6 @@ interface MainContract {
         fun saveInWatchlistOnDevice(movie: Movie)
         fun addMovieRating(position: Int, rating: Int)
         fun removeFromWatchlist(id: Int)
-        fun forceRecommendationsDownload()
-        fun downloadHistoryAndRecommendations()
         fun downloadRecommendationsAsync()
         fun showUndoToast(id: Int, rating: Int)
         fun onWatchlist(id: Int): Boolean

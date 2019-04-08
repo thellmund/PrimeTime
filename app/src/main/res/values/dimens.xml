@@ -5,6 +5,7 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="multi_window_size">450dp</dimen>
 
+    <dimen name="tiny_space">4dp</dimen>
     <dimen name="small_space">8dp</dimen>
     <dimen name="default_space">16dp</dimen>
     <dimen name="large_space">24dp</dimen>

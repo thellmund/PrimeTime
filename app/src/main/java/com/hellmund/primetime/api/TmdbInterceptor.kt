@@ -1,6 +1,5 @@
 package com.hellmund.primetime.api
 
-import android.util.Log
 import com.hellmund.primetime.utils.DeviceUtils
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -16,7 +15,6 @@ class TmdbInterceptor : Interceptor {
                 .addQueryParameter("language", DeviceUtils.getUserLang())
                 .build()
 
-        Log.d("TmdbInterceptor", "Accessing $modifiedUrl")
         val modifiedRequest = request.newBuilder().url(modifiedUrl).build()
         return chain.proceed(modifiedRequest)
     }

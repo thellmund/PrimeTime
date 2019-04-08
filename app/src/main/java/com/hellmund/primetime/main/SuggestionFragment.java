@@ -1,33 +1,44 @@
 package com.hellmund.primetime.main;
 
 import android.app.ProgressDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.model.Movie;
-import com.hellmund.primetime.model.PersonalRecommendation;
+import com.hellmund.primetime.api.ApiClient;
+import com.hellmund.primetime.model2.ApiMovie;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.DeviceUtils;
+import com.hellmund.primetime.utils.Dialogs;
 import com.hellmund.primetime.utils.DownloadUtils;
+import com.hellmund.primetime.utils.GenresProvider;
+import com.hellmund.primetime.utils.RealGenresProvider;
 import com.hellmund.primetime.utils.UiUtils;
 
 import butterknife.BindView;
@@ -35,17 +46,19 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.hellmund.primetime.R.id.referrer;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 
 public class SuggestionFragment extends Fragment {
 
     private static final String LOG_TAG = "SuggestionFragment";
+    private static final String KEY_MOVIE = "KEY_MOVIE";
     private static final int DEFAULT_LINES = 2;
 
-    private boolean mIsOverlayExpanded;
+    private boolean isOverlayExpanded;
 
     private Unbinder mUnbinder;
-    private OnInteractionListener mCallback;
+    // private OnInteractionListener mCallback;
 
     @BindView(R.id.background) ImageView mBackground;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
@@ -58,8 +71,6 @@ public class SuggestionFragment extends Fragment {
 
     @BindView(R.id.genres_container) LinearLayout mGenresContainer;
     @BindView(R.id.genres) TextView mGenresView;
-    @BindView(R.id.referrer_container) LinearLayout mReferrerContainer;
-    @BindView(referrer) TextView mReferrerView;
 
     @BindView(R.id.infos_container) LinearLayout mInfosContainer;
     @BindView(R.id.rating) TextView mRatingView;
@@ -69,71 +80,123 @@ public class SuggestionFragment extends Fragment {
     @BindView(R.id.action_buttons) LinearLayout mActionButtons;
     @BindView(R.id.movie_add_watchlist_button) AppCompatButton mWatchlistButton;
 
-    private SuggestionFragmentPresenter mPresenter;
+    // private SuggestionFragmentPresenter mPresenter;
+    private ApiMovie movie;
 
-    public static SuggestionFragment newInstance(int position, OnInteractionListener listener) {
+    private SuggestionsViewModel viewModel;
+
+    public static SuggestionFragment newInstance(ApiMovie movie) {
         SuggestionFragment fragment = new SuggestionFragment();
         Bundle args = new Bundle();
-        args.putInt(Constants.POS, position);
+        args.putParcelable(KEY_MOVIE, movie);
         fragment.setArguments(args);
-        fragment.mCallback = listener;
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "Called onCreate() for SuggestionFragment");
         super.onCreate(savedInstanceState);
-        this.setRetainInstance(true);
+        setRetainInstance(true);
 
-        mPresenter = new SuggestionFragmentPresenter(this);
-        final int position = getArguments().getInt(Constants.POS);
-
-        Movie movie;
-
-        if (mCallback == null) {
-            movie = savedInstanceState.getParcelable("movie");
-        } else {
-            movie = mCallback.onGetRecommendation(position);
+        if (getArguments() != null) {
+            movie = getArguments().getParcelable(KEY_MOVIE);
         }
 
-        mPresenter.setPosition(position);
-        mPresenter.setMovie(movie);
+        isOverlayExpanded = savedInstanceState != null && savedInstanceState.getBoolean("isOverlayExpanded");
 
-        mIsOverlayExpanded = savedInstanceState != null
-                && savedInstanceState.getBoolean("isOverlayExpanded");
+        GenresProvider provider = new RealGenresProvider(PreferenceManager.getDefaultSharedPreferences(requireContext()));
+        RecommendationsRepository repository = new RecommendationsRepository(ApiClient.getInstance(), provider);
+        SuggestionsViewModel.Factory factory = new SuggestionsViewModel.Factory(repository, movie);
+
+        viewModel = ViewModelProviders.of(this, factory).get(SuggestionsViewModel.class);
+        viewModel.getViewModelEvents().observe(this, this::handleViewModelEvent);
+    }
+
+    private void handleViewModelEvent(ViewModelEvent viewModelEvent) {
+        if (viewModelEvent instanceof ViewModelEvent.TrailerLoading) {
+            showDialog();
+        } else if (viewModelEvent instanceof ViewModelEvent.TrailerLoaded) {
+            mDialog.dismiss();
+            ViewModelEvent.TrailerLoaded trailerLoaded = (ViewModelEvent.TrailerLoaded) viewModelEvent;
+            String url = trailerLoaded.getUrl();
+            openChromeCustomTab(url);
+        } else if (viewModelEvent instanceof ViewModelEvent.AdditionalInformationLoaded) {
+            ViewModelEvent.AdditionalInformationLoaded event = (ViewModelEvent.AdditionalInformationLoaded) viewModelEvent;
+            showMovieDetails(event.getMovie());
+        } else if (viewModelEvent instanceof ViewModelEvent.ImdbLinkLoaded) {
+            ViewModelEvent.ImdbLinkLoaded event = (ViewModelEvent.ImdbLinkLoaded) viewModelEvent;
+            openImdb(event.getUrl());
+        }
+    }
+
+    private void showMovieDetails(ApiMovie movie) {
+        if (movie.getRuntime() != null && movie.getRuntime() > 0) {
+            mRuntimeView.setText(movie.getPrettyRuntime());
+        } else {
+            mRuntimeView.setText(R.string.no_information);
+        }
+    }
+
+    private ProgressDialog mDialog;
+
+    private void showDialog() {
+        mDialog = Dialogs.showLoading(requireContext(), R.string.opening_trailer);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "Called onCreateView() for SuggestionFragment");
+        return inflater.inflate(R.layout.fragment_movie_suggestion, container, false);
+    }
 
-        View view = inflater.inflate(R.layout.fragment_movie_suggestion, container, false);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mUnbinder = ButterKnife.bind(this, view);
 
-        final int color = ContextCompat.getColor(requireContext(), R.color.colorAccent);
+        /*final int color = ContextCompat.getColor(requireContext(), R.color.colorAccent);
         mProgressBar.getIndeterminateDrawable()
-                    .setColorFilter(color, android.graphics.PorterDuff.Mode.MULTIPLY);
+                .setColorFilter(color, android.graphics.PorterDuff.Mode.MULTIPLY);*/
 
         fillInContent();
-        mPresenter.downloadPoster();
-        toggleAdditionalInformation(mIsOverlayExpanded);
+        downloadPoster();
+
+        // mPresenter.downloadPoster();
+        // TODO toggleAdditionalInformation(isOverlayExpanded);
         updateWatchlistButton();
 
-        ViewTreeObserver observer = mBackground.getViewTreeObserver();
+        /*ViewTreeObserver observer = mBackground.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 centerProgressBar();
                 mBackground.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
-        });
-
-        return view;
+        });*/
     }
 
-    private void centerProgressBar() {
+    private void downloadPoster() {
+        final String url = DownloadUtils.getPosterURL(requireContext(), movie.getPosterUrl());
+        Glide.with(requireContext())
+                .load(url)
+                .apply(RequestOptions.centerCropTransform())
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                        Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                        displayPoster(bitmap);
+
+                        Palette palette = Palette.from(bitmap).generate();
+                        Palette.Swatch swatch = palette.getVibrantSwatch();
+
+                        if (swatch != null) {
+                            setWatchlistButton();
+                        }
+                    }
+                });
+    }
+
+    /*private void centerProgressBar() {
         final float backgroundHeight = mBackground.getHeight();
         final float overlayHeight = mOverlay.getHeight();
         final float spinnerHeight = mProgressBar.getHeight();
@@ -141,12 +204,12 @@ public class SuggestionFragment extends Fragment {
         final float available = backgroundHeight - overlayHeight;
         final float newY = (available - spinnerHeight) / 2;
         mProgressBar.setY(newY);
-    }
+    }*/
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean("isOverlayExpanded", mIsOverlayExpanded);
-        savedInstanceState.putParcelable("movie", mPresenter.getMovie());
+        savedInstanceState.putBoolean("isOverlayExpanded", isOverlayExpanded);
+        savedInstanceState.putParcelable("movie", movie);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -154,24 +217,24 @@ public class SuggestionFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisible) {
         super.setUserVisibleHint(isVisible);
 
-        if (isVisible && mCallback != null) {
+        /*if (isVisible && mCallback != null) {
             updateWatchlistButton();
         }
 
         if (mPresenter != null && mPresenter.hasAdditionalInformation()) {
             downloadAdditionalInformation();
-        }
+        }*/
     }
 
     @OnClick(R.id.rating_button)
     public void openRatingDialog() {
-        mCallback.onOpenRatingDialog(mPresenter.getPosition());
+        // mCallback.onOpenRatingDialog(mPresenter.getPosition());
     }
 
     @OnClick({R.id.overlay, R.id.show_more})
     public void toggleAdditionalInformation() {
-        mIsOverlayExpanded = (mInfosContainer.getVisibility() == View.GONE);
-        toggleAdditionalInformation(mIsOverlayExpanded);
+        isOverlayExpanded = (mInfosContainer.getVisibility() == View.GONE);
+        toggleAdditionalInformation(isOverlayExpanded);
     }
 
     private void toggleAdditionalInformation(boolean showDetails) {
@@ -189,7 +252,6 @@ public class SuggestionFragment extends Fragment {
 
         mDescriptionView.setMaxLines(maxLines);
         mGenresContainer.setVisibility(visibility);
-        mReferrerContainer.setVisibility(visibility);
         mInfosContainer.setVisibility(visibility);
         mActionButtons.setVisibility(visibility);
 
@@ -202,7 +264,7 @@ public class SuggestionFragment extends Fragment {
 
     @OnClick(R.id.movie_add_watchlist_button)
     public void addToWatchlist() {
-        final int watchedStatus = mCallback.onGetWatchedStatus(mPresenter.getPosition());
+        /*final int watchedStatus = mCallback.onGetWatchedStatus(mPresenter.getPosition());
 
         if (watchedStatus == Constants.NOT_WATCHED) {
             mCallback.onAddToWatchlist(mPresenter.getPosition());
@@ -210,7 +272,7 @@ public class SuggestionFragment extends Fragment {
             setButtonColor(Constants.ON_WATCHLIST);
         } else if (watchedStatus == Constants.ON_WATCHLIST) {
             displayRemoveDialog();
-        }
+        }*/
     }
 
     private void displayRemoveDialog() {
@@ -218,7 +280,7 @@ public class SuggestionFragment extends Fragment {
                 .setMessage(R.string.remove_from_watchlist)
                 .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
                 .setPositiveButton(R.string.remove, (dialog, which) -> {
-                    mCallback.onRemoveFromWatchlist(mPresenter.getMovie().getID());
+                    // mCallback.onRemoveFromWatchlist(mPresenter.getMovie().getID());
                     updateWatchlistButton();
                     UiUtils.showToast(getContext(),
                             getContext().getString(R.string.watchlist_removed));
@@ -227,16 +289,12 @@ public class SuggestionFragment extends Fragment {
     }
 
     private void updateWatchlistButton() {
-        if (mCallback == null || mPresenter == null) {
-            return;
-        }
-
-        final int watchedStatus = mCallback.onGetWatchedStatus(mPresenter.getPosition());
+        /*final int watchedStatus = mCallback.onGetWatchedStatus(mPresenter.getPosition());
         setButtonText(watchedStatus);
 
         if (mPresenter.getColor() != 0) {
             setButtonColor(watchedStatus);
-        }
+        }*/
     }
 
     private void setButtonText(int watchedStatus) {
@@ -256,7 +314,7 @@ public class SuggestionFragment extends Fragment {
     }
 
     private void setButtonColor(int watchedStatus) {
-        final int darkerColor = mPresenter.getDarkerColor();
+        /*final int darkerColor = mPresenter.getDarkerColor();
 
         switch (watchedStatus) {
             case Constants.WATCHED:
@@ -268,25 +326,23 @@ public class SuggestionFragment extends Fragment {
                 mWatchlistButton.getBackground()
                         .setColorFilter(mPresenter.getColor(), PorterDuff.Mode.MULTIPLY);
                 break;
-        }
+        }*/
     }
 
     private void fillInContent() {
-        Movie movie = mPresenter.getMovie();
-
         mTitleView.setText(movie.getTitle());
         mDescriptionView.setText(movie.getDescription());
-        mGenresView.setText(movie.getPrettyGenres(getContext()));
+        mGenresView.setText(movie.getPrettyGenres(requireContext()));
         mRatingView.setText(movie.getPrettyVoteAverage());
-        mReleaseView.setText(movie.getReleaseYear(getContext()));
+        mReleaseView.setText(movie.getReleaseYear(requireContext()));
 
-        if (movie.hasAdditionalInformation()) {
+        if (movie.getHasAdditionalInformation()) {
             displayRuntime();
         } else {
             downloadAdditionalInformation();
         }
 
-        if (movie instanceof PersonalRecommendation) {
+        /*if (movie instanceof PersonalRecommendation) {
             PersonalRecommendation movie2 = (PersonalRecommendation) movie;
 
             if (movie2.isNowPlaying() || movie2.isUpcoming() || movie2.hasReferrerName()) {
@@ -296,64 +352,56 @@ public class SuggestionFragment extends Fragment {
             }
         } else {
             displayReferrer();
-        }
+        }*/
     }
-
-    private ProgressDialog mDialog;
 
     @OnClick(R.id.trailer_button)
     public void openTrailer() {
-        mDialog = new ProgressDialog(getContext());
-        mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mDialog.setMessage(getString(R.string.opening_trailer));
-        mDialog.show();
-
-        mPresenter.downloadTrailer();
-    }
-
-    public void openTrailer(Uri uri) {
-        mDialog.dismiss();
-        openChromeCustomTab(uri);
+        viewModel.loadTrailer();
     }
 
     @OnClick(R.id.more_info_button)
     public void openMoreInfo() {
-        Uri uri = Uri.parse(DownloadUtils.getIMDbURL(mPresenter.getMovie().getIMDbID()));
+        viewModel.openImdb();
+    }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            openChromeCustomTab(uri);
+    private void openImdb(String url) {
+        if (SDK_INT >= JELLY_BEAN_MR2) {
+            openChromeCustomTab(url);
         } else {
-            final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
         }
     }
 
-    private void openChromeCustomTab(Uri uri) {
-        final int color = ContextCompat.getColor(getContext(), R.color.colorPrimary);
-        new CustomTabsIntent.Builder().setToolbarColor(color).build().launchUrl(getActivity(), uri);
+    private void openChromeCustomTab(String url) {
+        final int color = ContextCompat.getColor(requireContext(), R.color.colorPrimary);
+        final Uri uri = Uri.parse(url);
+        new CustomTabsIntent.Builder().setToolbarColor(color).build().launchUrl(requireContext(), uri);
     }
 
     private void displayRuntime() {
         try {
-            mRuntimeView.setText(mPresenter.getMovie().getPrettyRuntime());
+            // mRuntimeView.setText(mPresenter.getMovie().getPrettyRuntime());
         } catch (IllegalStateException e) {
             Log.e(LOG_TAG, "Error when displaying additional information", e);
         }
     }
 
     private void downloadAdditionalInformation() {
-        mPresenter.downloadAdditionalInformation();
+        viewModel.loadAdditionalInformation();
+        // mPresenter.downloadAdditionalInformation();
     }
 
     private void displayReferrer() {
-        final String text =
+        /*final String text =
                 String.format(getString(R.string.movie_referrer), mPresenter.getReferrerText());
-        mReferrerView.setText(text);
+        mReferrerView.setText(text);*/
     }
 
-    public void setReferrerView(String text) {
+    /*public void setReferrerView(String text) {
         mReferrerView.setText(text);
-    }
+    }*/
 
     public void setRuntimeView(String text) {
         if (mRuntimeView != null) {
@@ -381,14 +429,6 @@ public class SuggestionFragment extends Fragment {
     public void onDestroyView() {
         mUnbinder.unbind();
         super.onDestroyView();
-    }
-
-    public interface OnInteractionListener {
-        void onOpenRatingDialog(int position);
-        void onAddToWatchlist(int position);
-        void onRemoveFromWatchlist(int position);
-        Movie onGetRecommendation(int position);
-        int onGetWatchedStatus(int position);
     }
 
 }

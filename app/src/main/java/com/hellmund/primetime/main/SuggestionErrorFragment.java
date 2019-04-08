@@ -26,13 +26,11 @@ public class SuggestionErrorFragment extends Fragment {
     @BindView(R.id.error_text) TextView mText;
     @BindView(R.id.error_btn) AppCompatButton mTryAgainButton;
 
-    public static SuggestionErrorFragment newInstance(int viewState,
-                                                      OnInteractionListener listener) {
+    public static SuggestionErrorFragment newInstance(int viewState) {
         SuggestionErrorFragment fragment = new SuggestionErrorFragment();
         Bundle args = new Bundle();
         args.putInt(Constants.VIEW_STATE, viewState);
         fragment.setArguments(args);
-        fragment.mCallback = listener;
         return fragment;
     }
 

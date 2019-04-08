@@ -1,59 +1,69 @@
-package com.hellmund.primetime.selectgenres
+package com.hellmund.primetime.main
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import android.os.Parcelable
 import com.hellmund.primetime.model.Genre
+import com.hellmund.primetime.model2.ApiMovie
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.parcel.Parcelize
 
-data class SelectGenresViewState(
-        val data: List<Genre> = emptyList(),
+data class MainViewState(
+        val recommendationsType: RecommendationsType = RecommendationsType.Personalized,
+        val data: List<ApiMovie> = emptyList(),
         val isLoading: Boolean = false,
         val error: Throwable? = null
-)
+) {
+
+    val isError: Boolean
+        get() = error != null
+
+}
 
 sealed class Action {
-    object Refresh : Action()
+    data class RefreshMovieRecommendations(
+            val type: RecommendationsType = RecommendationsType.Personalized
+    ) : Action()
 }
 
 sealed class Result {
     object Loading : Result()
-    data class Data(val data: List<Genre>) : Result()
+    data class Data(val data: List<ApiMovie>) : Result()
     data class Error(val error: Throwable) : Result()
 }
 
-class SelectGenresViewModel(
-        private val repository: GenresRepository
+class MainViewModel(
+        private val repository: RecommendationsRepository
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
     private val refreshRelay = PublishRelay.create<Action>()
 
-    private val _viewState = MutableLiveData<SelectGenresViewState>()
-    val viewState: LiveData<SelectGenresViewState> = _viewState
+    private val _viewState = MutableLiveData<MainViewState>()
+    val viewState: LiveData<MainViewState> = _viewState
 
     init {
-        val initialViewState = SelectGenresViewState(isLoading = true)
+        val initialViewState = MainViewState(isLoading = true)
         compositeDisposable += refreshRelay
                 .switchMap(this::processAction)
                 .scan(initialViewState, this::reduceState)
                 .subscribe(this::render)
-        refreshRelay.accept(Action.Refresh)
     }
 
     private fun processAction(action: Action): Observable<Result> {
         return when (action) {
-            Action.Refresh -> fetchMovies()
+            is Action.RefreshMovieRecommendations -> fetchRecommendations(action.type)
         }
     }
 
-    private fun fetchMovies(): Observable<Result> {
-        return repository.fetchGenres()
+    private fun fetchRecommendations(type: RecommendationsType): Observable<Result> {
+        return repository.fetchRecommendations(type)
                 .subscribeOn(Schedulers.io())
                 .map { Result.Data(it) as Result }
                 .onErrorReturn { Result.Error(it) }
@@ -61,9 +71,9 @@ class SelectGenresViewModel(
     }
 
     private fun reduceState(
-            viewState: SelectGenresViewState,
+            viewState: MainViewState,
             result: Result
-    ): SelectGenresViewState {
+    ): MainViewState {
         return when (result) {
             Result.Loading -> viewState.copy(isLoading = true, error = null)
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
@@ -71,16 +81,8 @@ class SelectGenresViewModel(
         }
     }
 
-    private fun render(viewState: SelectGenresViewState) {
+    private fun render(viewState: MainViewState) {
         _viewState.postValue(viewState)
-    }
-
-    fun refresh() {
-        refreshRelay.accept(Action.Refresh)
-    }
-
-    fun store(genres: Set<String>) {
-        repository.storeGenres(genres)
     }
 
     override fun onCleared() {
@@ -88,13 +90,17 @@ class SelectGenresViewModel(
         super.onCleared()
     }
 
+    fun refresh(recommendationsType: RecommendationsType) {
+        refreshRelay.accept(Action.RefreshMovieRecommendations(recommendationsType))
+    }
+
     class Factory(
-            private val repository: GenresRepository
+            private val repository: RecommendationsRepository
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SelectGenresViewModel(repository) as T
+            return MainViewModel(repository) as T
         }
 
     }

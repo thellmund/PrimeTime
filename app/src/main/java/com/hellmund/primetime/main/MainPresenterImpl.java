@@ -1,11 +1,8 @@
 package com.hellmund.primetime.main;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -15,21 +12,16 @@ import com.hellmund.primetime.R;
 import com.hellmund.primetime.model.HistoryMovie;
 import com.hellmund.primetime.model.Movie;
 import com.hellmund.primetime.utils.Constants;
-import com.hellmund.primetime.utils.DeviceUtils;
 import com.hellmund.primetime.utils.DownloadManager;
-import com.hellmund.primetime.utils.DownloadUtils;
 import com.hellmund.primetime.utils.GenreUtils;
-import com.hellmund.primetime.utils.PrefUtils;
 import com.hellmund.primetime.utils.UiUtils;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-class MainPresenterImpl implements MainContract.Presenter, Parcelable {
+@Deprecated
+class MainPresenterImpl implements MainContract.Presenter {
 
     private ArrayList<Movie> mRecommendations;
     private int mRecommendationsType;
@@ -37,7 +29,6 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
     private String mMovieTitle;
     private int mMovieID;
 
-    private MainContract.View mView;
     private FragmentActivity mActivity;
     private Context mContext;
 
@@ -47,42 +38,16 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
     }
 
     @Override
-    public void attachView(@NotNull MainContract.View view) {
-        mView = view;
-    }
-
-    @Override
     public void detachView() {
-        mView = null;
-    }
 
-    private MainPresenterImpl(Parcel in) {
-        mRecommendationsType = in.readInt();
-        mGenreID = in.readInt();
-        mMovieTitle = in.readString();
-        mMovieID = in.readInt();
     }
 
     void restoreState(FragmentActivity activity) {
         this.mContext = activity.getApplicationContext();
         this.mActivity = activity;
-        // this.mView = activity;
     }
 
-    public static final Creator<MainPresenterImpl> CREATOR = new Creator<MainPresenterImpl>() {
-        @Override
-        public MainPresenterImpl createFromParcel(Parcel in) {
-            return new MainPresenterImpl(in);
-        }
-
-        @Override
-        public MainPresenterImpl[] newArray(int size) {
-            return new MainPresenterImpl[size];
-        }
-    };
-
-    @Override
-    public void loadIndices() {
+    /*public void loadIndices() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mRecommendationsType = sharedPrefs.getInt(
                 Constants.RECOMM_TYPE, Constants.PERSONALIZED_RECOMMENDATION);
@@ -99,28 +64,9 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
         }
 
         mMovieTitle = sharedPrefs.getString(Constants.MOVIE_TITLE, null);
-    }
+    }*/
 
-    @Override
-    public void handleShortcutOpen(String intent) {
-        switch (intent) {
-            case Constants.NOW_PLAYING_INTENT:
-                mRecommendationsType = Constants.NOW_PLAYING_RECOMMENDATION;
-                break;
-            case Constants.UPCOMING_INTENT:
-                mRecommendationsType = Constants.UPCOMING_RECOMMENDATION;
-                break;
-            case Constants.WATCHLIST_INTENT:
-                mView.openWatchlist();
-                break;
-            default:
-                mView.openSearch();
-                break;
-        }
-    }
-
-    @Override
-    public void saveIndices() {
+    /*public void saveIndices() {
         SharedPreferences sharedPrefs =
                 PreferenceManager.getDefaultSharedPreferences(mContext);
         sharedPrefs.edit().putInt(Constants.RECOMM_TYPE, mRecommendationsType).apply();
@@ -131,8 +77,9 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
 
         sharedPrefs.edit().putInt(Constants.MOVIE_ID, mMovieID).apply();
         sharedPrefs.edit().putString(Constants.MOVIE_TITLE, mMovieTitle).apply();
-    }
+    }*/
 
+    @NonNull
     @Override
     public String getToolbarSubtitle() {
         if (mRecommendationsType == Constants.PERSONALIZED_RECOMMENDATION) {
@@ -233,7 +180,7 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
     public void addMovieRating(int position, int rating) {
         final int id = mRecommendations.get(position).getID();
         removeFromWatchlist(id);
-        mView.onMovieRatingAdded(id, rating);
+        // mView.onMovieRatingAdded(id, rating);
     }
 
     @Override
@@ -243,7 +190,7 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
 
     @Override
     public void downloadRecommendationsAsync() {
-        mView.onDownloadStart();
+        // mView.onDownloadStart();
 
         mActivity.getSupportLoaderManager().initLoader(Constants.RECOMMENDATIONS_LOADER, null,
                 new LoaderManager.LoaderCallbacks<ArrayList<Movie>>() {
@@ -265,11 +212,11 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
                         mRecommendations = data;
 
                         if (mRecommendations == null) {
-                            mView.onError();
+                            // mView.onError();
                         } else if (mRecommendations.isEmpty()) {
-                            mView.onEmpty();
+                            // mView.onEmpty();
                         } else {
-                            mView.onSuccess();
+                            // mView.onSuccess();
                         }
                     }
 
@@ -278,37 +225,6 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
                         mRecommendations = null;
                     }
                 });
-    }
-
-    @Override
-    public void forceRecommendationsDownload() {
-        mActivity.getSupportLoaderManager().destroyLoader(Constants.RECOMMENDATIONS_LOADER);
-    }
-
-    @Override
-    public void downloadHistoryAndRecommendations() {
-        if (!DeviceUtils.isConnected(mContext)) {
-            return;
-        }
-
-        mActivity.getSupportLoaderManager().initLoader(Constants.HISTORY_LOADER, null,
-                new LoaderManager.LoaderCallbacks<ArrayList<HistoryMovie>>() {
-            @Override
-            public Loader<ArrayList<HistoryMovie>> onCreateLoader(int id, Bundle args) {
-                return new DownloadHistoryTaskLoader(mContext);
-            }
-
-            @Override
-            public void onLoadFinished(
-                    Loader<ArrayList<HistoryMovie>> loader, ArrayList<HistoryMovie> results) {
-                // History.addAll(genres);
-                PrefUtils.setHasDownloadedHistoryInRealm(mContext);
-                downloadRecommendationsAsync();
-            }
-
-            @Override
-            public void onLoaderReset(Loader<ArrayList<HistoryMovie>> loader) {}
-        });
     }
 
     @Override
@@ -329,7 +245,7 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
         return false; // Watchlist.contains(id);
     }
 
-    @Override
+    /*@Override
     public int describeContents() {
         return 0;
     }
@@ -340,7 +256,7 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
         dest.writeInt(mGenreID);
         dest.writeString(mMovieTitle);
         dest.writeInt(mMovieID);
-    }
+    }*/
 
     private static class DownloadMoviesLoader extends AsyncTaskLoader<ArrayList<Movie>> {
 
@@ -388,54 +304,6 @@ class MainPresenterImpl implements MainContract.Presenter, Parcelable {
         public void deliverResult(ArrayList<Movie> data) {
             results = data;
             super.deliverResult(data);
-        }
-
-    }
-
-    private static class DownloadHistoryTaskLoader
-            extends AsyncTaskLoader<ArrayList<HistoryMovie>> {
-
-        private ArrayList<HistoryMovie> mResults;
-
-        DownloadHistoryTaskLoader(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onStartLoading() {
-            if (mResults != null) {
-                deliverResult(mResults);
-            } else {
-                forceLoad();
-            }
-        }
-
-        @Override
-        public ArrayList<HistoryMovie> loadInBackground() {
-            final String responseStr = DownloadUtils.getHistoryURL(getContext());
-
-            try {
-                JSONArray results = new JSONObject(responseStr).getJSONArray("movies");
-                final int length = results.length();
-                ArrayList<HistoryMovie> history = new ArrayList<>();
-
-                JSONObject obj;
-
-                for (int i = 0; i < length; i++) {
-                    obj = results.getJSONObject(i);
-                    history.add(HistoryMovie.fromJSON(obj));
-                }
-
-                return history;
-            } catch (JSONException e) {
-                return null;
-            }
-        }
-
-        @Override
-        public void deliverResult(ArrayList<HistoryMovie> data) {
-            mResults = data;
-            super.deliverResult(mResults);
         }
 
     }
