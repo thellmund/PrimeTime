@@ -8,6 +8,7 @@ import com.hellmund.primetime.database.HistoryMovie
 import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.model2.ApiMovie
 import com.hellmund.primetime.utils.plusAssign
+import com.hellmund.primetime.watchlist.WatchlistRepository
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -17,7 +18,10 @@ sealed class ViewModelAction {
     object LoadAdditionalInformation : ViewModelAction()
     object LoadTrailer : ViewModelAction()
     object OpenImdb : ViewModelAction()
+    object LoadWatchStatus : ViewModelAction()
     data class StoreRating(val rating: Rating) : ViewModelAction()
+    object AddToWatchlist : ViewModelAction()
+    object RemoveFromWatchlist : ViewModelAction()
 }
 
 sealed class ViewModelEvent {
@@ -26,6 +30,10 @@ sealed class ViewModelEvent {
     data class TrailerLoaded(val url: String) : ViewModelEvent()
     data class ImdbLinkLoaded(val url: String) : ViewModelEvent()
     data class RatingStored(val rating: Rating) : ViewModelEvent()
+    object AddedToWatchlist : ViewModelEvent()
+    object RemovedFromWatchlist : ViewModelEvent()
+    object ShowRemoveFromWatchlistDialog : ViewModelEvent()
+    data class WatchStatus(val watchStatus: ApiMovie.WatchStatus) : ViewModelEvent()
 }
 
 sealed class Rating(val movie: ApiMovie) {
@@ -36,6 +44,7 @@ sealed class Rating(val movie: ApiMovie) {
 class SuggestionsViewModel(
         private val repository: RecommendationsRepository,
         private val historyRepository: HistoryRepository,
+        private val watchlistRepository: WatchlistRepository,
         private var movie: ApiMovie
 ) : ViewModel() {
 
@@ -49,15 +58,44 @@ class SuggestionsViewModel(
         compositeDisposable += actionsRelay
                 .switchMap(this::processAction)
                 .subscribe(this::render)
+        actionsRelay.accept(ViewModelAction.LoadWatchStatus)
     }
 
     private fun processAction(action: ViewModelAction): Observable<ViewModelEvent> {
         return when (action) {
+            is ViewModelAction.LoadWatchStatus -> loadWatchStatus()
             is ViewModelAction.LoadAdditionalInformation -> fetchInformation()
             is ViewModelAction.LoadTrailer -> fetchTrailer()
             is ViewModelAction.OpenImdb -> fetchImdbLink()
             is ViewModelAction.StoreRating -> storeRating(action.rating)
+            is ViewModelAction.AddToWatchlist -> onAddToWatchlist()
+            is ViewModelAction.RemoveFromWatchlist -> onRemoveFromWatchlist()
         }
+    }
+
+    private fun loadWatchStatus(): Observable<ViewModelEvent> {
+        return historyRepository.count(movie.id)
+                .subscribeOn(Schedulers.io())
+                .flatMapObservable {
+                    if (it > 0) {
+                        Observable.just(ViewModelEvent.WatchStatus(ApiMovie.WatchStatus.WATCHED))
+                    } else {
+                        fetchWatchlistStatus()
+                    }
+                }
+    }
+
+    private fun fetchWatchlistStatus(): Observable<ViewModelEvent> {
+        return watchlistRepository
+                .count(movie.id)
+                .subscribeOn(Schedulers.io())
+                .flatMapObservable {
+                    if (it > 0) {
+                        Observable.just(ViewModelEvent.WatchStatus(ApiMovie.WatchStatus.ON_WATCHLIST))
+                    } else {
+                        Observable.just(ViewModelEvent.WatchStatus(ApiMovie.WatchStatus.NOT_WATCHED))
+                    }
+                }
     }
 
     private fun fetchInformation(): Observable<ViewModelEvent> {
@@ -89,6 +127,45 @@ class SuggestionsViewModel(
                 .map { ViewModelEvent.RatingStored(rating) }
     }
 
+    private fun onAddToWatchlist(): Observable<ViewModelEvent> {
+        return watchlistRepository
+                .count(movie.id)
+                .flatMapObservable {
+                    if (it > 0) {
+                        Observable.just(ViewModelEvent.ShowRemoveFromWatchlistDialog)
+                    } else {
+                        storeInWatchlist(movie)
+                    }
+                }
+                /*.flatMapCompletable {
+                    storeInWatchlist(movie)
+                }
+                .toObservable<Unit>()
+                .map {
+                    ViewModelEvent.AddedToWatchlist as ViewModelEvent
+                }
+                .onErrorResumeNext { t: Throwable ->
+                    // Movie not in the watchlist
+                    Observable.just(ViewModelEvent.ShowRemoveFromWatchlistDialog)
+                }*/
+                .subscribeOn(Schedulers.io())
+    }
+
+    private fun storeInWatchlist(movie: ApiMovie): Observable<ViewModelEvent> {
+        return watchlistRepository
+                .store(movie)
+                .subscribeOn(Schedulers.io())
+                .toObservable<Unit>()
+                .map { ViewModelEvent.AddedToWatchlist }
+    }
+
+    private fun onRemoveFromWatchlist(): Observable<ViewModelEvent> {
+        return watchlistRepository
+                .remove(movie.id)
+                .toObservable<Unit>()
+                .map { ViewModelEvent.RemovedFromWatchlist }
+    }
+
     fun loadTrailer() {
         actionsRelay.accept(ViewModelAction.LoadTrailer)
     }
@@ -106,6 +183,14 @@ class SuggestionsViewModel(
         actionsRelay.accept(ViewModelAction.StoreRating(rating))
     }
 
+    fun addToWatchlist() {
+        actionsRelay.accept(ViewModelAction.AddToWatchlist)
+    }
+
+    fun removeFromWatchlist() {
+        actionsRelay.accept(ViewModelAction.RemoveFromWatchlist)
+    }
+
     private fun render(event: ViewModelEvent) {
         _viewModelEvents.postValue(event)
     }
@@ -118,12 +203,13 @@ class SuggestionsViewModel(
     class Factory(
             private val repository: RecommendationsRepository,
             private val historyRepository: HistoryRepository,
+            private val watchlistRepository: WatchlistRepository,
             private val movie: ApiMovie
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SuggestionsViewModel(repository, historyRepository, movie) as T
+            return SuggestionsViewModel(repository, historyRepository, watchlistRepository, movie) as T
         }
 
     }

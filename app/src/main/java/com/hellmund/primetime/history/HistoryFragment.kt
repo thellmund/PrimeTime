@@ -17,6 +17,7 @@ import com.hellmund.primetime.database.HistoryMovie
 import com.hellmund.primetime.database.PrimeTimeDatabase
 import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.isVisible
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.fragment_history.*
 
@@ -42,6 +43,9 @@ class HistoryFragment : Fragment() {
     }
 
     private fun render(viewState: HistoryViewState) {
+        recycler_view.isVisible = viewState.isLoading.not()
+        progress_bar.isVisible = viewState.isLoading
+
         val adapter = HistoryAdapter(requireContext(), viewState.data, this::onOpenDialog)
         recycler_view.setHasFixedSize(true)
         recycler_view.adapter = adapter

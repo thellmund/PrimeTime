@@ -61,4 +61,8 @@ data class ApiMovie(
         }
     }
 
+    enum class WatchStatus {
+        NOT_WATCHED, ON_WATCHLIST, WATCHED
+    }
+
 }

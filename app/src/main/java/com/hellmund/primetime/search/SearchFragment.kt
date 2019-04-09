@@ -65,7 +65,6 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initToolbar()
         initSearch()
         initCategoriesRecyclerView()
         initSearchResultsRecyclerView()
@@ -79,14 +78,14 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun initToolbar() {
-        (requireActivity() as AppCompatActivity).setTitle(R.string.search)
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.search)
     }
 
     private fun render(viewState: SearchViewState) {
         searchAdapter.update(viewState.data)
 
         results_list.isVisible = viewState.data.isNotEmpty()
-    loading_container.isVisible = viewState.isLoading
+        loading_container.isVisible = viewState.isLoading
         placeholder_container.isVisible = viewState.showPlaceholder
 
         search_clear.isVisible = viewState.showClearButton
@@ -117,10 +116,14 @@ class SearchFragment : Fragment(), TextWatcher,
         search_box.setOnEditorActionListener(this)
         search_box.addTextChangedListener(this)
 
+        backButton.setOnClickListener {
+            toggleSearchResults(false)
+        }
+
         search_box.setOnFocusChangeListener { _, hasFocus ->
+            backButton.isVisible = hasFocus
             if (hasFocus) {
-                searchResultsContainer.visibility = View.VISIBLE
-                categoriesRecyclerView.visibility = View.GONE
+                toggleSearchResults(true)
             }
         }
 
@@ -130,6 +133,11 @@ class SearchFragment : Fragment(), TextWatcher,
                 toggleKeyboard(true)
             }
         }
+    }
+
+    private fun toggleSearchResults(showSearchResults: Boolean) {
+        searchResultsContainer.isVisible = showSearchResults
+        categoriesRecyclerView.isVisible = showSearchResults.not()
     }
 
     private fun initCategoriesRecyclerView() {
@@ -178,12 +186,13 @@ class SearchFragment : Fragment(), TextWatcher,
 
     override fun onResume() {
         super.onResume()
-        //(requireActivity() as AppCompatActivity).supportActionBar?.hide()
+        initToolbar()
+        // TODO (requireActivity() as AppCompatActivity).supportActionBar?.hide()
     }
 
     override fun onPause() {
         super.onPause()
-        //(requireActivity() as AppCompatActivity).supportActionBar?.show()
+        // TODO (requireActivity() as AppCompatActivity).supportActionBar?.show()
     }
 
     override fun onReselected() {

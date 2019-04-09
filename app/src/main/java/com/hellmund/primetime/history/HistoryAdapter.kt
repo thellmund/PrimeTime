@@ -77,7 +77,7 @@ internal class HistoryAdapter(
                 subtitle.setText(R.string.updating_rating)
                 subtitle.setTypeface(null, Typeface.ITALIC)
             } else {
-                // TODO subtitle.setText(movie.getSubhead(mContext));
+                subtitle.text = movie.getDetailsText(context)
                 subtitle.setTypeface(null, Typeface.NORMAL)
             }
 

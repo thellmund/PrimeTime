@@ -64,6 +64,10 @@ public class SearchResult implements Parcelable {
         return this.posterPath;
     }
 
+    public String getFullPosterPath() {
+        return "http://image.tmdb.org/t/p/w780" + posterPath;
+    }
+
     public String getTitle() {
         return this.title;
     }

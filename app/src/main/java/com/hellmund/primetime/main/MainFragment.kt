@@ -28,9 +28,15 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
         ViewModelProviders.of(requireActivity(), factory).get(MainViewModel::class.java)
     }
 
+    private val type: RecommendationsType by lazy {
+        arguments?.getParcelable(KEY_RECOMMENDATIONS_TYPE) as RecommendationsType
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        viewModel.refresh(type)
     }
 
     override fun onCreateView(
@@ -47,12 +53,9 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
         // presenter.loadIndices()
 
         // setToolbarSubtitle()
+        setToolbarSubtitle(type)
 
         viewModel.viewState.observe(this, this::render)
-
-        val type = arguments?.getParcelable(KEY_RECOMMENDATIONS_TYPE) as RecommendationsType
-        setToolbarSubtitle(type)
-        viewModel.refresh(type)
 
         /*if (intentExtra != null) {
             // setupIntentRecommendations(intentExtra)

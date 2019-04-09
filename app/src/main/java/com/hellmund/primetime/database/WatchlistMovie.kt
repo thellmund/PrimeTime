@@ -3,6 +3,8 @@ package com.hellmund.primetime.database
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
+import com.hellmund.primetime.model2.ApiMovie
+import com.hellmund.primetime.utils.DateUtils
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -14,7 +16,34 @@ data class WatchlistMovie(
         var posterURL: String,
         var runtime: Int,
         var releaseDate: Date,
-        var timestamp: Date,
-        var deleted: Boolean,
-        var notificationsActivated: Boolean
-): Parcelable
+        var timestamp: Date = Date(),
+        var deleted: Boolean = false,
+        var notificationsActivated: Boolean = true
+): Parcelable {
+
+    val isUnreleased: Boolean
+        get() {
+            val today = DateUtils.getMidnightCalendar().time
+            return releaseDate.after(today)
+        }
+
+    val hasRuntime: Boolean
+        get() = true // TODO
+
+    val isNotificationActivited: Boolean
+        get() = notificationsActivated
+
+    companion object {
+
+        fun from(movie: ApiMovie): WatchlistMovie {
+            return WatchlistMovie(
+                    movie.id,
+                    movie.title,
+                    movie.posterUrl,
+                    movie.runtime ?: -1, // TODO
+                    movie.releaseDate ?: Date())
+        }
+
+    }
+
+}

@@ -12,6 +12,10 @@ class HistoryRepository(
         return database.historyDao().getAll()
     }
 
+    fun count(movieId: Int): Maybe<Int> {
+        return database.historyDao().count(movieId)
+    }
+
     fun store(vararg historyMovie: HistoryMovie) {
         database.historyDao().store(*historyMovie)
     }

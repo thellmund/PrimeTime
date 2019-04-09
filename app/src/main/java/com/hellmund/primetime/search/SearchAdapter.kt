@@ -11,6 +11,7 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.hellmund.primetime.R
 import com.hellmund.primetime.model.SearchResult
 
@@ -68,10 +69,11 @@ class SearchAdapter(
 
         private fun loadImage(context: Context, searchResult: SearchResult) {
             Glide.with(context)
-                    .load(searchResult.posterPath)
-                    .apply(com.bumptech.glide.request.RequestOptions()
-                            .placeholder(com.hellmund.primetime.R.color.placeholder_grey)
-                            .error(com.hellmund.primetime.R.color.placeholder_grey))
+                    .load(searchResult.fullPosterPath)
+                    .apply(RequestOptions()
+                            .placeholder(R.color.placeholder_grey)
+                            .error(R.color.placeholder_grey)
+                    )
                     .into(poster)
         }
 

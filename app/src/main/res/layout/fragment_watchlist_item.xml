@@ -10,7 +10,7 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="2dp">
+        app:cardCornerRadius="@dimen/tiny_space">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:layout_gravity="bottom"
                 android:background="@color/cover_overlay"
                 android:orientation="horizontal"
-                android:padding="@dimen/activity_margin">
+                android:padding="@dimen/small_space">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -42,16 +42,22 @@
                         android:id="@+id/title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/small_space"
+                        android:layout_marginTop="@dimen/small_space"
+                        android:layout_marginEnd="@dimen/small_space"
                         android:textColor="@android:color/white"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        tools:text="Lorem ipsum" />
 
                     <!-- Movie length -->
                     <LinearLayout
                         android:id="@+id/runtime_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/activity_margin"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="@dimen/small_space"
+                        android:layout_marginTop="@dimen/small_space"
+                        android:layout_marginEnd="@dimen/small_space"
+                        android:layout_marginBottom="@dimen/small_space"
                         tools:ignore="UseCompoundDrawables">
 
                         <ImageView
@@ -59,16 +65,17 @@
                             android:layout_width="14dp"
                             android:layout_height="14dp"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginRight="5dp"
-                            android:src="@drawable/ic_access_time_white_24dp" />
+                            android:layout_marginEnd="@dimen/small_space"
+                            android:src="@drawable/ic_access_time_white_24dp"
+                            tools:ignore="ContentDescription" />
 
                         <TextView
                             android:id="@+id/runtime_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="#FFFFFF"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            tools:text="1:23" />
 
                     </LinearLayout>
 
@@ -77,19 +84,20 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <android.support.v7.widget.AppCompatButton
                             android:id="@+id/watched_button"
+                            style="@style/Widget.AppCompat.Button.Borderless"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/activity_margin"
-                            android:layout_marginRight="@dimen/activity_margin"
                             android:fontFamily="sans-serif-medium"
                             android:text="@string/watched_it"
                             android:textAllCaps="true"
                             android:textColor="@android:color/white" />
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <android.support.v7.widget.AppCompatButton
                             android:id="@+id/remove_button"
+                            style="@style/Widget.AppCompat.Button.Borderless"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-medium"

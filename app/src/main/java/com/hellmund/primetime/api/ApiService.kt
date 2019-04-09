@@ -15,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.util.*
 
 interface ApiService {
 
@@ -74,7 +75,9 @@ object ApiClient {
                 .addNetworkInterceptor(loggingInterceptor)
                 .build()
 
-        val gson = GsonBuilder().setDateFormat("yyyy-MM-dd").create()
+        val gson = GsonBuilder()
+                .registerTypeAdapter(Date::class.java, DateSerializer())
+                .create()
 
         Retrofit.Builder()
                 .baseUrl(BASE_URL)

@@ -2,7 +2,7 @@ package com.hellmund.primetime.watchlist;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +35,7 @@ public class WatchlistMovieFragment extends Fragment {
     @BindView(R.id.title) TextView mTitleTextView;
     @BindView(R.id.runtime_icon) ImageView mRuntimeIcon;
     @BindView(R.id.runtime_text) TextView mRuntimeTextView;
-    @BindView(R.id.watched_button) AppCompatTextView mWatchedItButton;
+    @BindView(R.id.watched_button) AppCompatButton mWatchedItButton;
 
     public static WatchlistMovieFragment newInstance(WatchlistMovie movie) {
         WatchlistMovieFragment fragment = new WatchlistMovieFragment();
@@ -69,14 +69,14 @@ public class WatchlistMovieFragment extends Fragment {
 
         mTitleTextView.setText(mMovie.getTitle());
 
-        /*if (mMovie.isUnreleased()) {
+        if (mMovie.isUnreleased()) {
             setNotificationIcon();
             setMovieOverlay();
-        } else if (!mMovie.hasRuntime()) {
-            downloadRuntime();
+        } else if (!mMovie.getHasRuntime()) {
+            // downloadRuntime();
         } else {
             mRuntimeTextView.setText(DateUtils.formatRuntime(mMovie.getRuntime()));
-        }*/
+        }
 
         return view;
     }
@@ -93,11 +93,11 @@ public class WatchlistMovieFragment extends Fragment {
         if (NotificationUtils.areNotificationsEnabled(requireContext())) {
             mNotificationIcon.setVisibility(View.VISIBLE);
 
-            /*if (mMovie.isNotificationsActivated()) {
+            if (mMovie.isNotificationActivited()) {
                 mNotificationIcon.setImageResource(R.drawable.ic_notifications_active_white_24dp);
             } else {
                 mNotificationIcon.setImageResource(R.drawable.ic_notifications_none_white_24dp);
-            }*/
+            }
         } else {
             mNotificationIcon.setVisibility(View.GONE);
         }
@@ -105,18 +105,19 @@ public class WatchlistMovieFragment extends Fragment {
 
     @OnClick(R.id.notification_icon)
     public void onNotificationClick() {
-        final boolean isActivated = false; // !mMovie.isNotificationsActivated();
+        final boolean isActivated = !mMovie.isNotificationActivited();
         final String releaseDate = DateUtils.getDateInLocalFormat(mMovie.getReleaseDate());
 
         String message;
 
         if (isActivated) {
-            message = String.format(getString(R.string.showing_notification_on), releaseDate);
+            message = getString(R.string.showing_notification_on, releaseDate);
         } else {
             message = getString(R.string.notification_off);
         }
 
         mMovie.setNotificationsActivated(isActivated);
+        // TODO
         //Watchlist.update(mMovie);
         //RealmManager.updateWatchlistMovie(mMovie);
         setNotificationIcon();

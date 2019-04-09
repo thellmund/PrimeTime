@@ -67,12 +67,8 @@ class SearchViewModel(
 
     private fun searchMovies(query: String): Observable<Result> {
         return repository.searchMovies(query)
-                .map {
-                    Result.Data(it) as Result
-                }
-                .onErrorReturn {
-                    Result.Error(it)
-                }
+                .map { Result.Data(it) as Result }
+                .onErrorReturn { Result.Error(it) }
     }
 
     private fun reduceState(

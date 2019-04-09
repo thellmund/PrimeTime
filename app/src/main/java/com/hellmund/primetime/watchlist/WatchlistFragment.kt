@@ -55,7 +55,7 @@ class WatchlistFragment : Fragment(),
         viewPager.adapter = adapter
         indicator.setViewPager(viewPager)
 
-        if (movies.isEmpty()) {
+        if (viewState.data.isEmpty()) {
             val animation = AlphaAnimation(1.0f, 0.0f)
             animation.duration = 300
             content.animation = animation
