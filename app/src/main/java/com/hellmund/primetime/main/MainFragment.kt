@@ -25,7 +25,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
     private val viewModel: MainViewModel by lazy {
         val factory = MainViewModel.Factory(repository)
-        ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
+        ViewModelProviders.of(requireActivity(), factory).get(MainViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,7 +91,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     private fun setToolbarSubtitle(type: RecommendationsType) {
         val title = when (type) {
             is RecommendationsType.Personalized -> getString(R.string.app_name)
-            is RecommendationsType.BasedOnMovie -> type.movie.title
+            is RecommendationsType.BasedOnMovie -> type.title
             is RecommendationsType.NowPlaying -> getString(R.string.now_playing)
             is RecommendationsType.Upcoming -> getString(R.string.upcoming)
             is RecommendationsType.ByGenre -> type.genre.name

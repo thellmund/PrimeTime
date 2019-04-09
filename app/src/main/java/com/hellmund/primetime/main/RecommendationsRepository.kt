@@ -1,6 +1,7 @@
 package com.hellmund.primetime.main
 
 import com.hellmund.primetime.api.ApiService
+import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.model2.ApiMovie
 import com.hellmund.primetime.utils.GenresProvider
 import io.reactivex.Observable
@@ -14,7 +15,7 @@ class RecommendationsRepository(
     fun fetchRecommendations(type: RecommendationsType): Observable<List<ApiMovie>> {
         return when (type) {
             is RecommendationsType.Personalized -> fetchPersonalizedRecommendations()
-            is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.movie.id)
+            is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id)
             is RecommendationsType.NowPlaying -> fetchNowPlayingRecommendations()
             is RecommendationsType.Upcoming -> fetchUpcomingRecommendations()
             is RecommendationsType.ByGenre -> fetchGenreRecommendations(type.genre.id)
@@ -95,6 +96,15 @@ class RecommendationsRepository(
         return apiService
                 .movie(movieId)
                 .subscribeOn(Schedulers.io())
+    }
+
+    fun searchMovies(query: String): Observable<List<SearchResult>> {
+        return apiService
+                .search(query)
+                .subscribeOn(Schedulers.io())
+                .map {
+                    movies -> movies.results.map(SearchResult::fromMovie)
+                }
     }
 
 }

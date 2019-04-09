@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:padding="@dimen/activity_margin">
 
@@ -29,8 +30,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/small_space"
         android:layout_weight="3"
         android:orientation="vertical">
 
@@ -38,19 +38,31 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="@dimen/small_space"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:text="Lorem ipsum" />
 
         <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_space"
+            android:layout_marginTop="@dimen/small_space"
             android:ellipsize="end"
             android:lineSpacingMultiplier="1.05"
             android:maxLines="5"
             android:textColor="@color/description_text"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            tools:text="Lorem ipsum" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/similarMoviesButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_space"
+            android:text="@string/show_similar_movies" />
 
     </LinearLayout>
 

@@ -3,7 +3,6 @@ package com.hellmund.primetime.main
 import android.content.Context
 import android.os.Parcelable
 import com.hellmund.primetime.model.ApiGenre
-import com.hellmund.primetime.model2.ApiMovie
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.GenreUtils
 import kotlinx.android.parcel.Parcelize
@@ -14,7 +13,7 @@ sealed class RecommendationsType : Parcelable {
     object Personalized : RecommendationsType()
 
     @Parcelize
-    data class BasedOnMovie(val movie: ApiMovie) : RecommendationsType()
+    data class BasedOnMovie(val id: Int, val title: String) : RecommendationsType()
 
     @Parcelize
     object NowPlaying : RecommendationsType()

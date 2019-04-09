@@ -3,6 +3,7 @@ package com.hellmund.primetime.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.hellmund.primetime.model2.ApiMovie;
 import com.hellmund.primetime.utils.DateUtils;
 import com.hellmund.primetime.utils.DownloadUtils;
 
@@ -93,6 +94,11 @@ public class SearchResult implements Parcelable {
         this.title = title;
         this.description = description;
         this.releaseDate = releaseDate;
+    }
+
+    public static SearchResult fromMovie(ApiMovie movie) {
+        return new SearchResult(movie.getId(), movie.getPosterUrl(), movie.getTitle(),
+                movie.getDescription(), movie.getReleaseDate());
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.hellmund.primetime.main
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import com.hellmund.primetime.R
 import com.hellmund.primetime.search.SearchFragment
 import com.hellmund.primetime.utils.Constants.SEARCH_INTENT
@@ -17,8 +18,6 @@ class MainActivity : AppCompatActivity() {
         FragmentLifecycleCallback(this)
     }
 
-    private val fragmentsCache = FragmentsCache()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallback, false)
 
         bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
-            val fragment = fragmentsCache.getOrCreate(menuItem)
+            val fragment = createFragment(menuItem)
             showFragment(fragment)
             true
         }
@@ -48,6 +47,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun createFragment(menuItem: MenuItem): Fragment {
+        return when (menuItem.itemId) {
+            R.id.home -> MainFragment.newInstance()
+            R.id.search -> SearchFragment.newInstance()
+            R.id.watchlist -> WatchlistFragment.newInstance()
+            else -> throw IllegalStateException()
+        }
+    }
+
     private fun handleShortcutOpen(intent: String) {
         when (intent) {
             WATCHLIST_INTENT -> openWatchlist()
@@ -64,32 +72,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openHome() {
-        val fragment = findFragment(MainFragment::class.java) ?: MainFragment.newInstance()
-        bottomNavigation.selectedItemId = R.id.home
+        val fragment = MainFragment.newInstance()
         showFragment(fragment)
+        bottomNavigation.selectedItemId = R.id.home
     }
 
-    fun openSearch(extra: String? = null) {
-        val fragment = if (extra != null) {
-            val recommendationsType = RecommendationsType.fromIntent(this, extra)
-            SearchFragment.newInstance(recommendationsType)
-        } else {
-            findFragment(SearchFragment::class.java) ?: SearchFragment.newInstance()
-        }
-
-        // val fragment = findFragment(SearchFragment::class.java) ?: SearchFragment.newInstance(extra)
-        bottomNavigation.selectedItemId = R.id.search
+    private fun openSearch(extra: String? = null) {
+        val type = extra?.let { RecommendationsType.fromIntent(this, it) }
+        val fragment = SearchFragment.newInstance(type)
         showFragment(fragment)
+        bottomNavigation.selectedItemId = R.id.search
     }
 
     private fun openWatchlist() {
-        val fragment = findFragment(WatchlistFragment::class.java) ?: WatchlistFragment.newInstance()
-        bottomNavigation.selectedItemId = R.id.watchlist
+        val fragment = WatchlistFragment.newInstance()
         showFragment(fragment)
-    }
-
-    private fun findFragment(klass: Class<*>): Fragment? {
-        return fragmentsCache.get(klass)
+        bottomNavigation.selectedItemId = R.id.watchlist
     }
 
     override fun onBackPressed() {

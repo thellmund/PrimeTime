@@ -54,6 +54,9 @@ interface ApiService {
     @GET("movie/{movieId}")
     fun movie(@Path("movieId") movieId: Int): Observable<ApiMovie>
 
+    @GET("search/movie")
+    fun search(@Query("query") query: String): Observable<RecommendationsResponse>
+
 }
 
 object ApiClient {

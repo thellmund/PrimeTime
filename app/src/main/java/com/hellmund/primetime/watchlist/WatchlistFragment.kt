@@ -28,7 +28,7 @@ class WatchlistFragment : Fragment(),
     private val viewModel: WatchlistViewModel by lazy {
         val repository = WatchlistRepository(PrimeTimeDatabase.getInstance(requireContext()))
         val factory = WatchlistViewModel.Factory(repository)
-        ViewModelProviders.of(this, factory).get(WatchlistViewModel::class.java)
+        ViewModelProviders.of(requireActivity(), factory).get(WatchlistViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

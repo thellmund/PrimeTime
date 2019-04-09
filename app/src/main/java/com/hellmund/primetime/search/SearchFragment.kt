@@ -1,17 +1,15 @@
 package com.hellmund.primetime.search
 
-import android.app.ProgressDialog
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.LinearLayoutManager.VERTICAL
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -22,23 +20,34 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.hellmund.primetime.R
+import com.hellmund.primetime.api.ApiClient
 import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.main.MainFragment
+import com.hellmund.primetime.main.RecommendationsRepository
 import com.hellmund.primetime.main.RecommendationsType
 import com.hellmund.primetime.model.ApiGenre
 import com.hellmund.primetime.model.SearchResult
-import com.hellmund.primetime.search.SearchActivity.*
-import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.GenreUtils
-import com.hellmund.primetime.utils.UiUtils
+import com.hellmund.primetime.search.SearchActivity.DISABLED
+import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.state_layout_search_results.*
 import kotlinx.android.synthetic.main.view_search_field.*
 import org.jetbrains.anko.inputMethodManager
-import java.util.*
+import org.jetbrains.anko.support.v4.defaultSharedPreferences
 
 class SearchFragment : Fragment(), TextWatcher,
         TextView.OnEditorActionListener, MainActivity.Reselectable {
+
+    private val viewModel: SearchViewModel by lazy {
+        val genresProvider = RealGenresProvider(defaultSharedPreferences)
+        val repository = RecommendationsRepository(ApiClient.instance, genresProvider)
+        val factory = SearchViewModel.Factory(repository)
+        ViewModelProviders.of(requireActivity(), factory).get(SearchViewModel::class.java)
+    }
+
+    private val searchAdapter: SearchAdapter by lazy {
+        SearchAdapter(requireContext(), this::showSimilarMovies)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,14 +65,39 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initToolbar()
         initSearch()
         initCategoriesRecyclerView()
         initSearchResultsRecyclerView()
+
+        viewModel.viewState.observe(this, this::render)
 
         val type = arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE)
         type?.let {
             handleSearchIntent(it)
         }
+    }
+
+    private fun initToolbar() {
+        (requireActivity() as AppCompatActivity).setTitle(R.string.search)
+    }
+
+    private fun render(viewState: SearchViewState) {
+        searchAdapter.update(viewState.data)
+
+        results_list.isVisible = viewState.data.isNotEmpty()
+    loading_container.isVisible = viewState.isLoading
+        placeholder_container.isVisible = viewState.showPlaceholder
+
+        search_clear.isVisible = viewState.showClearButton
+
+        /*if (input.isEmpty()) {
+                search_box.text.clear()
+                search_box.requestFocus()
+            } else {
+                toggleKeyboard(false)
+                downloadQueryResults(input)
+            }*/
     }
 
     private fun handleSearchIntent(type: RecommendationsType) {
@@ -82,6 +116,7 @@ class SearchFragment : Fragment(), TextWatcher,
     private fun initSearch() {
         search_box.setOnEditorActionListener(this)
         search_box.addTextChangedListener(this)
+
         search_box.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 searchResultsContainer.visibility = View.VISIBLE
@@ -101,7 +136,7 @@ class SearchFragment : Fragment(), TextWatcher,
         val adapter = SearchCategoriesAdapter(buildCategories(), this::onCategorySelected)
         categoriesRecyclerView.itemAnimator = DefaultItemAnimator()
         categoriesRecyclerView.adapter = adapter
-        categoriesRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+        categoriesRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), VERTICAL))
     }
 
     private fun onCategorySelected(category: String) {
@@ -128,37 +163,40 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun initSearchResultsRecyclerView() {
-        results_list.setOnItemClickListener { _, _, position, _ ->
-            showSimilarMovies(position)
-        }
+        results_list.adapter = searchAdapter
 
-        results_list.setOnItemLongClickListener { _, _, position, _ ->
+        /*results_list.setOnItemClickListener { _, _, position, _ ->
+            showSimilarMovies(position)
+        }*/
+
+        // TODO
+        /*results_list.setOnItemLongClickListener { _, _, position, _ ->
             displayRatingDialog(position)
             true
-        }
+        }*/
     }
 
     override fun onResume() {
         super.onResume()
-        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+        //(requireActivity() as AppCompatActivity).supportActionBar?.hide()
     }
 
     override fun onPause() {
         super.onPause()
-        (requireActivity() as AppCompatActivity).supportActionBar?.show()
+        //(requireActivity() as AppCompatActivity).supportActionBar?.show()
     }
 
     override fun onReselected() {
         val current = requireFragmentManager().findFragmentById(R.id.contentFrame)
         if (current is SearchFragment) {
             toggleKeyboard(true)
-        } else {
+        }/* else {
             requireFragmentManager().popBackStack()
-        }
+        }*/
     }
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        search_clear.visibility = if (s.toString().isEmpty()) View.INVISIBLE else View.VISIBLE
+    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+        viewModel.onTextChanged(s.toString())
     }
 
     override fun afterTextChanged(s: Editable?) = Unit
@@ -180,7 +218,7 @@ class SearchFragment : Fragment(), TextWatcher,
                     if (which == 2) {
                         addToWatchlist(result)
                     } else {
-                        val rating = getRating(which)
+                        val rating = if (which == 0) Constants.LIKE else Constants.DISLIKE
                         addRating(position, rating)
                     }
                 }
@@ -204,12 +242,10 @@ class SearchFragment : Fragment(), TextWatcher,
                 .show()
     }
 
-    private fun getRating(which: Int): Int {
-        return if (which == 0) Constants.LIKE else Constants.DISLIKE
-    }
-
     private fun addToWatchlist(searchResult: SearchResult) {
-        val progressDialog = ProgressDialog(requireContext())
+        viewModel.addToWatchlist(searchResult)
+
+        /*val progressDialog = ProgressDialog(requireContext())
         progressDialog.setMessage("Adding movie to watchlist ...")
         progressDialog.show()
 
@@ -234,7 +270,7 @@ class SearchFragment : Fragment(), TextWatcher,
             }
 
             override fun onLoaderReset(loader: Loader<Array<Long>>) {}
-        })
+        })*/
     }
 
     private fun showSimilarMovies(position: Int) {
@@ -259,21 +295,15 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
             val input = v.text.toString().trim()
-            if (input.isEmpty()) {
-                search_box.text.clear()
-                search_box.requestFocus()
-            } else {
-                toggleKeyboard(false)
-                downloadQueryResults(input)
-            }
-
+            viewModel.search(input)
+            toggleKeyboard(false)
             return true
         }
 
         return false
     }
 
-    private fun downloadQueryResults(query: String) {
+    /*private fun downloadQueryResults(query: String) {
         val loaderManager = requireActivity().supportLoaderManager
         loaderManager.destroyLoader(0)
         loaderManager.initLoader(0, null,
@@ -284,8 +314,8 @@ class SearchFragment : Fragment(), TextWatcher,
 
                     override fun onLoadFinished(loader: Loader<ArrayList<SearchResult>>,
                                                 data: ArrayList<SearchResult>) {
-                        if (!data.isEmpty()) {
-                            val adapter = SearchAdapter(requireContext(), data)
+                        if (data.isNotEmpty()) {
+                            val adapter = SearchAdapter(requireContext(), data, this@SearchFragment::showSimilarMovies)
                             results_list.adapter = adapter
                             toggleViews(DISPLAY_LIST)
                         } else {
@@ -295,9 +325,15 @@ class SearchFragment : Fragment(), TextWatcher,
 
                     override fun onLoaderReset(loader: Loader<ArrayList<SearchResult>>) {}
                 })
+    }*/
+
+    private fun showSimilarMovies(searchResult: SearchResult) {
+        val type = RecommendationsType.BasedOnMovie(searchResult.id, searchResult.title)
+        val fragment = MainFragment.newInstance(type)
+        showFragment(fragment)
     }
 
-    private fun toggleViews(state: Int) {
+    /*private fun toggleViews(state: Int) {
         results_list.visibility = View.GONE
         placeholder_container.visibility = View.GONE
         loading_container.visibility = View.GONE
@@ -307,15 +343,16 @@ class SearchFragment : Fragment(), TextWatcher,
             DISPLAY_LOADING -> loading_container.visibility = View.VISIBLE
             DISPLAY_EMPTY -> placeholder_container.visibility = View.VISIBLE
         }
-    }
+    }*/
 
     private fun toggleKeyboard(show: Boolean) {
-        search_box.requestFocus()
         val inputMethodManager = requireContext().inputMethodManager
 
         if (show) {
+            search_box.requestFocus()
             inputMethodManager.showSoftInput(search_box, InputMethodManager.SHOW_IMPLICIT)
         } else {
+            search_box.clearFocus()
             inputMethodManager.hideSoftInputFromWindow(search_box.windowToken, 0)
         }
     }
