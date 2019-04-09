@@ -11,6 +11,7 @@
 
     <color name="cover_overlay">#99000000</color>
     <color name="background">#303030</color>
+    <color name="adapterBackground">#373737</color>
 
     <color name="bottom_bar_background">#E53935</color>
     <color name="statusbar_background">#D32F2F</color>

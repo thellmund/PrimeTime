@@ -17,7 +17,8 @@ import com.hellmund.primetime.model.SearchResult
 
 class SearchAdapter(
         private val context: Context,
-        private val onClick: (SearchResult) -> Unit
+        private val onShowSimilar: (SearchResult) -> Unit,
+        private val onWatched: (SearchResult) -> Unit
 ) : BaseAdapter() {
 
     private val items = mutableListOf<SearchResult>()
@@ -35,7 +36,7 @@ class SearchAdapter(
             holder = view.tag as ViewHolder
         }
 
-        holder.bind(context, items[position], onClick)
+        holder.bind(context, items[position], onShowSimilar, onWatched)
 
         return view!!
     }
@@ -60,11 +61,18 @@ class SearchAdapter(
 
     class ViewHolder(view: View) {
 
-        fun bind(context: Context, searchResult: SearchResult, onClick: (SearchResult) -> Unit) {
+        fun bind(
+                context: Context,
+                searchResult: SearchResult,
+                onShowSimilar: (SearchResult) -> Unit,
+                onWatchedIt: (SearchResult) -> Unit
+        ) {
             loadImage(context, searchResult)
             title.text = searchResult.title
             description.text = searchResult.description
-            similarMoviesButton.setOnClickListener { onClick(searchResult) }
+            similarMoviesButton.setOnClickListener { onShowSimilar(searchResult) }
+            watchedItButton.setOnClickListener { onWatchedIt(searchResult) }
+
         }
 
         private fun loadImage(context: Context, searchResult: SearchResult) {
@@ -88,6 +96,9 @@ class SearchAdapter(
 
         @BindView(R.id.similarMoviesButton)
         lateinit var similarMoviesButton: AppCompatButton
+
+        @BindView(R.id.watchedItButton)
+        lateinit var watchedItButton: AppCompatButton
 
         init {
             ButterKnife.bind(this, view)

@@ -31,6 +31,10 @@ class WatchlistFragment : Fragment(),
         ViewModelProviders.of(requireActivity(), factory).get(WatchlistViewModel::class.java)
     }
 
+    private val adapter: WatchlistAdapter by lazy {
+        WatchlistAdapter(requireFragmentManager(), this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -46,14 +50,16 @@ class WatchlistFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewPager.adapter = adapter
+        indicator.setViewPager(viewPager)
+
         viewModel.viewState.observe(this, this::render)
         viewPager.setOnPageChangeListener(this)
     }
 
     private fun render(viewState: WatchlistViewState) {
-        val adapter = WatchlistAdapter(requireFragmentManager(), viewState.data)
-        viewPager.adapter = adapter
-        indicator.setViewPager(viewPager)
+        adapter.update(viewState.data)
 
         if (viewState.data.isEmpty()) {
             val animation = AlphaAnimation(1.0f, 0.0f)
@@ -115,7 +121,7 @@ class WatchlistFragment : Fragment(),
 
     private fun rateMovie(movie: WatchlistMovie, position: Int, rating: Int) {
         // movies[position].delete()
-        val newPosition = getPositionOfNextItem(position)
+        val newPosition = computePositionOfNextItem(position)
         scrollToNextPosition(newPosition)
 
         val message: String = if (rating == Constants.LIKE) {
@@ -139,7 +145,7 @@ class WatchlistFragment : Fragment(),
         viewPager.currentItem = position
     }
 
-    private fun getPositionOfNextItem(position: Int): Int {
+    private fun computePositionOfNextItem(position: Int): Int {
         val size = movies.size
 
         if (size == 1) {
@@ -156,16 +162,17 @@ class WatchlistFragment : Fragment(),
     private fun scrollToNextPosition(newPosition: Int) {
         if (newPosition == -1) {
             movies.removeAt(0)
-            // TODO toggleListAndPlaceholder()
+            // toggleListAndPlaceholder()
         } else {
             viewPager.currentItem = newPosition
         }
     }
 
-    override fun onRemove(position: Int) {
-        val movie = movies[position]
-        val newPosition = getPositionOfNextItem(position)
+    override fun onRemove(movie: WatchlistMovie, position: Int) {
+        val newPosition = computePositionOfNextItem(position)
         // movie.delete()
+
+        viewModel.remove(movie)
 
         scrollToNextPosition(newPosition)
         displayRemoveSnackbar(movie, position)

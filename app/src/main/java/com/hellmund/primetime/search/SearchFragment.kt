@@ -8,8 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager.VERTICAL
+import android.support.v7.widget.GridLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -21,6 +20,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.api.ApiClient
+import com.hellmund.primetime.database.HistoryMovie
+import com.hellmund.primetime.database.PrimeTimeDatabase
+import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.main.MainFragment
 import com.hellmund.primetime.main.RecommendationsRepository
@@ -34,6 +36,7 @@ import kotlinx.android.synthetic.main.state_layout_search_results.*
 import kotlinx.android.synthetic.main.view_search_field.*
 import org.jetbrains.anko.inputMethodManager
 import org.jetbrains.anko.support.v4.defaultSharedPreferences
+import java.lang.Math.round
 
 class SearchFragment : Fragment(), TextWatcher,
         TextView.OnEditorActionListener, MainActivity.Reselectable {
@@ -41,12 +44,17 @@ class SearchFragment : Fragment(), TextWatcher,
     private val viewModel: SearchViewModel by lazy {
         val genresProvider = RealGenresProvider(defaultSharedPreferences)
         val repository = RecommendationsRepository(ApiClient.instance, genresProvider)
-        val factory = SearchViewModel.Factory(repository)
+        val historyRepository = HistoryRepository(PrimeTimeDatabase.getInstance(requireContext()))
+        val factory = SearchViewModel.Factory(repository, historyRepository)
         ViewModelProviders.of(requireActivity(), factory).get(SearchViewModel::class.java)
     }
 
     private val searchAdapter: SearchAdapter by lazy {
-        SearchAdapter(requireContext(), this::showSimilarMovies)
+        SearchAdapter(
+                requireContext(),
+                onShowSimilar = this::showSimilarMovies,
+                onWatched = this::onWatched
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,6 +97,10 @@ class SearchFragment : Fragment(), TextWatcher,
         placeholder_container.isVisible = viewState.showPlaceholder
 
         search_clear.isVisible = viewState.showClearButton
+
+        viewState.rating?.let {
+            showAddedToHistorySnackbar(it)
+        } ?: dismissAddedToHistorySnackbar()
 
         /*if (input.isEmpty()) {
                 search_box.text.clear()
@@ -142,9 +154,12 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun initCategoriesRecyclerView() {
         val adapter = SearchCategoriesAdapter(buildCategories(), this::onCategorySelected)
+        categoriesRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         categoriesRecyclerView.itemAnimator = DefaultItemAnimator()
         categoriesRecyclerView.adapter = adapter
-        categoriesRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), VERTICAL))
+
+        val spacing = round(resources.getDimension(R.dimen.default_space))
+        categoriesRecyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
     }
 
     private fun onCategorySelected(category: String) {
@@ -199,9 +214,7 @@ class SearchFragment : Fragment(), TextWatcher,
         val current = requireFragmentManager().findFragmentById(R.id.contentFrame)
         if (current is SearchFragment) {
             toggleKeyboard(true)
-        }/* else {
-            requireFragmentManager().popBackStack()
-        }*/
+        }
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -212,14 +225,14 @@ class SearchFragment : Fragment(), TextWatcher,
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
-    private fun displayRatingDialog(position: Int) {
+    /*private fun displayRatingDialog(position: Int) {
         val result = results_list.adapter.getItem(position) as SearchResult
         val title = result.title
 
-        val options = arrayListOf(
+        val options = arrayOf(
                 getString(R.string.show_more_like_this),
                 getString(R.string.show_less_like_this)
-        ).toTypedArray()
+        )
 
         AlertDialog.Builder(requireContext())
                 .setTitle(title)
@@ -233,22 +246,46 @@ class SearchFragment : Fragment(), TextWatcher,
                 }
                 .setCancelable(true)
                 .show()
-    }
+    }*/
 
-    private fun addRating(position: Int, rating: Int) {
+    private fun addRating(searchResult: SearchResult, rating: Int) {
         val message: String = if (rating == 1) {
             getString(R.string.will_more_like_this)
         } else {
             getString(R.string.will_less_like_this)
         }
 
-        val result = results_list.adapter.getItem(position) as SearchResult
-        //History.add(result, rating);
+        // val result = results_list.adapter.getItem(position) as SearchResult
+        // History.add(result, rating);
+        val historyMovie = HistoryMovie.fromSearchResult(searchResult, rating)
+        viewModel.addToHistory(historyMovie)
 
         Snackbar.make(results_list, message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) { /* TODO */ }
                 .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
                 .show()
+    }
+
+    private val historySnackbar: Snackbar by lazy {
+        Snackbar.make(results_list, "", Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo) { /* TODO */ }
+                .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
+    }
+
+    private fun showAddedToHistorySnackbar(rating: Int) {
+        val message: String = if (rating == 1) {
+            getString(R.string.will_more_like_this)
+        } else {
+            getString(R.string.will_less_like_this)
+        }
+
+        historySnackbar
+                .setText(message)
+                .show()
+    }
+
+    private fun dismissAddedToHistorySnackbar() {
+        historySnackbar.dismiss()
     }
 
     private fun addToWatchlist(searchResult: SearchResult) {
@@ -340,6 +377,24 @@ class SearchFragment : Fragment(), TextWatcher,
         val type = RecommendationsType.BasedOnMovie(searchResult.id, searchResult.title)
         val fragment = MainFragment.newInstance(type)
         showFragment(fragment)
+    }
+
+    private fun onWatched(searchResult: SearchResult) {
+        val title = searchResult.title
+
+        val options = arrayOf(
+                getString(R.string.show_more_like_this),
+                getString(R.string.show_less_like_this)
+        )
+
+        AlertDialog.Builder(requireContext())
+                .setTitle(title)
+                .setItems(options) { _, which ->
+                    val rating = if (which == 0) Constants.LIKE else Constants.DISLIKE
+                    addRating(searchResult, rating)
+                }
+                .setCancelable(true)
+                .show()
     }
 
     /*private fun toggleViews(state: Int) {

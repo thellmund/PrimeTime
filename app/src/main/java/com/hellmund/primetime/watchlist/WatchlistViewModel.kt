@@ -78,6 +78,10 @@ class WatchlistViewModel(
         }
     }
 
+    fun remove(movie: WatchlistMovie) {
+        repository.remove(movie).blockingAwait()
+    }
+
     private fun render(viewState: WatchlistViewState) {
         _viewState.postValue(viewState)
     }

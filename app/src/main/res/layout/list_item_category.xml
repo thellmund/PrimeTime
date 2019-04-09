@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground">
+    android:background="@drawable/background_category_list_item"
+    android:foreground="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/categoryName"

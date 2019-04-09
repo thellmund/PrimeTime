@@ -12,6 +12,7 @@ import com.hellmund.primetime.settings.SettingsActivity
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.jetbrains.anko.support.v4.defaultSharedPreferences
+import java.lang.Math.round
 
 class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.ViewPagerHost {
 
@@ -69,6 +70,9 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     private fun render(viewState: MainViewState) {
         val viewStateInt = if (viewState.isError) Constants.ERROR_STATE else Constants.IDEAL_STATE
         // setToolbarSubtitle(viewState.recommendationsType)
+
+        val margin = round(resources.getDimension(R.dimen.default_space))
+        suggestions.pageMargin = margin
 
         suggestions.adapter = SuggestionsAdapter(requireFragmentManager(), requireContext(), viewStateInt, this, viewState.data)
         progressBar.visibility = if (viewState.isLoading) View.VISIBLE else View.GONE

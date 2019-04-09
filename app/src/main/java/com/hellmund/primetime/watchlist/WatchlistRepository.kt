@@ -38,4 +38,10 @@ class WatchlistRepository(
                 }
     }
 
+    fun remove(movie: WatchlistMovie): Completable {
+        return Completable
+                .fromCallable { database.watchlistDao().delete(movie) }
+                .subscribeOn(Schedulers.io())
+    }
+
 }

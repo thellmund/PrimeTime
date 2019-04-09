@@ -5,6 +5,7 @@ import android.arch.persistence.room.PrimaryKey
 import android.content.Context
 import com.hellmund.primetime.R
 import com.hellmund.primetime.main.Rating
+import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.DateUtils
 import java.util.*
@@ -35,6 +36,10 @@ data class HistoryMovie(
     }
 
     companion object {
+
+        fun fromSearchResult(searchResult: SearchResult, rating: Int): HistoryMovie {
+            return HistoryMovie(searchResult.id, searchResult.title, rating, Date(), false)
+        }
 
         fun fromRating(rating: Rating): HistoryMovie {
             val movie = rating.movie

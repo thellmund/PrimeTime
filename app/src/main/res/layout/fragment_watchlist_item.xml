@@ -45,6 +45,7 @@
                         android:layout_marginStart="@dimen/small_space"
                         android:layout_marginTop="@dimen/small_space"
                         android:layout_marginEnd="@dimen/small_space"
+                        android:fontFamily="sans-serif-medium"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"
                         tools:text="Lorem ipsum" />
@@ -89,7 +90,7 @@
                             style="@style/Widget.AppCompat.Button.Borderless"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/activity_margin"
+                            android:layout_marginEnd="@dimen/small_space"
                             android:fontFamily="sans-serif-medium"
                             android:text="@string/watched_it"
                             android:textAllCaps="true"

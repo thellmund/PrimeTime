@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hellmund.primetime.R;
+import com.hellmund.primetime.database.PrimeTimeDatabase;
 import com.hellmund.primetime.database.WatchlistMovie;
 import com.hellmund.primetime.utils.DateUtils;
 import com.hellmund.primetime.utils.DownloadUtils;
@@ -21,13 +22,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.disposables.CompositeDisposable;
 
 public class WatchlistMovieFragment extends Fragment {
 
     private static final String KEY_WATCHLIST_MOVIE = "KEY_WATCHLIST_MOVIE";
+    private static final String KEY_POSITION = "KEY_POSITION";
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private Unbinder mUnbinder;
     private WatchlistMovie mMovie;
+    private int mPosition;
 
     @BindView(R.id.posterImageView) ImageView mImageView;
     @BindView(R.id.notification_icon) ImageView mNotificationIcon;
@@ -37,11 +43,17 @@ public class WatchlistMovieFragment extends Fragment {
     @BindView(R.id.runtime_text) TextView mRuntimeTextView;
     @BindView(R.id.watched_button) AppCompatButton mWatchedItButton;
 
-    public static WatchlistMovieFragment newInstance(WatchlistMovie movie) {
+    private WatchlistRepository repository;
+    private OnInteractionListener listener;
+
+    public static WatchlistMovieFragment newInstance(WatchlistMovie movie, int position,
+                                                     OnInteractionListener listener) {
         WatchlistMovieFragment fragment = new WatchlistMovieFragment();
         Bundle args = new Bundle();
         args.putParcelable(KEY_WATCHLIST_MOVIE, movie);
+        args.putInt(KEY_POSITION, position);
         fragment.setArguments(args);
+        fragment.listener = listener;
         return fragment;
     }
 
@@ -50,8 +62,11 @@ public class WatchlistMovieFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
+        repository = new WatchlistRepository(PrimeTimeDatabase.getInstance(requireContext()));
+
         if (getArguments() != null) {
             mMovie = getArguments().getParcelable(KEY_WATCHLIST_MOVIE);
+            mPosition = getArguments().getInt(KEY_POSITION);
         }
     }
 
@@ -132,7 +147,14 @@ public class WatchlistMovieFragment extends Fragment {
 
     @OnClick(R.id.remove_button)
     public void onRemove() {
-        // TODO
+        listener.onRemove(mMovie, mPosition);
+        /*Disposable disposable = repository
+                .remove(mMovie.getId())
+                .subscribe(
+                        () -> listener.onRemove(mMovie, mPosition),
+                        t -> Log.e("WatchlistMovieFragment", "Some error", t)
+                );
+        compositeDisposable.add(disposable);*/
     }
 
     /*private void downloadRuntime() {
@@ -162,8 +184,9 @@ public class WatchlistMovieFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        compositeDisposable.clear();
         mUnbinder.unbind();
+        super.onDestroyView();
     }
 
     /*private static class DownloadRuntimeLoader extends AsyncTaskLoader<Integer> {
@@ -249,7 +272,7 @@ public class WatchlistMovieFragment extends Fragment {
 
     public interface OnInteractionListener {
         void onWatchedIt(int position);
-        void onRemove(int position);
+        void onRemove(WatchlistMovie movie, int position);
         WatchlistMovie onGetMovie(int position);
     }
 
