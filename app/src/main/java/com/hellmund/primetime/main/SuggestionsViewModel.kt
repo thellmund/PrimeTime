@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProvider
 import com.hellmund.primetime.database.HistoryMovie
 import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.model2.ApiMovie
+import com.hellmund.primetime.model2.MovieViewEntity
 import com.hellmund.primetime.utils.plusAssign
 import com.hellmund.primetime.watchlist.WatchlistRepository
 import com.jakewharton.rxrelay2.PublishRelay
@@ -204,12 +205,12 @@ class SuggestionsViewModel(
             private val repository: MoviesRepository,
             private val historyRepository: HistoryRepository,
             private val watchlistRepository: WatchlistRepository,
-            private val movie: ApiMovie
+            private val movie: MovieViewEntity
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SuggestionsViewModel(repository, historyRepository, watchlistRepository, movie) as T
+            return SuggestionsViewModel(repository, historyRepository, watchlistRepository, movie.raw) as T
         }
 
     }

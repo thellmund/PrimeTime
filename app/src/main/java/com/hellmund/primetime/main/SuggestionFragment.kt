@@ -18,14 +18,15 @@ import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.model2.ApiMovie
 import com.hellmund.primetime.model2.ApiMovie.WatchStatus.NOT_WATCHED
 import com.hellmund.primetime.model2.ApiMovie.WatchStatus.ON_WATCHLIST
+import com.hellmund.primetime.model2.MovieViewEntity
 import com.hellmund.primetime.utils.*
 import com.hellmund.primetime.watchlist.WatchlistRepository
 import kotlinx.android.synthetic.main.fragment_movie_suggestion.*
 
 class SuggestionFragment : Fragment() {
 
-    private val movie: ApiMovie by lazy {
-        arguments?.getParcelable<ApiMovie>(KEY_MOVIE) ?: throw IllegalStateException()
+    private val movie: MovieViewEntity by lazy {
+        arguments?.getParcelable<MovieViewEntity>(KEY_MOVIE) ?: throw IllegalStateException()
     }
 
     private lateinit var viewPagerHost: ViewPagerHost
@@ -115,9 +116,9 @@ class SuggestionFragment : Fragment() {
     private fun fillInContent() {
         movie_title.text = movie.title
         movie_description.text = movie.description
-        genres.text = movie.getPrettyGenres(requireContext())
-        rating.text = movie.getPrettyVoteAverage()
-        release.text = movie.getReleaseYear(requireContext())
+        genres.text = movie.formattedGenres
+        rating.text = movie.formattedVoteAverage
+        release.text = movie.releaseYear
 
         if (movie.hasAdditionalInformation) {
             displayRuntime()
@@ -138,7 +139,7 @@ class SuggestionFragment : Fragment() {
         ImageLoader
                 .with(requireContext())
                 .load(
-                        url = movie.fullPosterUrl,
+                        url = movie.posterUrl,
                         into = background,
                         onComplete = { progress_bar.isVisible = false }
                 )
@@ -236,7 +237,7 @@ class SuggestionFragment : Fragment() {
         private const val DEFAULT_LINES = 2
 
         fun newInstance(
-                movie: ApiMovie,
+                movie: MovieViewEntity,
                 viewPagerHost: ViewPagerHost
         ): SuggestionFragment {
             return SuggestionFragment().apply {

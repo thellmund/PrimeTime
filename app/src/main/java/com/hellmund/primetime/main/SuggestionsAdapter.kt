@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import com.hellmund.primetime.model2.ApiMovie
+import com.hellmund.primetime.model2.MovieViewEntity
 
 internal class SuggestionsAdapter(
         fragmentMgr: FragmentManager,
@@ -12,7 +13,7 @@ internal class SuggestionsAdapter(
 ) : FragmentStatePagerAdapter(fragmentMgr) {
 
     var pageWidth: Float = 1f
-    var movies = listOf<ApiMovie>()
+    var movies = listOf<MovieViewEntity>()
 
     override fun getItem(position: Int): Fragment {
         return if (movies.isNotEmpty() && position != movies.lastIndex) {

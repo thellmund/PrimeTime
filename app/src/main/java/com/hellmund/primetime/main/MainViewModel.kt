@@ -4,7 +4,8 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.hellmund.primetime.model2.ApiMovie
+import com.hellmund.primetime.model2.MovieViewEntity
+import com.hellmund.primetime.model2.MovieViewEntityMapper
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
@@ -13,7 +14,7 @@ import io.reactivex.schedulers.Schedulers
 
 data class MainViewState(
         val recommendationsType: RecommendationsType = RecommendationsType.Personalized,
-        val data: List<ApiMovie> = emptyList(),
+        val data: List<MovieViewEntity> = emptyList(),
         val isLoading: Boolean = false,
         val error: Throwable? = null
 ) {
@@ -31,13 +32,14 @@ sealed class Action {
 
 sealed class Result {
     object Loading : Result()
-    data class Data(val data: List<ApiMovie>) : Result()
+    data class Data(val data: List<MovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
 }
 
 class MainViewModel(
         private val repository: MoviesRepository,
-        private val rankingProcessor: MovieRankingProcessor
+        private val rankingProcessor: MovieRankingProcessor,
+        private val viewEntityMapper: MovieViewEntityMapper
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -64,6 +66,7 @@ class MainViewModel(
         return repository.fetchRecommendations(type)
                 .subscribeOn(Schedulers.io())
                 .map { rankingProcessor.rank(it, type) }
+                .map(viewEntityMapper)
                 .map { Result.Data(it) as Result }
                 .onErrorReturn { Result.Error(it) }
                 .startWith(Result.Loading)
@@ -95,12 +98,13 @@ class MainViewModel(
 
     class Factory(
             private val repository: MoviesRepository,
-            private val rankingProcessor: MovieRankingProcessor
+            private val rankingProcessor: MovieRankingProcessor,
+            private val viewEntityMapper: MovieViewEntityMapper
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return MainViewModel(repository, rankingProcessor) as T
+            return MainViewModel(repository, rankingProcessor, viewEntityMapper) as T
         }
 
     }
