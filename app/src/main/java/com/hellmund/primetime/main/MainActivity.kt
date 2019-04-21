@@ -2,7 +2,6 @@ package com.hellmund.primetime.main
 
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.getIntent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -80,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.selectedItemId = R.id.home
     }
 
-    private fun openSearch(extra: String? = null) {
+    fun openSearch(extra: String? = null) {
         val type = extra?.let { RecommendationsType.fromIntent(this, it) }
         val fragment = SearchFragment.newInstance(type)
         showFragment(fragment)

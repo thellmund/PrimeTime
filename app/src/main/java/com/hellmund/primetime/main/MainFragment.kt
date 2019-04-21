@@ -66,7 +66,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     private fun render(viewState: MainViewState) {
         val margin = round(resources.getDimension(R.dimen.default_space))
 
-        val adapter = SuggestionsAdapter(requireFragmentManager(), this)
+        val adapter = SuggestionsAdapter(requireFragmentManager(), this, this::retry)
         adapter.movies = viewState.data
         adapter.pageWidth = if (requireContext().isLandscapeMode) 0.5f else 1.0f
 
@@ -75,6 +75,11 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
         progressBar.visibility = if (viewState.isLoading) View.VISIBLE else View.GONE
         suggestions.visibility = if (viewState.isLoading) View.GONE else View.VISIBLE
+    }
+
+    private fun retry() {
+        // TODO: Use current RecommendationsType
+        viewModel.refresh(RecommendationsType.Personalized)
     }
 
     private fun setToolbarSubtitle(type: RecommendationsType) {

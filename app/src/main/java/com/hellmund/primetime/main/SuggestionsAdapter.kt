@@ -7,20 +7,20 @@ import com.hellmund.primetime.model2.ApiMovie
 
 internal class SuggestionsAdapter(
         fragmentMgr: FragmentManager,
-        private val viewPagerHost: SuggestionFragment.ViewPagerHost
+        private val viewPagerHost: SuggestionFragment.ViewPagerHost,
+        private val onRetry: () -> Unit
 ) : FragmentStatePagerAdapter(fragmentMgr) {
 
     var pageWidth: Float = 1f
-
     var movies = listOf<ApiMovie>()
 
     override fun getItem(position: Int): Fragment {
-        return if (movies.isNotEmpty() && position == movies.lastIndex) {
-            DiscoverMoreFragment.newInstance()
+        return if (movies.isNotEmpty() && position != movies.lastIndex) {
+            SuggestionFragment.newInstance(movies[position], viewPagerHost)
         } else if (movies.isNotEmpty()) {
-            SuggestionFragment.newInstance(viewPagerHost, movies[position])
+            DiscoverMoreFragment.newInstance()
         } else {
-            SuggestionErrorFragment.newInstance()
+            SuggestionErrorFragment.newInstance(onRetry)
         }
     }
 
