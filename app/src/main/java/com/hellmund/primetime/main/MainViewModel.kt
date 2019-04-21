@@ -36,7 +36,8 @@ sealed class Result {
 }
 
 class MainViewModel(
-        private val repository: MoviesRepository
+        private val repository: MoviesRepository,
+        private val rankingProcessor: MovieRankingProcessor
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -62,6 +63,7 @@ class MainViewModel(
     private fun fetchRecommendations(type: RecommendationsType): Observable<Result> {
         return repository.fetchRecommendations(type)
                 .subscribeOn(Schedulers.io())
+                .map { rankingProcessor.rank(it, type) }
                 .map { Result.Data(it) as Result }
                 .onErrorReturn { Result.Error(it) }
                 .startWith(Result.Loading)
@@ -92,12 +94,13 @@ class MainViewModel(
     }
 
     class Factory(
-            private val repository: MoviesRepository
+            private val repository: MoviesRepository,
+            private val rankingProcessor: MovieRankingProcessor
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return MainViewModel(repository) as T
+            return MainViewModel(repository, rankingProcessor) as T
         }
 
     }

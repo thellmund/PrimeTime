@@ -29,4 +29,6 @@ public class Constants {
     public static final int LIKE = 1;
     public static final int DISLIKE = 0;
 
+    public static final long MILLIS_IN_DAY = 24 * 60 * 60 * 1000;
+
 }

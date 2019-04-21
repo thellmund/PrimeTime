@@ -8,9 +8,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import com.hellmund.primetime.R
 import com.hellmund.primetime.api.ApiClient
+import com.hellmund.primetime.database.PrimeTimeDatabase
+import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.main.RecommendationsType.Personalized
 import com.hellmund.primetime.settings.SettingsActivity
 import com.hellmund.primetime.utils.*
+import com.hellmund.primetime.watchlist.WatchlistRepository
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.jetbrains.anko.support.v4.defaultSharedPreferences
 import java.lang.Math.round
@@ -26,7 +29,10 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     }
 
     private val viewModel: MainViewModel by lazy {
-        val factory = MainViewModel.Factory(repository)
+        val historyRepo = HistoryRepository(PrimeTimeDatabase.getInstance(requireContext()))
+        val watchlistRepo = WatchlistRepository(PrimeTimeDatabase.getInstance(requireContext()))
+        val rankingProcessor = MovieRankingProcessor(historyRepo, watchlistRepo)
+        val factory = MainViewModel.Factory(repository, rankingProcessor)
         when (type) {
             Personalized -> ViewModelProviders.of(requireActivity(), factory).get(MainViewModel::class.java)
             else -> ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
