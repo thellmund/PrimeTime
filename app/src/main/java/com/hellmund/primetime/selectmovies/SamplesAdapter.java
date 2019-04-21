@@ -9,11 +9,10 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.model2.Sample;
 import com.hellmund.primetime.utils.Constants;
+import com.hellmund.primetime.utils.ImageLoader;
 import com.hellmund.primetime.utils.UiUtils;
 
 import java.util.List;
@@ -69,10 +68,7 @@ public class SamplesAdapter extends BaseAdapter {
         });
 
         final String url = sample.getFullPosterUrl();
-        Glide.with(mContext)
-                .load(url)
-                .apply(new RequestOptions().centerCrop())
-                .into(holder.poster);
+        ImageLoader.with(mContext).load(url, holder.poster);
 
         final int resId = R.string.access_movie_poster_samples;
         holder.poster.setContentDescription(mContext.getString(resId) + sample.getTitle());

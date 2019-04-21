@@ -4,13 +4,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.hellmund.primetime.R
+import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.Transformation
 import kotlinx.android.synthetic.main.list_item_introduction_bg.view.*
 
 class PostersAdapter(
-        private val requestManager: RequestManager,
+        private val imageLoader: ImageLoader,
         private val posterUrls: List<String>
 ) : RecyclerView.Adapter<PostersAdapter.ViewHolder>() {
 
@@ -21,22 +22,26 @@ class PostersAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(posterUrls[position], requestManager)
+        holder.bind(posterUrls[position], imageLoader)
     }
 
     override fun getItemCount(): Int = posterUrls.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(posterUrl: String, requestManager: RequestManager) {
+        fun bind(posterUrl: String, imageLoader: ImageLoader) {
             val options = RequestOptions()
                     .placeholder(R.drawable.poster_placeholder)
                     .centerCrop()
 
-            requestManager
-                    .load(posterUrl)
-                    .apply(options)
-                    .into(itemView.posterImageView)
+            imageLoader.load(
+                    url = posterUrl,
+                    into = itemView.posterImageView,
+                    transformations = arrayOf(
+                        Transformation.Placeholder(R.drawable.poster_placeholder),
+                        Transformation.CenterCrop
+                    )
+            )
         }
 
     }

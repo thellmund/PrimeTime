@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.database.PrimeTimeDatabase;
 import com.hellmund.primetime.database.WatchlistMovie;
 import com.hellmund.primetime.utils.DateUtils;
+import com.hellmund.primetime.utils.ImageLoader;
 import com.hellmund.primetime.utils.NotificationUtils;
 import com.hellmund.primetime.utils.UiUtils;
 
@@ -77,9 +77,7 @@ public class WatchlistMovieFragment extends Fragment {
         mUnbinder = ButterKnife.bind(this, view);
 
         String posterUrl = mMovie.getFullPosterUrl();
-        Glide.with(requireActivity())
-             .load(posterUrl)
-             .into(mImageView);
+        ImageLoader.with(requireContext()).load(posterUrl, mImageView);
 
         mTitleTextView.setText(mMovie.getTitle());
 

@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,10 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.api.ApiClient;
 import com.hellmund.primetime.database.AppDatabase;
@@ -41,7 +36,9 @@ import com.hellmund.primetime.model2.ApiMovie;
 import com.hellmund.primetime.utils.DeviceUtils;
 import com.hellmund.primetime.utils.Dialogs;
 import com.hellmund.primetime.utils.GenresProvider;
+import com.hellmund.primetime.utils.ImageLoader;
 import com.hellmund.primetime.utils.RealGenresProvider;
+import com.hellmund.primetime.utils.Transformation;
 import com.hellmund.primetime.utils.UiUtils;
 import com.hellmund.primetime.watchlist.WatchlistRepository;
 
@@ -49,6 +46,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import kotlin.Unit;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
@@ -185,59 +183,19 @@ public class SuggestionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mUnbinder = ButterKnife.bind(this, view);
 
-        /*final int color = ContextCompat.getColor(requireContext(), R.color.colorAccent);
-        mProgressBar.getIndeterminateDrawable()
-                .setColorFilter(color, android.graphics.PorterDuff.Mode.MULTIPLY);*/
-
         fillInContent();
         downloadPoster();
-
-        // mPresenter.downloadPoster();
-        // TODO toggleAdditionalInformation(isOverlayExpanded);
-        // updateWatchlistButton();
-
-        /*ViewTreeObserver observer = mBackground.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                centerProgressBar();
-                mBackground.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });*/
     }
 
     private void downloadPoster() {
         final String url = movie.getFullPosterUrl();
-        Glide.with(requireContext())
-                .load(url)
-                .apply(RequestOptions.centerCropTransform())
-                .into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                        Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
-                        displayPoster(bitmap);
-
-                        Palette palette = Palette.from(bitmap).generate();
-                        Palette.Swatch swatch = palette.getVibrantSwatch();
-
-                        // TODO
-
-                        /*if (swatch != null) {
-                            setWatchlistButton();
-                        }*/
-                    }
+        Transformation[] transformations = new Transformation[]{ Transformation.CenterCrop.INSTANCE };
+        ImageLoader.with(requireContext())
+                .load(url, mBackground, transformations, drawable -> {
+                    mProgressBar.setVisibility(View.GONE);
+                    return Unit.INSTANCE;
                 });
     }
-
-    /*private void centerProgressBar() {
-        final float backgroundHeight = mBackground.getHeight();
-        final float overlayHeight = mOverlay.getHeight();
-        final float spinnerHeight = mProgressBar.getHeight();
-
-        final float available = backgroundHeight - overlayHeight;
-        final float newY = (available - spinnerHeight) / 2;
-        mProgressBar.setY(newY);
-    }*/
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {

@@ -7,15 +7,11 @@ import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
-import com.bumptech.glide.Glide
 import com.hellmund.primetime.R
 import com.hellmund.primetime.api.ApiClient
 import com.hellmund.primetime.main.MoviesRepository
 import com.hellmund.primetime.selectgenres.SelectGenreActivity
-import com.hellmund.primetime.utils.GenresProvider
-import com.hellmund.primetime.utils.RealGenresProvider
-import com.hellmund.primetime.utils.isLandscapeMode
-import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.activity_introduction.*
 import org.jetbrains.anko.defaultSharedPreferences
 
@@ -35,7 +31,7 @@ class IntroductionActivity : FragmentActivity() {
     }
 
     private fun displayResults(results: List<String>) {
-        val adapter = PostersAdapter(Glide.with(this), results)
+        val adapter = PostersAdapter(ImageLoader.with(this), results)
         gridView.itemAnimator = DefaultItemAnimator()
         gridView.adapter = adapter
         gridView.isEnabled = false
