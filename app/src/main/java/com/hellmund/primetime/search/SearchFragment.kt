@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.api.ApiClient
+import com.hellmund.primetime.database.GenreDao
 import com.hellmund.primetime.database.HistoryMovie
 import com.hellmund.primetime.database.PrimeTimeDatabase
 import com.hellmund.primetime.history.HistoryRepository
@@ -30,7 +31,10 @@ import com.hellmund.primetime.main.RecommendationsType
 import com.hellmund.primetime.model.ApiGenre
 import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.search.SearchActivity.DISABLED
-import com.hellmund.primetime.utils.*
+import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.RealGenresProvider
+import com.hellmund.primetime.utils.isVisible
+import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.state_layout_search_results.*
 import kotlinx.android.synthetic.main.view_search_field.*
@@ -55,6 +59,10 @@ class SearchFragment : Fragment(), TextWatcher,
                 onShowSimilar = this::showSimilarMovies,
                 onWatched = this::onWatched
         )
+    }
+
+    private val genreDao: GenreDao by lazy {
+        PrimeTimeDatabase.getInstance(requireContext()).genreDao()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -163,13 +171,13 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun onCategorySelected(category: String) {
-        val genreId = GenreUtils.getGenreID(requireContext(), category)
-        val genre = ApiGenre(genreId, category)
+        val genre = genreDao.getGenre(category).blockingGet()
+        val apiGenre = ApiGenre(genre.id, genre.name)
 
         val type = when (category) {
             "Now playing" -> RecommendationsType.NowPlaying
             "Upcoming" -> RecommendationsType.Upcoming
-            else -> RecommendationsType.ByGenre(genre)
+            else -> RecommendationsType.ByGenre(apiGenre)
         }
 
         requireFragmentManager()
@@ -181,7 +189,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun buildCategories(): List<String> {
         val categories = listOf(getString(R.string.now_playing), getString(R.string.upcoming))
-        val genres = GenreUtils.getGenres(requireContext()).toList().map { it.name }
+        val genres = genreDao.getAll().blockingGet().map { it.name }
         return categories + genres
     }
 
@@ -262,14 +270,14 @@ class SearchFragment : Fragment(), TextWatcher,
 
         Snackbar.make(results_list, message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) { /* TODO */ }
-                .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
+                // TODO .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
                 .show()
     }
 
     private val historySnackbar: Snackbar by lazy {
         Snackbar.make(results_list, "", Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) { /* TODO */ }
-                .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
+                // TODO .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
     }
 
     private fun showAddedToHistorySnackbar(rating: Int) {

@@ -207,5 +207,6 @@
     <string name="home">Home</string>
     <string name="next">Next</string>
     <string name="discover">Discover</string>
+    <string name="cant_remove_more_items">Can’t remove more items.</string>
 
 </resources>

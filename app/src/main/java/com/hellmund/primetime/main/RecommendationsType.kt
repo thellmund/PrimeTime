@@ -2,9 +2,9 @@ package com.hellmund.primetime.main
 
 import android.content.Context
 import android.os.Parcelable
+import com.hellmund.primetime.database.PrimeTimeDatabase
 import com.hellmund.primetime.model.ApiGenre
 import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.GenreUtils
 import kotlinx.android.parcel.Parcelize
 
 sealed class RecommendationsType : Parcelable {
@@ -32,9 +32,11 @@ sealed class RecommendationsType : Parcelable {
                 Constants.NOW_PLAYING_INTENT -> NowPlaying
                 Constants.UPCOMING_INTENT -> Upcoming
                 else -> {
-                    val genreId = GenreUtils.getGenreID(context, intent)
-                    val genre = ApiGenre(genreId, intent)
-                    ByGenre(genre)
+                    // TODO
+                    val database = PrimeTimeDatabase.getInstance(context)
+                    val genre = database.genreDao().getGenre(intent).blockingGet()
+                    val apiGenre = ApiGenre(genre.id, genre.name)
+                    ByGenre(apiGenre)
                 }
             }
         }

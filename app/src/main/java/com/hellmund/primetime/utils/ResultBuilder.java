@@ -1,7 +1,5 @@
 package com.hellmund.primetime.utils;
 
-import android.content.Context;
-
 import com.hellmund.primetime.model.Movie;
 
 import java.util.ArrayList;
@@ -96,9 +94,9 @@ class ResultBuilder {
         return movies;
     }
 
-    ResultBuilder(Context context, ArrayList<Movie> movies) {
+    /*ResultBuilder(Context context, ArrayList<Movie> movies) {
         this.movies = movies;
         this.excludedGenres = GenreUtils.getExcludedGenres(context);
-    }
+    }*/
 
 }

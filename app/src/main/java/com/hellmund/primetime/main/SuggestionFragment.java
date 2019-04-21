@@ -280,7 +280,7 @@ public class SuggestionFragment extends Fragment {
     }
 
     private void toggleAdditionalInformation(boolean showDetails) {
-        final boolean isLandscape = DeviceUtils.isLandscapeMode(getContext());
+        final boolean isLandscape = DeviceUtils.isLandscapeMode(requireContext());
         final int visibility = (showDetails) ? View.VISIBLE : View.GONE;
         int maxLines;
 

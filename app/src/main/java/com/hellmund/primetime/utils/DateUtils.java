@@ -10,18 +10,6 @@ import java.util.Locale;
 
 public class DateUtils {
 
-    static Date getDateFromIsoString(String isoStr) {
-        String dateStr = isoStr.split("T")[0];
-        String[] dates = dateStr.split("-");
-
-        Calendar result = getMidnightCalendar();
-        result.set(Calendar.YEAR, Integer.parseInt(dates[0]));
-        result.set(Calendar.MONTH, Integer.parseInt(dates[1]) - 1);
-        result.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dates[2]));
-
-        return result.getTime();
-    }
-
     public static Calendar getMidnightCalendar() {
         Calendar result = Calendar.getInstance();
         result.set(Calendar.HOUR, 0);

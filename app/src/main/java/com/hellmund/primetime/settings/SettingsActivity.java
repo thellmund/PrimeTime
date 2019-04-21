@@ -17,8 +17,10 @@ import android.view.MenuItem;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.about.AboutActivity;
+import com.hellmund.primetime.database.AppDatabase;
+import com.hellmund.primetime.database.PrimeTimeDatabase;
+import com.hellmund.primetime.model2.Genre;
 import com.hellmund.primetime.utils.Constants;
-import com.hellmund.primetime.utils.GenreUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +36,8 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
+            getFragmentManager()
+                    .beginTransaction()
                     .add(R.id.content, SettingsFragment.newInstance(this))
                     .commit();
         }
@@ -68,6 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
         private static final int MIN_GENRES = 2;
 
         private Context mContext;
+        private AppDatabase database;
         private ArrayMap<Preference, String> mDefaultSummaries;
 
         public static SettingsFragment newInstance(Context context) {
@@ -79,9 +83,11 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            this.setRetainInstance(true);
 
+            setRetainInstance(true);
             addPreferencesFromResource(R.xml.preferences);
+
+            database = PrimeTimeDatabase.getInstance(mContext);
 
             initDefaultSummaries();
             initIncludedGenresPref();
@@ -113,8 +119,18 @@ public class SettingsActivity extends AppCompatActivity {
             MultiSelectListPreference excludedGenres =
                     (MultiSelectListPreference) findPreference(Constants.KEY_EXCLUDED);
 
-            excludedGenres.setEntries(GenreUtils.getGenreNames(getActivity()));
-            excludedGenres.setEntryValues(GenreUtils.getGenreIds(getActivity()));
+            List<Genre> genres = database.genreDao().getAll().blockingGet();
+
+            String[] genreNames = new String[genres.size()];
+            String[] genreIds = new String[genres.size()];
+
+            for (int i = 0; i < genres.size(); i++) {
+                genreNames[i] = genres.get(i).getName();
+                genreIds[i] = Integer.toString(genres.get(i).getId());
+            }
+
+            excludedGenres.setEntries(genreNames);
+            excludedGenres.setEntryValues(genreIds);
             updateGenresSummary(excludedGenres, excludedGenres.getValues());
 
             excludedGenres.setOnPreferenceChangeListener(this::saveExcludedGenres);
@@ -161,8 +177,18 @@ public class SettingsActivity extends AppCompatActivity {
             MultiSelectListPreference included =
                     (MultiSelectListPreference) findPreference(Constants.KEY_INCLUDED);
 
-            included.setEntries(GenreUtils.getGenreNames(getActivity()));
-            included.setEntryValues(GenreUtils.getGenreIds(getActivity()));
+            List<Genre> genres = database.genreDao().getAll().blockingGet();
+
+            String[] genreNames = new String[genres.size()];
+            String[] genreIds = new String[genres.size()];
+
+            for (int i = 0; i < genres.size(); i++) {
+                genreNames[i] = genres.get(i).getName();
+                genreIds[i] = Integer.toString(genres.get(i).getId());
+            }
+
+            included.setEntries(genreNames);
+            included.setEntryValues(genreIds);
             updateGenresSummary(included, included.getValues());
 
             included.setOnPreferenceChangeListener(this::saveIncludedGenres);
@@ -174,10 +200,22 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (preference.getKey().equals(Constants.KEY_INCLUDED)) {
                 included = newValues;
-                excluded = GenreUtils.getExcludedGenres(mContext);
+
+                List<Genre> excludedGenres = database.genreDao().getExcludedGenres().blockingGet();
+                excluded = new HashSet<>();
+
+                for (Genre genre : excludedGenres) {
+                    excluded.add(Integer.toString(genre.getId()));
+                }
             } else {
-                included = GenreUtils.getPreferredGenres(mContext);
                 excluded = newValues;
+
+                List<Genre> includedGenres = database.genreDao().getPreferredGenres().blockingGet();
+                included = new HashSet<>();
+
+                for (Genre genre : includedGenres) {
+                    included.add(Integer.toString(genre.getId()));
+                }
             }
 
             Set<String> sharedGenres = new HashSet<>(included);
@@ -185,7 +223,8 @@ public class SettingsActivity extends AppCompatActivity {
 
             List<String> sharedTitles = new ArrayList<>();
             for (String genreId : sharedGenres) {
-                String value = "• " + GenreUtils.getGenreName(getActivity(), Integer.parseInt(genreId));
+                Genre genre = database.genreDao().getGenre(Integer.parseInt(genreId)).blockingGet();
+                String value = "• " + genre.getName();
                 sharedTitles.add(value);
             }
 
@@ -222,14 +261,23 @@ public class SettingsActivity extends AppCompatActivity {
 
         @SuppressWarnings("unchecked")
         private boolean genresAreDisjoint(Preference preference, Object newValues) {
-            Set<String> included;
-            Set<String> excluded;
+            Set<String> included = new HashSet<>();
+            Set<String> excluded = new HashSet<>();
+
+            List<Genre> includedGenres = database.genreDao().getPreferredGenres().blockingGet();
+            List<Genre> excludedGenres = database.genreDao().getExcludedGenres().blockingGet();
+
+            for (Genre genre : includedGenres) {
+                included.add(Integer.toString(genre.getId()));
+            }
+
+            for (Genre genre : excludedGenres) {
+                excluded.add(Integer.toString(genre.getId()));
+            }
 
             if (preference.getKey().equals(Constants.KEY_INCLUDED)) {
                 included = (Set<String>) newValues;
-                excluded = GenreUtils.getExcludedGenres(mContext);
             } else {
-                included = GenreUtils.getPreferredGenres(mContext);
                 excluded = (Set<String>) newValues;
             }
 
@@ -250,7 +298,8 @@ public class SettingsActivity extends AppCompatActivity {
             List<String> genreNames = new ArrayList<>();
 
             for (String genreId : genreIds) {
-                genreNames.add(GenreUtils.getGenreName(getActivity(), Integer.parseInt(genreId)));
+                Genre genre = database.genreDao().getGenre(Integer.parseInt(genreId)).blockingGet();
+                genreNames.add(genre.getName());
             }
 
             StringBuilder builder = new StringBuilder(genreNames.get(0));

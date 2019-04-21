@@ -7,14 +7,12 @@ import android.support.annotation.NonNull;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.utils.DateUtils;
-import com.hellmund.primetime.utils.GenreUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -119,7 +117,7 @@ public class Movie implements Parcelable, Comparable<Movie> {
         return this.genreIds;
     }
 
-    public String getPrettyGenres(Context context) {
+    /*public String getPrettyGenres(Context context) {
         String[] genres = new String[this.genreIds.length];
 
         for (int i = 0; i < genres.length; i++) {
@@ -133,7 +131,7 @@ public class Movie implements Parcelable, Comparable<Movie> {
             result.append(", ").append(genres[i]);
         }
         return result.toString();
-    }
+    }*/
 
     public Integer getID() {
         return this.id;

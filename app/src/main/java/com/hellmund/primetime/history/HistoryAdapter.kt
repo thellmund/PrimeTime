@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.hellmund.primetime.R
 import com.hellmund.primetime.database.HistoryMovie
-import com.hellmund.primetime.utils.UiUtils
+import com.hellmund.primetime.utils.showToast
 import kotlinx.android.synthetic.main.list_item_history.view.*
 
 internal class HistoryAdapter(
@@ -38,7 +38,7 @@ internal class HistoryAdapter(
 
     fun removeItem(position: Int) {
         if (!canRemove()) {
-            UiUtils.showToast(mContext, "Can’t remove more items.")
+            mContext.showToast(R.string.cant_remove_more_items)
             this.notifyDataSetChanged()
             return
         }

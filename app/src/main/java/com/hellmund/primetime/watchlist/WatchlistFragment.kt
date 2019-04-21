@@ -15,7 +15,6 @@ import com.hellmund.primetime.database.PrimeTimeDatabase
 import com.hellmund.primetime.database.WatchlistMovie
 import com.hellmund.primetime.history.HistoryActivity
 import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.UiUtils
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.fragment_watchlist.*
 

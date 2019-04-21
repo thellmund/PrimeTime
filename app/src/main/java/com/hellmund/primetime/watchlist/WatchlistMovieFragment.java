@@ -136,7 +136,7 @@ public class WatchlistMovieFragment extends Fragment {
         //RealmManager.updateWatchlistMovie(mMovie);
         setNotificationIcon();
 
-        UiUtils.showToast(getActivity(), message);
+        UiUtils.showToast(requireContext(), message);
     }
 
     @OnClick(R.id.watched_button)

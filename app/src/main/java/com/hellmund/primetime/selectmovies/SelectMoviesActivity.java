@@ -20,13 +20,12 @@ import com.hellmund.primetime.main.MainActivity;
 import com.hellmund.primetime.model2.Sample;
 import com.hellmund.primetime.selectgenres.GenresRepository;
 import com.hellmund.primetime.utils.Constants;
-import com.hellmund.primetime.utils.DeviceUtils;
+import com.hellmund.primetime.utils.NetworkUtils;
 import com.hellmund.primetime.utils.UiUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -142,11 +141,10 @@ public class SelectMoviesActivity extends AppCompatActivity
     @OnClick(R.id.button)
     public void saveMovies() {
         if (!mSaveButton.isEnabled()) {
-            UiUtils.showToast(this, String.format(
-                    Locale.getDefault(), getString(R.string.select_at_least), MIN_COUNT));
+            UiUtils.showToast(this, getString(R.string.select_at_least, MIN_COUNT));
         }
 
-        if (DeviceUtils.isConnected(this)) {
+        if (NetworkUtils.isConnected(this)) {
             saveSelection();
             markIntroDone();
             openRecommendations();

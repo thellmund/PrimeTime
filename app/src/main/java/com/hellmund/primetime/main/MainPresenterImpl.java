@@ -1,17 +1,13 @@
 package com.hellmund.primetime.main;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.model.HistoryMovie;
 import com.hellmund.primetime.model.Movie;
 import com.hellmund.primetime.utils.Constants;
-import com.hellmund.primetime.utils.GenreUtils;
 import com.hellmund.primetime.utils.UiUtils;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -74,8 +70,7 @@ class MainPresenterImpl implements MainContract.Presenter {
         sharedPrefs.edit().putString(Constants.MOVIE_TITLE, mMovieTitle).apply();
     }*/
 
-    @NonNull
-    @Override
+    /*@NonNull
     public String getToolbarSubtitle() {
         if (mRecommendationsType == Constants.PERSONALIZED_RECOMMENDATION) {
             return null;
@@ -88,10 +83,9 @@ class MainPresenterImpl implements MainContract.Presenter {
         } else {
             return GenreUtils.getGenreName(mContext, mGenreID);
         }
-    }
+    }*/
 
-    @Override
-    public boolean genreAlreadySelected(String selected) {
+    /*public boolean genreAlreadySelected(String selected) {
         if (mRecommendationsType == Constants.PERSONALIZED_RECOMMENDATION) {
             return selected.equals(mContext.getString(R.string.personalized_recommendations));
         } else if (mRecommendationsType == Constants.MOVIE_RECOMMENDATION) {
@@ -103,9 +97,9 @@ class MainPresenterImpl implements MainContract.Presenter {
         } else {
             return selected.equals(GenreUtils.getGenreName(mContext, mGenreID));
         }
-    }
+    }*/
 
-    public void handleGenreDialogInput(String selected, int which) {
+    /*public void handleGenreDialogInput(String selected, int which) {
         if (which == 0) {
             mRecommendationsType = Constants.PERSONALIZED_RECOMMENDATION;
         } else if (which == 2) {
@@ -116,7 +110,7 @@ class MainPresenterImpl implements MainContract.Presenter {
             mRecommendationsType = Constants.GENRE_RECOMMENDATION;
             mGenreID = GenreUtils.getGenreID(mContext, selected);
         }
-    }
+    }*/
 
     @Override
     public void setupSingleMovieRecommendations(int id, String title) {
@@ -125,8 +119,7 @@ class MainPresenterImpl implements MainContract.Presenter {
         this.mMovieTitle = title;
     }
 
-    @Override
-    public void setupCategoryRecommendations(@NotNull String category) {
+    /*public void setupCategoryRecommendations(@NotNull String category) {
         switch (category) {
             case "Now playing":
                 mRecommendationsType = Constants.NOW_PLAYING_RECOMMENDATION;
@@ -138,7 +131,7 @@ class MainPresenterImpl implements MainContract.Presenter {
                 mRecommendationsType = Constants.GENRE_RECOMMENDATION;
                 mGenreID = GenreUtils.getGenreID(mContext, category);
         }
-    }
+    }*/
 
     @Override
     public ArrayList<Movie> getRecommendations() {

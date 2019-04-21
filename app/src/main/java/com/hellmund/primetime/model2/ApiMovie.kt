@@ -4,8 +4,8 @@ import android.content.Context
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.hellmund.primetime.R
+import com.hellmund.primetime.database.PrimeTimeDatabase
 import com.hellmund.primetime.utils.DateUtils
-import com.hellmund.primetime.utils.GenreUtils
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -33,7 +33,12 @@ data class ApiMovie(
 
     fun getPrettyGenres(context: Context): String {
         return genreIds
-                .map { GenreUtils.getGenreName(context, it) }
+                .map {
+                    // TODO: MovieViewEntity and mapper
+                    val database = PrimeTimeDatabase.getInstance(context)
+                    database.genreDao().getGenre(it).blockingGet()
+                }
+                .map { it.name }
                 .sorted()
                 .joinToString(", ")
     }

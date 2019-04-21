@@ -9,7 +9,7 @@ import android.support.v7.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.hellmund.primetime.R
 import com.hellmund.primetime.selectgenres.SelectGenreActivity
-import com.hellmund.primetime.utils.DeviceUtils.isLandscapeMode
+import com.hellmund.primetime.utils.isLandscapeMode
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.activity_introduction.*
 
@@ -31,7 +31,7 @@ class IntroductionActivity : FragmentActivity() {
         gridView.adapter = adapter
         gridView.isEnabled = false
 
-        val columns = if (isLandscapeMode(this)) 4 else 3
+        val columns = if (isLandscapeMode) 4 else 3
         gridView.layoutManager = GridLayoutManager(this, columns)
     }
 
