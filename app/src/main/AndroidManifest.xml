@@ -78,11 +78,6 @@
             android:label="@string/watchlist" />
 
         <receiver android:name=".utils.NotificationPublisher" />
-
-        <activity
-            android:name=".splash.home.HomeActivity"
-            android:exported="true"
-            android:label="@string/app_name" />
     </application>
 
 </manifest>

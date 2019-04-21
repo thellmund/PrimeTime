@@ -183,7 +183,7 @@ class WatchlistFragment : Fragment(),
                     // movie.undelete()
                     restoreInViewPager(movie, position)
                 }
-                .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
+                // TODO .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
                 .show()
     }
 

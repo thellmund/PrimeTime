@@ -19,10 +19,6 @@ public class Constants {
     public static final String KEY_PLAY_STORE = "primetime_rate_playstore";
     public static final String KEY_ABOUT = "primetime_about_app";
 
-    public static final int MOVIE_RECOMMENDATION = -2;
-    public static final int NOW_PLAYING_RECOMMENDATION = -4;
-    public static final int UPCOMING_RECOMMENDATION = -5;
-
     public final static float ENABLED = 1.0f;
     public final static float DISABLED = 0.4f;
 

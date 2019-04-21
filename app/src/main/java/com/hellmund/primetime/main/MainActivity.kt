@@ -1,5 +1,8 @@
 package com.hellmund.primetime.main
 
+import android.content.Context
+import android.content.Intent
+import android.content.Intent.getIntent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -108,7 +111,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
+
         private const val SHORTCUT_EXTRA = "intent"
+
+        fun newIntent(
+                context: Context,
+                action: String? = null
+        ): Intent {
+            val intent = Intent(context, MainActivity::class.java)
+            action?.let {
+                intent.putExtra(SHORTCUT_EXTRA, it)
+            }
+            return intent
+        }
+
     }
 
 }

@@ -1,6 +1,7 @@
 package com.hellmund.primetime.introduction
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
@@ -38,6 +39,10 @@ class IntroductionActivity : FragmentActivity() {
     private fun openGenresSelection() {
         val intent = Intent(this, SelectGenreActivity::class.java)
         startActivity(intent)
+    }
+
+    companion object {
+        fun newIntent(context: Context) = Intent(context, IntroductionActivity::class.java)
     }
 
 }

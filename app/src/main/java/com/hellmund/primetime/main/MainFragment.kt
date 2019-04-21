@@ -50,50 +50,23 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // presenter.attachView(this)
-        // presenter.loadIndices()
-
-        // setToolbarSubtitle()
         setToolbarSubtitle(type)
-
         viewModel.viewState.observe(this, this::render)
-
-        /*if (intentExtra != null) {
-            // setupIntentRecommendations(intentExtra)
-        } else if (displaySingleMovieRecommendation()) {
-            // setupSingleMovieRecommendations()
-        }*/
-
-        // presenter.downloadRecommendationsAsync()
     }
 
     private fun render(viewState: MainViewState) {
-        val viewStateInt = if (viewState.isError) Constants.ERROR_STATE else Constants.IDEAL_STATE
-        // setToolbarSubtitle(viewState.recommendationsType)
-
         val margin = round(resources.getDimension(R.dimen.default_space))
+
+        val adapter = SuggestionsAdapter(requireFragmentManager(), this)
+        adapter.movies = viewState.data
+        adapter.pageWidth = if (requireContext().isLandscapeMode) 0.5f else 1.0f
+
+        suggestions.adapter = adapter
         suggestions.pageMargin = margin
 
-        suggestions.adapter = SuggestionsAdapter(requireFragmentManager(), requireContext(), viewStateInt, this, viewState.data)
         progressBar.visibility = if (viewState.isLoading) View.VISIBLE else View.GONE
         suggestions.visibility = if (viewState.isLoading) View.GONE else View.VISIBLE
     }
-
-    /*private fun onOpenRatingDialog(position: Int) {
-        val options = arrayOf(
-                getString(com.hellmund.primetime.R.string.show_more_like_this),
-                getString(com.hellmund.primetime.R.string.show_less_like_this)
-        )
-
-        AlertDialog.Builder(requireContext())
-                .setTitle(getString(com.hellmund.primetime.R.string.adjust_recommendations))
-                .setItems(options) { _, which ->
-                    val rating = if (which == 0) Constants.LIKE else Constants.DISLIKE
-                    // presenter.addMovieRating(position, rating)
-                }
-                .setCancelable(true)
-                .show()
-    }*/
 
     private fun setToolbarSubtitle(type: RecommendationsType) {
         val title = when (type) {
@@ -105,49 +78,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
         }
         (requireActivity() as AppCompatActivity).supportActionBar?.title = title
     }
-
-    /*private fun displaySingleMovieRecommendation(): Boolean {
-        val shouldDisplay = requireActivity().intent.getBooleanExtra(Constants.SINGLE_MOVIE, false)
-        requireActivity().intent.removeExtra(Constants.SINGLE_MOVIE)
-        return shouldDisplay
-    }*/
-
-    /*private fun setupSingleMovieRecommendations() {
-        val intent = requireActivity().intent
-        presenter.setupSingleMovieRecommendations(
-                intent.getIntExtra(Constants.MOVIE_ID, 0),
-                intent.getStringExtra(Constants.MOVIE_TITLE)
-        )
-    }
-
-    private fun setupIntentRecommendations(intentExtra: String) {
-        presenter.setupCategoryRecommendations(intentExtra)
-    }*/
-
-    /*private fun onMovieRatingAdded(id: Int, rating: Int) {
-        // displayRatingSnackbar(suggestions.currentItem, id, rating)
-        suggestions.scrollToNext()
-    }*/
-
-    /*private fun displayRatingSnackbar(position: Int, id: Int, rating: Int) {
-        val message = if (rating == Constants.LIKE) {
-            getString(R.string.will_more_like_this)
-        } else {
-            getString(R.string.will_less_like_this)
-        }
-
-        val movie = presenter.getMovieAt(position)
-        // History.add(movie, rating)
-
-        Snackbar.make(suggestions, message, Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo) {
-                    suggestions.currentItem = position
-                    presenter.showUndoToast(id, rating)
-                    // History.remove(id);
-                }
-                .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
-                .show()
-    }*/
 
     private fun openSettings() {
         val intent = Intent(requireContext(), SettingsActivity::class.java)

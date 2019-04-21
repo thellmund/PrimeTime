@@ -156,118 +156,12 @@ public class WatchlistMovieFragment extends Fragment {
         compositeDisposable.add(disposable);*/
     }
 
-    /*private void downloadRuntime() {
-        getActivity().getSupportLoaderManager().initLoader(mMovie.getID(), null,
-                new LoaderManager.LoaderCallbacks<Integer>() {
-            @Override
-            public Loader<Integer> onCreateLoader(int id, Bundle args) {
-                return new DownloadRuntimeLoader(getActivity(), mMovie.getID());
-            }
-
-            @Override
-            public void onLoadFinished(Loader<Integer> loader, Integer runtime) {
-                if (runtime != null && runtime > 0) {
-                    mMovie.setRuntime(runtime);
-                    //Watchlist.update(mMovie);
-                    //RealmManager.updateWatchlistMovie(mMovie);
-                    mRuntimeTextView.setText(DateUtils.formatRuntime(runtime));
-                } else {
-                    mRuntimeTextView.setText(mContext.getString(R.string.not_available));
-                }
-            }
-
-            @Override
-            public void onLoaderReset(Loader<Integer> loader) {}
-        });
-    }*/
-
     @Override
     public void onDestroyView() {
         compositeDisposable.clear();
         mUnbinder.unbind();
         super.onDestroyView();
     }
-
-    /*private static class DownloadRuntimeLoader extends AsyncTaskLoader<Integer> {
-
-        private Integer mResult;
-        private int mId;
-
-        DownloadRuntimeLoader(Context context, int id) {
-            super(context);
-            this.mId = id;
-        }
-
-        @Override
-        protected void onStartLoading() {
-            if (mResult != null) {
-                deliverResult(mResult);
-            } else {
-                forceLoad();
-            }
-        }
-
-        @Override
-        public Integer loadInBackground() {
-            return DownloadManager.downloadRuntime(mId);
-        }
-
-        @Override
-        public void deliverResult(Integer result) {
-            mResult = result;
-            super.deliverResult(result);
-        }
-
-    }*/
-
-    /*
-    private static class DownloadRuntimeTask extends AsyncTask<String, Void, String> {
-
-        private WeakReference<Context> contextRef;
-        private WeakReference<WatchlistMovie> movieRef;
-        private WeakReference<TextView> runtimeViewRef;
-
-        DownloadRuntimeTask(Context context, WatchlistMovie movie, TextView runtimeView) {
-            this.contextRef = new WeakReference<>(context);
-            this.movieRef = new WeakReference<>(movie);
-            this.runtimeViewRef = new WeakReference<>(runtimeView);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            WatchlistMovie movie = movieRef.get();
-
-            if (movie != null) {
-                final int runtime = DownloadManager.downloadRuntime(movie.getID());
-
-                if (runtime > 0) {
-                    movie.setRuntime(formatRuntime(runtime));
-                    RealmManager.updateWatchlistMovie(movie);
-                }
-
-                return formatRuntime(runtime);
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Context context = contextRef.get();
-            TextView runtimeView = runtimeViewRef.get();
-
-            if (context == null || runtimeView == null) {
-                return;
-            }
-
-            if (result == null) {
-                runtimeView.setText(context.getString(R.string.not_available));
-            } else {
-                runtimeView.setText(result);
-            }
-        }
-    }
-    */
 
     public interface OnInteractionListener {
         void onWatchedIt(int position);

@@ -30,7 +30,6 @@ import com.hellmund.primetime.main.RecommendationsRepository
 import com.hellmund.primetime.main.RecommendationsType
 import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.model2.ApiGenre
-import com.hellmund.primetime.search.SearchActivity.DISABLED
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.RealGenresProvider
 import com.hellmund.primetime.utils.isVisible
@@ -342,7 +341,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun clearSearchBarContent() {
-        search_clear.alpha = DISABLED
+        search_clear.alpha = 0.7f
         search_box.text.clear()
     }
 
@@ -356,30 +355,6 @@ class SearchFragment : Fragment(), TextWatcher,
 
         return false
     }
-
-    /*private fun downloadQueryResults(query: String) {
-        val loaderManager = requireActivity().supportLoaderManager
-        loaderManager.destroyLoader(0)
-        loaderManager.initLoader(0, null,
-                object : LoaderManager.LoaderCallbacks<ArrayList<SearchResult>> {
-                    override fun onCreateLoader(id: Int, args: Bundle?): Loader<ArrayList<SearchResult>> {
-                        return SearchActivity.QueryTaskLoader(requireContext(), query)
-                    }
-
-                    override fun onLoadFinished(loader: Loader<ArrayList<SearchResult>>,
-                                                data: ArrayList<SearchResult>) {
-                        if (data.isNotEmpty()) {
-                            val adapter = SearchAdapter(requireContext(), data, this@SearchFragment::showSimilarMovies)
-                            results_list.adapter = adapter
-                            toggleViews(DISPLAY_LIST)
-                        } else {
-                            toggleViews(DISPLAY_EMPTY)
-                        }
-                    }
-
-                    override fun onLoaderReset(loader: Loader<ArrayList<SearchResult>>) {}
-                })
-    }*/
 
     private fun showSimilarMovies(searchResult: SearchResult) {
         val type = RecommendationsType.BasedOnMovie(searchResult.id, searchResult.title)
