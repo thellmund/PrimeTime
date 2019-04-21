@@ -58,6 +58,9 @@ interface ApiService {
     @GET("search/movie")
     fun search(@Query("query") query: String): Observable<RecommendationsResponse>
 
+    @GET("movie/popular")
+    fun popular(): Observable<RecommendationsResponse>
+
 }
 
 object ApiClient {

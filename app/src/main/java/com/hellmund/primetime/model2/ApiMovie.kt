@@ -12,7 +12,7 @@ import java.util.*
 @Parcelize
 data class ApiMovie(
         val id: Int,
-        @SerializedName("poster_path") val posterUrl: String,
+        @SerializedName("poster_path") val posterPath: String,
         val title: String,
         @SerializedName("genre_ids") val genreIds: List<Int>,
         @SerializedName("overview") val description: String,
@@ -27,6 +27,9 @@ data class ApiMovie(
         get() {
             return runtime != null && imdbId != null
         }
+
+    val fullPosterUrl: String
+        get() = "http://image.tmdb.org/t/p/w500$posterPath"
 
     fun getPrettyGenres(context: Context): String {
         return genreIds

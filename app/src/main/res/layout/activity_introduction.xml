@@ -19,7 +19,7 @@
         android:alpha="0.6"
         android:background="@android:color/black" />
 
-    <!-- Movie poster grid view -->
+    <!-- Movie posterPath grid view -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

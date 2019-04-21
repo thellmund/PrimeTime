@@ -8,11 +8,14 @@ import java.util.*
 data class Sample(
         val id: Int,
         val title: String,
-        @SerializedName("poster_path") val poster: String,
+        @SerializedName("poster_path") val posterPath: String,
         val popularity: Double,
         val releaseDate: Date,
         var selected: Boolean = false
 ) {
+
+    val fullPosterUrl: String
+        get() = "http://image.tmdb.org/t/p/w500$posterPath"
 
     fun toggleSelected() {
         selected = selected.not()

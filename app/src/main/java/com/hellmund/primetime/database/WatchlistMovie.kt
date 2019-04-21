@@ -21,6 +21,9 @@ data class WatchlistMovie(
         var notificationsActivated: Boolean = true
 ): Parcelable {
 
+    val fullPosterUrl: String
+        get() = "http://image.tmdb.org/t/p/w500$posterURL"
+
     val isUnreleased: Boolean
         get() {
             val today = DateUtils.getMidnightCalendar().time
@@ -39,7 +42,7 @@ data class WatchlistMovie(
             return WatchlistMovie(
                     movie.id,
                     movie.title,
-                    movie.posterUrl,
+                    movie.posterPath,
                     movie.runtime ?: -1, // TODO
                     movie.releaseDate ?: Date())
         }

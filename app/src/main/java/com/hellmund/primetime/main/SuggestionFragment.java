@@ -40,7 +40,6 @@ import com.hellmund.primetime.history.HistoryRepository;
 import com.hellmund.primetime.model2.ApiMovie;
 import com.hellmund.primetime.utils.DeviceUtils;
 import com.hellmund.primetime.utils.Dialogs;
-import com.hellmund.primetime.utils.DownloadUtils;
 import com.hellmund.primetime.utils.GenresProvider;
 import com.hellmund.primetime.utils.RealGenresProvider;
 import com.hellmund.primetime.utils.UiUtils;
@@ -208,7 +207,7 @@ public class SuggestionFragment extends Fragment {
     }
 
     private void downloadPoster() {
-        final String url = DownloadUtils.getPosterURL(requireContext(), movie.getPosterUrl());
+        final String url = movie.getFullPosterUrl();
         Glide.with(requireContext())
                 .load(url)
                 .apply(RequestOptions.centerCropTransform())

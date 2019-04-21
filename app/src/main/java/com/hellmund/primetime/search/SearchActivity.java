@@ -1,16 +1,9 @@
 package com.hellmund.primetime.search;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.AsyncTaskLoader;
 import android.support.v7.app.AppCompatActivity;
 
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.model.SearchResult;
-import com.hellmund.primetime.utils.DownloadManager;
-
-import java.util.ArrayList;
-import java.util.Date;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -329,7 +322,7 @@ public class SearchActivity extends AppCompatActivity {
         });
     }*/
 
-    public static class QueryTaskLoader extends AsyncTaskLoader<ArrayList<SearchResult>> {
+    /*public static class QueryTaskLoader extends AsyncTaskLoader<ArrayList<SearchResult>> {
 
         private ArrayList<SearchResult> mResults;
         private String mQuery;
@@ -359,9 +352,9 @@ public class SearchActivity extends AppCompatActivity {
             super.deliverResult(results);
         }
 
-    }
+    }*/
 
-    public static class DownloadRuntimeReleaseLoader extends AsyncTaskLoader<Long[]> {
+    /*public static class DownloadRuntimeReleaseLoader extends AsyncTaskLoader<Long[]> {
 
         private Long[] mResults;
         private int mId;
@@ -400,6 +393,6 @@ public class SearchActivity extends AppCompatActivity {
             super.deliverResult(results);
         }
 
-    }
+    }*/
 
 }

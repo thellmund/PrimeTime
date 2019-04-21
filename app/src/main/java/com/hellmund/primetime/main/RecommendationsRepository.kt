@@ -107,4 +107,11 @@ class RecommendationsRepository(
                 }
     }
 
+    fun fetchPopularMovies(): Observable<List<ApiMovie>> {
+        return apiService
+                .popular()
+                .subscribeOn(Schedulers.io())
+                .map { it.results }
+    }
+
 }

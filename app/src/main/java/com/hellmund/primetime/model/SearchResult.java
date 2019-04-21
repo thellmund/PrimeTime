@@ -4,11 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hellmund.primetime.model2.ApiMovie;
-import com.hellmund.primetime.utils.DateUtils;
-import com.hellmund.primetime.utils.DownloadUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -42,7 +37,7 @@ public class SearchResult implements Parcelable {
         }
     };
 
-    public static SearchResult fromJSON(JSONObject json) {
+    /*public static SearchResult fromJSON(JSONObject json) {
         try {
             final int id = json.getInt("id");
             final String poster = DownloadUtils.getLowResPosterURL(json.getString("poster_path"));
@@ -54,7 +49,7 @@ public class SearchResult implements Parcelable {
         } catch (JSONException e) {
             return null;
         }
-    }
+    }*/
 
     public int getID() {
         return this.id;
@@ -101,7 +96,7 @@ public class SearchResult implements Parcelable {
     }
 
     public static SearchResult fromMovie(ApiMovie movie) {
-        return new SearchResult(movie.getId(), movie.getPosterUrl(), movie.getTitle(),
+        return new SearchResult(movie.getId(), movie.getPosterPath(), movie.getTitle(),
                 movie.getDescription(), movie.getReleaseDate());
     }
 

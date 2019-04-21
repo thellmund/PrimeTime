@@ -14,7 +14,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.model2.Sample;
 import com.hellmund.primetime.utils.Constants;
-import com.hellmund.primetime.utils.DownloadUtils;
 import com.hellmund.primetime.utils.UiUtils;
 
 import java.util.List;
@@ -51,7 +50,9 @@ public class SamplesAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        if (mSamples.get(position).getSelected()) {
+        Sample sample = mSamples.get(position);
+
+        if (sample.getSelected()) {
             holder.container.setAlpha(Constants.ENABLED);
         } else {
             holder.container.setAlpha(Constants.DISABLED);
@@ -59,23 +60,22 @@ public class SamplesAdapter extends BaseAdapter {
 
         holder.container.setOnClickListener(v -> {
             mCallback.onItemSelected(v, position);
-            mSamples.get(position).toggleSelected();
+            sample.toggleSelected();
         });
 
         holder.container.setOnLongClickListener(v -> {
-            UiUtils.showToast(mContext, mSamples.get(position).getTitle());
+            UiUtils.showToast(mContext, sample.getTitle());
             return true;
         });
 
-        final String url = DownloadUtils.getLowResPosterURL(mSamples.get(position).getPoster());
+        final String url = sample.getFullPosterUrl();
         Glide.with(mContext)
                 .load(url)
                 .apply(new RequestOptions().centerCrop())
                 .into(holder.poster);
 
         final int resId = R.string.access_movie_poster_samples;
-        holder.poster.setContentDescription(
-                mContext.getString(resId) + mSamples.get(position).getTitle());
+        holder.poster.setContentDescription(mContext.getString(resId) + sample.getTitle());
 
         return convertView;
     }
@@ -95,11 +95,11 @@ public class SamplesAdapter extends BaseAdapter {
         return position;
     }
 
-    public static class ViewHolder {
+    static class ViewHolder {
         @BindView(R.id.container) FrameLayout container;
         @BindView(R.id.posterImageView) ImageView poster;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
 

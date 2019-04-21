@@ -14,7 +14,6 @@ import com.hellmund.primetime.R;
 import com.hellmund.primetime.database.PrimeTimeDatabase;
 import com.hellmund.primetime.database.WatchlistMovie;
 import com.hellmund.primetime.utils.DateUtils;
-import com.hellmund.primetime.utils.DownloadUtils;
 import com.hellmund.primetime.utils.NotificationUtils;
 import com.hellmund.primetime.utils.UiUtils;
 
@@ -77,7 +76,7 @@ public class WatchlistMovieFragment extends Fragment {
                 R.layout.fragment_watchlist_item, container, false);
         mUnbinder = ButterKnife.bind(this, view);
 
-        String posterUrl = DownloadUtils.getPosterURL(requireContext(), mMovie.getPosterURL());
+        String posterUrl = mMovie.getFullPosterUrl();
         Glide.with(requireActivity())
              .load(posterUrl)
              .into(mImageView);

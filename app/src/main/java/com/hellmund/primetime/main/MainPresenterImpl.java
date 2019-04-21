@@ -1,18 +1,13 @@
 package com.hellmund.primetime.main;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.model.HistoryMovie;
 import com.hellmund.primetime.model.Movie;
 import com.hellmund.primetime.utils.Constants;
-import com.hellmund.primetime.utils.DownloadManager;
 import com.hellmund.primetime.utils.GenreUtils;
 import com.hellmund.primetime.utils.UiUtils;
 
@@ -42,10 +37,10 @@ class MainPresenterImpl implements MainContract.Presenter {
 
     }
 
-    void restoreState(FragmentActivity activity) {
+    /*void restoreState(FragmentActivity activity) {
         this.mContext = activity.getApplicationContext();
         this.mActivity = activity;
-    }
+    }*/
 
     /*public void loadIndices() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -192,7 +187,7 @@ class MainPresenterImpl implements MainContract.Presenter {
     public void downloadRecommendationsAsync() {
         // mView.onDownloadStart();
 
-        mActivity.getSupportLoaderManager().initLoader(Constants.RECOMMENDATIONS_LOADER, null,
+        /*mActivity.getSupportLoaderManager().initLoader(Constants.RECOMMENDATIONS_LOADER, null,
                 new LoaderManager.LoaderCallbacks<ArrayList<Movie>>() {
                     @Override
                     public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
@@ -224,7 +219,7 @@ class MainPresenterImpl implements MainContract.Presenter {
                     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
                         mRecommendations = null;
                     }
-                });
+                });*/
     }
 
     @Override
@@ -258,7 +253,7 @@ class MainPresenterImpl implements MainContract.Presenter {
         dest.writeInt(mMovieID);
     }*/
 
-    private static class DownloadMoviesLoader extends AsyncTaskLoader<ArrayList<Movie>> {
+    /*private static class DownloadMoviesLoader extends AsyncTaskLoader<ArrayList<Movie>> {
 
         private Context context;
 
@@ -306,6 +301,6 @@ class MainPresenterImpl implements MainContract.Presenter {
             super.deliverResult(data);
         }
 
-    }
+    }*/
 
 }
