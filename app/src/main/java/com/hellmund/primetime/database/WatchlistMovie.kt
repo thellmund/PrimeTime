@@ -26,7 +26,7 @@ data class WatchlistMovie(
 
     val isUnreleased: Boolean
         get() {
-            val today = DateUtils.getMidnightCalendar().time
+            val today = DateUtils.startOfDay().time
             return releaseDate.after(today)
         }
 

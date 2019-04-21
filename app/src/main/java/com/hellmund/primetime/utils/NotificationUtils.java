@@ -14,10 +14,11 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.model.WatchlistMovie;
+import com.hellmund.primetime.database.WatchlistMovie;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class NotificationUtils {
 
@@ -40,7 +41,7 @@ public class NotificationUtils {
         }
     }
 
-    static Notification buildNotification(Context context, ArrayList<WatchlistMovie> movies) {
+    static Notification buildNotification(Context context, List<WatchlistMovie> movies) {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
         for (int i = 0; i < movies.size(); i++) {
@@ -81,7 +82,7 @@ public class NotificationUtils {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, 0);
 
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Calendar cal = DateUtils.getMidnightCalendar();
+        Calendar cal = DateUtils.startOfDay();
         cal.set(Calendar.HOUR_OF_DAY, 9);
 
         if (alarmMgr != null) {

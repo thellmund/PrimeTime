@@ -10,12 +10,21 @@ import java.util.Locale;
 
 public class DateUtils {
 
-    public static Calendar getMidnightCalendar() {
+    public static Calendar startOfDay() {
         Calendar result = Calendar.getInstance();
         result.set(Calendar.HOUR, 0);
         result.set(Calendar.MINUTE, 0);
         result.set(Calendar.SECOND, 0);
         result.set(Calendar.MILLISECOND, 0);
+        return result;
+    }
+
+    public static Calendar endOfDay() {
+        Calendar result = Calendar.getInstance();
+        result.set(Calendar.HOUR, 23);
+        result.set(Calendar.MINUTE, 59);
+        result.set(Calendar.SECOND, 59);
+        result.set(Calendar.MILLISECOND, 999);
         return result;
     }
 
@@ -25,15 +34,6 @@ public class DateUtils {
             return new SimpleDateFormat("yyyy-MM-dd").parse(str);
         } catch (ParseException e) {
             return null;
-        }
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    public static long getEpochFromString(String dateStr) {
-        try {
-            return new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").parse(dateStr).getTime();
-        } catch (ParseException e) {
-            return -1;
         }
     }
 

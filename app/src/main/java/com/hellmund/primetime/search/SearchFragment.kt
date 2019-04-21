@@ -28,8 +28,8 @@ import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.main.MainFragment
 import com.hellmund.primetime.main.RecommendationsRepository
 import com.hellmund.primetime.main.RecommendationsType
-import com.hellmund.primetime.model.ApiGenre
 import com.hellmund.primetime.model.SearchResult
+import com.hellmund.primetime.model2.ApiGenre
 import com.hellmund.primetime.search.SearchActivity.DISABLED
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.RealGenresProvider
