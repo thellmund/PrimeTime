@@ -3,6 +3,7 @@ package com.hellmund.primetime.introduction
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProvider
 import com.hellmund.primetime.main.MoviesRepository
 import com.hellmund.primetime.utils.plusAssign
 import io.reactivex.disposables.CompositeDisposable
@@ -30,6 +31,15 @@ class IntroductionViewModel(
     override fun onCleared() {
         compositeDisposable.dispose()
         super.onCleared()
+    }
+
+    class Factory(
+            private val repository: MoviesRepository
+    ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return IntroductionViewModel(repository) as T
+        }
     }
 
 }

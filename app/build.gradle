@@ -11,7 +11,7 @@ android {
         applicationId "com.hellmund.primetime"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 211
+        versionCode 300
         versionName "3.0.0"
 
         renderscriptTargetApi 20
@@ -57,8 +57,8 @@ dependencies {
     implementation 'com.android.support:customtabs:27.1.1'
     implementation 'com.android.support:palette-v7:27.1.1'
 
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'com.github.bumptech.glide:glide:4.4.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.13.1'
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'me.relex:circleindicator:1.2.1@aar'
     implementation 'com.jakewharton:butterknife:8.8.1'
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'

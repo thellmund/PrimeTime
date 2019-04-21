@@ -9,10 +9,15 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.hellmund.primetime.R
+import com.hellmund.primetime.api.ApiClient
+import com.hellmund.primetime.main.MoviesRepository
 import com.hellmund.primetime.selectgenres.SelectGenreActivity
+import com.hellmund.primetime.utils.GenresProvider
+import com.hellmund.primetime.utils.RealGenresProvider
 import com.hellmund.primetime.utils.isLandscapeMode
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.activity_introduction.*
+import org.jetbrains.anko.defaultSharedPreferences
 
 class IntroductionActivity : FragmentActivity() {
 
@@ -22,7 +27,10 @@ class IntroductionActivity : FragmentActivity() {
 
         introductionButton.setOnClickListener { openGenresSelection() }
 
-        val viewModel = ViewModelProviders.of(this).get(IntroductionViewModel::class.java)
+        val genresProvider: GenresProvider = RealGenresProvider(defaultSharedPreferences)
+        val moviesRepo = MoviesRepository(ApiClient.instance, genresProvider)
+        val factory = IntroductionViewModel.Factory(moviesRepo)
+        val viewModel = ViewModelProviders.of(this, factory).get(IntroductionViewModel::class.java)
         viewModel.posterUrls.observe(this, this::displayResults)
     }
 
