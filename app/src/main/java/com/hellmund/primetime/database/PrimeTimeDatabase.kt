@@ -10,7 +10,10 @@ object PrimeTimeDatabase {
     @JvmStatic
     fun getInstance(context: Context): AppDatabase {
         if (instance == null) {
-            instance = Room.databaseBuilder(context, AppDatabase::class.java, "db").build()
+            instance = Room
+                    .databaseBuilder(context, AppDatabase::class.java, "db")
+                    .allowMainThreadQueries() // TODO
+                    .build()
         }
 
         return instance!!

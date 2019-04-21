@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.hellmund.primetime.database.HistoryMovie
 import com.hellmund.primetime.history.HistoryRepository
-import com.hellmund.primetime.main.RecommendationsRepository
+import com.hellmund.primetime.main.MoviesRepository
 import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
@@ -45,7 +45,7 @@ sealed class Result {
 }
 
 class SearchViewModel(
-        private val repository: RecommendationsRepository,
+        private val repository: MoviesRepository,
         private val historyRepository: HistoryRepository
 ) : ViewModel() {
 
@@ -128,7 +128,7 @@ class SearchViewModel(
     }
 
     class Factory(
-            private val repository: RecommendationsRepository,
+            private val repository: MoviesRepository,
             private val historyRepository: HistoryRepository
     ) : ViewModelProvider.Factory {
 

@@ -20,8 +20,8 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
         RealGenresProvider(defaultSharedPreferences)
     }
 
-    private val repository: RecommendationsRepository by lazy {
-        RecommendationsRepository(ApiClient.instance, genreProvider)
+    private val repository: MoviesRepository by lazy {
+        MoviesRepository(ApiClient.instance, genreProvider)
     }
 
     private val viewModel: MainViewModel by lazy {

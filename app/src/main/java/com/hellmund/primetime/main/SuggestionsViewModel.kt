@@ -42,7 +42,7 @@ sealed class Rating(val movie: ApiMovie) {
 }
 
 class SuggestionsViewModel(
-        private val repository: RecommendationsRepository,
+        private val repository: MoviesRepository,
         private val historyRepository: HistoryRepository,
         private val watchlistRepository: WatchlistRepository,
         private var movie: ApiMovie
@@ -201,7 +201,7 @@ class SuggestionsViewModel(
     }
 
     class Factory(
-            private val repository: RecommendationsRepository,
+            private val repository: MoviesRepository,
             private val historyRepository: HistoryRepository,
             private val watchlistRepository: WatchlistRepository,
             private val movie: ApiMovie

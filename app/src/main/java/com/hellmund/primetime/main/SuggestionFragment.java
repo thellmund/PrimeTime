@@ -116,7 +116,7 @@ public class SuggestionFragment extends Fragment {
         AppDatabase database = PrimeTimeDatabase.getInstance(requireContext());
 
         GenresProvider provider = new RealGenresProvider(sharedPrefs);
-        RecommendationsRepository repository = new RecommendationsRepository(ApiClient.getInstance(), provider);
+        MoviesRepository repository = new MoviesRepository(ApiClient.getInstance(), provider);
         HistoryRepository historyRepository = new HistoryRepository(database);
         WatchlistRepository watchlistRepository = new WatchlistRepository(database);
 

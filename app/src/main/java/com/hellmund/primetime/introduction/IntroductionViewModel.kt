@@ -3,12 +3,12 @@ package com.hellmund.primetime.introduction
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.hellmund.primetime.main.RecommendationsRepository
+import com.hellmund.primetime.main.MoviesRepository
 import com.hellmund.primetime.utils.plusAssign
 import io.reactivex.disposables.CompositeDisposable
 
 class IntroductionViewModel(
-        private val repository: RecommendationsRepository
+        private val repository: MoviesRepository
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()

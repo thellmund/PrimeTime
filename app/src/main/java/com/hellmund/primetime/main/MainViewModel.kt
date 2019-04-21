@@ -36,7 +36,7 @@ sealed class Result {
 }
 
 class MainViewModel(
-        private val repository: RecommendationsRepository
+        private val repository: MoviesRepository
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -92,7 +92,7 @@ class MainViewModel(
     }
 
     class Factory(
-            private val repository: RecommendationsRepository
+            private val repository: MoviesRepository
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")

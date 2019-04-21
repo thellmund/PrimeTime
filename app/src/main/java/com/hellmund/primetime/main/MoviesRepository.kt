@@ -7,7 +7,7 @@ import com.hellmund.primetime.utils.GenresProvider
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
-class RecommendationsRepository(
+class MoviesRepository(
         private val apiService: ApiService,
         private val genresProvider: GenresProvider
 ) {

@@ -26,7 +26,7 @@ import com.hellmund.primetime.database.PrimeTimeDatabase
 import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.main.MainFragment
-import com.hellmund.primetime.main.RecommendationsRepository
+import com.hellmund.primetime.main.MoviesRepository
 import com.hellmund.primetime.main.RecommendationsType
 import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.model2.ApiGenre
@@ -46,7 +46,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private val viewModel: SearchViewModel by lazy {
         val genresProvider = RealGenresProvider(defaultSharedPreferences)
-        val repository = RecommendationsRepository(ApiClient.instance, genresProvider)
+        val repository = MoviesRepository(ApiClient.instance, genresProvider)
         val historyRepository = HistoryRepository(PrimeTimeDatabase.getInstance(requireContext()))
         val factory = SearchViewModel.Factory(repository, historyRepository)
         ViewModelProviders.of(requireActivity(), factory).get(SearchViewModel::class.java)
