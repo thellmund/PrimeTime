@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import com.hellmund.primetime.R
 import com.hellmund.primetime.api.ApiClient
+import com.hellmund.primetime.main.RecommendationsType.Personalized
 import com.hellmund.primetime.settings.SettingsActivity
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -26,7 +27,10 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
     private val viewModel: MainViewModel by lazy {
         val factory = MainViewModel.Factory(repository)
-        ViewModelProviders.of(requireActivity(), factory).get(MainViewModel::class.java)
+        when (type) {
+            Personalized -> ViewModelProviders.of(requireActivity(), factory).get(MainViewModel::class.java)
+            else -> ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
+        }
     }
 
     private val type: RecommendationsType by lazy {
@@ -36,7 +40,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
         viewModel.refresh(type)
     }
 
@@ -70,7 +73,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
     private fun setToolbarSubtitle(type: RecommendationsType) {
         val title = when (type) {
-            is RecommendationsType.Personalized -> getString(R.string.app_name)
+            is Personalized -> getString(R.string.app_name)
             is RecommendationsType.BasedOnMovie -> type.title
             is RecommendationsType.NowPlaying -> getString(R.string.now_playing)
             is RecommendationsType.Upcoming -> getString(R.string.upcoming)
@@ -120,7 +123,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
         @JvmStatic
         fun newInstance(
-                type: RecommendationsType = RecommendationsType.Personalized
+                type: RecommendationsType = Personalized
         ) = MainFragment().apply {
             arguments = Bundle().apply { putParcelable(KEY_RECOMMENDATIONS_TYPE, type) }
         }

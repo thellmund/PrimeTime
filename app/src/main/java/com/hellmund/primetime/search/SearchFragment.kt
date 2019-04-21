@@ -170,13 +170,14 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun onCategorySelected(category: String) {
-        val genre = genreDao.getGenre(category).blockingGet()
-        val apiGenre = ApiGenre(genre.id, genre.name)
-
         val type = when (category) {
             "Now playing" -> RecommendationsType.NowPlaying
             "Upcoming" -> RecommendationsType.Upcoming
-            else -> RecommendationsType.ByGenre(apiGenre)
+            else -> {
+                val genre = genreDao.getGenre(category).blockingGet()
+                val apiGenre = ApiGenre(genre.id, genre.name)
+                RecommendationsType.ByGenre(apiGenre)
+            }
         }
 
         requireFragmentManager()
