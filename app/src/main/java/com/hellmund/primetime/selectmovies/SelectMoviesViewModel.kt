@@ -18,20 +18,20 @@ data class SelectMoviesViewState(
         val isLoading: Boolean = false,
         val error: Throwable? = null
 ) {
-
     val isError: Boolean
         get() = error != null
-
 }
 
 sealed class Action {
     object Refresh : Action()
+    data class Selected(val sample: Sample) : Action()
 }
 
 sealed class Result {
     object Loading : Result()
     data class Data(val data: List<Sample>) : Result()
     data class Error(val error: Throwable) : Result()
+    data class SelectionChanged(val sample: Sample) : Result()
 }
 
 class SelectMoviesViewModel(
@@ -56,7 +56,8 @@ class SelectMoviesViewModel(
 
     private fun processAction(action: Action): Observable<Result> {
         return when (action) {
-            Action.Refresh -> fetchMovies()
+            is Action.Refresh -> fetchMovies()
+            is Action.Selected -> toggleSelection(action.sample)
         }
     }
 
@@ -69,14 +70,27 @@ class SelectMoviesViewModel(
                 .startWith(Result.Loading)
     }
 
+    private fun toggleSelection(sample: Sample): Observable<Result> {
+        val newSample = sample.copy(selected = sample.selected.not())
+        return Observable.just(Result.SelectionChanged(newSample))
+    }
+
     private fun reduceState(
             viewState: SelectMoviesViewState,
             result: Result
     ): SelectMoviesViewState {
         return when (result) {
-            Result.Loading -> viewState.copy(isLoading = true, error = null)
+            is Result.Loading -> viewState.copy(isLoading = true, error = null)
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
             is Result.Error -> viewState.copy(isLoading = false, error = result.error)
+            is Result.SelectionChanged -> {
+                // TODO Clean up
+                val items = viewState.data
+                val index = items.indexOfFirst { it.id == result.sample.id }
+                val newItems = items.toMutableList()
+                newItems[index] = result.sample
+                viewState.copy(data = newItems)
+            }
         }
     }
 
@@ -86,6 +100,10 @@ class SelectMoviesViewModel(
 
     fun refresh() {
         refreshRelay.accept(Action.Refresh)
+    }
+
+    fun onItemClick(sample: Sample) {
+        refreshRelay.accept(Action.Selected(sample))
     }
 
     fun store(movies: List<Sample>) {

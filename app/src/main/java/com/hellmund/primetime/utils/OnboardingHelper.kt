@@ -7,10 +7,11 @@ class OnboardingHelper(
         private val context: Context
 ) {
 
-    val isFirstLaunch: Boolean
+    var isFirstLaunch: Boolean
         get() = context.defaultSharedPreferences.getBoolean(KEY_FIRST_LAUNCH, true)
-
-
+        set(value) {
+            context.defaultSharedPreferences.edit().putBoolean(KEY_FIRST_LAUNCH, value).apply()
+        }
 
     companion object {
         private const val KEY_FIRST_LAUNCH = "firstLaunchOfPrimeTime"

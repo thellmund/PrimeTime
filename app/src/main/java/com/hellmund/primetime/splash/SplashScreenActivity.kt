@@ -17,7 +17,7 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
-        if (onboardingHelper.isFirstLaunch) {
+        if (true) { // TODO onboardingHelper.isFirstLaunch) {
             openIntroduction()
         } else {
             openMain()

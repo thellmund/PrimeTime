@@ -20,13 +20,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SamplesAdapter extends BaseAdapter {
+@Deprecated
+public class LegacySamplesAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Sample> mSamples;
     private OnInteractionListener mCallback;
 
-    SamplesAdapter(Activity activity, List<Sample> samples) {
+    LegacySamplesAdapter(Activity activity, List<Sample> samples) {
         this.mContext = activity.getApplicationContext();
         this.mSamples = samples;
         this.mCallback = (OnInteractionListener) activity;
@@ -59,7 +60,7 @@ public class SamplesAdapter extends BaseAdapter {
 
         holder.container.setOnClickListener(v -> {
             mCallback.onItemSelected(v, position);
-            sample.toggleSelected();
+            // sample.toggleSelected();
         });
 
         holder.container.setOnLongClickListener(v -> {

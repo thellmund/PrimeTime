@@ -36,21 +36,13 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <GridView
-            android:id="@+id/grid_view"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/gridView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:horizontalSpacing="@dimen/activity_margin"
-            android:numColumns="3"
-            android:paddingStart="@dimen/default_space"
-            android:paddingTop="@dimen/default_space"
-            android:paddingEnd="@dimen/default_space"
             android:paddingBottom="80dp"
-            android:scrollbars="none"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="@dimen/activity_margin"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button"

@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.request.RequestOptions
 import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.Transformation
@@ -30,10 +29,6 @@ class PostersAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(posterUrl: String, imageLoader: ImageLoader) {
-            val options = RequestOptions()
-                    .placeholder(R.drawable.poster_placeholder)
-                    .centerCrop()
-
             imageLoader.load(
                     url = posterUrl,
                     into = itemView.posterImageView,

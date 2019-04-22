@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.hellmund.primetime.R;
@@ -18,9 +20,11 @@ import com.hellmund.primetime.database.PrimeTimeDatabase;
 import com.hellmund.primetime.history.HistoryRepository;
 import com.hellmund.primetime.main.MainActivity;
 import com.hellmund.primetime.model2.Sample;
+import com.hellmund.primetime.search.EqualSpacingGridItemDecoration;
 import com.hellmund.primetime.selectgenres.GenresRepository;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.NetworkUtils;
+import com.hellmund.primetime.utils.OnboardingHelper;
 import com.hellmund.primetime.utils.UiUtils;
 
 import java.util.ArrayList;
@@ -30,19 +34,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kotlin.Unit;
 
 public class SelectMoviesActivity extends AppCompatActivity
-        implements SamplesAdapter.OnInteractionListener {
+        implements LegacySamplesAdapter.OnInteractionListener {
 
     private final static int MIN_COUNT = 4;
 
+    // TODO Remove
     private List<Sample> mSamples;
     private HashSet<Integer> mSelected;
 
     private SharedPreferences mSharedPrefs;
 
-    @BindView(R.id.grid_view)
-    GridView mGridView;
+    @BindView(R.id.gridView)
+    RecyclerView recyclerView;
 
     @BindView(R.id.button)
     AppCompatButton mSaveButton;
@@ -51,6 +57,9 @@ public class SelectMoviesActivity extends AppCompatActivity
     LinearLayout mErrorContainer;
 
     private ProgressDialog mProgressDialog;
+    private SamplesAdapter adapter;
+
+    private OnboardingHelper onboardingHelper;
 
     private SelectMoviesViewModel viewModel;
 
@@ -59,8 +68,12 @@ public class SelectMoviesActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_movie);
 
-        getWindow().setBackgroundDrawable(null);
         ButterKnife.bind(this);
+        setupRecyclerView();
+
+        onboardingHelper = new OnboardingHelper(this);
+
+        mSaveButton.setOnClickListener(v -> saveMovies());
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         GenresRepository genresRepo = new GenresRepository(ApiClient.getInstance(), PrimeTimeDatabase.getInstance(this));
@@ -74,6 +87,20 @@ public class SelectMoviesActivity extends AppCompatActivity
         viewModel.getViewState().observe(this, this::render);
     }
 
+    private void setupRecyclerView() {
+        adapter = new SamplesAdapter(sample -> {
+            viewModel.onItemClick(sample);
+            return Unit.INSTANCE;
+        });
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+
+        final int spacing = Math.round(getResources().getDimension(R.dimen.default_space));
+        recyclerView.addItemDecoration(new EqualSpacingGridItemDecoration(spacing, 3));
+    }
+
     private void render(SelectMoviesViewState viewState) {
         mSamples = viewState.getData();
 
@@ -85,15 +112,16 @@ public class SelectMoviesActivity extends AppCompatActivity
         }
 
         if (viewState.isError()) {
-            mGridView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
             mErrorContainer.setVisibility(View.VISIBLE);
             mSaveButton.setVisibility(View.GONE);
         } else {
-            SamplesAdapter adapter = new SamplesAdapter(this, mSamples);
+            /*SamplesAdapter adapter = new SamplesAdapter(this, mSamples);
             mGridView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();*/
+            adapter.update(mSamples);
 
-            mGridView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
             mErrorContainer.setVisibility(View.GONE);
             mSaveButton.setVisibility(View.VISIBLE);
         }
@@ -138,8 +166,7 @@ public class SelectMoviesActivity extends AppCompatActivity
         mProgressDialog.setCancelable(false);
     }
 
-    @OnClick(R.id.button)
-    public void saveMovies() {
+    private void saveMovies() {
         if (!mSaveButton.isEnabled()) {
             UiUtils.showToast(this, getString(R.string.select_at_least, MIN_COUNT));
         }
@@ -154,7 +181,7 @@ public class SelectMoviesActivity extends AppCompatActivity
     }
 
     private void markIntroDone() {
-        mSharedPrefs.edit().putBoolean("firstLaunchOfPrimeTime", false).apply();
+        onboardingHelper.setFirstLaunch(false);
     }
 
     private void openRecommendations() {
@@ -164,13 +191,16 @@ public class SelectMoviesActivity extends AppCompatActivity
     }
 
     private void saveSelection() {
-        ArrayList<Sample> results = new ArrayList<>();
-        for (int i = 0; i < mSamples.size(); i++) {
-            if (mSelected.contains(mSamples.get(i).getId())) {
-                results.add(mSamples.get(i));
+        List<Sample> samples = adapter.getItems();
+        List<Sample> selected = new ArrayList<>();
+
+        for (Sample sample : samples) {
+            if (sample.getSelected()) {
+                selected.add(sample);
             }
         }
-        viewModel.store(results);
+
+        viewModel.store(selected);
     }
 
 }

@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.support.v7.widget.RecyclerView
 import android.view.View
 
-class EqualSpacingGridItemDecoration(
+class EqualSpacingGridItemDecoration @JvmOverloads constructor(
         private val spacing: Int,
         private val spanCount: Int = 2
 ) : RecyclerView.ItemDecoration() {
