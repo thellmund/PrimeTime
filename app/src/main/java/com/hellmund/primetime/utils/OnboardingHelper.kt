@@ -2,8 +2,9 @@ package com.hellmund.primetime.utils
 
 import android.content.Context
 import org.jetbrains.anko.defaultSharedPreferences
+import javax.inject.Inject
 
-class OnboardingHelper(
+class OnboardingHelper @Inject constructor(
         private val context: Context
 ) {
 

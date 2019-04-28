@@ -1,22 +1,26 @@
 package com.hellmund.primetime.watchlist
 
 import android.app.AlertDialog
-import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.view.animation.AlphaAnimation
 import com.hellmund.primetime.R
-import com.hellmund.primetime.database.PrimeTimeDatabase
 import com.hellmund.primetime.database.WatchlistMovie
+import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.history.HistoryActivity
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.fragment_watchlist.*
+import javax.inject.Inject
+import javax.inject.Provider
 
 class WatchlistFragment : Fragment(),
         WatchlistMovieFragment.OnInteractionListener, ViewPager.OnPageChangeListener {
@@ -24,11 +28,10 @@ class WatchlistFragment : Fragment(),
     // TODO
     private val movies = mutableListOf<WatchlistMovie>()
 
-    private val viewModel: WatchlistViewModel by lazy {
-        val repository = WatchlistRepository(PrimeTimeDatabase.getInstance(requireContext()))
-        val factory = WatchlistViewModel.Factory(repository)
-        ViewModelProviders.of(requireActivity(), factory).get(WatchlistViewModel::class.java)
-    }
+    @Inject
+    lateinit var viewModelProvider: Provider<WatchlistViewModel>
+
+    private val viewModel: WatchlistViewModel by lazyViewModel { viewModelProvider }
 
     private val adapter: WatchlistAdapter by lazy {
         WatchlistAdapter(requireFragmentManager(), this)
@@ -37,6 +40,11 @@ class WatchlistFragment : Fragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        injector.inject(this)
     }
 
     override fun onCreateView(
@@ -49,12 +57,17 @@ class WatchlistFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
 
         viewPager.adapter = adapter
         indicator.setViewPager(viewPager)
 
         viewModel.viewState.observe(this, this::render)
         viewPager.setOnPageChangeListener(this)
+    }
+
+    private fun initToolbar() {
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.watchlist)
     }
 
     private fun render(viewState: WatchlistViewState) {

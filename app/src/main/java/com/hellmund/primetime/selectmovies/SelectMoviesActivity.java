@@ -1,11 +1,8 @@
 package com.hellmund.primetime.selectmovies;
 
 import android.app.ProgressDialog;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,13 +12,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.api.ApiClient;
-import com.hellmund.primetime.database.PrimeTimeDatabase;
-import com.hellmund.primetime.history.HistoryRepository;
 import com.hellmund.primetime.main.MainActivity;
 import com.hellmund.primetime.model2.Sample;
 import com.hellmund.primetime.search.EqualSpacingGridItemDecoration;
-import com.hellmund.primetime.selectgenres.GenresRepository;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.NetworkUtils;
 import com.hellmund.primetime.utils.OnboardingHelper;
@@ -31,21 +24,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kotlin.Unit;
 
-public class SelectMoviesActivity extends AppCompatActivity
-        implements LegacySamplesAdapter.OnInteractionListener {
+public class SelectMoviesActivity extends AppCompatActivity {
 
     private final static int MIN_COUNT = 4;
 
     // TODO Remove
     private List<Sample> mSamples;
     private HashSet<Integer> mSelected;
-
-    private SharedPreferences mSharedPrefs;
 
     @BindView(R.id.gridView)
     RecyclerView recyclerView;
@@ -59,7 +52,14 @@ public class SelectMoviesActivity extends AppCompatActivity
     private ProgressDialog mProgressDialog;
     private SamplesAdapter adapter;
 
-    private OnboardingHelper onboardingHelper;
+    @Inject
+    OnboardingHelper onboardingHelper;
+
+    /*@Inject
+    SharedPreferences mSharedPrefs;*/
+
+    @Inject
+    Provider<SelectMoviesViewModel> viewModelProvider;
 
     private SelectMoviesViewModel viewModel;
 
@@ -71,19 +71,9 @@ public class SelectMoviesActivity extends AppCompatActivity
         ButterKnife.bind(this);
         setupRecyclerView();
 
-        onboardingHelper = new OnboardingHelper(this);
-
         mSaveButton.setOnClickListener(v -> saveMovies());
 
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        GenresRepository genresRepo = new GenresRepository(ApiClient.getInstance(), PrimeTimeDatabase.getInstance(this));
-        HistoryRepository historyRepository = new HistoryRepository(PrimeTimeDatabase.getInstance(this));
-
-        SelectMoviesRepository repository = new SelectMoviesRepository(ApiClient.getInstance(), historyRepository);
-        SelectMoviesViewModel.Factory factory =
-                new SelectMoviesViewModel.Factory(repository, genresRepo);
-
-        viewModel = ViewModelProviders.of(this, factory).get(SelectMoviesViewModel.class);
+        viewModel = viewModelProvider.get();
         viewModel.getViewState().observe(this, this::render);
     }
 
@@ -132,11 +122,11 @@ public class SelectMoviesActivity extends AppCompatActivity
         viewModel.refresh();
     }
 
-    @Override
+    /*@Override
     public void onItemSelected(View view, int position) {
         toggleItemState(view, position);
         setSaveButtonState();
-    }
+    }*/
 
     private void toggleItemState(View view, int position) {
         if (mSelected == null) {

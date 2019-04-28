@@ -1,28 +1,30 @@
 package com.hellmund.primetime.main
 
-import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import com.hellmund.primetime.R
-import com.hellmund.primetime.api.ApiClient
-import com.hellmund.primetime.database.PrimeTimeDatabase
-import com.hellmund.primetime.history.HistoryRepository
+import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.main.RecommendationsType.Personalized
-import com.hellmund.primetime.model2.MovieViewEntityMapper
-import com.hellmund.primetime.selectgenres.GenresRepository
 import com.hellmund.primetime.settings.SettingsActivity
 import com.hellmund.primetime.utils.*
-import com.hellmund.primetime.watchlist.WatchlistRepository
 import kotlinx.android.synthetic.main.fragment_main.*
-import org.jetbrains.anko.support.v4.defaultSharedPreferences
 import java.lang.Math.round
+import javax.inject.Inject
+import javax.inject.Provider
 
 class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.ViewPagerHost {
 
-    private val genreProvider: GenresProvider by lazy {
+    @Inject
+    lateinit var viewModelProvider: Provider<MainViewModel>
+
+    private val viewModel: MainViewModel by lazyViewModel { viewModelProvider }
+
+    /*private val genreProvider: GenresProvider by lazy {
         RealGenresProvider(defaultSharedPreferences)
     }
 
@@ -41,10 +43,15 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
             Personalized -> ViewModelProviders.of(requireActivity(), factory).get(MainViewModel::class.java)
             else -> ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
         }
-    }
+    }*/
 
     private val type: RecommendationsType by lazy {
         arguments?.getParcelable(KEY_RECOMMENDATIONS_TYPE) as RecommendationsType
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        injector.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,37 +1,48 @@
 package com.hellmund.primetime.introduction
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
 import com.hellmund.primetime.R
-import com.hellmund.primetime.api.ApiClient
-import com.hellmund.primetime.main.MoviesRepository
+import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.selectgenres.SelectGenreActivity
-import com.hellmund.primetime.utils.*
+import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.isLandscapeMode
+import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.activity_introduction.*
-import org.jetbrains.anko.defaultSharedPreferences
+import javax.inject.Inject
+import javax.inject.Provider
 
-class IntroductionActivity : FragmentActivity() {
+class IntroductionActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var imageLoader: ImageLoader
+
+    @Inject
+    lateinit var viewModelProvider: Provider<IntroductionViewModel>
+
+    private val viewModel: IntroductionViewModel by lazyViewModel { viewModelProvider }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_introduction)
+        injector.inject(this)
 
         introductionButton.setOnClickListener { openGenresSelection() }
 
-        val genresProvider: GenresProvider = RealGenresProvider(defaultSharedPreferences)
+        /*val genresProvider: GenresProvider = RealGenresProvider(defaultSharedPreferences)
         val moviesRepo = MoviesRepository(ApiClient.instance, genresProvider)
         val factory = IntroductionViewModel.Factory(moviesRepo)
-        val viewModel = ViewModelProviders.of(this, factory).get(IntroductionViewModel::class.java)
+        val viewModel = ViewModelProviders.of(this, factory).get(IntroductionViewModel::class.java)*/
         viewModel.posterUrls.observe(this, this::displayResults)
     }
 
     private fun displayResults(results: List<String>) {
-        val adapter = PostersAdapter(ImageLoader.with(this), results)
+        val adapter = PostersAdapter(imageLoader, results)
         gridView.itemAnimator = DefaultItemAnimator()
         gridView.adapter = adapter
         gridView.isEnabled = false
@@ -41,7 +52,7 @@ class IntroductionActivity : FragmentActivity() {
     }
 
     private fun openGenresSelection() {
-        val intent = Intent(this, SelectGenreActivity::class.java)
+        val intent = SelectGenreActivity.newIntent(this)
         startActivity(intent)
     }
 

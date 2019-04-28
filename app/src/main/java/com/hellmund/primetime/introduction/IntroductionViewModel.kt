@@ -7,8 +7,9 @@ import android.arch.lifecycle.ViewModelProvider
 import com.hellmund.primetime.main.MoviesRepository
 import com.hellmund.primetime.utils.plusAssign
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
-class IntroductionViewModel(
+class IntroductionViewModel @Inject constructor(
         private val repository: MoviesRepository
 ) : ViewModel() {
 

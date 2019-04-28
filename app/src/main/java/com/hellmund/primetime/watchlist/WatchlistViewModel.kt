@@ -3,13 +3,13 @@ package com.hellmund.primetime.watchlist
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
 import com.hellmund.primetime.database.WatchlistMovie
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 data class WatchlistViewState(
         val data: List<WatchlistMovie> = emptyList(),
@@ -27,7 +27,7 @@ sealed class Result {
     data class Error(val error: Throwable) : Result()
 }
 
-class WatchlistViewModel(
+class WatchlistViewModel @Inject constructor(
         private val repository: WatchlistRepository
 ) : ViewModel() {
 
@@ -91,7 +91,7 @@ class WatchlistViewModel(
         super.onCleared()
     }
 
-    class Factory(
+    /*class Factory(
             private val repository: WatchlistRepository
     ) : ViewModelProvider.Factory {
 
@@ -100,6 +100,6 @@ class WatchlistViewModel(
             return WatchlistViewModel(repository) as T
         }
 
-    }
+    }*/
 
 }

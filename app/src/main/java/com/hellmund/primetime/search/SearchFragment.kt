@@ -1,6 +1,6 @@
 package com.hellmund.primetime.search
 
-import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -19,38 +19,43 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.hellmund.primetime.R
-import com.hellmund.primetime.api.ApiClient
+import com.hellmund.primetime.database.AppDatabase
 import com.hellmund.primetime.database.GenreDao
 import com.hellmund.primetime.database.HistoryMovie
-import com.hellmund.primetime.database.PrimeTimeDatabase
-import com.hellmund.primetime.history.HistoryRepository
+import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.main.MainFragment
-import com.hellmund.primetime.main.MoviesRepository
 import com.hellmund.primetime.main.RecommendationsType
 import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.model2.ApiGenre
 import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.RealGenresProvider
 import com.hellmund.primetime.utils.isVisible
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.state_layout_search_results.*
 import kotlinx.android.synthetic.main.view_search_field.*
 import org.jetbrains.anko.inputMethodManager
-import org.jetbrains.anko.support.v4.defaultSharedPreferences
 import java.lang.Math.round
+import javax.inject.Inject
+import javax.inject.Provider
 
 class SearchFragment : Fragment(), TextWatcher,
         TextView.OnEditorActionListener, MainActivity.Reselectable {
 
-    private val viewModel: SearchViewModel by lazy {
+    /*private val viewModel: SearchViewModel by lazy {
         val genresProvider = RealGenresProvider(defaultSharedPreferences)
         val repository = MoviesRepository(ApiClient.instance, genresProvider)
         val historyRepository = HistoryRepository(PrimeTimeDatabase.getInstance(requireContext()))
         val factory = SearchViewModel.Factory(repository, historyRepository)
         ViewModelProviders.of(requireActivity(), factory).get(SearchViewModel::class.java)
-    }
+    }*/
+
+    @Inject
+    lateinit var viewModelProvider: Provider<SearchViewModel>
+
+    @Inject
+    lateinit var database: AppDatabase
 
     private val searchAdapter: SearchAdapter by lazy {
         SearchAdapter(
@@ -61,7 +66,14 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private val genreDao: GenreDao by lazy {
-        PrimeTimeDatabase.getInstance(requireContext()).genreDao()
+        database.genreDao()
+    }
+
+    private val viewModel: SearchViewModel by lazyViewModel { viewModelProvider }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        injector.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

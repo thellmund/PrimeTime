@@ -1,7 +1,7 @@
 package com.hellmund.primetime.history
 
 import android.app.AlertDialog
-import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -14,19 +14,26 @@ import android.view.View
 import android.view.ViewGroup
 import com.hellmund.primetime.R
 import com.hellmund.primetime.database.HistoryMovie
-import com.hellmund.primetime.database.PrimeTimeDatabase
+import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.isVisible
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.fragment_history.*
+import javax.inject.Inject
+import javax.inject.Provider
 
 class HistoryFragment : Fragment() {
 
-    private val viewModel: HistoryViewModel by lazy {
-        val repository = HistoryRepository(PrimeTimeDatabase.getInstance(requireContext()))
-        val factory = HistoryViewModel.Factory(repository)
-        ViewModelProviders.of(this, factory).get(HistoryViewModel::class.java)
+    @Inject
+    lateinit var viewModelProvider: Provider<HistoryViewModel>
+
+    private val viewModel: HistoryViewModel by lazyViewModel { viewModelProvider }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        injector.inject(this)
     }
 
     override fun onCreateView(

@@ -6,8 +6,9 @@ import com.hellmund.primetime.model2.ApiMovie
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class WatchlistRepository(
+class WatchlistRepository @Inject constructor(
         private val database: AppDatabase
 ) {
 

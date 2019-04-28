@@ -5,14 +5,11 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import com.hellmund.primetime.model2.Genre
 
-@Database(
-        entities = [
-            WatchlistMovie::class,
-            HistoryMovie::class,
-            Genre::class
-        ],
-        version = 1
-)
+@Database(entities = [
+    WatchlistMovie::class,
+    HistoryMovie::class,
+    Genre::class
+], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 

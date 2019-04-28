@@ -14,6 +14,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 data class SearchViewState(
         val data: List<SearchResult> = emptyList(),
@@ -44,7 +45,7 @@ sealed class Result {
     object DismissHistorySnackbar : Result()
 }
 
-class SearchViewModel(
+class SearchViewModel @Inject constructor(
         private val repository: MoviesRepository,
         private val historyRepository: HistoryRepository
 ) : ViewModel() {

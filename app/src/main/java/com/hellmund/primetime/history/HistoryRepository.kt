@@ -3,8 +3,9 @@ package com.hellmund.primetime.history
 import com.hellmund.primetime.database.AppDatabase
 import com.hellmund.primetime.database.HistoryMovie
 import io.reactivex.Maybe
+import javax.inject.Inject
 
-class HistoryRepository(
+class HistoryRepository @Inject constructor(
         private val database: AppDatabase
 ) {
 

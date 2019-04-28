@@ -10,6 +10,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 data class HistoryViewState(
         val data: List<HistoryMovie> = emptyList(),
@@ -27,7 +28,7 @@ sealed class Result {
     data class Error(val error: Throwable) : Result()
 }
 
-class HistoryViewModel(
+class HistoryViewModel @Inject constructor(
         private val repository: HistoryRepository
 ) : ViewModel() {
 

@@ -9,8 +9,9 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import java.util.Calendar.YEAR
+import javax.inject.Inject
 
-class SelectMoviesRepository(
+class SelectMoviesRepository @Inject constructor(
         private val apiService: ApiService,
         private val historyRepository: HistoryRepository
 ) {

@@ -11,6 +11,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
+import javax.inject.Inject
 
 data class SelectGenresViewState(
         val data: List<Genre> = emptyList(),
@@ -28,7 +29,7 @@ sealed class Result {
     data class Error(val error: Throwable) : Result()
 }
 
-class SelectGenresViewModel(
+class SelectGenresViewModel @Inject constructor(
         private val repository: GenresRepository
 ) : ViewModel() {
 

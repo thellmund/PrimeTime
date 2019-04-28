@@ -6,8 +6,9 @@ import com.hellmund.primetime.model2.ApiMovie
 import com.hellmund.primetime.utils.GenresProvider
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class MoviesRepository(
+class MoviesRepository @Inject constructor(
         private val apiService: ApiService,
         private val genresProvider: GenresProvider
 ) {

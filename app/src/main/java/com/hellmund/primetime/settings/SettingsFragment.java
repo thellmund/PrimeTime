@@ -12,10 +12,10 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v4.util.ArrayMap;
 
+import com.hellmund.primetime.App;
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.about.AboutActivity;
 import com.hellmund.primetime.database.AppDatabase;
-import com.hellmund.primetime.database.PrimeTimeDatabase;
 import com.hellmund.primetime.model2.Genre;
 import com.hellmund.primetime.utils.Constants;
 
@@ -25,18 +25,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 public class SettingsFragment extends PreferenceFragment {
 
     private static final int MIN_GENRES = 2;
 
-    private Context mContext;
-    private AppDatabase database;
+    @Inject
+    AppDatabase database;
+
     private ArrayMap<Preference, String> mDefaultSummaries;
 
-    public static SettingsFragment newInstance(Context context) {
-        SettingsFragment fragment = new SettingsFragment();
-        fragment.mContext = context;
-        return fragment;
+    public static SettingsFragment newInstance() {
+        return new SettingsFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        App app = (App) context.getApplicationContext();
+        app.getAppComponent().inject(this);
     }
 
     @Override
@@ -45,8 +53,6 @@ public class SettingsFragment extends PreferenceFragment {
 
         setRetainInstance(true);
         addPreferencesFromResource(R.xml.preferences);
-
-        database = PrimeTimeDatabase.getInstance(mContext);
 
         initDefaultSummaries();
         initIncludedGenresPref();

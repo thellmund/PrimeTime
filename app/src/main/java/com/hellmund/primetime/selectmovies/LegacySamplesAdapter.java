@@ -59,7 +59,7 @@ public class LegacySamplesAdapter extends BaseAdapter {
         }
 
         holder.container.setOnClickListener(v -> {
-            mCallback.onItemSelected(v, position);
+            // mCallback.onItemSelected(v, position);
             // sample.toggleSelected();
         });
 

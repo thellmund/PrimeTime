@@ -11,6 +11,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 data class MainViewState(
         val recommendationsType: RecommendationsType = RecommendationsType.Personalized,
@@ -36,7 +37,7 @@ sealed class Result {
     data class Error(val error: Throwable) : Result()
 }
 
-class MainViewModel(
+class MainViewModel @Inject constructor(
         private val repository: MoviesRepository,
         private val rankingProcessor: MovieRankingProcessor,
         private val viewEntityMapper: MovieViewEntityMapper

@@ -5,8 +5,9 @@ import com.hellmund.primetime.database.AppDatabase
 import com.hellmund.primetime.model2.Genre
 import io.reactivex.Observable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class GenresRepository(
+class GenresRepository @Inject constructor(
         private val apiService: ApiService,
         private val database: AppDatabase
 ) {

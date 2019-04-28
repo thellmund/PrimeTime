@@ -1,11 +1,7 @@
 package com.hellmund.primetime.model2
 
-import android.content.Context
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.hellmund.primetime.R
-import com.hellmund.primetime.database.PrimeTimeDatabase
-import com.hellmund.primetime.utils.DateUtils
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -23,15 +19,15 @@ data class ApiMovie(
         @SerializedName("imdb_id") val imdbId: String? = null
 ) : Parcelable {
 
-    val hasAdditionalInformation: Boolean
+    /*val hasAdditionalInformation: Boolean
         get() {
             return runtime != null && imdbId != null
-        }
+        }*/
 
     val fullPosterUrl: String
         get() = "http://image.tmdb.org/t/p/w500$posterPath"
 
-    fun getPrettyGenres(context: Context): String {
+    /*fun getPrettyGenres(context: Context): String {
         return genreIds
                 .map {
                     // TODO: MovieViewEntity and mapper
@@ -41,7 +37,7 @@ data class ApiMovie(
                 .map { it.name }
                 .sorted()
                 .joinToString(", ")
-    }
+    }*/
 
     fun getPrettyRuntime(): String {
         val runtime = runtime ?: throw IllegalStateException()
@@ -50,7 +46,7 @@ data class ApiMovie(
         return String.format("%s:%s", hours, minutes)
     }
 
-    fun getPrettyVoteAverage(): String = "$voteAverage / 10"
+    /*fun getPrettyVoteAverage(): String = "$voteAverage / 10"
 
     fun getReleaseYear(context: Context): String {
         if (releaseDate == null) {
@@ -67,7 +63,7 @@ data class ApiMovie(
         } else {
             Integer.toString(release.get(Calendar.YEAR))
         }
-    }
+    }*/
 
     enum class WatchStatus {
         NOT_WATCHED, ON_WATCHLIST, WATCHED

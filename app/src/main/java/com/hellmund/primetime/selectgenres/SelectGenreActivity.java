@@ -1,6 +1,6 @@
 package com.hellmund.primetime.selectgenres;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,14 +10,14 @@ import android.util.SparseBooleanArray;
 import android.widget.ListView;
 
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.api.ApiClient;
-import com.hellmund.primetime.database.AppDatabase;
-import com.hellmund.primetime.database.PrimeTimeDatabase;
 import com.hellmund.primetime.model2.Genre;
 import com.hellmund.primetime.selectmovies.SelectMoviesActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,19 +35,28 @@ public class SelectGenreActivity extends AppCompatActivity {
     private SelectGenresViewModel viewModel;
     private List<Genre> genres;
 
+    @Inject
+    Provider<SelectGenresViewModel> viewModelProvider;
+
+    public static Intent newIntent(Context context) {
+        return new Intent(context, SelectGenreActivity.class);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_genre);
 
+
         getWindow().setBackgroundDrawable(null);
         ButterKnife.bind(this);
 
-        AppDatabase db = PrimeTimeDatabase.getInstance(this);
-        GenresRepository repository = new GenresRepository(ApiClient.getInstance(), db);
-        SelectGenresViewModel.Factory factory = new SelectGenresViewModel.Factory(repository);
+        // AppDatabase db = PrimeTimeDatabase.getInstance(this);
+        // GenresRepository repository = new GenresRepository(ApiClient.getInstance(), db);
+        // SelectGenresViewModel.Factory factory = new SelectGenresViewModel.Factory(repository);
 
-        viewModel = ViewModelProviders.of(this, factory).get(SelectGenresViewModel.class);
+        viewModel = viewModelProvider.get();
+        // viewModel = ViewModelProviders.of(this, factory).get(SelectGenresViewModel.class);
         viewModel.getViewState().observe(this, this::render);
 
         // TODO

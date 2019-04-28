@@ -6,8 +6,9 @@ import com.hellmund.primetime.selectgenres.GenresRepository
 import com.hellmund.primetime.utils.DateUtils.getDateInLocalFormat
 import io.reactivex.functions.Function
 import java.util.*
+import javax.inject.Inject
 
-class MovieViewEntityMapper(
+class MovieViewEntityMapper @Inject constructor(
         private val context: Context,
         private val genresRepo: GenresRepository
 ) : Function<List<ApiMovie>, List<MovieViewEntity>> {

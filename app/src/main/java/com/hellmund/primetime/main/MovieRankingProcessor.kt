@@ -6,13 +6,14 @@ import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.model2.ApiMovie
 import com.hellmund.primetime.watchlist.WatchlistRepository
 import java.util.*
+import javax.inject.Inject
 
 data class MovieWithScore(
         val movie: ApiMovie,
         val score: Float
 )
 
-class MovieRankingProcessor(
+class MovieRankingProcessor @Inject constructor(
         private val historyRepo: HistoryRepository,
         private val watchlistRepo: WatchlistRepository
 ) {

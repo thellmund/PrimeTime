@@ -3,21 +3,24 @@ package com.hellmund.primetime.splash
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.hellmund.primetime.R
+import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.introduction.IntroductionActivity
 import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.utils.OnboardingHelper
+import javax.inject.Inject
 
 class SplashScreenActivity : AppCompatActivity() {
 
-    private val onboardingHelper: OnboardingHelper by lazy {
-        OnboardingHelper(this)
-    }
+    @Inject
+    lateinit var onboardingHelper: OnboardingHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
-        if (true) { // TODO onboardingHelper.isFirstLaunch) {
+        injector.inject(this)
+
+        if (onboardingHelper.isFirstLaunch) {
             openIntroduction()
         } else {
             openMain()
