@@ -35,7 +35,8 @@ class MoviesViewEntityMapper @Inject constructor(
     }
 
     private fun getFormattedGenres(movie: ApiMovie): String {
-        val genres = genresRepo.all.blockingGet().filter { movie.genreIds.contains(it.id) }
+        val genreIds = movie.genreIds.orEmpty()
+        val genres = genresRepo.all.blockingGet().filter { genreIds.contains(it.id) }
         return genres.map { it.name }.sorted().joinToString(", ")
     }
 
@@ -82,10 +83,10 @@ class MovieViewEntityMapper @Inject constructor(
     }
 
     private fun getFormattedGenres(movie: ApiMovie): String {
-        val genreIds = if (movie.genres.isNotEmpty()) {
-            movie.genres.map { it.id }
+        val genreIds = if (movie.genres.isNullOrEmpty()) {
+            movie.genreIds.orEmpty()
         } else {
-            movie.genreIds
+            movie.genres.map { it.id }
         }
 
         val genres = genresRepo.all.blockingGet().filter { genreIds.contains(it.id) }
