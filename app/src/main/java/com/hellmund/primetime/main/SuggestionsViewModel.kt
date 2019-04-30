@@ -112,8 +112,8 @@ class SuggestionsViewModel @Inject constructor(
     private fun fetchTrailer(): Observable<ViewModelEvent> {
         return repository
                 .fetchVideo(movie)
-                .startWith { ViewModelEvent.TrailerLoading }
-                .map { ViewModelEvent.TrailerLoaded(it) }
+                .map { ViewModelEvent.TrailerLoaded(it) as ViewModelEvent }
+                .startWith(ViewModelEvent.TrailerLoading)
     }
 
     private fun fetchImdbLink(): Observable<ViewModelEvent> {
