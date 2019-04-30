@@ -8,6 +8,7 @@ import android.util.SparseBooleanArray
 import android.view.View
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import org.threeten.bp.LocalDate
 
 fun <T> LiveData<T>.observe(owner: LifecycleOwner, block: (T) -> Unit) {
     observe(owner, Observer { it?.let(block) })
@@ -36,3 +37,6 @@ var View.isVisible: Boolean
     }
 
 fun SparseBooleanArray.toList(): List<Boolean> = (0 until size()).map { get(it) }
+
+val LocalDate.isAfterNow: Boolean
+    get() = isAfter(LocalDate.now())

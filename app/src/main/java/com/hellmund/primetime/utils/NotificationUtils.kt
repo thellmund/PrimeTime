@@ -17,7 +17,8 @@ import com.hellmund.primetime.database.WatchlistMovie
 import org.jetbrains.anko.alarmManager
 import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.notificationManager
-import java.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
 
 object NotificationUtils {
     
@@ -62,11 +63,12 @@ object NotificationUtils {
         val notificationIntent = Intent(context, NotificationPublisher::class.java)
         val pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, 0)
 
-        val alarmTime = DateUtils.startOfDay().apply {
-            set(Calendar.HOUR_OF_DAY, 9)
-        }
+        val alarmTime = LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .withHour(9)
+                .toInstant()
 
-        context.alarmManager.setRepeating(RTC, alarmTime.timeInMillis, INTERVAL_DAY, pendingIntent)
+        context.alarmManager.setRepeating(RTC, alarmTime.toEpochMilli(), INTERVAL_DAY, pendingIntent)
     }
 
     @JvmStatic

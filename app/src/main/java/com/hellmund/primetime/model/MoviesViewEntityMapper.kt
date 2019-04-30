@@ -4,6 +4,7 @@ import android.content.Context
 import com.hellmund.primetime.R
 import com.hellmund.primetime.selectgenres.GenresRepository
 import com.hellmund.primetime.utils.DateUtils.getDateInLocalFormat
+import com.hellmund.primetime.utils.isAfterNow
 import io.reactivex.functions.Function
 import java.util.*
 import javax.inject.Inject
@@ -43,19 +44,14 @@ class MoviesViewEntityMapper @Inject constructor(
             return context.getString(R.string.no_information)
         }
 
-        val release = Calendar.getInstance()
-        release.time = movie.releaseDate
-
-        val now = Calendar.getInstance()
-
-        return if (release.after(now)) {
-            getDateInLocalFormat(release)
+        return if (movie.releaseDate.isAfterNow) {
+            getDateInLocalFormat(movie.releaseDate)
         } else {
-            release.get(Calendar.YEAR).toString()
+            movie.releaseDate.year.toString()
         }
     }
 
-    fun getPrettyRuntime(movie: ApiMovie): String {
+    private fun getPrettyRuntime(movie: ApiMovie): String {
         val runtime = movie.runtime ?: return context.getString(R.string.no_information)
         val hours = String.format(Locale.getDefault(), "%01d", runtime / 60)
         val minutes = String.format(Locale.getDefault(), "%02d", runtime % 60)
@@ -86,7 +82,13 @@ class MovieViewEntityMapper @Inject constructor(
     }
 
     private fun getFormattedGenres(movie: ApiMovie): String {
-        val genres = genresRepo.all.blockingGet().filter { movie.genreIds.contains(it.id) }
+        val genreIds = if (movie.genres.isNotEmpty()) {
+            movie.genres.map { it.id }
+        } else {
+            movie.genreIds
+        }
+
+        val genres = genresRepo.all.blockingGet().filter { genreIds.contains(it.id) }
         return genres.map { it.name }.sorted().joinToString(", ")
     }
 
@@ -95,19 +97,14 @@ class MovieViewEntityMapper @Inject constructor(
             return context.getString(R.string.no_information)
         }
 
-        val release = Calendar.getInstance()
-        release.time = movie.releaseDate
-
-        val now = Calendar.getInstance()
-
-        return if (release.after(now)) {
-            getDateInLocalFormat(release)
+        return if (movie.releaseDate.isAfterNow) {
+            getDateInLocalFormat(movie.releaseDate)
         } else {
-            release.get(Calendar.YEAR).toString()
+            movie.releaseDate.year.toString()
         }
     }
 
-    fun getPrettyRuntime(movie: ApiMovie): String {
+    private fun getPrettyRuntime(movie: ApiMovie): String {
         val runtime = movie.runtime ?: return context.getString(R.string.no_information)
         val hours = String.format(Locale.getDefault(), "%01d", runtime / 60)
         val minutes = String.format(Locale.getDefault(), "%02d", runtime % 60)

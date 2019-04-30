@@ -7,14 +7,22 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.hellmund.primetime.R
+import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.model.ApiGenre
 import com.hellmund.primetime.search.SearchFragment
+import com.hellmund.primetime.selectgenres.GenresRepository
+import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.Constants.SEARCH_INTENT
 import com.hellmund.primetime.utils.Constants.WATCHLIST_INTENT
 import com.hellmund.primetime.watchlist.WatchlistFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_toolbar.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var genresRepository: GenresRepository
 
     private val fragmentLifecycleCallback: FragmentLifecycleCallback by lazy {
         FragmentLifecycleCallback(this)
@@ -24,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        injector.inject(this)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallback, false)
 
@@ -80,10 +90,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openSearch(extra: String? = null) {
-        val type = extra?.let { RecommendationsType.fromIntent(this, it) }
+        val type = extra?.let { createRecommendationsTypefromIntent(it) }
         val fragment = SearchFragment.newInstance(type)
         showFragment(fragment)
         bottomNavigation.selectedItemId = R.id.search
+    }
+
+    private fun createRecommendationsTypefromIntent(intent: String): RecommendationsType {
+        return when (intent) {
+            Constants.NOW_PLAYING_INTENT -> RecommendationsType.NowPlaying
+            Constants.UPCOMING_INTENT -> RecommendationsType.Upcoming
+            else -> {
+                val genre = genresRepository.getGenre(intent).blockingGet()
+                val apiGenre = ApiGenre(genre.id, genre.name)
+                RecommendationsType.ByGenre(apiGenre)
+            }
+        }
     }
 
     private fun openWatchlist() {

@@ -1,21 +1,14 @@
 package com.hellmund.primetime.api
 
-import com.google.gson.GsonBuilder
 import com.hellmund.primetime.main.RecommendationsResponse
 import com.hellmund.primetime.main.VideosResponse
 import com.hellmund.primetime.model.ApiMovie
 import com.hellmund.primetime.model.GenresResponse
 import com.hellmund.primetime.model.SamplesResponse
 import io.reactivex.Observable
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import java.util.*
 
 interface ApiService {
 
@@ -60,35 +53,5 @@ interface ApiService {
 
     @GET("movie/popular")
     fun popular(): Observable<RecommendationsResponse>
-
-}
-
-object ApiClient {
-
-    private const val BASE_URL = "http://api.themoviedb.org/3/"
-
-    @JvmStatic
-    val instance: ApiService by lazy {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
-        }
-
-        val okHttpClient = OkHttpClient.Builder()
-                .addInterceptor(TmdbInterceptor())
-                .addNetworkInterceptor(loggingInterceptor)
-                .build()
-
-        val gson = GsonBuilder()
-                .registerTypeAdapter(Date::class.java, DateSerializer())
-                .create()
-
-        Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(okHttpClient)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
-                .create(ApiService::class.java)
-    }
 
 }

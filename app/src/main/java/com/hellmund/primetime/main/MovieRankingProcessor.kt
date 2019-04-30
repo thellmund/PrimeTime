@@ -5,7 +5,7 @@ import com.hellmund.primetime.database.WatchlistMovie
 import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.model.ApiMovie
 import com.hellmund.primetime.watchlist.WatchlistRepository
-import java.util.*
+import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
 data class MovieWithScore(
@@ -53,7 +53,7 @@ class MovieRankingProcessor @Inject constructor(
     private fun isReleased(apiMovie: ApiMovie, type: RecommendationsType): Boolean {
         return when (type) {
             RecommendationsType.Upcoming -> true
-            else -> apiMovie.releaseDate?.before(Date()) ?: false
+            else -> apiMovie.releaseDate?.isBefore(LocalDate.now()) ?: false
         }
     }
 

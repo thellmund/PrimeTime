@@ -3,29 +3,22 @@ package com.hellmund.primetime.api
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import org.threeten.bp.LocalDate
 import java.lang.reflect.Type
 import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 
-class DateSerializer : JsonDeserializer<Date?> {
-
-    private val simpleDateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
+class DateSerializer : JsonDeserializer<LocalDate?> {
 
     override fun deserialize(
             json: JsonElement?,
             typeOfT: Type?,
             context: JsonDeserializationContext?
-    ): Date? {
+    ): LocalDate? {
         return try {
-            simpleDateFormat.parse(json?.asString)
+            LocalDate.parse(json?.asString)
         } catch (e: ParseException) {
             null
         }
-    }
-
-    companion object {
-        private const val DATE_FORMAT = "yyyy-MM-dd"
     }
 
 }

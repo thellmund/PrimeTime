@@ -4,6 +4,7 @@ import android.app.Application
 import com.hellmund.primetime.di.AppComponent
 import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.utils.NotificationUtils
+import com.jakewharton.threetenabp.AndroidThreeTen
 
 class App : Application() {
 
@@ -12,6 +13,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         buildComponent()
+        initThreeTen()
 
         NotificationUtils.createChannel(this)
         NotificationUtils.scheduleNotifications(this)
@@ -22,6 +24,10 @@ class App : Application() {
                 .builder()
                 .context(this)
                 .build()
+    }
+
+    private fun initThreeTen() {
+        AndroidThreeTen.init(this)
     }
 
 }

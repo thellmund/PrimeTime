@@ -9,15 +9,15 @@ import io.reactivex.Single
 interface WatchlistDao {
 
     @Query("SELECT * FROM watchlist_movies")
-    fun getAll(): Maybe<List<WatchlistMovie>>
+    fun getAll(): Single<List<WatchlistMovie>>
 
     @Query("SELECT * FROM watchlist_movies WHERE id = :movieId")
     fun get(movieId: Int): Maybe<WatchlistMovie>
 
     @Query("SELECT * FROM watchlist_movies WHERE releaseDate BETWEEN :start AND :end")
     fun releases(
-            start: Long = DateUtils.startOfDay().timeInMillis,
-            end: Long = DateUtils.endOfDay().timeInMillis
+            start: Long = DateUtils.startOfDay().toEpochMilli(),
+            end: Long = DateUtils.endOfDay().toEpochMilli()
     ): Single<List<WatchlistMovie>>
 
     @Query("SELECT COUNT(*) FROM watchlist_movies WHERE id = :movieId")

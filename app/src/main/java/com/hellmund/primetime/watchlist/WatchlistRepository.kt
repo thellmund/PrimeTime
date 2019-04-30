@@ -5,6 +5,7 @@ import com.hellmund.primetime.database.WatchlistMovie
 import com.hellmund.primetime.model.ApiMovie
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -12,8 +13,12 @@ class WatchlistRepository @Inject constructor(
         private val database: AppDatabase
 ) {
 
-    fun getAll(): Maybe<List<WatchlistMovie>> {
+    fun getAll(): Single<List<WatchlistMovie>> {
         return database.watchlistDao().getAll()
+    }
+
+    fun getReleases(): Single<List<WatchlistMovie>> {
+        return database.watchlistDao().releases()
     }
 
     fun get(movieId: Int): Maybe<WatchlistMovie> {

@@ -8,14 +8,14 @@ import com.hellmund.primetime.main.Rating
 import com.hellmund.primetime.model.SearchResult
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.DateUtils
-import java.util.*
+import org.threeten.bp.LocalDate
 
 @Entity(tableName = "history_movies")
 data class HistoryMovie(
         @PrimaryKey var id: Int,
         var title: String,
         var rating: Int,
-        var timestamp: Date,
+        var timestamp: LocalDate,
         var isUpdating: Boolean
 ) {
 
@@ -32,19 +32,18 @@ data class HistoryMovie(
 
     private fun getPrettyTimestamp(): String? {
         return DateUtils.getDateInLocalFormat(timestamp)
-
     }
 
     companion object {
 
         fun fromSearchResult(searchResult: SearchResult, rating: Int): HistoryMovie {
-            return HistoryMovie(searchResult.id, searchResult.title, rating, Date(), false)
+            return HistoryMovie(searchResult.id, searchResult.title, rating, LocalDate.now(), false)
         }
 
         fun fromRating(rating: Rating): HistoryMovie {
             val movie = rating.movie
             val ratingValue = if (rating is Rating.Like) 1 else 0
-            return HistoryMovie(movie.id, movie.title, ratingValue, Date(), false)
+            return HistoryMovie(movie.id, movie.title, ratingValue, LocalDate.now(), false)
         }
 
     }

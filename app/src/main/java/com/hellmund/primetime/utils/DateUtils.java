@@ -1,71 +1,35 @@
 package com.hellmund.primetime.utils;
 
-import android.annotation.SuppressLint;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.FormatStyle;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class DateUtils {
 
-    public static Calendar startOfDay() {
-        Calendar result = Calendar.getInstance();
-        result.set(Calendar.HOUR, 0);
-        result.set(Calendar.MINUTE, 0);
-        result.set(Calendar.SECOND, 0);
-        result.set(Calendar.MILLISECOND, 0);
-        return result;
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+
+    public static Instant startOfDay() {
+        return LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant();
     }
 
-    public static Calendar endOfDay() {
-        Calendar result = Calendar.getInstance();
-        result.set(Calendar.HOUR, 23);
-        result.set(Calendar.MINUTE, 59);
-        result.set(Calendar.SECOND, 59);
-        result.set(Calendar.MILLISECOND, 999);
-        return result;
+    public static Instant endOfDay() {
+        return LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .withHour(23)
+                .withMinute(59)
+                .withSecond(59)
+                .withNano(999999)
+                .toInstant();
     }
 
-    @SuppressLint("SimpleDateFormat")
-    public static Date getDateFromString(String str) {
-        try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(str);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
-    public static String getDateInLocalFormat(Calendar cal) {
-        return getDateInLocalFormat(cal.getTimeInMillis());
-    }
-
-    public static String getDateInLocalFormat(Date date) {
-        return getDateInLocalFormat(date.getTime());
-    }
-
-    public static String getDateInLocalFormat(long timestamp) {
-        final Locale locale = Locale.getDefault();
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp);
-
-        if (isGerman(locale)) {
-            return String.format("%s.%s.%s", cal.get(Calendar.DAY_OF_MONTH),
-                    cal.get(Calendar.MONTH) + 1,
-                    cal.get(Calendar.YEAR));
-        } else {
-            return String.format("%s/%s/%s", cal.get(Calendar.MONTH) + 1,
-                    cal.get(Calendar.DAY_OF_MONTH),
-                    cal.get(Calendar.YEAR));
-        }
-    }
-
-    private static boolean isGerman(Locale locale) {
-        final String countryCode = locale.getCountry();
-        return countryCode.equals(Locale.GERMANY.getCountry())
-                || countryCode.equals(Locale.GERMAN.getCountry());
+    public static String getDateInLocalFormat(LocalDate date) {
+        return formatter.format(date);
     }
 
     public static String formatRuntime(int runtime) {

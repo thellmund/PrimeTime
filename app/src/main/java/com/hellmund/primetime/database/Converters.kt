@@ -1,7 +1,10 @@
 package com.hellmund.primetime.database
 
 import android.arch.persistence.room.TypeConverter
-import java.util.*
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 
 class Converters {
 
@@ -9,11 +12,27 @@ class Converters {
 
         @JvmStatic
         @TypeConverter
-        fun toDate(value: Long): Date = Date(value)
+        fun toLocalDate(value: Long): LocalDate {
+            return Instant.ofEpochMilli(value).atZone(ZoneId.systemDefault()).toLocalDate()
+        }
 
         @JvmStatic
         @TypeConverter
-        fun fromDate(date: Date): Long = date.time
+        fun fromDate(date: LocalDate): Long {
+            return date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        }
+
+        @JvmStatic
+        @TypeConverter
+        fun toLocalDateTime(value: Long): LocalDateTime {
+            return Instant.ofEpochMilli(value).atZone(ZoneId.systemDefault()).toLocalDateTime()
+        }
+
+        @JvmStatic
+        @TypeConverter
+        fun fromDateTime(date: LocalDateTime): Long {
+            return date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        }
 
     }
 

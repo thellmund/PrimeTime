@@ -24,27 +24,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
     private val viewModel: MainViewModel by lazyViewModel { viewModelProvider }
 
-    /*private val genreProvider: GenresProvider by lazy {
-        RealGenresProvider(defaultSharedPreferences)
-    }
-
-    private val repository: MoviesRepository by lazy {
-        MoviesRepository(ApiClient.instance, genreProvider)
-    }
-
-    private val viewModel: MainViewModel by lazy {
-        val historyRepo = HistoryRepository(PrimeTimeDatabase.getInstance(requireContext()))
-        val watchlistRepo = WatchlistRepository(PrimeTimeDatabase.getInstance(requireContext()))
-        val rankingProcessor = MovieRankingProcessor(historyRepo, watchlistRepo)
-        val genresRepo = GenresRepository(ApiClient.instance, PrimeTimeDatabase.getInstance(requireContext()))
-        val viewEntityMapper = MovieViewEntityMapper(requireContext(), genresRepo)
-        val factory = MainViewModel.Factory(repository, rankingProcessor, viewEntityMapper)
-        when (type) {
-            Personalized -> ViewModelProviders.of(requireActivity(), factory).get(MainViewModel::class.java)
-            else -> ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
-        }
-    }*/
-
     private val type: RecommendationsType by lazy {
         arguments?.getParcelable(KEY_RECOMMENDATIONS_TYPE) as RecommendationsType
     }
@@ -86,6 +65,8 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
         progressBar.visibility = if (viewState.isLoading) View.VISIBLE else View.GONE
         suggestions.visibility = if (viewState.isLoading) View.GONE else View.VISIBLE
+
+        // TODO Error handling
     }
 
     private fun retry() {

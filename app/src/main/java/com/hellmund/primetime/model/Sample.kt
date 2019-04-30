@@ -3,6 +3,7 @@ package com.hellmund.primetime.model
 import com.google.gson.annotations.SerializedName
 import com.hellmund.primetime.database.HistoryMovie
 import com.hellmund.primetime.utils.Constants
+import org.threeten.bp.LocalDate
 import java.util.*
 
 data class Sample(
@@ -18,7 +19,7 @@ data class Sample(
         get() = "http://image.tmdb.org/t/p/w500$posterPath"
 
     fun toHistoryMovie(): HistoryMovie {
-        return HistoryMovie(id, title, Constants.LIKE, Date(), false)
+        return HistoryMovie(id, title, Constants.LIKE, LocalDate.now(), false)
     }
 
 }

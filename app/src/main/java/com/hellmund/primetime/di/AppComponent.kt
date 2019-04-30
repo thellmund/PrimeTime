@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.hellmund.primetime.history.HistoryFragment
 import com.hellmund.primetime.introduction.IntroductionActivity
+import com.hellmund.primetime.main.MainActivity
 import com.hellmund.primetime.main.MainFragment
 import com.hellmund.primetime.main.SuggestionComponent
 import com.hellmund.primetime.search.SearchFragment
@@ -13,8 +14,10 @@ import com.hellmund.primetime.settings.SettingsFragment
 import com.hellmund.primetime.splash.SplashScreenActivity
 import com.hellmund.primetime.utils.GenresProvider
 import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.NotificationPublisher
 import com.hellmund.primetime.utils.RealGenresProvider
 import com.hellmund.primetime.watchlist.WatchlistFragment
+import com.hellmund.primetime.watchlist.WatchlistMovieFragment
 import com.hellmund.primetime.watchlist.di.WatchlistModule
 import dagger.BindsInstance
 import dagger.Component
@@ -35,6 +38,8 @@ interface AppComponent {
 
     fun inject(historyFragment: HistoryFragment)
     fun inject(introductionActivity: IntroductionActivity)
+    fun inject(notificationPublisher: NotificationPublisher)
+    fun inject(mainActivity: MainActivity)
     fun inject(mainFragment: MainFragment)
     fun inject(searchFragment: SearchFragment)
     fun inject(selectGenresActivity: SelectGenreActivity)
@@ -42,6 +47,7 @@ interface AppComponent {
     fun inject(settingsFragment: SettingsFragment)
     fun inject(splashScreenActivity: SplashScreenActivity)
     fun inject(watchlistFragment: WatchlistFragment)
+    fun inject(watchlistMovieFragment: WatchlistMovieFragment)
 
     @Component.Builder
     interface Builder {

@@ -1,5 +1,6 @@
 package com.hellmund.primetime.watchlist;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -9,13 +10,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hellmund.primetime.App;
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.database.PrimeTimeDatabase;
 import com.hellmund.primetime.database.WatchlistMovie;
 import com.hellmund.primetime.utils.DateUtils;
 import com.hellmund.primetime.utils.ImageLoader;
 import com.hellmund.primetime.utils.NotificationUtils;
 import com.hellmund.primetime.utils.UiUtils;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,8 +45,10 @@ public class WatchlistMovieFragment extends Fragment {
     @BindView(R.id.runtime_text) TextView mRuntimeTextView;
     @BindView(R.id.watched_button) AppCompatButton mWatchedItButton;
 
-    private WatchlistRepository repository;
     private OnInteractionListener listener;
+
+    @Inject
+    WatchlistRepository watchlistRepository;
 
     public static WatchlistMovieFragment newInstance(WatchlistMovie movie, int position,
                                                      OnInteractionListener listener) {
@@ -57,11 +62,16 @@ public class WatchlistMovieFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        ((App) (context.getApplicationContext())).getAppComponent()
+                .inject(this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-        repository = new WatchlistRepository(PrimeTimeDatabase.getInstance(requireContext()));
 
         if (getArguments() != null) {
             mMovie = getArguments().getParcelable(KEY_WATCHLIST_MOVIE);

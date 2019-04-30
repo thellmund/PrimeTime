@@ -3,7 +3,7 @@ package com.hellmund.primetime.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
+import org.threeten.bp.LocalDate;
 
 @Deprecated
 public class SearchResult implements Parcelable {
@@ -12,7 +12,7 @@ public class SearchResult implements Parcelable {
     private String posterPath;
     private String title;
     private String description;
-    private Date releaseDate;
+    private LocalDate releaseDate;
     private int runtime;
 
     private SearchResult(Parcel in) {
@@ -20,7 +20,7 @@ public class SearchResult implements Parcelable {
         posterPath = in.readString();
         title = in.readString();
         description = in.readString();
-        releaseDate = new Date(in.readLong());
+        releaseDate = (LocalDate) in.readSerializable();
         runtime = in.readInt();
     }
 
@@ -60,7 +60,7 @@ public class SearchResult implements Parcelable {
         this.runtime = runtime;
     }
 
-    public SearchResult(int id, String path, String title, String description, Date releaseDate) {
+    public SearchResult(int id, String path, String title, String description, LocalDate releaseDate) {
         this.id = id;
         this.posterPath = path;
         this.title = title;
@@ -84,7 +84,7 @@ public class SearchResult implements Parcelable {
         dest.writeString(posterPath);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeLong(releaseDate.getTime());
+        dest.writeSerializable(releaseDate);
         dest.writeInt(runtime);
     }
 }

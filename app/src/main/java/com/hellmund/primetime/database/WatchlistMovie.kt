@@ -4,9 +4,9 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
 import com.hellmund.primetime.model.ApiMovie
-import com.hellmund.primetime.utils.DateUtils
 import kotlinx.android.parcel.Parcelize
-import java.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 
 @Parcelize
 @Entity(tableName = "watchlist_movies")
@@ -15,8 +15,8 @@ data class WatchlistMovie(
         var title: String,
         var posterURL: String,
         var runtime: Int,
-        var releaseDate: Date,
-        var timestamp: Date = Date(),
+        var releaseDate: LocalDate,
+        var timestamp: LocalDateTime = LocalDateTime.now(),
         var deleted: Boolean = false,
         var notificationsActivated: Boolean = true
 ): Parcelable {
@@ -25,10 +25,7 @@ data class WatchlistMovie(
         get() = "http://image.tmdb.org/t/p/w500$posterURL"
 
     val isUnreleased: Boolean
-        get() {
-            val today = DateUtils.startOfDay().time
-            return releaseDate.after(today)
-        }
+        get() = releaseDate.isAfter(LocalDate.now())
 
     val hasRuntime: Boolean
         get() = true // TODO
@@ -44,7 +41,7 @@ data class WatchlistMovie(
                     movie.title,
                     movie.posterPath,
                     movie.runtime ?: -1, // TODO
-                    movie.releaseDate ?: Date())
+                    movie.releaseDate ?: LocalDate.now())
         }
 
     }
