@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.main.MainActivity;
-import com.hellmund.primetime.model2.Sample;
+import com.hellmund.primetime.model.Sample;
 import com.hellmund.primetime.search.EqualSpacingGridItemDecoration;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.NetworkUtils;
@@ -54,9 +54,6 @@ public class SelectMoviesActivity extends AppCompatActivity {
 
     @Inject
     OnboardingHelper onboardingHelper;
-
-    /*@Inject
-    SharedPreferences mSharedPrefs;*/
 
     @Inject
     Provider<SelectMoviesViewModel> viewModelProvider;

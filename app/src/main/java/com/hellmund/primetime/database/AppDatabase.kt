@@ -3,7 +3,7 @@ package com.hellmund.primetime.database
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
-import com.hellmund.primetime.model2.Genre
+import com.hellmund.primetime.model.Genre
 
 @Database(entities = [
     WatchlistMovie::class,

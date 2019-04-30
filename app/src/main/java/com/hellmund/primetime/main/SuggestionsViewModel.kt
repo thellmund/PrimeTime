@@ -3,17 +3,18 @@ package com.hellmund.primetime.main
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
 import com.hellmund.primetime.database.HistoryMovie
 import com.hellmund.primetime.history.HistoryRepository
-import com.hellmund.primetime.model2.ApiMovie
-import com.hellmund.primetime.model2.MovieViewEntity
+import com.hellmund.primetime.model.ApiMovie
+import com.hellmund.primetime.model.MovieViewEntity
+import com.hellmund.primetime.model.MovieViewEntityMapper
 import com.hellmund.primetime.utils.plusAssign
 import com.hellmund.primetime.watchlist.WatchlistRepository
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 sealed class ViewModelAction {
     object LoadAdditionalInformation : ViewModelAction()
@@ -26,7 +27,7 @@ sealed class ViewModelAction {
 }
 
 sealed class ViewModelEvent {
-    data class AdditionalInformationLoaded(val movie: ApiMovie) : ViewModelEvent()
+    data class AdditionalInformationLoaded(val movie: MovieViewEntity) : ViewModelEvent()
     object TrailerLoading : ViewModelEvent()
     data class TrailerLoaded(val url: String) : ViewModelEvent()
     data class ImdbLinkLoaded(val url: String) : ViewModelEvent()
@@ -37,16 +38,17 @@ sealed class ViewModelEvent {
     data class WatchStatus(val watchStatus: ApiMovie.WatchStatus) : ViewModelEvent()
 }
 
-sealed class Rating(val movie: ApiMovie) {
-    class Like(movie: ApiMovie) : Rating(movie)
-    class Dislike(movie: ApiMovie) : Rating(movie)
+sealed class Rating(val movie: MovieViewEntity) {
+    class Like(movie: MovieViewEntity) : Rating(movie)
+    class Dislike(movie: MovieViewEntity) : Rating(movie)
 }
 
-class SuggestionsViewModel(
+class SuggestionsViewModel @Inject constructor(
         private val repository: MoviesRepository,
         private val historyRepository: HistoryRepository,
         private val watchlistRepository: WatchlistRepository,
-        private var movie: ApiMovie
+        private val viewEntityMapper: MovieViewEntityMapper,
+        private var movie: MovieViewEntity
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -102,9 +104,8 @@ class SuggestionsViewModel(
     private fun fetchInformation(): Observable<ViewModelEvent> {
         return repository
                 .fetchMovie(movie.id)
-                .doOnNext {
-                    movie = it
-                }
+                .map(viewEntityMapper)
+                .doOnNext { movie = it }
                 .map { ViewModelEvent.AdditionalInformationLoaded(it) }
     }
 
@@ -152,9 +153,9 @@ class SuggestionsViewModel(
                 .subscribeOn(Schedulers.io())
     }
 
-    private fun storeInWatchlist(movie: ApiMovie): Observable<ViewModelEvent> {
+    private fun storeInWatchlist(movie: MovieViewEntity): Observable<ViewModelEvent> {
         return watchlistRepository
-                .store(movie)
+                .store(movie.raw)
                 .subscribeOn(Schedulers.io())
                 .toObservable<Unit>()
                 .map { ViewModelEvent.AddedToWatchlist }
@@ -201,6 +202,7 @@ class SuggestionsViewModel(
         super.onCleared()
     }
 
+    /*
     class Factory(
             private val repository: MoviesRepository,
             private val historyRepository: HistoryRepository,
@@ -214,5 +216,6 @@ class SuggestionsViewModel(
         }
 
     }
+    */
 
 }

@@ -2,7 +2,7 @@ package com.hellmund.primetime.watchlist
 
 import com.hellmund.primetime.database.AppDatabase
 import com.hellmund.primetime.database.WatchlistMovie
-import com.hellmund.primetime.model2.ApiMovie
+import com.hellmund.primetime.model.ApiMovie
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.schedulers.Schedulers

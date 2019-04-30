@@ -5,7 +5,9 @@ import android.content.SharedPreferences
 import com.hellmund.primetime.history.HistoryFragment
 import com.hellmund.primetime.introduction.IntroductionActivity
 import com.hellmund.primetime.main.MainFragment
+import com.hellmund.primetime.main.SuggestionComponent
 import com.hellmund.primetime.search.SearchFragment
+import com.hellmund.primetime.selectgenres.SelectGenreActivity
 import com.hellmund.primetime.selectmovies.SelectMoviesActivity
 import com.hellmund.primetime.settings.SettingsFragment
 import com.hellmund.primetime.splash.SplashScreenActivity
@@ -29,10 +31,13 @@ import javax.inject.Singleton
 ])
 interface AppComponent {
 
+    fun suggestionComponent(): SuggestionComponent.Builder
+
     fun inject(historyFragment: HistoryFragment)
     fun inject(introductionActivity: IntroductionActivity)
     fun inject(mainFragment: MainFragment)
     fun inject(searchFragment: SearchFragment)
+    fun inject(selectGenresActivity: SelectGenreActivity)
     fun inject(selectMoviesActivity: SelectMoviesActivity)
     fun inject(settingsFragment: SettingsFragment)
     fun inject(splashScreenActivity: SplashScreenActivity)

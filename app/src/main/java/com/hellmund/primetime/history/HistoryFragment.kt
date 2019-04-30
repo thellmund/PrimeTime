@@ -40,9 +40,7 @@ class HistoryFragment : Fragment() {
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_history, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_history, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -65,7 +63,6 @@ class HistoryFragment : Fragment() {
 
     private fun onOpenDialog(movie: HistoryMovie) {
         val options = getDialogOptions(movie)
-
         AlertDialog.Builder(requireContext())
                 .setTitle(movie.title)
                 .setItems(options) { _, which ->

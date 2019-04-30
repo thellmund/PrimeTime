@@ -3,8 +3,7 @@ package com.hellmund.primetime.main
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
-import com.hellmund.primetime.model2.ApiMovie
-import com.hellmund.primetime.model2.MovieViewEntity
+import com.hellmund.primetime.model.MovieViewEntity
 
 internal class SuggestionsAdapter(
         fragmentMgr: FragmentManager,

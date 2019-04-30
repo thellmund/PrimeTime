@@ -3,7 +3,7 @@ package com.hellmund.primetime.main
 import android.content.Context
 import android.os.Parcelable
 import com.hellmund.primetime.database.PrimeTimeDatabase
-import com.hellmund.primetime.model2.ApiGenre
+import com.hellmund.primetime.model.ApiGenre
 import com.hellmund.primetime.utils.Constants
 import kotlinx.android.parcel.Parcelize
 

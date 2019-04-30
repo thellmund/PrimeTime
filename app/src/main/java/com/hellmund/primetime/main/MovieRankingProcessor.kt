@@ -3,7 +3,7 @@ package com.hellmund.primetime.main
 import com.hellmund.primetime.database.HistoryMovie
 import com.hellmund.primetime.database.WatchlistMovie
 import com.hellmund.primetime.history.HistoryRepository
-import com.hellmund.primetime.model2.ApiMovie
+import com.hellmund.primetime.model.ApiMovie
 import com.hellmund.primetime.watchlist.WatchlistRepository
 import java.util.*
 import javax.inject.Inject

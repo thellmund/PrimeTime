@@ -1,4 +1,4 @@
-package com.hellmund.primetime.model2
+package com.hellmund.primetime.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
@@ -13,14 +13,14 @@ data class MovieViewEntity(
         val releaseYear: String,
         val popularity: Float,
         val formattedVoteAverage: String,
-        val runtime: Int? = null,
+        val formattedRuntime: String,
         val imdbId: String? = null,
         val raw: ApiMovie
 ): Parcelable {
 
     val hasAdditionalInformation: Boolean
         get() {
-            return runtime != null && imdbId != null
+            return raw.runtime != null && imdbId != null
         }
 
 }

@@ -91,15 +91,4 @@ class WatchlistViewModel @Inject constructor(
         super.onCleared()
     }
 
-    /*class Factory(
-            private val repository: WatchlistRepository
-    ) : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return WatchlistViewModel(repository) as T
-        }
-
-    }*/
-
 }

@@ -3,7 +3,7 @@ package com.hellmund.primetime.database
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
-import com.hellmund.primetime.model2.ApiMovie
+import com.hellmund.primetime.model.ApiMovie
 import com.hellmund.primetime.utils.DateUtils
 import kotlinx.android.parcel.Parcelize
 import java.util.*

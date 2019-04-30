@@ -1,4 +1,4 @@
-package com.hellmund.primetime.model2
+package com.hellmund.primetime.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -19,25 +19,8 @@ data class ApiMovie(
         @SerializedName("imdb_id") val imdbId: String? = null
 ) : Parcelable {
 
-    /*val hasAdditionalInformation: Boolean
-        get() {
-            return runtime != null && imdbId != null
-        }*/
-
     val fullPosterUrl: String
         get() = "http://image.tmdb.org/t/p/w500$posterPath"
-
-    /*fun getPrettyGenres(context: Context): String {
-        return genreIds
-                .map {
-                    // TODO: MovieViewEntity and mapper
-                    val database = PrimeTimeDatabase.getInstance(context)
-                    database.genreDao().getGenre(it).blockingGet()
-                }
-                .map { it.name }
-                .sorted()
-                .joinToString(", ")
-    }*/
 
     fun getPrettyRuntime(): String {
         val runtime = runtime ?: throw IllegalStateException()
@@ -45,25 +28,6 @@ data class ApiMovie(
         val minutes = String.format(Locale.getDefault(), "%02d", runtime % 60)
         return String.format("%s:%s", hours, minutes)
     }
-
-    /*fun getPrettyVoteAverage(): String = "$voteAverage / 10"
-
-    fun getReleaseYear(context: Context): String {
-        if (releaseDate == null) {
-            return context.getString(R.string.no_information)
-        }
-
-        val release = Calendar.getInstance()
-        release.time = releaseDate
-
-        val now = Calendar.getInstance()
-
-        return if (release.after(now)) {
-            DateUtils.getDateInLocalFormat(release)
-        } else {
-            Integer.toString(release.get(Calendar.YEAR))
-        }
-    }*/
 
     enum class WatchStatus {
         NOT_WATCHED, ON_WATCHLIST, WATCHED

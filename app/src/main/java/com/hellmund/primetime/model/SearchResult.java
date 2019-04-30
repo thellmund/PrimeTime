@@ -3,8 +3,6 @@ package com.hellmund.primetime.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.hellmund.primetime.model2.ApiMovie;
-
 import java.util.Date;
 
 @Deprecated

@@ -1,3 +1,3 @@
-package com.hellmund.primetime.model2
+package com.hellmund.primetime.model
 
 data class SamplesResponse(val results: List<Sample>)

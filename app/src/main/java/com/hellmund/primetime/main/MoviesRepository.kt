@@ -2,7 +2,8 @@ package com.hellmund.primetime.main
 
 import com.hellmund.primetime.api.ApiService
 import com.hellmund.primetime.model.SearchResult
-import com.hellmund.primetime.model2.ApiMovie
+import com.hellmund.primetime.model.ApiMovie
+import com.hellmund.primetime.model.MovieViewEntity
 import com.hellmund.primetime.utils.GenresProvider
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -85,7 +86,7 @@ class MoviesRepository @Inject constructor(
     }
 
     // TODO Move somewhere else
-    fun fetchVideo(movie: ApiMovie): Observable<String> {
+    fun fetchVideo(movie: MovieViewEntity): Observable<String> {
         return apiService
                 .videos(movie.id)
                 .subscribeOn(Schedulers.io())

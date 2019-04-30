@@ -1,4 +1,4 @@
-package com.hellmund.primetime.model2
+package com.hellmund.primetime.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

@@ -1,29 +1,33 @@
 package com.hellmund.primetime.main
 
 import android.app.ProgressDialog
-import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.graphics.Palette
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hellmund.primetime.R
-import com.hellmund.primetime.api.ApiClient
-import com.hellmund.primetime.database.PrimeTimeDatabase
-import com.hellmund.primetime.history.HistoryRepository
-import com.hellmund.primetime.model2.ApiMovie
-import com.hellmund.primetime.model2.ApiMovie.WatchStatus.NOT_WATCHED
-import com.hellmund.primetime.model2.ApiMovie.WatchStatus.ON_WATCHLIST
-import com.hellmund.primetime.model2.MovieViewEntity
+import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.model.ApiMovie
+import com.hellmund.primetime.model.ApiMovie.WatchStatus.NOT_WATCHED
+import com.hellmund.primetime.model.ApiMovie.WatchStatus.ON_WATCHLIST
+import com.hellmund.primetime.model.MovieViewEntity
 import com.hellmund.primetime.utils.*
-import com.hellmund.primetime.watchlist.WatchlistRepository
 import kotlinx.android.synthetic.main.fragment_movie_suggestion.*
+import javax.inject.Inject
+import javax.inject.Provider
 
 class SuggestionFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelProvider: Provider<SuggestionsViewModel>
+
+    private val viewModel: SuggestionsViewModel by lazyViewModel { viewModelProvider }
 
     private val movie: MovieViewEntity by lazy {
         arguments?.getParcelable<MovieViewEntity>(KEY_MOVIE) ?: throw IllegalStateException()
@@ -33,17 +37,12 @@ class SuggestionFragment : Fragment() {
 
     private lateinit var progressDialog: ProgressDialog
 
-    private val viewModel: SuggestionsViewModel by lazy {
-        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val database = PrimeTimeDatabase.getInstance(requireContext())
-
-        val provider = RealGenresProvider(sharedPrefs)
-        val repository = MoviesRepository(ApiClient.instance, provider)
-        val historyRepository = HistoryRepository(database)
-        val watchlistRepository = WatchlistRepository(database)
-
-        val factory = SuggestionsViewModel.Factory(repository, historyRepository, watchlistRepository, movie)
-        ViewModelProviders.of(this, factory).get(SuggestionsViewModel::class.java)
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        injector.suggestionComponent()
+                .movie(movie)
+                .build()
+                .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -167,12 +166,8 @@ class SuggestionFragment : Fragment() {
         requireContext().openUrl(url)
     }
 
-    private fun showMovieDetails(movie: ApiMovie) {
-        if (movie.runtime != null && movie.runtime > 0) {
-            runtime.text = movie.getPrettyRuntime()
-        } else {
-            runtime.setText(R.string.no_information)
-        }
+    private fun showMovieDetails(movie: MovieViewEntity) {
+        runtime.text = movie.formattedRuntime
     }
 
     private fun onAddedToWatchlist() {

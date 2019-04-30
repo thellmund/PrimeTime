@@ -1,4 +1,4 @@
-package com.hellmund.primetime.model2
+package com.hellmund.primetime.model
 
 import com.google.gson.annotations.SerializedName
 import com.hellmund.primetime.database.HistoryMovie

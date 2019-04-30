@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hellmund.primetime.R
-import com.hellmund.primetime.model2.Sample
+import com.hellmund.primetime.model.Sample
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.showToast
 import kotlinx.android.synthetic.main.list_item_samples_list.view.*

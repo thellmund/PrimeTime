@@ -15,8 +15,8 @@ import android.support.v4.util.ArrayMap;
 import com.hellmund.primetime.App;
 import com.hellmund.primetime.R;
 import com.hellmund.primetime.about.AboutActivity;
-import com.hellmund.primetime.database.AppDatabase;
-import com.hellmund.primetime.model2.Genre;
+import com.hellmund.primetime.model.Genre;
+import com.hellmund.primetime.selectgenres.GenresRepository;
 import com.hellmund.primetime.utils.Constants;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class SettingsFragment extends PreferenceFragment {
     private static final int MIN_GENRES = 2;
 
     @Inject
-    AppDatabase database;
+    GenresRepository genresRepository;
 
     private ArrayMap<Preference, String> mDefaultSummaries;
 
@@ -84,7 +84,7 @@ public class SettingsFragment extends PreferenceFragment {
         MultiSelectListPreference excludedGenres =
                 (MultiSelectListPreference) findPreference(Constants.KEY_EXCLUDED);
 
-        List<Genre> genres = database.genreDao().getAll().blockingGet();
+        List<Genre> genres = genresRepository.getAll().blockingGet();
 
         String[] genreNames = new String[genres.size()];
         String[] genreIds = new String[genres.size()];
@@ -142,7 +142,7 @@ public class SettingsFragment extends PreferenceFragment {
         MultiSelectListPreference included =
                 (MultiSelectListPreference) findPreference(Constants.KEY_INCLUDED);
 
-        List<Genre> genres = database.genreDao().getAll().blockingGet();
+        List<Genre> genres = genresRepository.getAll().blockingGet();
 
         String[] genreNames = new String[genres.size()];
         String[] genreIds = new String[genres.size()];
@@ -166,7 +166,7 @@ public class SettingsFragment extends PreferenceFragment {
         if (preference.getKey().equals(Constants.KEY_INCLUDED)) {
             included = newValues;
 
-            List<Genre> excludedGenres = database.genreDao().getExcludedGenres().blockingGet();
+            List<Genre> excludedGenres = genresRepository.getExcludedGenres().blockingFirst();
             excluded = new HashSet<>();
 
             for (Genre genre : excludedGenres) {
@@ -175,7 +175,7 @@ public class SettingsFragment extends PreferenceFragment {
         } else {
             excluded = newValues;
 
-            List<Genre> includedGenres = database.genreDao().getPreferredGenres().blockingGet();
+            List<Genre> includedGenres = genresRepository.getPreferredGenres().blockingFirst();
             included = new HashSet<>();
 
             for (Genre genre : includedGenres) {
@@ -188,7 +188,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         List<String> sharedTitles = new ArrayList<>();
         for (String genreId : sharedGenres) {
-            Genre genre = database.genreDao().getGenre(Integer.parseInt(genreId)).blockingGet();
+            Genre genre = genresRepository.getGenre(genreId).blockingGet();
             String value = "• " + genre.getName();
             sharedTitles.add(value);
         }
@@ -229,8 +229,8 @@ public class SettingsFragment extends PreferenceFragment {
         Set<String> included = new HashSet<>();
         Set<String> excluded = new HashSet<>();
 
-        List<Genre> includedGenres = database.genreDao().getPreferredGenres().blockingGet();
-        List<Genre> excludedGenres = database.genreDao().getExcludedGenres().blockingGet();
+        List<Genre> includedGenres = genresRepository.getPreferredGenres().blockingFirst();
+        List<Genre> excludedGenres = genresRepository.getExcludedGenres().blockingFirst();
 
         for (Genre genre : includedGenres) {
             included.add(Integer.toString(genre.getId()));
@@ -263,7 +263,7 @@ public class SettingsFragment extends PreferenceFragment {
         List<String> genreNames = new ArrayList<>();
 
         for (String genreId : genreIds) {
-            Genre genre = database.genreDao().getGenre(Integer.parseInt(genreId)).blockingGet();
+            Genre genre = genresRepository.getGenre(genreId).blockingGet();
             genreNames.add(genre.getName());
         }
 

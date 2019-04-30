@@ -3,9 +3,9 @@ package com.hellmund.primetime.api
 import com.google.gson.GsonBuilder
 import com.hellmund.primetime.main.RecommendationsResponse
 import com.hellmund.primetime.main.VideosResponse
-import com.hellmund.primetime.model2.ApiMovie
-import com.hellmund.primetime.model2.GenresResponse
-import com.hellmund.primetime.model2.SamplesResponse
+import com.hellmund.primetime.model.ApiMovie
+import com.hellmund.primetime.model.GenresResponse
+import com.hellmund.primetime.model.SamplesResponse
 import io.reactivex.Observable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

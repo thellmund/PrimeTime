@@ -1,4 +1,4 @@
-package com.hellmund.primetime.model2
+package com.hellmund.primetime.model
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey

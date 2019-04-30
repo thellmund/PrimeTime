@@ -4,8 +4,8 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.hellmund.primetime.model2.MovieViewEntity
-import com.hellmund.primetime.model2.MovieViewEntityMapper
+import com.hellmund.primetime.model.MovieViewEntity
+import com.hellmund.primetime.model.MoviesViewEntityMapper
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
@@ -40,7 +40,7 @@ sealed class Result {
 class MainViewModel @Inject constructor(
         private val repository: MoviesRepository,
         private val rankingProcessor: MovieRankingProcessor,
-        private val viewEntityMapper: MovieViewEntityMapper
+        private val viewEntityMapper: MoviesViewEntityMapper
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -100,7 +100,7 @@ class MainViewModel @Inject constructor(
     class Factory(
             private val repository: MoviesRepository,
             private val rankingProcessor: MovieRankingProcessor,
-            private val viewEntityMapper: MovieViewEntityMapper
+            private val viewEntityMapper: MoviesViewEntityMapper
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")

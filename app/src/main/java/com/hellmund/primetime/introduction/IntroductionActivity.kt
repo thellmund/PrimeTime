@@ -31,13 +31,7 @@ class IntroductionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_introduction)
         injector.inject(this)
-
         introductionButton.setOnClickListener { openGenresSelection() }
-
-        /*val genresProvider: GenresProvider = RealGenresProvider(defaultSharedPreferences)
-        val moviesRepo = MoviesRepository(ApiClient.instance, genresProvider)
-        val factory = IntroductionViewModel.Factory(moviesRepo)
-        val viewModel = ViewModelProviders.of(this, factory).get(IntroductionViewModel::class.java)*/
         viewModel.posterUrls.observe(this, this::displayResults)
     }
 
