@@ -81,10 +81,18 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void initExcludedGenresPref() {
-        MultiSelectListPreference excludedGenres =
+        MultiSelectListPreference preference =
                 (MultiSelectListPreference) findPreference(Constants.KEY_EXCLUDED);
 
         List<Genre> genres = genresRepository.getAll().blockingGet();
+        List<Genre> excludedGenres = genresRepository.getExcludedGenres().blockingFirst();
+
+        Set<String> values = new HashSet<>();
+        for (Genre genre : excludedGenres) {
+            if (genre.isPreferred()) {
+                values.add(Integer.toString(genre.getId()));
+            }
+        }
 
         String[] genreNames = new String[genres.size()];
         String[] genreIds = new String[genres.size()];
@@ -94,11 +102,12 @@ public class SettingsFragment extends PreferenceFragment {
             genreIds[i] = Integer.toString(genres.get(i).getId());
         }
 
-        excludedGenres.setEntries(genreNames);
-        excludedGenres.setEntryValues(genreIds);
-        updateGenresSummary(excludedGenres, excludedGenres.getValues());
+        preference.setEntries(genreNames);
+        preference.setEntryValues(genreIds);
+        preference.setValues(values);
 
-        excludedGenres.setOnPreferenceChangeListener(this::saveExcludedGenres);
+        updateGenresSummary(preference, values);
+        preference.setOnPreferenceChangeListener(this::saveExcludedGenres);
     }
 
     @SuppressWarnings("unchecked")
@@ -139,10 +148,18 @@ public class SettingsFragment extends PreferenceFragment {
 
     @SuppressWarnings("unchecked")
     private void initIncludedGenresPref() {
-        MultiSelectListPreference included =
+        MultiSelectListPreference preference =
                 (MultiSelectListPreference) findPreference(Constants.KEY_INCLUDED);
 
         List<Genre> genres = genresRepository.getAll().blockingGet();
+        List<Genre> includedGenres = genresRepository.getPreferredGenres().blockingFirst();
+
+        Set<String> values = new HashSet<>();
+        for (Genre genre : includedGenres) {
+            if (genre.isPreferred()) {
+                values.add(Integer.toString(genre.getId()));
+            }
+        }
 
         String[] genreNames = new String[genres.size()];
         String[] genreIds = new String[genres.size()];
@@ -152,11 +169,12 @@ public class SettingsFragment extends PreferenceFragment {
             genreIds[i] = Integer.toString(genres.get(i).getId());
         }
 
-        included.setEntries(genreNames);
-        included.setEntryValues(genreIds);
-        updateGenresSummary(included, included.getValues());
+        preference.setEntries(genreNames);
+        preference.setEntryValues(genreIds);
+        preference.setValues(values);
 
-        included.setOnPreferenceChangeListener(this::saveIncludedGenres);
+        updateGenresSummary(preference, values);
+        preference.setOnPreferenceChangeListener(this::saveIncludedGenres);
     }
 
     private String getSharedGenresAsBulletList(Preference preference, Set<String> newValues) {
@@ -266,6 +284,8 @@ public class SettingsFragment extends PreferenceFragment {
             Genre genre = genresRepository.getGenre(genreId).blockingGet();
             genreNames.add(genre.getName());
         }
+
+        Collections.sort(genreNames);
 
         StringBuilder builder = new StringBuilder(genreNames.get(0));
         for (int i = 1; i < genreNames.size(); i++) {

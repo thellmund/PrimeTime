@@ -8,13 +8,13 @@ import io.reactivex.Single
 @Dao
 interface GenreDao {
 
-    @Query("SELECT * FROM genres")
+    @Query("SELECT * FROM genres ORDER BY name")
     fun getAll(): Single<List<Genre>>
 
-    @Query("SELECT * FROM genres WHERE isPreferred = 1")
+    @Query("SELECT * FROM genres WHERE isPreferred = 1 ORDER BY name")
     fun getPreferredGenres(): Single<List<Genre>>
 
-    @Query("SELECT * FROM genres WHERE isPreferred = 0")
+    @Query("SELECT * FROM genres WHERE isPreferred = 0 ORDER BY name")
     fun getExcludedGenres(): Single<List<Genre>>
 
     @Query("SELECT * FROM genres WHERE id = :id")
