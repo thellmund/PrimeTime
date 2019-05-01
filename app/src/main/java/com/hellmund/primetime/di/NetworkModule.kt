@@ -2,9 +2,9 @@ package com.hellmund.primetime.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.hellmund.primetime.api.ApiService
-import com.hellmund.primetime.api.DateSerializer
-import com.hellmund.primetime.api.TmdbInterceptor
+import com.hellmund.primetime.data.api.ApiService
+import com.hellmund.primetime.data.api.DateSerializer
+import com.hellmund.primetime.data.api.TmdbInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.hellmund.primetime.di.app
-import com.hellmund.primetime.watchlist.WatchlistRepository
+import com.hellmund.primetime.ui.watchlist.WatchlistRepository
 import org.jetbrains.anko.notificationManager
 import javax.inject.Inject
 

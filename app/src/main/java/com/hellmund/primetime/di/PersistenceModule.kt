@@ -3,7 +3,7 @@ package com.hellmund.primetime.di
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.SharedPreferences
-import com.hellmund.primetime.database.AppDatabase
+import com.hellmund.primetime.data.database.AppDatabase
 import dagger.Module
 import dagger.Provides
 import org.jetbrains.anko.defaultSharedPreferences

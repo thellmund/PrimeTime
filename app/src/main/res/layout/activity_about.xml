@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".about.AboutActivity">
+    tools:context=".ui.about.AboutActivity">
 
     <include layout="@layout/view_toolbar" />
 

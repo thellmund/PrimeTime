@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/adapterBackground"
-    tools:context=".main.MainFragment">
+    tools:context=".ui.main.MainFragment">
 
     <ProgressBar
         android:id="@+id/progressBar"

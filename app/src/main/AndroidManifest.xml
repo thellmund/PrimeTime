@@ -15,31 +15,31 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,ManifestResource">
         <activity
-            android:name="com.hellmund.primetime.main.MainActivity"
+            android:name="com.hellmund.primetime.ui.main.MainActivity"
             android:exported="true"
             android:label="@string/app_name" />
         <activity
-            android:name=".about.AboutActivity"
+            android:name="com.hellmund.primetime.ui.about.AboutActivity"
             android:label="@string/title_activity_about">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.hellmund.primetime.main.MainActivity" />
+                android:value="com.hellmund.primetime.ui.main.MainActivity" />
         </activity>
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name="com.hellmund.primetime.ui.settings.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="com.hellmund.primetime.main.MainActivity"
+            android:parentActivityName="com.hellmund.primetime.ui.main.MainActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.hellmund.primetime.main.MainActivity" />
+                android:value="com.hellmund.primetime.ui.main.MainActivity" />
         </activity>
         <activity
-            android:name=".introduction.IntroductionActivity"
+            android:name="com.hellmund.primetime.ui.introduction.IntroductionActivity"
             android:label="@string/title_activity_introduction"
             android:theme="@style/AppTheme.Introduction" />
         <activity
-            android:name=".splash.SplashScreenActivity"
+            android:name="com.hellmund.primetime.ui.splash.SplashScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme">
@@ -54,27 +54,27 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".selectgenres.SelectGenreActivity"
+            android:name="com.hellmund.primetime.ui.selectgenres.SelectGenreActivity"
             android:label="@string/select_genres_header" />
         <activity
-            android:name=".selectmovies.SelectMoviesActivity"
+            android:name="com.hellmund.primetime.ui.selectmovies.SelectMoviesActivity"
             android:label="@string/title_activity_select_movie" />
         <activity
-            android:name="com.hellmund.primetime.history.HistoryActivity"
+            android:name="com.hellmund.primetime.ui.history.HistoryActivity"
             android:label="@string/title_activity_history">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.hellmund.primetime.main.MainActivity" />
+                android:value="com.hellmund.primetime.ui.main.MainActivity" />
         </activity>
         <activity
-            android:name="com.hellmund.primetime.search.SearchActivity"
+            android:name="com.hellmund.primetime.ui.search.SearchActivity"
             android:windowSoftInputMode="stateVisible">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.hellmund.primetime.main.MainActivity" />
+                android:value="com.hellmund.primetime.ui.main.MainActivity" />
         </activity>
         <activity
-            android:name=".watchlist.WatchlistActivity"
+            android:name="com.hellmund.primetime.ui.watchlist.WatchlistActivity"
             android:label="@string/watchlist" />
 
         <receiver android:name=".utils.NotificationPublisher" />
