@@ -6,6 +6,8 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.hellmund.primetime.data.model.MovieViewEntity
 import com.hellmund.primetime.data.model.MoviesViewEntityMapper
+import com.hellmund.primetime.ui.main.data.MovieRankingProcessor
+import com.hellmund.primetime.ui.main.data.MoviesRepository
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable

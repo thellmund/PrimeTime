@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.hellmund.primetime.App;
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.data.database.WatchlistMovie;
-import com.hellmund.primetime.utils.DateUtils;
 import com.hellmund.primetime.utils.ImageLoader;
 import com.hellmund.primetime.utils.NotificationUtils;
 import com.hellmund.primetime.utils.UiUtils;
@@ -34,7 +32,7 @@ public class WatchlistMovieFragment extends Fragment {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private Unbinder mUnbinder;
-    private WatchlistMovie mMovie;
+    private WatchlistMovieViewEntity mMovie;
     private int mPosition;
 
     @BindView(R.id.posterImageView) ImageView mImageView;
@@ -50,8 +48,11 @@ public class WatchlistMovieFragment extends Fragment {
     @Inject
     WatchlistRepository watchlistRepository;
 
-    public static WatchlistMovieFragment newInstance(WatchlistMovie movie, int position,
-                                                     OnInteractionListener listener) {
+    @Inject
+    ImageLoader imageLoader;
+
+    public static WatchlistMovieFragment newInstance(WatchlistMovieViewEntity movie,
+                                                     int position, OnInteractionListener listener) {
         WatchlistMovieFragment fragment = new WatchlistMovieFragment();
         Bundle args = new Bundle();
         args.putParcelable(KEY_WATCHLIST_MOVIE, movie);
@@ -86,11 +87,13 @@ public class WatchlistMovieFragment extends Fragment {
                 R.layout.fragment_watchlist_item, container, false);
         mUnbinder = ButterKnife.bind(this, view);
 
-        String posterUrl = mMovie.getFullPosterUrl();
-        ImageLoader.with(requireContext()).load(posterUrl, mImageView);
+        String posterUrl = mMovie.getPosterUrl();
+        imageLoader.load(posterUrl, mImageView);
 
         mTitleTextView.setText(mMovie.getTitle());
 
+        // TODO
+        /*
         if (mMovie.isUnreleased()) {
             setNotificationIcon();
             setMovieOverlay();
@@ -99,12 +102,15 @@ public class WatchlistMovieFragment extends Fragment {
         } else {
             mRuntimeTextView.setText(DateUtils.formatRuntime(mMovie.getRuntime()));
         }
+        */
+
+        mRuntimeTextView.setText(mMovie.getFormattedRuntime());
 
         return view;
     }
 
     private void setMovieOverlay() {
-        String releaseDate = DateUtils.getDateInLocalFormat(mMovie.getReleaseDate());
+        String releaseDate = mMovie.getFormattedReleaseDate();
         String releaseStr = String.format(requireContext().getString(R.string.release_on), releaseDate);
         mRuntimeTextView.setText(releaseStr);
         mRuntimeIcon.setImageResource(R.drawable.ic_today_white_24dp);
@@ -115,7 +121,7 @@ public class WatchlistMovieFragment extends Fragment {
         if (NotificationUtils.areNotificationsEnabled(requireContext())) {
             mNotificationIcon.setVisibility(View.VISIBLE);
 
-            if (mMovie.isNotificationActivited()) {
+            if (mMovie.getNotificationsActivated()) {
                 mNotificationIcon.setImageResource(R.drawable.ic_notifications_active_white_24dp);
             } else {
                 mNotificationIcon.setImageResource(R.drawable.ic_notifications_none_white_24dp);
@@ -127,8 +133,8 @@ public class WatchlistMovieFragment extends Fragment {
 
     @OnClick(R.id.notification_icon)
     public void onNotificationClick() {
-        final boolean isActivated = !mMovie.isNotificationActivited();
-        final String releaseDate = DateUtils.getDateInLocalFormat(mMovie.getReleaseDate());
+        final boolean isActivated = !mMovie.getNotificationsActivated();
+        final String releaseDate = mMovie.getFormattedReleaseDate();
 
         String message;
 
@@ -173,8 +179,7 @@ public class WatchlistMovieFragment extends Fragment {
 
     public interface OnInteractionListener {
         void onWatchedIt(int position);
-        void onRemove(WatchlistMovie movie, int position);
-        WatchlistMovie onGetMovie(int position);
+        void onRemove(WatchlistMovieViewEntity movie, int position);
     }
 
 }

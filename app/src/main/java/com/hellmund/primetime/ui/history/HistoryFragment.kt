@@ -61,7 +61,7 @@ class HistoryFragment : Fragment() {
         helper.attachToRecyclerView(recycler_view)
     }
 
-    private fun onOpenDialog(movie: HistoryMovie) {
+    private fun onOpenDialog(movie: HistoryMovieViewEntity) {
         val options = getDialogOptions(movie)
         AlertDialog.Builder(requireContext())
                 .setTitle(movie.title)
@@ -74,7 +74,7 @@ class HistoryFragment : Fragment() {
                 }.create().show()
     }
 
-    private fun getDialogOptions(movie: HistoryMovie): Array<String> {
+    private fun getDialogOptions(movie: HistoryMovieViewEntity): Array<String> {
         return if (movie.isUpdating) {
             arrayOf(getString(R.string.show_similar_movies))
         } else {
@@ -82,7 +82,7 @@ class HistoryFragment : Fragment() {
         }
     }
 
-    private fun showSimilarMovies(movie: HistoryMovie) {
+    private fun showSimilarMovies(movie: HistoryMovieViewEntity) {
         val intent = Intent(requireContext(), MainActivity::class.java)
         intent.putExtra(Constants.SINGLE_MOVIE, true)
         intent.putExtra(Constants.MOVIE_ID, movie.id)
@@ -91,7 +91,7 @@ class HistoryFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun openEditRatingDialog(movie: HistoryMovie) {
+    private fun openEditRatingDialog(movie: HistoryMovieViewEntity) {
         val options = arrayOf(getString(R.string.like), getString(R.string.dislike))
         val checked = if (movie.rating == Constants.LIKE) 0 else 1
 

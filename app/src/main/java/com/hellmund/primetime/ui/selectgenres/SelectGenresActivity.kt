@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.hellmund.primetime.R
+import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.selectmovies.SelectMoviesActivity
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.toList
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_select_genre.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SelectGenreActivity : AppCompatActivity() {
+class SelectGenresActivity : AppCompatActivity() {
 
     private val genres = mutableListOf<Genre>()
 
@@ -81,7 +81,7 @@ class SelectGenreActivity : AppCompatActivity() {
         private const val MIN_COUNT = 2
 
         fun newIntent(context: Context): Intent {
-            return Intent(context, SelectGenreActivity::class.java)
+            return Intent(context, SelectGenresActivity::class.java)
         }
     }
 

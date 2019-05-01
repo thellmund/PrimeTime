@@ -21,25 +21,4 @@ sealed class RecommendationsType : Parcelable {
     @Parcelize
     data class ByGenre(val genre: ApiGenre) : RecommendationsType()
 
-    /*
-    companion object {
-
-        @JvmStatic
-        fun fromIntent(context: Context, intent: String): RecommendationsType {
-            return when (intent) {
-                Constants.NOW_PLAYING_INTENT -> NowPlaying
-                Constants.UPCOMING_INTENT -> Upcoming
-                else -> {
-                    // TODO
-                    val database = PrimeTimeDatabase.getInstance(context)
-                    val genre = database.genreDao().getGenre(intent).blockingGet()
-                    val apiGenre = ApiGenre(genre.id, genre.name)
-                    ByGenre(apiGenre)
-                }
-            }
-        }
-
-    }
-    */
-
 }

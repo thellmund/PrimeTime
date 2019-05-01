@@ -54,7 +54,7 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name="com.hellmund.primetime.ui.selectgenres.SelectGenreActivity"
+            android:name="com.hellmund.primetime.ui.selectgenres.SelectGenresActivity"
             android:label="@string/select_genres_header" />
         <activity
             android:name="com.hellmund.primetime.ui.selectmovies.SelectMoviesActivity"

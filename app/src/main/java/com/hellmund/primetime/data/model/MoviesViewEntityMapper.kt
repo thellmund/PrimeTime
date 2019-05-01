@@ -1,17 +1,11 @@
 package com.hellmund.primetime.data.model
 
-import android.content.Context
-import com.hellmund.primetime.R
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import com.hellmund.primetime.utils.DateUtils.getDateInLocalFormat
-import com.hellmund.primetime.utils.isAfterNow
+import com.hellmund.primetime.utils.ValueFormatter
 import io.reactivex.functions.Function
-import java.util.*
 import javax.inject.Inject
 
 class MoviesViewEntityMapper @Inject constructor(
-        private val context: Context,
-        private val genresRepo: GenresRepository
+        private val valueFormatter: ValueFormatter
 ) : Function<List<Movie>, List<MovieViewEntity>> {
 
     override fun apply(movies: List<Movie>): List<MovieViewEntity> {
@@ -23,47 +17,21 @@ class MoviesViewEntityMapper @Inject constructor(
                 id = movie.id,
                 posterUrl = "http://image.tmdb.org/t/p/w500${movie.posterPath}",
                 title = movie.title,
-                formattedGenres = getFormattedGenres(movie),
+                formattedGenres = valueFormatter.formatGenres(movie),
                 description = movie.description,
-                releaseYear = getReleaseYear(movie),
+                releaseYear = valueFormatter.formatReleaseYear(movie.releaseDate),
                 popularity = movie.popularity,
                 formattedVoteAverage = "${movie.voteAverage} / 10",
-                formattedRuntime = getPrettyRuntime(movie),
+                formattedRuntime = valueFormatter.formatRuntime(movie.runtime),
                 imdbId = movie.imdbId,
                 raw = movie
         )
     }
 
-    private fun getFormattedGenres(movie: Movie): String {
-        val genreIds = movie.genreIds.orEmpty()
-        val genres = genresRepo.all.blockingGet().filter { genreIds.contains(it.id) }
-        return genres.map { it.name }.sorted().joinToString(", ")
-    }
-
-    private fun getReleaseYear(movie: Movie): String {
-        if (movie.releaseDate == null) {
-            return context.getString(R.string.no_information)
-        }
-
-        return if (movie.releaseDate.isAfterNow) {
-            getDateInLocalFormat(movie.releaseDate)
-        } else {
-            movie.releaseDate.year.toString()
-        }
-    }
-
-    private fun getPrettyRuntime(movie: Movie): String {
-        val runtime = movie.runtime ?: return context.getString(R.string.no_information)
-        val hours = String.format(Locale.getDefault(), "%01d", runtime / 60)
-        val minutes = String.format(Locale.getDefault(), "%02d", runtime % 60)
-        return String.format("%s:%s", hours, minutes)
-    }
-
 }
 
 class MovieViewEntityMapper @Inject constructor(
-        private val context: Context,
-        private val genresRepo: GenresRepository
+        private val valueFormatter: ValueFormatter
 ) : Function<Movie, MovieViewEntity> {
 
     override fun apply(movie: Movie): MovieViewEntity {
@@ -71,45 +39,15 @@ class MovieViewEntityMapper @Inject constructor(
                 id = movie.id,
                 posterUrl = "http://image.tmdb.org/t/p/w500${movie.posterPath}",
                 title = movie.title,
-                formattedGenres = getFormattedGenres(movie),
+                formattedGenres = valueFormatter.formatGenres(movie),
                 description = movie.description,
-                releaseYear = getReleaseYear(movie),
+                releaseYear = valueFormatter.formatReleaseYear(movie.releaseDate),
                 popularity = movie.popularity,
                 formattedVoteAverage = "${movie.voteAverage} / 10",
-                formattedRuntime = getPrettyRuntime(movie),
+                formattedRuntime = valueFormatter.formatRuntime(movie.runtime),
                 imdbId = movie.imdbId,
                 raw = movie
         )
-    }
-
-    private fun getFormattedGenres(movie: Movie): String {
-        val genreIds = if (movie.genres.isNullOrEmpty()) {
-            movie.genreIds.orEmpty()
-        } else {
-            movie.genres.map { it.id }
-        }
-
-        val genres = genresRepo.all.blockingGet().filter { genreIds.contains(it.id) }
-        return genres.map { it.name }.sorted().joinToString(", ")
-    }
-
-    private fun getReleaseYear(movie: Movie): String {
-        if (movie.releaseDate == null) {
-            return context.getString(R.string.no_information)
-        }
-
-        return if (movie.releaseDate.isAfterNow) {
-            getDateInLocalFormat(movie.releaseDate)
-        } else {
-            movie.releaseDate.year.toString()
-        }
-    }
-
-    private fun getPrettyRuntime(movie: Movie): String {
-        val runtime = movie.runtime ?: return context.getString(R.string.no_information)
-        val hours = String.format(Locale.getDefault(), "%01d", runtime / 60)
-        val minutes = String.format(Locale.getDefault(), "%02d", runtime % 60)
-        return String.format("%s:%s", hours, minutes)
     }
 
 }

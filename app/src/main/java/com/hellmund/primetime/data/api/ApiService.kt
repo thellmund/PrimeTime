@@ -3,7 +3,7 @@ package com.hellmund.primetime.data.api
 import com.hellmund.primetime.data.model.GenresResponse
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.SamplesResponse
-import com.hellmund.primetime.ui.main.RecommendationsResponse
+import com.hellmund.primetime.ui.main.data.MoviesResponse
 import com.hellmund.primetime.ui.main.VideosResponse
 import io.reactivex.Observable
 import retrofit2.http.GET
@@ -23,24 +23,24 @@ interface ApiService {
     ): Observable<SamplesResponse>
 
     @GET("movie/upcoming")
-    fun upcoming(): Observable<RecommendationsResponse>
+    fun upcoming(): Observable<MoviesResponse>
 
     @GET("movie/now_playing")
-    fun nowPlaying(): Observable<RecommendationsResponse>
+    fun nowPlaying(): Observable<MoviesResponse>
 
     @GET("movie/top_rated")
-    fun topRatedMovies(): Observable<RecommendationsResponse>
+    fun topRatedMovies(): Observable<MoviesResponse>
 
     @GET("movie/{movieId}/recommendations")
     fun recommendations(
             @Path("movieId") movieId: Int,
             @Query("sort_by") sortBy: String = "popularity.desc"
-    ): Observable<RecommendationsResponse>
+    ): Observable<MoviesResponse>
 
     @GET("genre/{genreId}/movies")
     fun genreRecommendations(
             @Path("genreId") genreId: Int
-    ): Observable<RecommendationsResponse>
+    ): Observable<MoviesResponse>
 
     @GET("movie/{movieId}/videos")
     fun videos(@Path("movieId") movieId: Int): Observable<VideosResponse>
@@ -49,9 +49,9 @@ interface ApiService {
     fun movie(@Path("movieId") movieId: Int): Observable<Movie>
 
     @GET("search/movie")
-    fun search(@Query("query") query: String): Observable<RecommendationsResponse>
+    fun search(@Query("query") query: String): Observable<MoviesResponse>
 
     @GET("movie/popular")
-    fun popular(): Observable<RecommendationsResponse>
+    fun popular(): Observable<MoviesResponse>
 
 }

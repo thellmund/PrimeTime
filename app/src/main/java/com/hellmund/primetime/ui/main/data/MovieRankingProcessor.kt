@@ -1,9 +1,10 @@
-package com.hellmund.primetime.ui.main
+package com.hellmund.primetime.ui.main.data
 
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.database.WatchlistMovie
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
+import com.hellmund.primetime.ui.main.RecommendationsType
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
 import org.threeten.bp.LocalDate
 import javax.inject.Inject

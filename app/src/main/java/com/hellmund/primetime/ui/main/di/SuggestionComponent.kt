@@ -1,6 +1,7 @@
-package com.hellmund.primetime.ui.main
+package com.hellmund.primetime.ui.main.di
 
 import com.hellmund.primetime.data.model.MovieViewEntity
+import com.hellmund.primetime.ui.main.SuggestionFragment
 import dagger.BindsInstance
 import dagger.Subcomponent
 

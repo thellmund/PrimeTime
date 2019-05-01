@@ -22,13 +22,7 @@ public class Constants {
     public final static float ENABLED = 1.0f;
     public final static float DISABLED = 0.4f;
 
-    public static final int EMPTY_STATE = 0;
-    public static final int IDEAL_STATE = 1;
-    public static final int ERROR_STATE = 404;
-
     public static final int LIKE = 1;
     public static final int DISLIKE = 0;
-
-    public static final long MILLIS_IN_DAY = 24 * 60 * 60 * 1000;
 
 }

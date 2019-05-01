@@ -9,7 +9,7 @@ import android.support.v7.widget.GridLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.selectgenres.SelectGenreActivity
+import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.isLandscapeMode
 import com.hellmund.primetime.utils.observe
@@ -46,7 +46,7 @@ class IntroductionActivity : AppCompatActivity() {
     }
 
     private fun openGenresSelection() {
-        val intent = SelectGenreActivity.newIntent(this)
+        val intent = SelectGenresActivity.newIntent(this)
         startActivity(intent)
     }
 

@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.view.animation.AlphaAnimation
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.database.WatchlistMovie
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.history.HistoryActivity
@@ -26,7 +25,7 @@ class WatchlistFragment : Fragment(),
         WatchlistMovieFragment.OnInteractionListener, ViewPager.OnPageChangeListener {
 
     // TODO
-    private val movies = mutableListOf<WatchlistMovie>()
+    private val movies = mutableListOf<WatchlistMovieViewEntity>()
 
     @Inject
     lateinit var viewModelProvider: Provider<WatchlistViewModel>
@@ -131,7 +130,7 @@ class WatchlistFragment : Fragment(),
                 }.show()
     }
 
-    private fun rateMovie(movie: WatchlistMovie, position: Int, rating: Int) {
+    private fun rateMovie(movie: WatchlistMovieViewEntity, position: Int, rating: Int) {
         // movies[position].delete()
         val newPosition = computePositionOfNextItem(position)
         scrollToNextPosition(newPosition)
@@ -151,7 +150,7 @@ class WatchlistFragment : Fragment(),
                 .show()
     }
 
-    private fun restoreInViewPager(movie: WatchlistMovie, position: Int) {
+    private fun restoreInViewPager(movie: WatchlistMovieViewEntity, position: Int) {
         movies.add(position, movie)
         // TODO toggleListAndPlaceholder()
         viewPager.currentItem = position
@@ -180,7 +179,7 @@ class WatchlistFragment : Fragment(),
         }
     }
 
-    override fun onRemove(movie: WatchlistMovie, position: Int) {
+    override fun onRemove(movie: WatchlistMovieViewEntity, position: Int) {
         val newPosition = computePositionOfNextItem(position)
         // movie.delete()
 
@@ -190,7 +189,7 @@ class WatchlistFragment : Fragment(),
         displayRemoveSnackbar(movie, position)
     }
 
-    private fun displayRemoveSnackbar(movie: WatchlistMovie, position: Int) {
+    private fun displayRemoveSnackbar(movie: WatchlistMovieViewEntity, position: Int) {
         Snackbar.make(content, R.string.watchlist_removed, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
                     // movie.undelete()
@@ -198,10 +197,6 @@ class WatchlistFragment : Fragment(),
                 }
                 // TODO .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
                 .show()
-    }
-
-    override fun onGetMovie(position: Int): WatchlistMovie {
-        return movies[position]
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

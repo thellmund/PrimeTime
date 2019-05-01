@@ -1,18 +1,25 @@
-package com.hellmund.primetime.ui.main
+package com.hellmund.primetime.ui.main.data
 
 import com.hellmund.primetime.data.api.ApiService
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.MovieViewEntity
 import com.hellmund.primetime.data.model.SearchResult
-import com.hellmund.primetime.utils.GenresProvider
+import com.hellmund.primetime.ui.history.HistoryRepository
+import com.hellmund.primetime.ui.main.RecommendationsType
+import com.hellmund.primetime.ui.main.VideoResolver
+import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import io.reactivex.Observable
+import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MoviesRepository @Inject constructor(
         private val apiService: ApiService,
-        private val genresProvider: GenresProvider
+        private val genresRepository: GenresRepository,
+        private val historyRepository: HistoryRepository
 ) {
+
+    private val resultsZipper = ResultsZipper()
 
     fun fetchRecommendations(type: RecommendationsType): Observable<List<Movie>> {
         return when (type) {
@@ -25,17 +32,40 @@ class MoviesRepository @Inject constructor(
     }
 
     private fun fetchPersonalizedRecommendations(): Observable<List<Movie>> {
+        val personalized = historyRepository
+                .getAll()
+                .flattenAsObservable { it }
+                .sorted()
+                .take(10)
+                .flatMap { fetchRecommendations(it.id) }
+                .toList()
+                .map { it.flatten() }
+                .toObservable()
+
+        val genres = genresRepository
+                .preferredGenres
+                .flatMapIterable { it }
+                .flatMap { fetchGenreRecommendations(it.id) }
+
+        val topRated = fetchTopRatedMovies()
+
+        return Observable.zip(personalized, genres, topRated, resultsZipper)
+
+        /*
         return Observable.fromCallable {
-            val history = emptyList<Movie>()
+            val history = historyRepository.getAll().blockingGet()
+                    .sortedBy { it.timestamp }
+                    .take(10)
+
             val results = mutableListOf<Movie>()
 
             for (movie in history) {
                 results += fetchRecommendations(movie.id).blockingFirst()
             }
 
-            val genres = genresProvider.getPreferredGenres()
+            val genres = genresRepository.preferredGenres.blockingFirst()
             for (genre in genres) {
-                results += fetchGenreRecommendations(genre.toInt()).blockingFirst()
+                results += fetchGenreRecommendations(genre.id).blockingFirst()
             }
 
             results += fetchTopRatedMovies().blockingFirst()
@@ -44,6 +74,7 @@ class MoviesRepository @Inject constructor(
 
             results
         }
+        */
     }
 
     private fun fetchMovieBasedRecommendations(movieId: Int): Observable<List<Movie>> {
@@ -113,6 +144,14 @@ class MoviesRepository @Inject constructor(
                 .popular()
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
+    }
+
+    class ResultsZipper : Function3<List<Movie>, List<Movie>, List<Movie>, List<Movie>> {
+
+        override fun apply(t1: List<Movie>, t2: List<Movie>, t3: List<Movie>): List<Movie> {
+            return t1 + t2 + t3
+        }
+
     }
 
 }

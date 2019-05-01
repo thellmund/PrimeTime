@@ -1,6 +1,9 @@
 package com.hellmund.primetime.data.database
 
-import android.arch.persistence.room.*
+import android.arch.persistence.room.Dao
+import android.arch.persistence.room.Insert
+import android.arch.persistence.room.OnConflictStrategy
+import android.arch.persistence.room.Query
 import com.hellmund.primetime.utils.DateUtils
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -26,7 +29,7 @@ interface WatchlistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun store(vararg movie: WatchlistMovie)
 
-    @Delete
-    fun delete(movie: WatchlistMovie)
+    @Query("DELETE FROM watchlist_movies WHERE id = :id")
+    fun delete(id: Int)
 
 }

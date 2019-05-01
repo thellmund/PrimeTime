@@ -6,8 +6,6 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.format.FormatStyle;
 
-import java.util.Locale;
-
 public class DateUtils {
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
@@ -30,12 +28,6 @@ public class DateUtils {
 
     public static String getDateInLocalFormat(LocalDate date) {
         return formatter.format(date);
-    }
-
-    public static String formatRuntime(int runtime) {
-        final String hours = String.format(Locale.getDefault(), "%01d", runtime / 60);
-        final String minutes = String.format(Locale.getDefault(), "%02d", runtime % 60);
-        return String.format("%s:%s", hours, minutes);
     }
 
 }

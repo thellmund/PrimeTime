@@ -3,7 +3,6 @@ package com.hellmund.primetime.ui.watchlist
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.hellmund.primetime.data.database.WatchlistMovie
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
@@ -12,23 +11,24 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 data class WatchlistViewState(
-        val data: List<WatchlistMovie> = emptyList(),
+        val data: List<WatchlistMovieViewEntity> = emptyList(),
         val isLoading: Boolean = false,
         val error: Throwable? = null
 )
 
 sealed class Action {
     object Load : Action()
-    data class DatabaseLoaded(val data: List<WatchlistMovie>) : Action()
+    data class DatabaseLoaded(val data: List<WatchlistMovieViewEntity>) : Action()
 }
 
 sealed class Result {
-    data class Data(val data: List<WatchlistMovie>) : Result()
+    data class Data(val data: List<WatchlistMovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
 }
 
 class WatchlistViewModel @Inject constructor(
-        private val repository: WatchlistRepository
+        private val repository: WatchlistRepository,
+        private val viewEntityMapper: WatchlistMovieViewEntityMapper
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -42,6 +42,7 @@ class WatchlistViewModel @Inject constructor(
 
         val databaseChanges = repository.getAll()
                 .onErrorReturn { emptyList() }
+                .map(viewEntityMapper)
                 .toObservable()
                 .map { if (it.isNotEmpty()) { Action.DatabaseLoaded(it) } else { Action.Load } }
 
@@ -63,6 +64,7 @@ class WatchlistViewModel @Inject constructor(
     private fun fetchMovies(): Observable<Result> {
         return repository.getAll()
                 .subscribeOn(Schedulers.io())
+                .map(viewEntityMapper)
                 .map { Result.Data(it) as Result }
                 .onErrorReturn { Result.Error(it) }
                 .toObservable()
@@ -78,8 +80,8 @@ class WatchlistViewModel @Inject constructor(
         }
     }
 
-    fun remove(movie: WatchlistMovie) {
-        repository.remove(movie).blockingAwait()
+    fun remove(movie: WatchlistMovieViewEntity) {
+        repository.remove(movie.id).blockingAwait()
     }
 
     private fun render(viewState: WatchlistViewState) {

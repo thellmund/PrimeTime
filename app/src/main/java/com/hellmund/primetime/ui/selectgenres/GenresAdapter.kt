@@ -17,14 +17,18 @@ class GenresAdapter @JvmOverloads constructor(
 ) : ArrayAdapter<Genre>(context, resource, items) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view = convertView ?: LayoutInflater.from(context)
-                .inflate(android.R.layout.simple_list_item_multiple_choice, parent, false)
+        val view = convertView ?: inflateView(parent)
 
         val textView = view.findViewById<CheckedTextView>(android.R.id.text1)
         textView.text = items[position].name
         textView.setTextColor(Color.WHITE)
 
         return view
+    }
+
+    private fun inflateView(parent: ViewGroup?): View {
+        return LayoutInflater.from(parent?.context)
+                .inflate(android.R.layout.simple_list_item_multiple_choice, parent, false)
     }
 
 }

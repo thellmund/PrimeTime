@@ -3,8 +3,6 @@ package com.hellmund.primetime.ui.history
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
@@ -13,23 +11,24 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 data class HistoryViewState(
-        val data: List<HistoryMovie> = emptyList(),
+        val data: List<HistoryMovieViewEntity> = emptyList(),
         val isLoading: Boolean = false,
         val error: Throwable? = null
 )
 
 sealed class Action {
     object Load : Action()
-    data class DatabaseLoaded(val data: List<HistoryMovie>) : Action()
+    data class DatabaseLoaded(val data: List<HistoryMovieViewEntity>) : Action()
 }
 
 sealed class Result {
-    data class Data(val data: List<HistoryMovie>) : Result()
+    data class Data(val data: List<HistoryMovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
 }
 
 class HistoryViewModel @Inject constructor(
-        private val repository: HistoryRepository
+        private val repository: HistoryRepository,
+        private val viewEntityMapper: HistoryMovieViewEntityMapper
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -42,11 +41,10 @@ class HistoryViewModel @Inject constructor(
         val initialViewState = HistoryViewState(isLoading = true)
 
         val databaseChanges = repository.getAll()
+                .map(viewEntityMapper)
                 .onErrorReturn { emptyList() }
                 .toObservable()
-                .map {
-                    if (it.isNotEmpty()) { Action.DatabaseLoaded(it) } else { Action.Load }
-                }
+                .map { if (it.isNotEmpty()) { Action.DatabaseLoaded(it) } else { Action.Load } }
 
         val sources = Observable.merge(refreshRelay, databaseChanges)
 
@@ -66,6 +64,7 @@ class HistoryViewModel @Inject constructor(
     private fun fetchMovies(): Observable<Result> {
         return repository.getAll()
                 .subscribeOn(Schedulers.io())
+                .map(viewEntityMapper)
                 .map { Result.Data(it) as Result }
                 .onErrorReturn { Result.Error(it) }
                 .toObservable()
@@ -90,6 +89,7 @@ class HistoryViewModel @Inject constructor(
         super.onCleared()
     }
 
+    /*
     class Factory(
             private val repository: HistoryRepository
     ) : ViewModelProvider.Factory {
@@ -100,5 +100,6 @@ class HistoryViewModel @Inject constructor(
         }
 
     }
+    */
 
 }

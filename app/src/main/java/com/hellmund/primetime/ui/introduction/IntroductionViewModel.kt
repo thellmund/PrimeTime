@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.hellmund.primetime.ui.main.MoviesRepository
+import com.hellmund.primetime.ui.main.data.MoviesRepository
 import com.hellmund.primetime.utils.plusAssign
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject

@@ -6,7 +6,6 @@ import com.hellmund.primetime.data.model.Movie
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class WatchlistRepository @Inject constructor(
@@ -35,19 +34,7 @@ class WatchlistRepository @Inject constructor(
     }
 
     fun remove(movieId: Int): Completable {
-        return get(movieId)
-                .subscribeOn(Schedulers.io())
-                .flatMapCompletable {
-                    Completable
-                            .fromCallable { database.watchlistDao().delete(it) }
-                            .subscribeOn(Schedulers.io())
-                }
-    }
-
-    fun remove(movie: WatchlistMovie): Completable {
-        return Completable
-                .fromCallable { database.watchlistDao().delete(movie) }
-                .subscribeOn(Schedulers.io())
+        return Completable.fromCallable { database.watchlistDao().delete(movieId) }
     }
 
 }

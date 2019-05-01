@@ -3,16 +3,15 @@ package com.hellmund.primetime.ui.watchlist
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
-import com.hellmund.primetime.data.database.WatchlistMovie
 
 class WatchlistAdapter(
         fragmentManager: FragmentManager,
         private val listener: WatchlistMovieFragment.OnInteractionListener
 ) : FragmentStatePagerAdapter(fragmentManager) {
 
-    private val movies = mutableListOf<WatchlistMovie>()
+    private val movies = mutableListOf<WatchlistMovieViewEntity>()
 
-    fun update(newMovies: List<WatchlistMovie>) {
+    fun update(newMovies: List<WatchlistMovieViewEntity>) {
         movies.clear()
         movies.addAll(newMovies)
         notifyDataSetChanged()

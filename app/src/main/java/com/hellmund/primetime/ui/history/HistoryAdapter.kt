@@ -7,26 +7,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.utils.showToast
 import kotlinx.android.synthetic.main.list_item_history.view.*
 
 internal class HistoryAdapter(
         private val mContext: Context,
-        private val mItems: List<HistoryMovie>,
-        private val listener: (HistoryMovie) -> Unit
+        private val mItems: List<HistoryMovieViewEntity>,
+        private val listener: (HistoryMovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
-    ): HistoryAdapter.ViewHolder {
+    ): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.list_item_history, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: HistoryAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(mItems[position], listener)
     }
 
@@ -53,7 +52,7 @@ internal class HistoryAdapter(
         displayDeleteSnackbar(movie, position)
     }
 
-    private fun displayDeleteSnackbar(movie: HistoryMovie, position: Int) {
+    private fun displayDeleteSnackbar(movie: HistoryMovieViewEntity, position: Int) {
         /*Snackbar.make(mParent.getContainer(), R.string.removed_from_history, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) { v ->
                     //History.addHistoryMovie(movie);
@@ -70,14 +69,17 @@ internal class HistoryAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(movie: HistoryMovie, listener: (HistoryMovie) -> Unit) = with(itemView) {
+        fun bind(
+                movie: HistoryMovieViewEntity,
+                listener: (HistoryMovieViewEntity) -> Unit
+        ) = with(itemView) {
             title.text = movie.title
 
             if (movie.isUpdating) {
                 subtitle.setText(R.string.updating_rating)
                 subtitle.setTypeface(null, Typeface.ITALIC)
             } else {
-                subtitle.text = movie.getDetailsText(context)
+                subtitle.text = movie.detailsText
                 subtitle.setTypeface(null, Typeface.NORMAL)
             }
 

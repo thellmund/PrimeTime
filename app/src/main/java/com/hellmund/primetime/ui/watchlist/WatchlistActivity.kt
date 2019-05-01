@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 
 import com.hellmund.primetime.R
 
+@Deprecated("")
 class WatchlistActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
