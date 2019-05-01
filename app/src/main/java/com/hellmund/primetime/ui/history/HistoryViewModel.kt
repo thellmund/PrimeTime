@@ -19,11 +19,13 @@ data class HistoryViewState(
 sealed class Action {
     object Load : Action()
     data class DatabaseLoaded(val data: List<HistoryMovieViewEntity>) : Action()
+    data class Remove(val movie: HistoryMovieViewEntity) : Action()
 }
 
 sealed class Result {
     data class Data(val data: List<HistoryMovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
+    data class Removed(val movie: HistoryMovieViewEntity) : Result()
 }
 
 class HistoryViewModel @Inject constructor(
@@ -58,6 +60,7 @@ class HistoryViewModel @Inject constructor(
         return when (action) {
             is Action.Load -> fetchMovies()
             is Action.DatabaseLoaded -> Observable.just(Result.Data(action.data))
+            is Action.Remove -> removeMovie(action.movie)
         }
     }
 
@@ -70,6 +73,11 @@ class HistoryViewModel @Inject constructor(
                 .toObservable()
     }
 
+    private fun removeMovie(movie: HistoryMovieViewEntity): Observable<Result> {
+        return repository.remove(movie.id)
+                .andThen(Observable.just(Result.Removed(movie) as Result))
+    }
+
     private fun reduceState(
             viewState: HistoryViewState,
             result: Result
@@ -77,11 +85,16 @@ class HistoryViewModel @Inject constructor(
         return when (result) {
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
             is Result.Error -> viewState.copy(isLoading = false, error = result.error)
+            is Result.Removed -> viewState.copy(data = viewState.data.minus(result.movie))
         }
     }
 
     private fun render(viewState: HistoryViewState) {
         _viewState.postValue(viewState)
+    }
+
+    fun remove(movie: HistoryMovieViewEntity) {
+        refreshRelay.accept(Action.Remove(movie))
     }
 
     override fun onCleared() {

@@ -1,20 +1,18 @@
 package com.hellmund.primetime.ui.history
 
-import android.content.Context
-import android.graphics.Typeface
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hellmund.primetime.R
-import com.hellmund.primetime.utils.showToast
 import kotlinx.android.synthetic.main.list_item_history.view.*
 
 internal class HistoryAdapter(
-        private val mContext: Context,
-        private val mItems: List<HistoryMovieViewEntity>,
         private val listener: (HistoryMovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
+
+    private val items = mutableListOf<HistoryMovieViewEntity>()
 
     override fun onCreateViewHolder(
             parent: ViewGroup,
@@ -26,45 +24,39 @@ internal class HistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(mItems[position], listener)
+        holder.bind(items[position], listener)
     }
 
-    override fun getItemCount(): Int = mItems.size
+    override fun getItemCount(): Int = items.size
 
-    private fun canRemove(): Boolean {
+    fun canRemove(): Boolean {
         return itemCount > 4
     }
 
-    fun removeItem(position: Int) {
-        if (!canRemove()) {
-            mContext.showToast(R.string.cant_remove_more_items)
-            this.notifyDataSetChanged()
-            return
+    fun update(newItems: List<HistoryMovieViewEntity>) {
+        val diffResult = DiffUtil.calculateDiff(DiffUtilCallback(items, newItems))
+        items.clear()
+        items += newItems
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    class DiffUtilCallback(
+            private val oldItems: List<HistoryMovieViewEntity>,
+            private val newItems: List<HistoryMovieViewEntity>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldItems.size
+
+        override fun getNewListSize(): Int = newItems.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition].id == newItems[newItemPosition].id
         }
 
-        val movie = mItems[position]
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItems[oldItemPosition] == newItems[newItemPosition]
+        }
 
-        // TODO
-        // mItems.removeAt(position)
-        // History.remove(movie.getID());
-
-        notifyItemRemoved(position)
-        displayDeleteSnackbar(movie, position)
-    }
-
-    private fun displayDeleteSnackbar(movie: HistoryMovieViewEntity, position: Int) {
-        /*Snackbar.make(mParent.getContainer(), R.string.removed_from_history, Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo) { v ->
-                    //History.addHistoryMovie(movie);
-                    mItems.add(position, movie)
-                    notifyItemInserted(position)
-                }
-                .setActionTextColor(UiUtils.getSnackbarColor(mContext))
-                .show()*/
-    }
-
-    interface OnInteractionListener {
-        val container: View
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -74,15 +66,7 @@ internal class HistoryAdapter(
                 listener: (HistoryMovieViewEntity) -> Unit
         ) = with(itemView) {
             title.text = movie.title
-
-            if (movie.isUpdating) {
-                subtitle.setText(R.string.updating_rating)
-                subtitle.setTypeface(null, Typeface.ITALIC)
-            } else {
-                subtitle.text = movie.detailsText
-                subtitle.setTypeface(null, Typeface.NORMAL)
-            }
-
+            subtitle.text = movie.detailsText
             button.setOnClickListener { listener(movie) }
         }
 

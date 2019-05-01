@@ -26,8 +26,7 @@ class HistoryMovieViewEntityMapper @Inject constructor(
                 movie.title,
                 movie.rating,
                 formattedDate,
-                formattedDetailsText,
-                movie.isUpdating
+                formattedDetailsText
         )
     }
 

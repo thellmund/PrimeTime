@@ -8,7 +8,6 @@ import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +30,10 @@ class HistoryFragment : Fragment() {
 
     private val viewModel: HistoryViewModel by lazyViewModel { viewModelProvider }
 
+    private val adapter: HistoryAdapter by lazy {
+        HistoryAdapter(this::onOpenDialog)
+    }
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         injector.inject(this)
@@ -44,6 +47,7 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recycler_view.adapter = adapter
         viewModel.viewState.observe(this, this::render)
     }
 
@@ -51,35 +55,36 @@ class HistoryFragment : Fragment() {
         recycler_view.isVisible = viewState.isLoading.not()
         progress_bar.isVisible = viewState.isLoading
 
-        val adapter = HistoryAdapter(requireContext(), viewState.data, this::onOpenDialog)
+        adapter.update(viewState.data)
         recycler_view.setHasFixedSize(true)
-        recycler_view.adapter = adapter
         recycler_view.layoutManager = LinearLayoutManager(requireContext())
         recycler_view.itemAnimator = DefaultItemAnimator()
-
-        val helper = ItemTouchHelper(HistoryItemTouchHelper(requireContext(), adapter))
-        helper.attachToRecyclerView(recycler_view)
     }
 
     private fun onOpenDialog(movie: HistoryMovieViewEntity) {
-        val options = getDialogOptions(movie)
+        val options = getDialogOptions()
         AlertDialog.Builder(requireContext())
                 .setTitle(movie.title)
                 .setItems(options) { _, which ->
-                    if (which == 0) {
-                        openEditRatingDialog(movie)
-                    } else if (which == 1) {
-                        showSimilarMovies(movie)
+                    when (which) {
+                        0 -> openEditRatingDialog(movie)
+                        1 -> showSimilarMovies(movie)
+                        2 -> removeFromHistory(movie)
                     }
                 }.create().show()
     }
 
-    private fun getDialogOptions(movie: HistoryMovieViewEntity): Array<String> {
-        return if (movie.isUpdating) {
-            arrayOf(getString(R.string.show_similar_movies))
-        } else {
-            arrayOf(getString(R.string.edit_rating), getString(R.string.show_similar_movies))
+    private fun getDialogOptions(): Array<String> {
+        val options = mutableListOf(
+                getString(R.string.show_similar_movies),
+                getString(R.string.edit_rating)
+        )
+
+        if (adapter.canRemove()) {
+            options += getString(R.string.remove_from_history)
         }
+
+        return options.toTypedArray()
     }
 
     private fun showSimilarMovies(movie: HistoryMovieViewEntity) {
@@ -89,6 +94,12 @@ class HistoryFragment : Fragment() {
         intent.putExtra(Constants.MOVIE_TITLE, movie.title)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
+    }
+
+    private fun removeFromHistory(movie: HistoryMovieViewEntity) {
+        if (adapter.canRemove()) {
+            viewModel.remove(movie)
+        }
     }
 
     private fun openEditRatingDialog(movie: HistoryMovieViewEntity) {

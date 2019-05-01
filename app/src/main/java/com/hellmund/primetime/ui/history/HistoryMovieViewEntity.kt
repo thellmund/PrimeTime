@@ -5,6 +5,5 @@ data class HistoryMovieViewEntity(
         val title: String,
         val rating: Int,
         val formattedTimestamp: String,
-        val detailsText: String,
-        val isUpdating: Boolean
+        val detailsText: String
 )

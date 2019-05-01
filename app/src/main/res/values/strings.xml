@@ -73,7 +73,7 @@
     <!-- About Activity -->
     <string name="movie_referrer_unavailable">Recommendation based on: Not available</string>
     <string name="version">Version %s</string>
-    <string name="faq_header">Thanks for downloading. You are awesome!</string>
+    <string name="faq_header">Thanks for downloading.</string>
 
 
     <!-- Settings Activity -->
@@ -100,7 +100,7 @@
     <string name="error_select_movie">The sample movies couldn’t be downloaded. Try again or restart PrimeTime.</string>
     <string name="remove_from_history">Remove from history</string>
     <string name="show_similar_movies">Show similar movies</string>
-    <string name="preferred_genres">Preferred genres</string>
+    <string name="preferred_genres">Favorite genres</string>
     <string name="excluded_genres">Excluded genres</string>
     <string name="recommendation_settings">Recommendations</string>
     <string name="about_the_app">About the app</string>
@@ -174,7 +174,7 @@
     <string name="release_notifications">Release notifications</string>
     <string name="genres">Genres</string>
     <string name="opening_trailer">Opening trailer …</string>
-    <string name="release_notifications_summary">Display a notification when a movie on the watchlist is released</string>
+    <string name="release_notifications_summary">Notify me when a movie on my watchlist is released</string>
     <string name="release_notifications_title">Notify about theater releases</string>
     <string name="showing_notification_on">Showing notification on %s</string>
     <string name="notification_off">Notification turned off</string>
