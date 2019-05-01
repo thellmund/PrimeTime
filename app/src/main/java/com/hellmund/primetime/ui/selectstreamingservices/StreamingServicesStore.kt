@@ -23,7 +23,7 @@ class RealStreamingServicesStore @Inject constructor(
                 .getStringSet(KEY_STREAMING_SERVICES, emptySet())
                 .map { gson.fromJson(it, StreamingService::class.java) }
                 .toList()
-                .sortedBy { it.name }
+                .sortedBy { it.name.toLowerCase() }
     }
 
     override fun store(services: List<StreamingService>) {
