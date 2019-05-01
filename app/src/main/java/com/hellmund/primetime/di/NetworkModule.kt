@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.hellmund.primetime.data.api.ApiService
 import com.hellmund.primetime.data.api.DateSerializer
+import com.hellmund.primetime.data.api.RetryInterceptor
 import com.hellmund.primetime.data.api.TmdbInterceptor
 import dagger.Module
 import dagger.Provides
@@ -24,6 +25,10 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    fun provideRetryInterceptor(): RetryInterceptor = RetryInterceptor()
+
+    @Singleton
+    @Provides
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BASIC
@@ -34,10 +39,12 @@ class NetworkModule {
     @Provides
     fun provideOkHttpClient(
             tmdbInterceptor: TmdbInterceptor,
+            retryInterceptor: RetryInterceptor,
             loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
                 .addInterceptor(tmdbInterceptor)
+                .addInterceptor(retryInterceptor)
                 .addNetworkInterceptor(loggingInterceptor)
                 .build()
     }
