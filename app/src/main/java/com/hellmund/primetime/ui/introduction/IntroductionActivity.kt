@@ -3,6 +3,9 @@ package com.hellmund.primetime.ui.introduction
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.animation.OvershootInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,8 +17,11 @@ import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.isLandscapeMode
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.activity_introduction.*
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.concurrent.schedule
+
 
 class IntroductionActivity : AppCompatActivity() {
 
@@ -31,8 +37,47 @@ class IntroductionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_introduction)
         injector.inject(this)
+
+        startButtonAnimation()
+
         introductionButton.setOnClickListener { openGenresSelection() }
         viewModel.posterUrls.observe(this, this::displayResults)
+    }
+
+    // TODO: Find an easier way to do this
+    private fun startButtonAnimation() {
+        Timer().schedule(500) { hideButton() }
+        Timer().schedule(1_800) { slideInButton() }
+    }
+
+    private fun hideButton() {
+        val buttonHeight = introductionButton.height
+        val buttonMargin = resources.getDimensionPixelOffset(R.dimen.default_space)
+        val verticalButtonTranslation = (buttonHeight + buttonMargin).toFloat()
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
+            introductionButton.animate()
+                    .setDuration(400L)
+                    .translationYBy(verticalButtonTranslation)
+                    .setInterpolator(OvershootInterpolator(1f))
+                    .start()
+        }
+    }
+
+    private fun slideInButton() {
+        val buttonHeight = introductionButton.height
+        val buttonMargin = resources.getDimensionPixelOffset(R.dimen.default_space)
+        val verticalButtonTranslation = (buttonHeight + buttonMargin).toFloat()
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
+            introductionButton.animate()
+                    .alphaBy(1f)
+                    .translationYBy(verticalButtonTranslation * (-1))
+                    .setInterpolator(OvershootInterpolator(1f))
+                    .start()
+        }
     }
 
     private fun displayResults(results: List<String>) {

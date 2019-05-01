@@ -40,22 +40,23 @@
             android:id="@+id/gridView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipToPadding="false"
             android:paddingBottom="80dp"
             android:visibility="gone"
             tools:visibility="visible" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/LargeButton"
             android:layout_gravity="bottom"
             android:layout_margin="@dimen/default_space"
             android:clickable="false"
+            android:enabled="false"
             android:text="@string/finish"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
-            app:backgroundTint="@color/colorAccent"
+            android:textSize="16sp"
+            app:backgroundTint="@color/selector_conditional_next_button"
             app:cornerRadius="@dimen/small_space" />
 
     </FrameLayout>

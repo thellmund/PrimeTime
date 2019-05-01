@@ -3,9 +3,8 @@ package com.hellmund.primetime.ui.selectmovies
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.R
@@ -13,10 +12,7 @@ import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.search.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.suggestions.MainActivity
-import com.hellmund.primetime.utils.OnboardingHelper
-import com.hellmund.primetime.utils.isConnected
-import com.hellmund.primetime.utils.observe
-import com.hellmund.primetime.utils.showToast
+import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.activity_select_movies.*
 import kotlinx.android.synthetic.main.view_samples_error.*
 import java.util.*
@@ -50,6 +46,7 @@ class SelectMoviesActivity : AppCompatActivity() {
         injector.inject(this)
 
         setupRecyclerView()
+        updateNextButton()
 
         button.setOnClickListener { saveMovies() }
         error_button.setOnClickListener { viewModel.refresh() }
@@ -68,23 +65,28 @@ class SelectMoviesActivity : AppCompatActivity() {
     }
 
     private fun render(viewState: SelectMoviesViewState) {
-        if (viewState.isLoading) {
-            progressDialog.show()
-        } else {
-            progressDialog.dismiss()
-        }
+        progressDialog.isVisible = viewState.isLoading
+        adapter.update(viewState.data)
 
-        if (viewState.isError) {
-            gridView.visibility = View.GONE
-            error_container.visibility = View.VISIBLE
-            button.visibility = View.GONE
-            Log.d("TAG", "", viewState.error)
-        } else {
-            adapter.update(viewState.data)
+        val selected = viewState.data.filter { it.selected }
+        updateNextButton(selected.size)
 
-            gridView.visibility = View.VISIBLE
-            error_container.visibility = View.GONE
-            button.visibility = View.VISIBLE
+        gridView.isVisible = viewState.isError.not()
+        error_container.isVisible = viewState.isError
+        button.isVisible = viewState.isError.not()
+    }
+
+    private fun updateNextButton(count: Int = 0) {
+        val remaining = MIN_COUNT - count
+        val hasSelectedEnough = remaining <= 0
+
+        button.isClickable = hasSelectedEnough
+        button.isEnabled = hasSelectedEnough
+
+        if (hasSelectedEnough) {
+            button.setText(R.string.finish)
+        } else {
+            button.text = getString(R.string.select_more_format_string, remaining)
         }
     }
 
@@ -126,8 +128,7 @@ class SelectMoviesActivity : AppCompatActivity() {
     }
 
     companion object {
-
-        private val MIN_COUNT = 4
+        private const val MIN_COUNT = 4
     }
 
 }

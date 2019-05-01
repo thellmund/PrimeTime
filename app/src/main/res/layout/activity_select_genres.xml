@@ -46,9 +46,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/LargeButton"
         android:layout_gravity="bottom"
         android:clickable="false"
         android:enabled="false"

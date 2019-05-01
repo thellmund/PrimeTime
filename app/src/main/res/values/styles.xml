@@ -25,4 +25,10 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
     </style>
 
+    <style name="LargeButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/large_button</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

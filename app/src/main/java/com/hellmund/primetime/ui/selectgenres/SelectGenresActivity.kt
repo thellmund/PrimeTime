@@ -33,6 +33,7 @@ class SelectGenresActivity : AppCompatActivity() {
         injector.inject(this)
 
         container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        updateNextButton()
 
         button.setOnClickListener {
             saveGenres()
@@ -45,7 +46,7 @@ class SelectGenresActivity : AppCompatActivity() {
         // When selecting the first two genres, slide in the next button from the bottom
     }
 
-    private fun updateNextButton(count: Int) {
+    private fun updateNextButton(count: Int = 0) {
         val remaining = MIN_COUNT - count
         val hasSelectedEnough = remaining <= 0
 
