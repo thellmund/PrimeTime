@@ -18,7 +18,7 @@ data class Sample(
 ) {
 
     val fullPosterUrl: String
-        get() = "http://image.tmdb.org/t/p/w500$posterPath"
+        get() = "https://image.tmdb.org/t/p/w500$posterPath"
 
     fun toHistoryMovie(): HistoryMovie {
         return HistoryMovie(id, title, Constants.LIKE, LocalDate.now(), false)

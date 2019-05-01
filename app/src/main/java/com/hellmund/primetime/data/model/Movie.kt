@@ -21,7 +21,7 @@ data class Movie(
 ) : Parcelable {
 
     val fullPosterUrl: String
-        get() = "http://image.tmdb.org/t/p/w500$posterPath"
+        get() = "https://image.tmdb.org/t/p/w500$posterPath"
 
     enum class WatchStatus {
         NOT_WATCHED, ON_WATCHLIST, WATCHED

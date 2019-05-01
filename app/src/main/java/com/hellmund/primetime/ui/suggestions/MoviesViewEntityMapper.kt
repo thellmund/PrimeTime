@@ -24,7 +24,7 @@ class MovieViewEntityMapper @Inject constructor(
     override fun apply(movie: Movie): MovieViewEntity {
         return MovieViewEntity(
                 id = movie.id,
-                posterUrl = "http://image.tmdb.org/t/p/w500${movie.posterPath}",
+                posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
                 title = movie.title,
                 formattedGenres = valueFormatter.formatGenres(movie),
                 description = movie.description,

@@ -126,11 +126,11 @@ class HistoryFragment : Fragment() {
     private fun updateRating(movie: HistoryMovie, position: Int, newRating: Int) {
         movie.isUpdating = true
         movie.rating = newRating
-        recycler_view.adapter.notifyItemChanged(position)
+        recycler_view.adapter?.notifyItemChanged(position)
 
         Handler().postDelayed({
             movie.isUpdating = false
-            recycler_view.adapter.notifyItemChanged(position)
+            recycler_view.adapter?.notifyItemChanged(position)
         }, 500)
     }
 

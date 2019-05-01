@@ -60,12 +60,11 @@ class SuggestionsViewModel @Inject constructor(
         compositeDisposable += actionsRelay
                 .switchMap(this::processAction)
                 .subscribe(this::render)
-        actionsRelay.accept(ViewModelAction.LoadWatchStatus)
     }
 
     private fun processAction(action: ViewModelAction): Observable<ViewModelEvent> {
         return when (action) {
-            is ViewModelAction.LoadWatchStatus -> loadWatchStatus()
+            is ViewModelAction.LoadWatchStatus -> fetchWatchStatus()
             is ViewModelAction.LoadAdditionalInformation -> fetchInformation()
             is ViewModelAction.LoadTrailer -> fetchTrailer()
             is ViewModelAction.OpenImdb -> fetchImdbLink()
@@ -75,7 +74,7 @@ class SuggestionsViewModel @Inject constructor(
         }
     }
 
-    private fun loadWatchStatus(): Observable<ViewModelEvent> {
+    private fun fetchWatchStatus(): Observable<ViewModelEvent> {
         return historyRepository.count(movie.id)
                 .subscribeOn(Schedulers.io())
                 .flatMapObservable {

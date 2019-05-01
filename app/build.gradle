@@ -4,13 +4,13 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.hellmund.primetime"
         minSdkVersion 18
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 300
         versionName "3.0.0"
 
@@ -19,6 +19,8 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_KEY", API_KEY)
+
+        multiDexEnabled true
     }
 
     compileOptions {
@@ -48,14 +50,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:cardview-v7:27.1.1'
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support:percent:27.1.1'
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.android.support:customtabs:27.1.1'
-    implementation 'com.android.support:palette-v7:27.1.1'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:percent:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:customtabs:28.0.0'
+    implementation 'com.android.support:palette-v7:28.0.0'
 
     implementation 'com.squareup.okhttp3:okhttp:3.13.1'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
@@ -91,9 +93,10 @@ dependencies {
     implementation 'org.jetbrains.anko:anko:0.10.8'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
+    implementation 'com.android.support:multidex:1.0.3'
 
     /* Testing */
-    androidTestImplementation 'com.android.support:support-annotations:27.1.1'
+    androidTestImplementation 'com.android.support:support-annotations:28.0.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     // Optional -- Hamcrest library
