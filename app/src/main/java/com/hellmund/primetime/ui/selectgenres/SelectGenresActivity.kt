@@ -1,14 +1,18 @@
 package com.hellmund.primetime.ui.selectgenres
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
+import com.google.android.material.chip.Chip
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.selectmovies.SelectMoviesActivity
+import com.hellmund.primetime.utils.isVisible
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.activity_select_genres.*
 import javax.inject.Inject
@@ -28,11 +32,7 @@ class SelectGenresActivity : AppCompatActivity() {
         setContentView(R.layout.activity_select_genres)
         injector.inject(this)
 
-        list_view.setOnItemClickListener { _, _, _, _ ->
-            val isEnabled = list_view.checkedItemCount >= MIN_COUNT
-            button.isClickable = isEnabled
-            button.isEnabled = isEnabled
-        }
+        container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
         button.setOnClickListener {
             saveGenres()
@@ -45,25 +45,50 @@ class SelectGenresActivity : AppCompatActivity() {
         // When selecting the first two genres, slide in the next button from the bottom
     }
 
+    private fun updateNextButton(count: Int) {
+        val remaining = MIN_COUNT - count
+        val hasSelectedEnough = remaining <= 0
+
+        button.isClickable = hasSelectedEnough
+        button.isEnabled = hasSelectedEnough
+
+        if (hasSelectedEnough) {
+            button.setText(R.string.next)
+        } else {
+            button.text = getString(R.string.select_more_format_string, remaining)
+        }
+    }
+
     private fun render(viewState: SelectGenresViewState) {
         genres.clear()
         genres += viewState.data
 
-        swipeRefreshLayout.isRefreshing = viewState.isLoading
-        swipeRefreshLayout.isEnabled = false
+        progressBar.isVisible = viewState.isLoading
+        chipGroup.isVisible = viewState.isLoading.not()
+
         showGenres(viewState.data)
 
         // TODO: Error and loading handling (SwipeRefreshLayout)
     }
 
     private fun showGenres(genres: List<Genre>) {
-        list_view.adapter = GenresAdapter(this, genres)
+        genres.map { GenreChip(this, it.name) }.forEach {
+            it.setOnCheckedChangeListener { _, _ -> onCheckedChange() }
+            chipGroup.addView(it)
+        }
+    }
+
+    private fun onCheckedChange() {
+        val count = chipGroup.childCount
+        val children = (0 until count).map { chipGroup.getChildAt(it) as Chip }
+        val checked = children.filter { it.isChecked }
+        updateNextButton(checked.size)
     }
 
     private fun saveGenres() {
-        val checkedItems = list_view.checkedItemPositions
+        val checkedItems = chipGroup.children.toList().map { it as Chip }
         val includedGenres = genres.mapIndexed {
-            index, genre -> genre.copy(isPreferred = checkedItems[index])
+            index, genre -> genre.copy(isPreferred = checkedItems[index].isChecked)
         }
         viewModel.store(includedGenres)
     }
