@@ -77,7 +77,7 @@ class SuggestionFragment : Fragment() {
                 getString(R.string.show_less_like_this)
         )
 
-        requireContext().showItems(
+        requireContext().showItemsDialog(
                 titleResId = R.string.adjust_recommendations,
                 items = options,
                 onSelected = { index -> viewModel.handleRating(index) }
@@ -179,7 +179,7 @@ class SuggestionFragment : Fragment() {
     }
 
     private fun displayRemoveDialog() {
-        requireContext().showCancelable(
+        requireContext().showCancelableDialog(
                 messageResId = R.string.remove_from_watchlist_header,
                 positiveResId = R.string.remove,
                 onPositive = { viewModel.removeFromWatchlist() }

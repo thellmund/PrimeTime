@@ -5,11 +5,6 @@ import com.hellmund.primetime.ui.watchlist.WatchlistRepository
 import dagger.Module
 import dagger.Provides
 
-/*@Subcomponent(modules = [WatchlistModule::class])
-interface WatchlistComponent {
-    fun inject(watchlistFragment: WatchlistFragment)
-}*/
-
 @Module
 class WatchlistModule {
 

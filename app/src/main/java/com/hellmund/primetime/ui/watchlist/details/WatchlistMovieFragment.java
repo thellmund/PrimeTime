@@ -134,7 +134,7 @@ public class WatchlistMovieFragment extends Fragment {
         }
 
         if (viewState.getShowRemoveDialog()) {
-            removeDialog = Dialogs.showCancelable(requireContext(), R.string.remove_from_watchlist_header, R.string.remove, new Function1<DialogInterface, Unit>() {
+            removeDialog = Dialogs.showCancelableDialog(requireContext(), R.string.remove_from_watchlist_header, R.string.remove, new Function1<DialogInterface, Unit>() {
                 @Override
                 public Unit invoke(DialogInterface dialogInterface) {
                     viewModel.onConfirmRemove();

@@ -1,57 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:padding="@dimen/default_space"
-    tools:context=".ui.selectgenres.SelectGenresActivity">
+    tools:context=".ui.selectstreamingservices.SelectStreamingServicesActivity">
 
     <TextView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/select_genres_header"
+        android:text="Which streaming services do you have?"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroup"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:chipSpacing="@dimen/small_space"
-        app:chipSpacingHorizontal="@dimen/small_space"
-        app:chipSpacingVertical="@dimen/default_space"
-        app:layout_constraintBottom_toTopOf="@id/button"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/default_space"
+        app:layout_constraintBottom_toTopOf="@id/finishButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toBottomOf="@id/header" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button"
+        android:id="@+id/finishButton"
         style="@style/LargeButton"
-        android:layout_gravity="bottom"
         android:clickable="false"
         android:enabled="false"
-        android:text="@string/next"
+        android:text="@string/finish"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         app:backgroundTint="@color/selector_conditional_next_button"
+        app:cornerRadius="@dimen/small_space"
+        app:layout_constraintBottom_toTopOf="@id/skipButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/skipButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/skip"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
         app:cornerRadius="@dimen/small_space"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

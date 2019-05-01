@@ -1,8 +1,8 @@
 package com.hellmund.primetime.ui.search
 
 import android.graphics.Rect
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
 class EqualSpacingGridItemDecoration @JvmOverloads constructor(
         private val spacing: Int,

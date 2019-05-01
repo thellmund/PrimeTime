@@ -83,6 +83,7 @@
     <string name="error_already_in_genres">You selected the following genres in both “Preferred genres” and “Excluded genres”:\n\n%s\n\nA genre can only be added to one of them, not both. Your changes will not be saved.</string>
     <string name="need_more_genres">At least 2 genres have to stay checked in order to provide recommendations. Your changes will not be saved.</string>
     <string name="preferred_genres_summary">Select the genres that you want recommendations from</string>
+    <string name="streaming_services_summary">Select the streaming services you use</string>
 
     <!-- History Activity -->
     <string name="excluded_genres_summary">Select genres that you don’t want to appear in your recommendations</string>
@@ -207,5 +208,9 @@
     <string name="discover">Discover</string>
     <string name="cant_remove_more_items">Can’t remove more items.</string>
     <string name="select_more_format_string">Select %d more</string>
+    <string name="filter">Filter</string>
+    <string name="filter_recommendations">Filter recommendations</string>
+    <string name="skip">Skip</string>
+    <string name="streaming_services">Streaming services</string>
 
 </resources>

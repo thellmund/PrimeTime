@@ -15,6 +15,7 @@ public class Constants {
 
     public static final String KEY_INCLUDED = "primetime_my_genres";
     public static final String KEY_EXCLUDED = "primetime_excluded_genres";
+    public static final String KEY_STREAMING_SERVICES = "primetime_my_streaming_services";
     public static final String KEY_NOTIFICATIONS = "primetime_release_notifications";
     public static final String KEY_PLAY_STORE = "primetime_rate_playstore";
     public static final String KEY_ABOUT = "primetime_about_app";

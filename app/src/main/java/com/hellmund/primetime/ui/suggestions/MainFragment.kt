@@ -106,6 +106,10 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_filter -> {
+                showFilterDialog()
+                true
+            }
             R.id.action_settings -> {
                 openSettings()
                 true
@@ -116,6 +120,25 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showFilterDialog() {
+        val checked = 0 // TODO
+        requireContext().showSingleSelectDialog(
+                titleResId = R.string.filter_recommendations,
+                choices = arrayOf("All", "Only from my streaming services"),
+                checked = checked,
+                positiveResId = R.string.done,
+                onSelected = { selected ->
+                    if (selected != checked) {
+                        applyStreamingFilter(selected == 1)
+                    }
+                }
+        )
+    }
+
+    private fun applyStreamingFilter(limitToStreamingServices: Boolean) {
+
     }
 
     override fun onReselected() {

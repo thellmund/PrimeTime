@@ -19,6 +19,8 @@ import com.hellmund.primetime.R;
 import com.hellmund.primetime.data.model.Genre;
 import com.hellmund.primetime.ui.about.AboutActivity;
 import com.hellmund.primetime.ui.selectgenres.GenresRepository;
+import com.hellmund.primetime.ui.selectstreamingservices.StreamingService;
+import com.hellmund.primetime.ui.selectstreamingservices.StreamingServicesStore;
 import com.hellmund.primetime.utils.Constants;
 
 import java.util.ArrayList;
@@ -37,6 +39,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Inject
     GenresRepository genresRepository;
+
+    @Inject
+    StreamingServicesStore streamingServicesStore;
 
     private ArrayMap<Preference, String> mDefaultSummaries;
 
@@ -59,6 +64,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         initDefaultSummaries();
         initIncludedGenresPref();
         initExcludedGenresPref();
+        initStreamingServicesPref();
         initRateAppPref();
         initAboutAppPref();
     }
@@ -119,6 +125,31 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         updateGenresSummary(preference, values);
         preference.setOnPreferenceChangeListener(this::saveExcludedGenres);
+    }
+
+    private void initStreamingServicesPref() {
+        MultiSelectListPreference preference = findPreference(Constants.KEY_STREAMING_SERVICES);
+        checkNotNull(preference);
+
+        List<StreamingService> streamingServices = streamingServicesStore.getAll();
+        Set<String> values = new HashSet<>();
+        for (StreamingService streamingService : streamingServices) {
+            if (streamingService.isSelected()) {
+                values.add(streamingService.getName());
+            }
+        }
+
+        String[] entries = new String[streamingServices.size()];
+
+        for (int i = 0; i < streamingServices.size(); i++) {
+            entries[i] = streamingServices.get(i).getName();
+        }
+
+        preference.setEntries(entries);
+        preference.setEntryValues(entries);
+        preference.setValues(values);
+
+        updateStreamingServicesSummary(preference, values);
     }
 
     @SuppressWarnings("unchecked")
@@ -271,6 +302,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 getString(R.string.preferred_genres_summary));
         mDefaultSummaries.put(findPreference(Constants.KEY_EXCLUDED),
                 getString(R.string.excluded_genres_summary));
+        mDefaultSummaries.put(findPreference(Constants.KEY_STREAMING_SERVICES),
+                getString(R.string.streaming_services_summary));
     }
 
     private void displayAlertDialog(String text) {
@@ -308,6 +341,31 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (!values.isEmpty()) {
             final String genres = getGenresAsString(values);
             preference.setSummary(genres);
+        } else {
+            preference.setSummary(mDefaultSummaries.get(preference));
+        }
+    }
+
+    private void updateStreamingServicesSummary(Preference preference, Set<String> values) {
+        if (!values.isEmpty()) {
+            List<StreamingService> services = streamingServicesStore.getAll();
+            List<String> selected = new ArrayList<>();
+
+            for (String value : values) {
+                for (StreamingService service : services) {
+                    if (service.getName().equals(value)) {
+                        selected.add(value);
+                    }
+                }
+            }
+
+            Collections.sort(selected);
+
+            StringBuilder builder = new StringBuilder(selected.get(0));
+            for (int i = 1; i < selected.size(); i++) {
+                builder.append(", ").append(selected.get(i));
+            }
+            preference.setSummary(builder.toString());
         } else {
             preference.setSummary(mDefaultSummaries.get(preference));
         }
