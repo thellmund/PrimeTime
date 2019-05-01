@@ -3,12 +3,6 @@ package com.hellmund.primetime.ui.search
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.GridLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -18,16 +12,22 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.data.database.GenreDao
 import com.hellmund.primetime.data.database.HistoryMovie
+import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.ui.suggestions.MainFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
-import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.isVisible
 import com.hellmund.primetime.utils.observe
@@ -70,7 +70,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private val viewModel: SearchViewModel by lazyViewModel { viewModelProvider }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         injector.inject(this)
     }

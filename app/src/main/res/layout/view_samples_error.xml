@@ -29,13 +29,14 @@
         android:textColor="@android:color/white"
         android:textSize="15sp" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/error_button"
-        style="@style/Widget.AppCompat.Button.Borderless"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/large_space"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/large_space"
+        android:textAllCaps="false"
         android:textColor="@color/app_color"
         tools:text="Lorem ipsum" />
 

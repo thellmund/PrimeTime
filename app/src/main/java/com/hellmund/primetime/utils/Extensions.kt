@@ -36,7 +36,5 @@ var View.isVisible: Boolean
         visibility = if (value) View.VISIBLE else View.GONE
     }
 
-fun SparseBooleanArray.toList(): List<Boolean> = (0 until size()).map { get(it) }
-
 val LocalDate.isAfterNow: Boolean
     get() = isAfter(LocalDate.now())

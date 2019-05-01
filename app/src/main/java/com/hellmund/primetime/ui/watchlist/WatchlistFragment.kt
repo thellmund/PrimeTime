@@ -4,10 +4,10 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AppCompatActivity
 import android.view.*
 import android.view.animation.AlphaAnimation
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
@@ -35,7 +35,7 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
         setHasOptionsMenu(true)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         injector.inject(this)
     }
@@ -115,8 +115,8 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
         */
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_watchlist, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_watchlist, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

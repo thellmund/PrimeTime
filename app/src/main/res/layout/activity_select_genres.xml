@@ -36,18 +36,20 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/button"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_margin="@dimen/small_space"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:layout_margin="@dimen/default_space"
             android:clickable="false"
             android:enabled="false"
             android:text="@string/next"
-            android:textAllCaps="true"
+            android:textAllCaps="false"
             android:textColor="@android:color/white"
-            app:backgroundTint="@color/colorAccent" />
+            app:backgroundTint="@color/colorAccent"
+            app:cornerRadius="@dimen/small_space" />
 
     </FrameLayout>
 

@@ -59,17 +59,15 @@
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/introductionButton"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_margin"
-            android:padding="@dimen/activity_margin"
             android:text="@string/get_started"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            app:backgroundTint="@color/watchlist_button_not_watched" />
+            android:textAllCaps="false"
+            app:cornerRadius="@dimen/small_space" />
 
     </LinearLayout>
 

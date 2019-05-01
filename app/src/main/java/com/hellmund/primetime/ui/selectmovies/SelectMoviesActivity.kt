@@ -3,19 +3,21 @@ package com.hellmund.primetime.ui.selectmovies
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import android.view.View
 import com.hellmund.primetime.R
+import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.ui.search.EqualSpacingGridItemDecoration
+import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.utils.OnboardingHelper
 import com.hellmund.primetime.utils.isConnected
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showToast
-import kotlinx.android.synthetic.main.activity_select_movie.*
+import kotlinx.android.synthetic.main.activity_select_movies.*
 import kotlinx.android.synthetic.main.view_samples_error.*
 import java.util.*
 import javax.inject.Inject
@@ -44,9 +46,11 @@ class SelectMoviesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_select_movie)
+        setContentView(R.layout.activity_select_movies)
+        injector.inject(this)
 
         setupRecyclerView()
+
         button.setOnClickListener { saveMovies() }
         error_button.setOnClickListener { viewModel.refresh() }
 
@@ -54,8 +58,8 @@ class SelectMoviesActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        gridView.itemAnimator = DefaultItemAnimator()
         gridView.adapter = adapter
+        gridView.itemAnimator = DefaultItemAnimator()
 
         gridView.layoutManager = GridLayoutManager(this, 3)
 
@@ -74,6 +78,7 @@ class SelectMoviesActivity : AppCompatActivity() {
             gridView.visibility = View.GONE
             error_container.visibility = View.VISIBLE
             button.visibility = View.GONE
+            Log.d("TAG", "", viewState.error)
         } else {
             adapter.update(viewState.data)
 

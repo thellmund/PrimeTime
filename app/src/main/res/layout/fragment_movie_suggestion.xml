@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -69,21 +70,24 @@
             android:orientation="horizontal"
             android:padding="@dimen/activity_margin">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/movie_add_watchlist_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/add_to_watchlist"
-                android:textSize="16sp" />
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                app:cornerRadius="@dimen/small_space" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/rating_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/activity_margin"
                 android:layout_marginEnd="@dimen/tiny_space"
+                android:background="@android:color/transparent"
                 android:src="@drawable/ic_thumbs_up_down_white_24dp" />
 
         </LinearLayout>
@@ -223,22 +227,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/trailer_button"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/watch_trailer"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
                         android:textSize="16sp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/more_info_button"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/small_space"
                         android:text="@string/more_info"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
                         android:textSize="16sp" />
 
                 </LinearLayout>

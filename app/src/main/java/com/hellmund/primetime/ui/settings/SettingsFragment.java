@@ -7,15 +7,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.MultiSelectListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
+
+import androidx.annotation.NonNull;
 import androidx.collection.ArrayMap;
+import androidx.preference.MultiSelectListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.hellmund.primetime.App;
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.ui.about.AboutActivity;
 import com.hellmund.primetime.data.model.Genre;
+import com.hellmund.primetime.ui.about.AboutActivity;
 import com.hellmund.primetime.ui.selectgenres.GenresRepository;
 import com.hellmund.primetime.utils.Constants;
 
@@ -27,7 +29,9 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-public class SettingsFragment extends PreferenceFragment {
+import static androidx.core.util.Preconditions.checkNotNull;
+
+public class SettingsFragment extends PreferenceFragmentCompat {
 
     private static final int MIN_GENRES = 2;
 
@@ -41,7 +45,7 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         App app = (App) context.getApplicationContext();
         app.getAppComponent().inject(this);
@@ -50,9 +54,7 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setRetainInstance(true);
-        addPreferencesFromResource(R.xml.preferences);
 
         initDefaultSummaries();
         initIncludedGenresPref();
@@ -61,8 +63,15 @@ public class SettingsFragment extends PreferenceFragment {
         initAboutAppPref();
     }
 
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.preferences, rootKey);
+    }
+
     private void initRateAppPref() {
         Preference ratePrimeTime = findPreference(Constants.KEY_PLAY_STORE);
+        checkNotNull(ratePrimeTime);
+
         ratePrimeTime.setOnPreferenceClickListener(preference -> {
             openPlayStore();
             return true;
@@ -71,6 +80,8 @@ public class SettingsFragment extends PreferenceFragment {
 
     private void initAboutAppPref() {
         Preference about = findPreference(Constants.KEY_ABOUT);
+        checkNotNull(about);
+
         final String version = getVersionName();
         about.setSummary((version != null) ? "Version " + getVersionName() : null);
         about.setOnPreferenceClickListener(preference -> {
@@ -81,8 +92,8 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void initExcludedGenresPref() {
-        MultiSelectListPreference preference =
-                (MultiSelectListPreference) findPreference(Constants.KEY_EXCLUDED);
+        MultiSelectListPreference preference = findPreference(Constants.KEY_EXCLUDED);
+        checkNotNull(preference);
 
         List<Genre> genres = genresRepository.getAll().blockingGet();
         List<Genre> excludedGenres = genresRepository.getExcludedGenres().blockingFirst();
@@ -173,10 +184,9 @@ public class SettingsFragment extends PreferenceFragment {
         displayAlertDialog(getString(R.string.need_more_genres));
     }
 
-    @SuppressWarnings("unchecked")
     private void initIncludedGenresPref() {
-        MultiSelectListPreference preference =
-                (MultiSelectListPreference) findPreference(Constants.KEY_INCLUDED);
+        MultiSelectListPreference preference = findPreference(Constants.KEY_INCLUDED);
+        checkNotNull(preference);
 
         List<Genre> genres = genresRepository.getAll().blockingGet();
         List<Genre> includedGenres = genresRepository.getPreferredGenres().blockingFirst();
@@ -324,15 +334,15 @@ public class SettingsFragment extends PreferenceFragment {
 
     private String getVersionName() {
         try {
-            return getActivity().getPackageManager()
-                    .getPackageInfo(getActivity().getPackageName(), 0).versionName;
+            return requireActivity().getPackageManager()
+                    .getPackageInfo(requireActivity().getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }
     }
 
     private void openPlayStore() {
-        final String packageName = getActivity().getPackageName();
+        final String packageName = requireActivity().getPackageName();
         Intent intent;
 
         try {

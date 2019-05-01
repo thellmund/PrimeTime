@@ -3,14 +3,14 @@ package com.hellmund.primetime.ui.suggestions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AppCompatActivity
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.settings.SettingsActivity
+import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.lang.Math.round
@@ -28,7 +28,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
         arguments?.getParcelable(KEY_RECOMMENDATIONS_TYPE) as RecommendationsType
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         injector.inject(this)
     }
@@ -98,9 +98,9 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
         suggestions.scrollToNext()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (type == Personalized) {
-            inflater?.inflate(R.menu.menu_main, menu)
+            inflater.inflate(R.menu.menu_main, menu)
         }
     }
 

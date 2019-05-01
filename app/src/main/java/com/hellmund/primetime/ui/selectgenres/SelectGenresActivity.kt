@@ -10,8 +10,7 @@ import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.selectmovies.SelectMoviesActivity
 import com.hellmund.primetime.utils.observe
-import com.hellmund.primetime.utils.toList
-import kotlinx.android.synthetic.main.activity_select_genre.*
+import kotlinx.android.synthetic.main.activity_select_genres.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -26,7 +25,7 @@ class SelectGenresActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_select_genre)
+        setContentView(R.layout.activity_select_genres)
         injector.inject(this)
 
         list_view.setOnItemClickListener { _, _, _, _ ->
@@ -62,12 +61,10 @@ class SelectGenresActivity : AppCompatActivity() {
     }
 
     private fun saveGenres() {
-        val checkedItems = list_view.checkedItemPositions.toList()
-
-        val includedGenres = genres
-                .zip(checkedItems)
-                .map { it.first.copy(isPreferred = it.second) }
-
+        val checkedItems = list_view.checkedItemPositions
+        val includedGenres = genres.mapIndexed {
+            index, genre -> genre.copy(isPreferred = checkedItems[index])
+        }
         viewModel.store(includedGenres)
     }
 
