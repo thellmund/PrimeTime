@@ -133,6 +133,7 @@ class SuggestionsViewModel @Inject constructor(
                 .count(movie.id)
                 .flatMapObservable {
                     if (it > 0) {
+                        // Already on watchlist
                         Observable.just(ViewModelEvent.ShowRemoveFromWatchlistDialog)
                     } else {
                         storeInWatchlist(movie)
@@ -156,15 +157,13 @@ class SuggestionsViewModel @Inject constructor(
         return watchlistRepository
                 .store(movie.raw)
                 .subscribeOn(Schedulers.io())
-                .toObservable<Unit>()
-                .map { ViewModelEvent.AddedToWatchlist }
+                .andThen(Observable.just(ViewModelEvent.AddedToWatchlist as ViewModelEvent))
     }
 
     private fun onRemoveFromWatchlist(): Observable<ViewModelEvent> {
         return watchlistRepository
                 .remove(movie.id)
-                .toObservable<Unit>()
-                .map { ViewModelEvent.RemovedFromWatchlist }
+                .andThen(Observable.just(ViewModelEvent.RemovedFromWatchlist as ViewModelEvent))
     }
 
     fun loadTrailer() {
@@ -200,21 +199,5 @@ class SuggestionsViewModel @Inject constructor(
         compositeDisposable.dispose()
         super.onCleared()
     }
-
-    /*
-    class Factory(
-            private val repository: MoviesRepository,
-            private val historyRepository: HistoryRepository,
-            private val watchlistRepository: WatchlistRepository,
-            private val movie: MovieViewEntity
-    ) : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SuggestionsViewModel(repository, historyRepository, watchlistRepository, movie.raw) as T
-        }
-
-    }
-    */
 
 }

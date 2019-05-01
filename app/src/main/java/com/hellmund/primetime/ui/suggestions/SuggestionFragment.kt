@@ -11,11 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hellmund.primetime.R
-import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.Movie.WatchStatus.NOT_WATCHED
 import com.hellmund.primetime.data.model.Movie.WatchStatus.ON_WATCHLIST
+import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_movie_suggestion.*
 import javax.inject.Inject
@@ -183,7 +183,6 @@ class SuggestionFragment : Fragment() {
 
     private fun onRemovedFromWatchlist() {
         updateWatchlistButton(NOT_WATCHED)
-        requireContext().showToast(R.string.watchlist_removed)
     }
 
     private fun updateWatchlistButton(watchStatus: Movie.WatchStatus) {
