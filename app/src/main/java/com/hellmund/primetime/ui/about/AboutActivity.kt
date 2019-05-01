@@ -2,7 +2,7 @@ package com.hellmund.primetime.ui.about
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.isVisible

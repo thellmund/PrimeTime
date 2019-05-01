@@ -17,7 +17,7 @@ android {
         renderscriptTargetApi 20
         renderscriptSupportModeEnabled true
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_KEY", API_KEY)
 
         multiDexEnabled true
@@ -50,24 +50,23 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:cardview-v7:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support:percent:28.0.0'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:customtabs:28.0.0'
-    implementation 'com.android.support:palette-v7:28.0.0'
+
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.percentlayout:percentlayout:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.browser:browser:1.0.0'
+    implementation 'androidx.palette:palette:1.0.0'
 
     implementation 'com.squareup.okhttp3:okhttp:3.13.1'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'me.relex:circleindicator:1.2.1@aar'
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    kapt 'com.jakewharton:butterknife-compiler:8.8.1'
 
     // Lifecycle & ViewModel
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
-    kapt 'android.arch.lifecycle:compiler:1.1.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 
     // RxJava
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
@@ -79,9 +78,9 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.21'
 
     // Room
-    implementation 'android.arch.persistence.room:runtime:1.1.1'
-    implementation 'android.arch.persistence.room:rxjava2:1.1.1'
-    kapt 'android.arch.persistence.room:compiler:1.1.1'
+    implementation 'androidx.room:room-runtime:2.0.0'
+    implementation 'androidx.room:room-rxjava2:2.0.0'
+    kapt 'androidx.room:room-compiler:2.0.0'
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
@@ -93,12 +92,12 @@ dependencies {
     implementation 'org.jetbrains.anko:anko:0.10.8'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     /* Testing */
-    androidTestImplementation 'com.android.support:support-annotations:28.0.0'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'androidx.annotation:annotation:1.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
     // Optional -- Hamcrest library
     androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
 

@@ -3,7 +3,7 @@ package com.hellmund.primetime.ui.selectgenres
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector

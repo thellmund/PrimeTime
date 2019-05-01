@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import com.hellmund.primetime.App;
 import com.hellmund.primetime.R;

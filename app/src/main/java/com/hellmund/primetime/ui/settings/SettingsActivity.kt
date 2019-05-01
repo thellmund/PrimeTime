@@ -1,7 +1,7 @@
 package com.hellmund.primetime.ui.settings
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import com.hellmund.primetime.R
 import kotlinx.android.synthetic.main.view_toolbar.*

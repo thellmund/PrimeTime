@@ -1,6 +1,6 @@
 package com.hellmund.primetime.di
 
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
 import android.content.SharedPreferences
 import com.hellmund.primetime.data.database.AppDatabase

@@ -1,7 +1,7 @@
 package com.hellmund.primetime.data.database
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import android.os.Parcelable
 import com.hellmund.primetime.data.model.Movie
 import kotlinx.android.parcel.Parcelize

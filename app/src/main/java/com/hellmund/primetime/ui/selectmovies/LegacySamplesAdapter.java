@@ -16,9 +16,6 @@ import com.hellmund.primetime.utils.UiUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 @Deprecated
 public class LegacySamplesAdapter extends BaseAdapter {
 
@@ -92,11 +89,12 @@ public class LegacySamplesAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        @BindView(R.id.container) FrameLayout container;
-        @BindView(R.id.posterImageView) ImageView poster;
+        FrameLayout container;
+        ImageView poster;
 
         ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+            container = view.findViewById(R.id.container);
+            poster = view.findViewById(R.id.posterImageView);
         }
 
     }

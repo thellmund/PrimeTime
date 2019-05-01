@@ -1,4 +1,4 @@
-<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.percentlayout.widget.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -44,7 +44,7 @@
         android:textSize="16sp"
         android:layout_width="match_parent" />
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/error_btn"
         style="?attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
@@ -56,4 +56,4 @@
         android:textColor="@color/app_color"
         android:textSize="16sp" />
 
-</android.support.percent.PercentRelativeLayout>
+</androidx.percentlayout.widget.PercentRelativeLayout>

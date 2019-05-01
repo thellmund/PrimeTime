@@ -1,6 +1,6 @@
 package com.hellmund.primetime.data.database
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.hellmund.primetime.data.model.Genre
 import io.reactivex.Maybe
 import io.reactivex.Single

@@ -1,17 +1,13 @@
 package com.hellmund.primetime.ui.search
 
 import android.content.Context
-import android.support.v7.widget.AppCompatButton
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.ImageLoader
+import kotlinx.android.synthetic.main.list_item_search_results.view.*
 
 class SearchAdapter(
         private val context: Context,
@@ -57,14 +53,14 @@ class SearchAdapter(
         notifyDataSetChanged()
     }
 
-    class ViewHolder(view: View) {
+    class ViewHolder(private val view: View) {
 
         fun bind(
                 context: Context,
                 searchResult: SearchResult,
                 onShowSimilar: (SearchResult) -> Unit,
                 onWatchedIt: (SearchResult) -> Unit
-        ) {
+        ) = with(view) {
             loadImage(context, searchResult)
             title.text = searchResult.title
             description.text = searchResult.description
@@ -73,27 +69,8 @@ class SearchAdapter(
 
         }
 
-        private fun loadImage(context: Context, searchResult: SearchResult) {
-            ImageLoader.with(context).load(searchResult.fullPosterPath, poster)
-        }
-
-        @BindView(R.id.posterImageView)
-        lateinit var poster: ImageView
-
-        @BindView(R.id.title)
-        lateinit var title: TextView
-
-        @BindView(R.id.description)
-        lateinit var description: TextView
-
-        @BindView(R.id.similarMoviesButton)
-        lateinit var similarMoviesButton: AppCompatButton
-
-        @BindView(R.id.watchedItButton)
-        lateinit var watchedItButton: AppCompatButton
-
-        init {
-            ButterKnife.bind(this, view)
+        private fun loadImage(context: Context, searchResult: SearchResult) = with(view) {
+            ImageLoader.with(context).load(searchResult.fullPosterPath, posterImageView)
         }
     }
 

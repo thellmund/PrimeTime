@@ -1,8 +1,8 @@
 package com.hellmund.primetime.ui.suggestions
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AppCompatActivity
 
 class FragmentLifecycleCallback(
         private val activity: AppCompatActivity

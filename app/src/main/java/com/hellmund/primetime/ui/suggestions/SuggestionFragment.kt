@@ -5,8 +5,8 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.graphics.Palette
+import androidx.fragment.app.Fragment
+import androidx.palette.graphics.Palette
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

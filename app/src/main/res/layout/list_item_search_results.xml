@@ -56,7 +56,7 @@
             android:textSize="15sp"
             tools:text="Lorem ipsum" />
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/similarMoviesButton"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
@@ -64,7 +64,7 @@
             android:layout_marginTop="@dimen/small_space"
             android:text="@string/show_similar_movies" />
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/watchedItButton"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"

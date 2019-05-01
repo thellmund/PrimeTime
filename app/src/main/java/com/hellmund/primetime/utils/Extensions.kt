@@ -1,9 +1,9 @@
 package com.hellmund.primetime.utils
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
-import android.support.v4.view.ViewPager
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager
 import android.util.SparseBooleanArray
 import android.view.View
 import io.reactivex.disposables.CompositeDisposable

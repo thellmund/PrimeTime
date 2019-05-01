@@ -4,14 +4,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.Fragment;
 
 import com.hellmund.primetime.App;
 import com.hellmund.primetime.R;
@@ -24,10 +26,6 @@ import com.hellmund.primetime.utils.UiUtils;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
@@ -35,15 +33,14 @@ public class WatchlistMovieFragment extends Fragment {
 
     private static final String KEY_WATCHLIST_MOVIE = "KEY_WATCHLIST_MOVIE";
 
-    private Unbinder mUnbinder;
+    private ImageView mImageView;
+    private ImageView mNotificationIcon;
 
-    @BindView(R.id.posterImageView) ImageView mImageView;
-    @BindView(R.id.notification_icon) ImageView mNotificationIcon;
-
-    @BindView(R.id.title) TextView mTitleTextView;
-    @BindView(R.id.runtime_icon) ImageView mRuntimeIcon;
-    @BindView(R.id.runtime_text) TextView mRuntimeTextView;
-    @BindView(R.id.watched_button) AppCompatButton mWatchedItButton;
+    private TextView mTitleTextView;
+    private ImageView mRuntimeIcon;
+    private TextView mRuntimeTextView;
+    private AppCompatButton mWatchedItButton;
+    private AppCompatButton mRemoveButton;
 
     @Inject
     ImageLoader imageLoader;
@@ -51,7 +48,8 @@ public class WatchlistMovieFragment extends Fragment {
     @Inject
     Provider<WatchlistMovieViewModel> viewModelProvider;
 
-    WatchlistMovieViewModel viewModel;
+    private WatchlistMovieViewModel viewModel;
+
     private OnInteractionListener listener;
 
     public static WatchlistMovieFragment newInstance(WatchlistMovieViewEntity movie,
@@ -90,10 +88,26 @@ public class WatchlistMovieFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(
-                R.layout.fragment_watchlist_item, container, false);
-        mUnbinder = ButterKnife.bind(this, view);
-        return view;
+        return inflater.inflate(R.layout.fragment_watchlist_item, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mImageView = view.findViewById(R.id.posterImageView);
+
+        mNotificationIcon = view.findViewById(R.id.notification_icon);
+        mNotificationIcon.setOnClickListener(v -> viewModel.onNotificationClick());
+
+        mTitleTextView = view.findViewById(R.id.title);
+        mRuntimeIcon = view.findViewById(R.id.runtime_icon);
+        mRuntimeTextView = view.findViewById(R.id.runtime_text);
+
+        mWatchedItButton = view.findViewById(R.id.watched_button);
+        mWatchedItButton.setOnClickListener(v -> viewModel.onWatched());
+
+        mRemoveButton = view.findViewById(R.id.remove_button);
+        mRemoveButton.setOnClickListener(v -> viewModel.onRemove());
     }
 
     private Dialog removeDialog;
@@ -172,27 +186,6 @@ public class WatchlistMovieFragment extends Fragment {
         } else {
             mNotificationIcon.setImageResource(R.drawable.ic_notifications_none_white_24dp);
         }
-    }
-
-    @OnClick(R.id.notification_icon)
-    public void onNotificationClick() {
-        viewModel.onNotificationClick();
-    }
-
-    @OnClick(R.id.watched_button)
-    public void onWatchedIt() {
-        viewModel.onWatched();
-    }
-
-    @OnClick(R.id.remove_button)
-    public void onRemove() {
-        viewModel.onRemove();
-    }
-
-    @Override
-    public void onDestroyView() {
-        mUnbinder.unbind();
-        super.onDestroyView();
     }
 
     public interface OnInteractionListener {

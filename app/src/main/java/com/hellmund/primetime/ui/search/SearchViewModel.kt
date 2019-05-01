@@ -1,9 +1,9 @@
 package com.hellmund.primetime.ui.search
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository

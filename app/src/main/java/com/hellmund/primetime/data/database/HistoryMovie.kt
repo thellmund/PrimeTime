@@ -1,7 +1,7 @@
 package com.hellmund.primetime.data.database
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.hellmund.primetime.ui.search.SearchResult
 import com.hellmund.primetime.ui.suggestions.Rating
 import com.hellmund.primetime.ui.watchlist.WatchlistMovieViewEntity

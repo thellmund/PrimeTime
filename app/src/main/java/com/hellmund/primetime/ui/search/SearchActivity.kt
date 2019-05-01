@@ -1,7 +1,7 @@
 package com.hellmund.primetime.ui.search
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 
 import com.hellmund.primetime.R
 
