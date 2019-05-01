@@ -3,8 +3,11 @@ package com.hellmund.primetime.ui.watchlist
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import com.hellmund.primetime.data.database.HistoryMovie
+import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -19,15 +22,19 @@ data class WatchlistViewState(
 sealed class Action {
     object Load : Action()
     data class DatabaseLoaded(val data: List<WatchlistMovieViewEntity>) : Action()
+    data class Remove(val movie: WatchlistMovieViewEntity) : Action()
+    data class Rated(val movie: WatchlistMovieViewEntity, val rating: Int) : Action()
 }
 
 sealed class Result {
     data class Data(val data: List<WatchlistMovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
+    data class Removed(val movie: WatchlistMovieViewEntity) : Result()
 }
 
 class WatchlistViewModel @Inject constructor(
         private val repository: WatchlistRepository,
+        private val historyRepository: HistoryRepository,
         private val viewEntityMapper: WatchlistMovieViewEntityMapper
 ) : ViewModel() {
 
@@ -58,6 +65,8 @@ class WatchlistViewModel @Inject constructor(
         return when (action) {
             is Action.Load -> fetchMovies()
             is Action.DatabaseLoaded -> Observable.just(Result.Data(action.data))
+            is Action.Remove -> removeMovie(action.movie)
+            is Action.Rated -> rateMovie(action.movie, action.rating)
         }
     }
 
@@ -70,6 +79,21 @@ class WatchlistViewModel @Inject constructor(
                 .toObservable()
     }
 
+    private fun removeMovie(movie: WatchlistMovieViewEntity): Observable<Result> {
+        return repository.remove(movie.id)
+                .andThen(Observable.just(Result.Removed(movie) as Result))
+    }
+
+    private fun rateMovie(movie: WatchlistMovieViewEntity, rating: Int): Observable<Result> {
+        val historyMovie = HistoryMovie.fromWatchlistMovie(movie, rating)
+        return repository.remove(movie.id)
+                .andThen {
+                    historyRepository.store(historyMovie)
+                    Completable.complete()
+                }
+                .andThen(Observable.just(Result.Removed(movie) as Result))
+    }
+
     private fun reduceState(
             viewState: WatchlistViewState,
             result: Result
@@ -77,11 +101,16 @@ class WatchlistViewModel @Inject constructor(
         return when (result) {
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
             is Result.Error -> viewState.copy(isLoading = false, error = result.error)
+            is Result.Removed -> viewState.copy(data = viewState.data.minus(result.movie))
         }
     }
 
     fun remove(movie: WatchlistMovieViewEntity) {
-        repository.remove(movie.id).blockingAwait()
+        refreshRelay.accept(Action.Remove(movie))
+    }
+
+    fun onMovieRated(movie: WatchlistMovieViewEntity, rating: Int) {
+        refreshRelay.accept(Action.Rated(movie, rating))
     }
 
     private fun render(viewState: WatchlistViewState) {

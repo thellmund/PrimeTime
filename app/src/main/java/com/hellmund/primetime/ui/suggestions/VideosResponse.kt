@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.main
+package com.hellmund.primetime.ui.suggestions
 
 data class VideosResponse(val results: List<Video>)
 

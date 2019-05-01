@@ -17,6 +17,7 @@ fun Context.showLoading(messageResId: Int): ProgressDialog {
     }
 }
 
+@JvmOverloads
 fun Context.showCancelable(
         @StringRes messageResId: Int,
         @StringRes positiveResId: Int,

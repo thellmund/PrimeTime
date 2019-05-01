@@ -3,6 +3,7 @@ package com.hellmund.primetime.ui.watchlist
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import com.hellmund.primetime.ui.watchlist.details.WatchlistMovieFragment
 
 class WatchlistAdapter(
         fragmentManager: FragmentManager,
@@ -18,7 +19,7 @@ class WatchlistAdapter(
     }
 
     override fun getItem(position: Int): Fragment {
-        return WatchlistMovieFragment.newInstance(movies[position], position, listener)
+        return WatchlistMovieFragment.newInstance(movies[position], listener)
     }
 
     override fun getCount(): Int = movies.size

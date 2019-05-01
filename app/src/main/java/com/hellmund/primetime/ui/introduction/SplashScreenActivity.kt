@@ -1,11 +1,10 @@
-package com.hellmund.primetime.ui.splash
+package com.hellmund.primetime.ui.introduction
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.ui.introduction.IntroductionActivity
-import com.hellmund.primetime.ui.main.MainActivity
+import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.utils.OnboardingHelper
 import javax.inject.Inject
 

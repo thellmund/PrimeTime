@@ -1,14 +1,12 @@
-package com.hellmund.primetime.ui.main
+package com.hellmund.primetime.ui.suggestions
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.data.model.MovieViewEntity
-import com.hellmund.primetime.data.model.MovieViewEntityMapper
 import com.hellmund.primetime.ui.history.HistoryRepository
-import com.hellmund.primetime.ui.main.data.MoviesRepository
+import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay

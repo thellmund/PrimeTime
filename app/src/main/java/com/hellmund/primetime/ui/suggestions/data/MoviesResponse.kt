@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.main.data
+package com.hellmund.primetime.ui.suggestions.data
 
 import com.hellmund.primetime.data.model.Movie
 

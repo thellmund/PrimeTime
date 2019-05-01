@@ -10,7 +10,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.hellmund.primetime.R;
-import com.hellmund.primetime.data.model.Sample;
 import com.hellmund.primetime.utils.Constants;
 import com.hellmund.primetime.utils.ImageLoader;
 import com.hellmund.primetime.utils.UiUtils;

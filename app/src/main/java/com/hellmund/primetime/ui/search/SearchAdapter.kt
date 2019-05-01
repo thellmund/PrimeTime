@@ -11,7 +11,6 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.model.SearchResult
 import com.hellmund.primetime.utils.ImageLoader
 
 class SearchAdapter(

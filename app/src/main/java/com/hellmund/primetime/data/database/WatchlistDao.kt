@@ -4,7 +4,8 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
-import com.hellmund.primetime.utils.DateUtils
+import com.hellmund.primetime.utils.endOfDay
+import com.hellmund.primetime.utils.startOfDay
 import io.reactivex.Maybe
 import io.reactivex.Single
 
@@ -19,8 +20,8 @@ interface WatchlistDao {
 
     @Query("SELECT * FROM watchlist_movies WHERE releaseDate BETWEEN :start AND :end")
     fun releases(
-            start: Long = DateUtils.startOfDay().toEpochMilli(),
-            end: Long = DateUtils.endOfDay().toEpochMilli()
+            start: Long = startOfDay,
+            end: Long = endOfDay
     ): Single<List<WatchlistMovie>>
 
     @Query("SELECT COUNT(*) FROM watchlist_movies WHERE id = :movieId")

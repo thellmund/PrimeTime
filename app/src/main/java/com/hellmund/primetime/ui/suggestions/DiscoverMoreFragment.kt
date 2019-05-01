@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.main
+package com.hellmund.primetime.ui.suggestions
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

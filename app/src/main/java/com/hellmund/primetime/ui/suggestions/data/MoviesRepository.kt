@@ -1,12 +1,12 @@
-package com.hellmund.primetime.ui.main.data
+package com.hellmund.primetime.ui.suggestions.data
 
 import com.hellmund.primetime.data.api.ApiService
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.data.model.MovieViewEntity
-import com.hellmund.primetime.data.model.SearchResult
+import com.hellmund.primetime.ui.suggestions.MovieViewEntity
+import com.hellmund.primetime.ui.search.SearchResult
 import com.hellmund.primetime.ui.history.HistoryRepository
-import com.hellmund.primetime.ui.main.RecommendationsType
-import com.hellmund.primetime.ui.main.VideoResolver
+import com.hellmund.primetime.ui.suggestions.RecommendationsType
+import com.hellmund.primetime.ui.suggestions.VideoResolver
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import io.reactivex.Observable
 import io.reactivex.functions.Function3

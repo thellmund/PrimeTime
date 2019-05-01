@@ -2,9 +2,9 @@ package com.hellmund.primetime.data.api
 
 import com.hellmund.primetime.data.model.GenresResponse
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.data.model.SamplesResponse
-import com.hellmund.primetime.ui.main.data.MoviesResponse
-import com.hellmund.primetime.ui.main.VideosResponse
+import com.hellmund.primetime.ui.selectmovies.SamplesResponse
+import com.hellmund.primetime.ui.suggestions.data.MoviesResponse
+import com.hellmund.primetime.ui.suggestions.VideosResponse
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path

@@ -24,10 +24,9 @@ import com.hellmund.primetime.data.database.GenreDao
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.main.MainActivity
-import com.hellmund.primetime.ui.main.MainFragment
-import com.hellmund.primetime.ui.main.RecommendationsType
-import com.hellmund.primetime.data.model.SearchResult
+import com.hellmund.primetime.ui.suggestions.MainActivity
+import com.hellmund.primetime.ui.suggestions.MainFragment
+import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.isVisible

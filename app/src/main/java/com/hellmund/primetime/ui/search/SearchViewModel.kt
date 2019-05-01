@@ -6,8 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.ui.history.HistoryRepository
-import com.hellmund.primetime.ui.main.data.MoviesRepository
-import com.hellmund.primetime.data.model.SearchResult
+import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Completable

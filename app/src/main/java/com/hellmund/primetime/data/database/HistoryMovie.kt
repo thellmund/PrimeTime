@@ -2,8 +2,9 @@ package com.hellmund.primetime.data.database
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
-import com.hellmund.primetime.data.model.SearchResult
-import com.hellmund.primetime.ui.main.Rating
+import com.hellmund.primetime.ui.search.SearchResult
+import com.hellmund.primetime.ui.suggestions.Rating
+import com.hellmund.primetime.ui.watchlist.WatchlistMovieViewEntity
 import org.threeten.bp.LocalDate
 
 @Entity(tableName = "history_movies")
@@ -27,6 +28,10 @@ data class HistoryMovie(
             val movie = rating.movie
             val ratingValue = if (rating is Rating.Like) 1 else 0
             return HistoryMovie(movie.id, movie.title, ratingValue, LocalDate.now(), false)
+        }
+
+        fun fromWatchlistMovie(movie: WatchlistMovieViewEntity, rating: Int): HistoryMovie {
+            return HistoryMovie(movie.id, movie.title, rating, LocalDate.now(), false)
         }
 
     }

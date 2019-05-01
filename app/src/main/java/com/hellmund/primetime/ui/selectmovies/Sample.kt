@@ -1,10 +1,12 @@
-package com.hellmund.primetime.data.model
+package com.hellmund.primetime.ui.selectmovies
 
 import com.google.gson.annotations.SerializedName
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.utils.Constants
 import org.threeten.bp.LocalDate
 import java.util.*
+
+data class SamplesResponse(val results: List<Sample>)
 
 data class Sample(
         val id: Int,

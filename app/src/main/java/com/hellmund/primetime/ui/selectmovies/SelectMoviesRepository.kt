@@ -2,9 +2,8 @@ package com.hellmund.primetime.ui.selectmovies
 
 import com.hellmund.primetime.data.api.ApiService
 import com.hellmund.primetime.data.database.HistoryMovie
-import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.data.model.Sample
+import com.hellmund.primetime.ui.history.HistoryRepository
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.*

@@ -8,9 +8,8 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.model.Sample
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.main.MainActivity
+import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.ui.search.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.utils.OnboardingHelper
 import com.hellmund.primetime.utils.isConnected

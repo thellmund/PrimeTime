@@ -3,18 +3,18 @@ package com.hellmund.primetime.di
 import android.content.Context
 import com.hellmund.primetime.ui.history.HistoryFragment
 import com.hellmund.primetime.ui.introduction.IntroductionActivity
-import com.hellmund.primetime.ui.main.MainActivity
-import com.hellmund.primetime.ui.main.MainFragment
-import com.hellmund.primetime.ui.main.di.SuggestionComponent
+import com.hellmund.primetime.ui.introduction.SplashScreenActivity
 import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.ui.selectmovies.SelectMoviesActivity
 import com.hellmund.primetime.ui.settings.SettingsFragment
-import com.hellmund.primetime.ui.splash.SplashScreenActivity
+import com.hellmund.primetime.ui.suggestions.MainActivity
+import com.hellmund.primetime.ui.suggestions.MainFragment
+import com.hellmund.primetime.ui.suggestions.di.SuggestionComponent
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
-import com.hellmund.primetime.ui.watchlist.WatchlistMovieFragment
 import com.hellmund.primetime.ui.watchlist.di.WatchlistModule
+import com.hellmund.primetime.ui.watchlist.di.WatchlistMovieComponent
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.NotificationPublisher
 import com.hellmund.primetime.utils.RealValueFormatter
@@ -35,6 +35,7 @@ import javax.inject.Singleton
 interface AppComponent {
 
     fun suggestionComponent(): SuggestionComponent.Builder
+    fun watchlistMovieComponent(): WatchlistMovieComponent.Builder
 
     fun inject(historyFragment: HistoryFragment)
     fun inject(introductionActivity: IntroductionActivity)
@@ -47,7 +48,6 @@ interface AppComponent {
     fun inject(settingsFragment: SettingsFragment)
     fun inject(splashScreenActivity: SplashScreenActivity)
     fun inject(watchlistFragment: WatchlistFragment)
-    fun inject(watchlistMovieFragment: WatchlistMovieFragment)
 
     @Component.Builder
     interface Builder {

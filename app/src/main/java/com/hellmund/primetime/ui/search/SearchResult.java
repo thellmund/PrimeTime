@@ -1,7 +1,9 @@
-package com.hellmund.primetime.data.model;
+package com.hellmund.primetime.ui.search;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.hellmund.primetime.data.model.Movie;
 
 import org.threeten.bp.LocalDate;
 

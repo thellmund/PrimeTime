@@ -16,7 +16,7 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.main.MainActivity
+import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.isVisible
 import com.hellmund.primetime.utils.observe

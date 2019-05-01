@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.main
+package com.hellmund.primetime.ui.suggestions
 
 import android.app.ProgressDialog
 import android.content.Context
@@ -16,7 +16,6 @@ import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.Movie.WatchStatus.NOT_WATCHED
 import com.hellmund.primetime.data.model.Movie.WatchStatus.ON_WATCHLIST
-import com.hellmund.primetime.data.model.MovieViewEntity
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_movie_suggestion.*
 import javax.inject.Inject

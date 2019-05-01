@@ -30,6 +30,10 @@ class WatchlistRepository @Inject constructor(
 
     fun store(movie: Movie): Completable {
         val watchlistMovie = WatchlistMovie.from(movie)
+        return store(watchlistMovie)
+    }
+
+    fun store(watchlistMovie: WatchlistMovie): Completable {
         return Completable.fromCallable { database.watchlistDao().store(watchlistMovie) }
     }
 

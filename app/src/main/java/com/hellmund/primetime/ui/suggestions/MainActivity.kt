@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.main
+package com.hellmund.primetime.ui.suggestions
 
 import android.content.Context
 import android.content.Intent

@@ -1,6 +1,7 @@
-package com.hellmund.primetime.data.model
+package com.hellmund.primetime.ui.suggestions
 
 import android.os.Parcelable
+import com.hellmund.primetime.data.model.Movie
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

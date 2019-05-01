@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.main
+package com.hellmund.primetime.ui.suggestions
 
 import android.os.Parcelable
 import com.hellmund.primetime.data.model.ApiGenre

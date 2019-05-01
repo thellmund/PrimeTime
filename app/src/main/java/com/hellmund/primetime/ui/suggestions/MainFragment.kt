@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.main
+package com.hellmund.primetime.ui.suggestions
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,7 @@ import android.view.*
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.main.RecommendationsType.Personalized
+import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.settings.SettingsActivity
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
