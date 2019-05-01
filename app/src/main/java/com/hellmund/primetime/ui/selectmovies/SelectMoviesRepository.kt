@@ -1,6 +1,5 @@
 package com.hellmund.primetime.ui.selectmovies
 
-import android.util.Log
 import com.hellmund.primetime.data.api.ApiService
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
@@ -19,7 +18,6 @@ class SelectMoviesRepository @Inject constructor(
     fun fetch(genres: List<Genre>): Observable<List<Sample>> {
         return Observable
                 .fromCallable { fetchSync(genres) }
-                .doOnError { Log.d("TAG", "", it) }
                 .subscribeOn(Schedulers.io())
     }
 

@@ -38,6 +38,7 @@ class MovieRankingProcessor @Inject constructor(
                 .asSequence()
                 .filter { isKnownMovie(it) }
                 .filter { isReleased(it, type) }
+                .filter { hasEnoughInformation(it) }
                 .map { adjustRating(it) }
                 .sortedBy { it.score }
                 .map { it.movie }
@@ -50,12 +51,16 @@ class MovieRankingProcessor @Inject constructor(
         return hasSeenMovie.not() && isOnWatchlist.not()
     }
 
-
     private fun isReleased(movie: Movie, type: RecommendationsType): Boolean {
         return when (type) {
             RecommendationsType.Upcoming -> true
             else -> movie.releaseDate?.isBefore(LocalDate.now()) ?: false
         }
+    }
+
+    private fun hasEnoughInformation(movie: Movie): Boolean {
+        val hasNoGenres = movie.genreIds.isNullOrEmpty() && movie.genres.isNullOrEmpty()
+        return hasNoGenres.not() && movie.description.isNotEmpty() && movie.voteAverage > 0f
     }
 
     private fun adjustRating(movie: Movie): MovieWithScore {
