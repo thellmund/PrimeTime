@@ -89,7 +89,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         Set<String> values = new HashSet<>();
         for (Genre genre : excludedGenres) {
-            if (genre.isPreferred()) {
+            if (genre.isExcluded()) {
                 values.add(Integer.toString(genre.getId()));
             }
         }
@@ -113,7 +113,16 @@ public class SettingsFragment extends PreferenceFragment {
     @SuppressWarnings("unchecked")
     private boolean saveIncludedGenres(Preference pref, Object newValue) {
         if (enoughGenresChecked(newValue) && genresAreDisjoint(pref, newValue)) {
-            updateGenresSummary(pref, (Set<String>) newValue);
+            Set<String> genreIds = (Set<String>) newValue;
+            List<Genre> genres = getGenresFromValues(genreIds);
+
+            for (Genre genre : genres) {
+                genre.setPreferred(true);
+                genre.setExcluded(false);
+            }
+
+            genresRepository.storeGenres(genres);
+            updateGenresSummary(pref, genreIds);
             return true;
         } else if (!enoughGenresChecked(newValue)) {
             displayNotEnoughCheckedAlert();
@@ -127,12 +136,30 @@ public class SettingsFragment extends PreferenceFragment {
     @SuppressWarnings("unchecked")
     private boolean saveExcludedGenres(Preference pref, Object newValue) {
         if (genresAreDisjoint(pref, newValue)) {
-            updateGenresSummary(pref, (Set<String>) newValue);
+            Set<String> genreIds = (Set<String>) newValue;
+            List<Genre> genres = getGenresFromValues(genreIds);
+
+            for (Genre genre : genres) {
+                genre.setPreferred(false);
+                genre.setExcluded(true);
+            }
+
+            genresRepository.storeGenres(genres);
+            updateGenresSummary(pref, genreIds);
             return true;
         } else {
             displaySharedGenresAlert(pref, (Set<String>) newValue);
             return false;
         }
+    }
+
+    private List<Genre> getGenresFromValues(Set<String> values) {
+        List<Genre> results = new ArrayList<>();
+        for (String value : values) {
+            Genre genre = genresRepository.getGenre(value).blockingGet();
+            results.add(genre);
+        }
+        return results;
     }
 
     private void displaySharedGenresAlert(Preference pref, Set<String> newValue) {

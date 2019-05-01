@@ -6,6 +6,7 @@ import com.hellmund.primetime.data.model.Movie
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class WatchlistRepository @Inject constructor(
@@ -25,7 +26,7 @@ class WatchlistRepository @Inject constructor(
     }
 
     fun count(movieId: Int): Maybe<Int> {
-        return database.watchlistDao().count(movieId)
+        return database.watchlistDao().count(movieId).subscribeOn(Schedulers.io())
     }
 
     fun store(movie: Movie): Completable {

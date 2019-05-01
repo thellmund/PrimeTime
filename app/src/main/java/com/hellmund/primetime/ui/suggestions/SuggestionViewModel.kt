@@ -139,18 +139,6 @@ class SuggestionsViewModel @Inject constructor(
                         storeInWatchlist(movie)
                     }
                 }
-                /*.flatMapCompletable {
-                    storeInWatchlist(movie)
-                }
-                .toObservable<Unit>()
-                .map {
-                    ViewModelEvent.AddedToWatchlist as ViewModelEvent
-                }
-                .onErrorResumeNext { t: Throwable ->
-                    // Movie not in the watchlist
-                    Observable.just(ViewModelEvent.ShowRemoveFromWatchlistDialog)
-                }*/
-                .subscribeOn(Schedulers.io())
     }
 
     private fun storeInWatchlist(movie: MovieViewEntity): Observable<ViewModelEvent> {

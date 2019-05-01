@@ -12,8 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.data.model.Movie.WatchStatus.NOT_WATCHED
-import com.hellmund.primetime.data.model.Movie.WatchStatus.ON_WATCHLIST
+import com.hellmund.primetime.data.model.Movie.WatchStatus.*
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.utils.*
@@ -149,7 +148,7 @@ class SuggestionFragment : Fragment() {
             is ViewModelEvent.TrailerLoaded -> openUrl(event.url)
             is ViewModelEvent.AdditionalInformationLoaded -> showMovieDetails(event.movie)
             is ViewModelEvent.ImdbLinkLoaded -> openUrl(event.url)
-            is ViewModelEvent.RatingStored -> viewPagerHost.scrollToNext()
+            is ViewModelEvent.RatingStored ->  onRatingStored()
             is ViewModelEvent.AddedToWatchlist -> onAddedToWatchlist()
             is ViewModelEvent.ShowRemoveFromWatchlistDialog -> displayRemoveDialog()
             is ViewModelEvent.RemovedFromWatchlist -> onRemovedFromWatchlist()
@@ -165,12 +164,18 @@ class SuggestionFragment : Fragment() {
         requireContext().openUrl(url)
     }
 
+    private fun onRatingStored() {
+        updateWatchlistButton(WATCHED)
+        viewPagerHost.scrollToNext()
+    }
+
     private fun showMovieDetails(movie: MovieViewEntity) {
         runtime.text = movie.formattedRuntime
     }
 
     private fun onAddedToWatchlist() {
         updateWatchlistButton(ON_WATCHLIST)
+        viewPagerHost.scrollToNext()
     }
 
     private fun displayRemoveDialog() {
