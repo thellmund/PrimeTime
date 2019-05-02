@@ -40,7 +40,10 @@ class SelectMoviesRepository @Inject constructor(
             results += movieResults.subList(0, moviesPerGenre)
         }
 
-        return results.flatten().toSet().toList()
+        return results
+                .flatten()
+                .toSet()
+                .toList()
     }
 
     fun store(movies: List<HistoryMovie>) {

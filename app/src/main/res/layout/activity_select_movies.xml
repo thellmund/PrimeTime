@@ -45,6 +45,12 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/large_button"
+            android:layout_gravity="bottom"
+            android:background="@drawable/background_bottom_button_gradient" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button"
             style="@style/LargeButton"
