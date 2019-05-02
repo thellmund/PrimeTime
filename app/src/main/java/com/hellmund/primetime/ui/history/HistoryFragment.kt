@@ -1,6 +1,5 @@
 package com.hellmund.primetime.ui.history
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -16,10 +15,7 @@ import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.suggestions.MainActivity
-import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.isVisible
-import com.hellmund.primetime.utils.observe
-import com.hellmund.primetime.utils.showToast
+import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_history.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -64,15 +60,18 @@ class HistoryFragment : Fragment() {
 
     private fun onOpenDialog(movie: HistoryMovieViewEntity) {
         val options = getDialogOptions()
-        AlertDialog.Builder(requireContext())
-                .setTitle(movie.title)
-                .setItems(options) { _, which ->
-                    when (which) {
-                        0 -> openEditRatingDialog(movie)
-                        1 -> showSimilarMovies(movie)
+
+        requireContext().showItemsDialog(
+                title = movie.title,
+                items = options,
+                onSelected = { index ->
+                    when (index) {
+                        0 -> showSimilarMovies(movie)
+                        1 -> openEditRatingDialog(movie)
                         2 -> removeFromHistory(movie)
                     }
-                }.create().show()
+                }
+        )
     }
 
     private fun getDialogOptions(): Array<String> {
@@ -104,21 +103,18 @@ class HistoryFragment : Fragment() {
         val options = arrayOf(getString(R.string.like), getString(R.string.dislike))
         val checked = if (movie.rating == Constants.LIKE) 0 else 1
 
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.edit_rating)
-                .setSingleChoiceItems(options, checked, null)
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.save) { dialog, _ ->
-                    val dialogListView = (dialog as AlertDialog).listView
-                    val selected = dialogListView.checkedItemPosition
-
-                    if (selected != checked) {
-                        val newRating = if (selected == 0) Constants.LIKE else Constants.DISLIKE
+        requireContext().showSingleSelectDialog(
+                titleResId = R.string.edit,
+                choices = options,
+                checked = checked,
+                positiveResId = R.string.save,
+                onSelected = {
+                    if (it != checked) {
+                        val newRating = if (it == 0) Constants.LIKE else Constants.DISLIKE
                         // TODO updateRating(movie, position, newRating)
                     }
                 }
-                .setCancelable(true)
-                .show()
+        )
     }
 
     private fun updateRating(movie: HistoryMovie, position: Int, newRating: Int) {

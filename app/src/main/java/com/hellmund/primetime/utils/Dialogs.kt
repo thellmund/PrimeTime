@@ -17,6 +17,13 @@ fun Context.showLoading(messageResId: Int): ProgressDialog {
     }
 }
 
+fun Context.showInfoDialog(message: String) {
+    AlertDialog.Builder(this)
+            .setMessage(message)
+            .setPositiveButton(R.string.ok) { dialog, which -> dialog.dismiss() }
+            .show()
+}
+
 @JvmOverloads
 fun Context.showCancelableDialog(
         @StringRes messageResId: Int,
@@ -36,8 +43,16 @@ fun Context.showItemsDialog(
         items: Array<String>,
         onSelected: ((index: Int) -> Unit)? = null
 ): Dialog {
+    return showItemsDialog(getString(titleResId), items, onSelected)
+}
+
+fun Context.showItemsDialog(
+        title: String,
+        items: Array<String>,
+        onSelected: ((index: Int) -> Unit)? = null
+): Dialog {
     return AlertDialog.Builder(this)
-            .setTitle(titleResId)
+            .setTitle(title)
             .setItems(items) { dialog, which -> onSelected?.invoke(which) }
             .setCancelable(true)
             .show()

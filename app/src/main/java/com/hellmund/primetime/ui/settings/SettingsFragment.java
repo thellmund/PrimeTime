@@ -1,6 +1,5 @@
 package com.hellmund.primetime.ui.settings;
 
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +21,7 @@ import com.hellmund.primetime.ui.selectgenres.GenresRepository;
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingService;
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingServicesStore;
 import com.hellmund.primetime.utils.Constants;
+import com.hellmund.primetime.utils.Dialogs;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -326,9 +326,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private void displayAlertDialog(String text) {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(text)
-                .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss()).create().show();
+        Dialogs.showInfoDialog(requireContext(), text);
     }
 
     @SuppressWarnings("unchecked")

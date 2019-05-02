@@ -1,6 +1,5 @@
 package com.hellmund.primetime.ui.watchlist
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +14,7 @@ import com.hellmund.primetime.ui.history.HistoryActivity
 import com.hellmund.primetime.ui.watchlist.details.WatchlistMovieFragment
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.showItemsDialog
 import kotlinx.android.synthetic.main.fragment_watchlist.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -85,34 +85,21 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
     }
 
     override fun onWatchedIt(movie: WatchlistMovieViewEntity) {
-        val title = movie.title
-        val header = getString(R.string.rate_movie, title)
+        val header = getString(R.string.rate_movie, movie.title)
         val options = arrayOf(getString(R.string.like), getString(R.string.dislike))
 
-        AlertDialog.Builder(requireContext())
-                .setTitle(header)
-                .setItems(options) { _, which ->
-                    val rating = if (which == 0) Constants.LIKE else Constants.DISLIKE
+        requireContext().showItemsDialog(
+                title = header,
+                items = options,
+                onSelected = { index ->
+                    val rating = if (index == 0) Constants.LIKE else Constants.DISLIKE
                     onMovieRated(movie, rating)
                 }
-                .show()
+        )
     }
 
     private fun onMovieRated(movie: WatchlistMovieViewEntity, rating: Int) {
         viewModel.onMovieRated(movie, rating)
-
-        /*
-        viewPager.scrollToNext()
-
-        // TODO
-        val messageResId = if (rating == Constants.LIKE) {
-            R.string.will_more_like_this
-        } else {
-            R.string.will_less_like_this
-        }
-
-        requireContext().showToast(messageResId)
-        */
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
