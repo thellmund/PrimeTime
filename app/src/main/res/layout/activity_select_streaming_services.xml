@@ -23,33 +23,18 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/default_space"
-        app:layout_constraintBottom_toTopOf="@id/finishButton"
+        app:layout_constraintBottom_toTopOf="@id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/finishButton"
+        android:id="@+id/button"
         style="@style/LargeButton"
-        android:clickable="false"
-        android:enabled="false"
         android:text="@string/finish"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
-        app:backgroundTint="@color/selector_conditional_next_button"
-        app:cornerRadius="@dimen/small_space"
-        app:layout_constraintBottom_toTopOf="@id/skipButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/skipButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/skip"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
+        app:backgroundTint="@color/selector_conditional_skip_button"
         app:cornerRadius="@dimen/small_space"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

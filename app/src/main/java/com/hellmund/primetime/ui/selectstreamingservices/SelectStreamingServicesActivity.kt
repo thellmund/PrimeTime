@@ -25,21 +25,21 @@ class SelectStreamingServicesActivity : AppCompatActivity() {
         StreamingServicesAdapter(this::onItemSelected)
     }
 
+    private val streamingServices: MutableList<StreamingService> by lazy {
+        streamingServicesStore.all.toMutableList()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_streaming_services)
         injector.inject(this)
 
         setupRecyclerView()
-        adapter.update(streamingServicesStore.all)
+        adapter.update(streamingServices)
+        updateButton()
 
-        finishButton.setOnClickListener {
-            // TODO Save
+        button.setOnClickListener {
             storeSelection()
-            finishIntro()
-        }
-
-        skipButton.setOnClickListener {
             finishIntro()
         }
     }
@@ -55,17 +55,27 @@ class SelectStreamingServicesActivity : AppCompatActivity() {
 
     private fun onItemSelected(streamingService: StreamingService) {
         val newStreamingService = streamingService.toggled()
-        val services = streamingServicesStore.all.toMutableList()
+        val services = streamingServices
+
         val index = services.indexOf(streamingService)
         services[index] = newStreamingService
         adapter.update(services)
 
-        val selected = services.filter { it.isSelected }
-        finishButton.isEnabled = selected.isNotEmpty()
+        updateButton()
+    }
+
+    private fun updateButton() {
+        val selected = streamingServices.filter { it.isSelected }
+        button.isSelected = selected.isNotEmpty()
+
+        when (selected.size) {
+            0 -> button.setText(R.string.skip)
+            else -> button.setText(R.string.finish)
+        }
     }
 
     private fun storeSelection() {
-        streamingServicesStore.store(adapter.items)
+        streamingServicesStore.store(streamingServices)
     }
 
     private fun markIntroDone() {
