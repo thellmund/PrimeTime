@@ -150,6 +150,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         preference.setValues(values);
 
         updateStreamingServicesSummary(preference, values);
+        preference.setOnPreferenceChangeListener(this::saveStreamingServices);
     }
 
     @SuppressWarnings("unchecked")
@@ -193,6 +194,24 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             displaySharedGenresAlert(pref, (Set<String>) newValue);
             return false;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean saveStreamingServices(Preference pref, Object newValue) {
+        Set<String> values = (Set<String>) newValue;
+        List<StreamingService> services = streamingServicesStore.getAll();
+
+        List<StreamingService> updatedServices = new ArrayList<>();
+
+        for (StreamingService service : services) {
+            boolean isSelected = values.contains(service.getName());
+            StreamingService newService = new StreamingService(service.getName(), isSelected);
+            updatedServices.add(newService);
+        }
+
+        updateStreamingServicesSummary(pref, values);
+        streamingServicesStore.store(updatedServices);
+        return true;
     }
 
     private List<Genre> getGenresFromValues(Set<String> values) {
@@ -359,7 +378,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 }
             }
 
-            Collections.sort(selected);
+            Collections.sort(selected, (lhs, rhs) -> lhs.toLowerCase().compareTo(rhs.toLowerCase()));
 
             StringBuilder builder = new StringBuilder(selected.get(0));
             for (int i = 1; i < selected.size(); i++) {

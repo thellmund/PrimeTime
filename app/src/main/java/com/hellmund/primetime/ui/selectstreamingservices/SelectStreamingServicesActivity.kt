@@ -25,19 +25,13 @@ class SelectStreamingServicesActivity : AppCompatActivity() {
         StreamingServicesAdapter(this::onItemSelected)
     }
 
-    private val streamingServices = mutableListOf(
-            StreamingService("Amazon", false),
-            StreamingService("iTunes", false),
-            StreamingService("Netflix", false)
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_streaming_services)
         injector.inject(this)
 
         setupRecyclerView()
-        adapter.update(streamingServices)
+        adapter.update(streamingServicesStore.all)
 
         finishButton.setOnClickListener {
             // TODO Save
@@ -61,16 +55,17 @@ class SelectStreamingServicesActivity : AppCompatActivity() {
 
     private fun onItemSelected(streamingService: StreamingService) {
         val newStreamingService = streamingService.toggled()
-        val index = streamingServices.indexOf(streamingService)
-        streamingServices[index] = newStreamingService
-        adapter.update(streamingServices)
+        val services = streamingServicesStore.all.toMutableList()
+        val index = services.indexOf(streamingService)
+        services[index] = newStreamingService
+        adapter.update(services)
 
-        val selected = streamingServices.filter { it.isSelected }
+        val selected = services.filter { it.isSelected }
         finishButton.isEnabled = selected.isNotEmpty()
     }
 
     private fun storeSelection() {
-        streamingServicesStore.store(streamingServices)
+        streamingServicesStore.store(adapter.items)
     }
 
     private fun markIntroDone() {

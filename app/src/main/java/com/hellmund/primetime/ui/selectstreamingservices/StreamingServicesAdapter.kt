@@ -12,7 +12,7 @@ class StreamingServicesAdapter(
         private val onItemSelected: (streamingService: StreamingService) -> Unit
 ) : RecyclerView.Adapter<StreamingServicesAdapter.ViewHolder>() {
 
-    private val items = mutableListOf<StreamingService>()
+    val items = mutableListOf<StreamingService>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.palette.graphics.Palette
 import com.hellmund.primetime.R
@@ -15,6 +16,7 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.Movie.WatchStatus.*
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_movie_suggestion.*
 import javax.inject.Inject
@@ -153,7 +155,15 @@ class SuggestionFragment : Fragment() {
             is ViewModelEvent.ShowRemoveFromWatchlistDialog -> displayRemoveDialog()
             is ViewModelEvent.RemovedFromWatchlist -> onRemovedFromWatchlist()
             is ViewModelEvent.WatchStatus -> updateWatchlistButton(event.watchStatus)
+            is ViewModelEvent.StreamingServicesLoaded -> showStreamingServices(event.services)
         }
+    }
+
+    private fun showStreamingServices(services: List<StreamingService>) {
+        streamingContainer.isVisible = services.isNotEmpty()
+
+        val text = services.map(StreamingService::name).joinToString(", ")
+        streamingTextView.text = getString(R.string.available_on_format_string, text)
     }
 
     private fun showDialog() {

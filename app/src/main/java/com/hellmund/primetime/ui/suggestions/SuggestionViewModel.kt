@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
+import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
 import com.hellmund.primetime.utils.plusAssign
@@ -16,6 +17,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 sealed class ViewModelAction {
+    object LoadStreamingServices : ViewModelAction()
     object LoadAdditionalInformation : ViewModelAction()
     object LoadTrailer : ViewModelAction()
     object OpenImdb : ViewModelAction()
@@ -26,6 +28,7 @@ sealed class ViewModelAction {
 }
 
 sealed class ViewModelEvent {
+    data class StreamingServicesLoaded(val services: List<StreamingService>) : ViewModelEvent()
     data class AdditionalInformationLoaded(val movie: MovieViewEntity) : ViewModelEvent()
     object TrailerLoading : ViewModelEvent()
     data class TrailerLoaded(val url: String) : ViewModelEvent()
@@ -60,10 +63,12 @@ class SuggestionsViewModel @Inject constructor(
         compositeDisposable += actionsRelay
                 .switchMap(this::processAction)
                 .subscribe(this::render)
+        actionsRelay.accept(ViewModelAction.LoadStreamingServices)
     }
 
     private fun processAction(action: ViewModelAction): Observable<ViewModelEvent> {
         return when (action) {
+            is ViewModelAction.LoadStreamingServices -> fetchStreamingServices()
             is ViewModelAction.LoadWatchStatus -> fetchWatchStatus()
             is ViewModelAction.LoadAdditionalInformation -> fetchInformation()
             is ViewModelAction.LoadTrailer -> fetchTrailer()
@@ -72,6 +77,12 @@ class SuggestionsViewModel @Inject constructor(
             is ViewModelAction.AddToWatchlist -> onAddToWatchlist()
             is ViewModelAction.RemoveFromWatchlist -> onRemoveFromWatchlist()
         }
+    }
+
+    private fun fetchStreamingServices(): Observable<ViewModelEvent> {
+        return Observable
+                .just(listOf(StreamingService("iTunes", true), StreamingService("Netflix", true)))
+                .map { ViewModelEvent.StreamingServicesLoaded(it) }
     }
 
     private fun fetchWatchStatus(): Observable<ViewModelEvent> {

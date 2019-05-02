@@ -126,7 +126,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
         val checked = 0 // TODO
         requireContext().showSingleSelectDialog(
                 titleResId = R.string.filter_recommendations,
-                choices = arrayOf("All", "Only from my streaming services"),
+                choices = arrayOf("All", "From my streaming services"),
                 checked = checked,
                 positiveResId = R.string.done,
                 onSelected = { selected ->

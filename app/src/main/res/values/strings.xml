@@ -212,5 +212,6 @@
     <string name="filter_recommendations">Filter recommendations</string>
     <string name="skip">Skip</string>
     <string name="streaming_services">Streaming services</string>
+    <string name="available_on_format_string">Available on %s</string>
 
 </resources>
