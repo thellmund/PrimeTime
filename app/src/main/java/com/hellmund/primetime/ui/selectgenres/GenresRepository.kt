@@ -30,6 +30,12 @@ class GenresRepository @Inject constructor(
 
     fun getGenre(genreId: String): Maybe<Genre> = database.genreDao().getGenre(genreId.toInt())
 
+    fun getGenres(genreIds: Set<String>): Single<List<Genre>> {
+        return Single.fromCallable {
+            genreIds.map { database.genreDao().getGenre(it.toInt()).blockingGet() }
+        }
+    }
+
     fun storeGenres(genres: List<Genre>) {
         database.genreDao().store(*genres.toTypedArray())
     }

@@ -14,7 +14,7 @@ interface GenreDao {
     @Query("SELECT * FROM genres WHERE isPreferred = 1 ORDER BY name")
     fun getPreferredGenres(): Single<List<Genre>>
 
-    @Query("SELECT * FROM genres WHERE isPreferred = 0 ORDER BY name")
+    @Query("SELECT * FROM genres WHERE isExcluded = 1 ORDER BY name")
     fun getExcludedGenres(): Single<List<Genre>>
 
     @Query("SELECT * FROM genres WHERE id = :id")

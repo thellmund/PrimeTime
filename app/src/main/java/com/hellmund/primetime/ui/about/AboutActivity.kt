@@ -1,9 +1,11 @@
 package com.hellmund.primetime.ui.about
 
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.isVisible
 import kotlinx.android.synthetic.main.activity_about.*
@@ -43,6 +45,10 @@ class AboutActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    companion object {
+        fun newIntent(context: Context) = Intent(context, AboutActivity::class.java)
     }
 
 }
