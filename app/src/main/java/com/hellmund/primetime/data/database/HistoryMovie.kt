@@ -2,7 +2,7 @@ package com.hellmund.primetime.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.hellmund.primetime.ui.search.SearchResult
+import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.suggestions.Rating
 import com.hellmund.primetime.ui.watchlist.WatchlistMovieViewEntity
 import org.threeten.bp.LocalDate
@@ -20,8 +20,8 @@ data class HistoryMovie(
 
     companion object {
 
-        fun fromSearchResult(searchResult: SearchResult, rating: Int): HistoryMovie {
-            return HistoryMovie(searchResult.id, searchResult.title, rating, LocalDate.now(), false)
+        fun fromMovie(movie: Movie, rating: Int): HistoryMovie {
+            return HistoryMovie(movie.id, movie.title, rating, LocalDate.now(), false)
         }
 
         fun fromRating(rating: Rating): HistoryMovie {

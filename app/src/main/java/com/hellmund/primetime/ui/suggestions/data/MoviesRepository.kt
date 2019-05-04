@@ -1,13 +1,13 @@
 package com.hellmund.primetime.ui.suggestions.data
 
+import android.util.Log
 import com.hellmund.primetime.data.api.ApiService
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.ui.suggestions.MovieViewEntity
-import com.hellmund.primetime.ui.search.SearchResult
 import com.hellmund.primetime.ui.history.HistoryRepository
+import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.VideoResolver
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import io.reactivex.Observable
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
@@ -50,31 +50,6 @@ class MoviesRepository @Inject constructor(
         val topRated = fetchTopRatedMovies()
 
         return Observable.zip(personalized, genres, topRated, resultsZipper)
-
-        /*
-        return Observable.fromCallable {
-            val history = historyRepository.getAll().blockingGet()
-                    .sortedBy { it.timestamp }
-                    .take(10)
-
-            val results = mutableListOf<Movie>()
-
-            for (movie in history) {
-                results += fetchRecommendations(movie.id).blockingFirst()
-            }
-
-            val genres = genresRepository.preferredGenres.blockingFirst()
-            for (genre in genres) {
-                results += fetchGenreRecommendations(genre.id).blockingFirst()
-            }
-
-            results += fetchTopRatedMovies().blockingFirst()
-
-            // TODO: Filter results
-
-            results
-        }
-        */
     }
 
     private fun fetchMovieBasedRecommendations(movieId: Int): Observable<List<Movie>> {
@@ -130,13 +105,12 @@ class MoviesRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    fun searchMovies(query: String): Observable<List<SearchResult>> {
+    fun searchMovies(query: String): Observable<List<Movie>> {
         return apiService
                 .search(query)
                 .subscribeOn(Schedulers.io())
-                .map {
-                    movies -> movies.results.map(SearchResult::fromMovie)
-                }
+                .doOnError { Log.d("TAG", "", it) }
+                .map { it.results }
     }
 
     fun fetchPopularMovies(): Observable<List<Movie>> {

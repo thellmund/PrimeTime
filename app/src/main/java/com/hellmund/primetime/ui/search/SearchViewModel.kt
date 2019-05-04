@@ -3,9 +3,10 @@ package com.hellmund.primetime.ui.search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.ui.history.HistoryRepository
+import com.hellmund.primetime.ui.suggestions.MovieViewEntity
+import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
@@ -16,7 +17,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 data class SearchViewState(
-        val data: List<SearchResult> = emptyList(),
+        val data: List<MovieViewEntity> = emptyList(),
         val showClearButton: Boolean = false,
         val didPerformSearch: Boolean = false,
         val rating: Int? = null,
@@ -37,7 +38,7 @@ sealed class Action {
 
 sealed class Result {
     object Loading : Result()
-    data class Data(val data: List<SearchResult>) : Result()
+    data class Data(val data: List<MovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
     data class ToggleClearButton(val show: Boolean) : Result()
     data class ShowHistorySnackbar(val rating: Int) : Result()
@@ -46,7 +47,8 @@ sealed class Result {
 
 class SearchViewModel @Inject constructor(
         private val repository: MoviesRepository,
-        private val historyRepository: HistoryRepository
+        private val historyRepository: HistoryRepository,
+        private val viewEntityMapper: MoviesViewEntityMapper
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -77,6 +79,7 @@ class SearchViewModel @Inject constructor(
 
     private fun searchMovies(query: String): Observable<Result> {
         return repository.searchMovies(query)
+                .map(viewEntityMapper)
                 .map { Result.Data(it) as Result }
                 .onErrorReturn { Result.Error(it) }
     }
@@ -114,7 +117,7 @@ class SearchViewModel @Inject constructor(
         actionsRelay.accept(Action.Typed(input))
     }
 
-    fun addToWatchlist(searchResult: SearchResult) {
+    fun addToWatchlist(movie: MovieViewEntity) {
         TODO()
     }
 
@@ -127,7 +130,7 @@ class SearchViewModel @Inject constructor(
         super.onCleared()
     }
 
-    class Factory(
+    /*class Factory(
             private val repository: MoviesRepository,
             private val historyRepository: HistoryRepository
     ) : ViewModelProvider.Factory {
@@ -137,6 +140,6 @@ class SearchViewModel @Inject constructor(
             return SearchViewModel(repository, historyRepository) as T
         }
 
-    }
+    }*/
 
 }

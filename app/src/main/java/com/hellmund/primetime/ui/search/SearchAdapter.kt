@@ -6,16 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.hellmund.primetime.R
+import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.utils.ImageLoader
 import kotlinx.android.synthetic.main.list_item_search_results.view.*
 
 class SearchAdapter(
         private val context: Context,
-        private val onShowSimilar: (SearchResult) -> Unit,
-        private val onWatched: (SearchResult) -> Unit
+        private val onShowSimilar: (MovieViewEntity) -> Unit,
+        private val onWatched: (MovieViewEntity) -> Unit
 ) : BaseAdapter() {
 
-    private val items = mutableListOf<SearchResult>()
+    private val items = mutableListOf<MovieViewEntity>()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view = convertView
@@ -47,7 +48,7 @@ class SearchAdapter(
         return position.toLong()
     }
 
-    fun update(newItems: List<SearchResult>) {
+    fun update(newItems: List<MovieViewEntity>) {
         items.clear()
         items += newItems
         notifyDataSetChanged()
@@ -57,11 +58,11 @@ class SearchAdapter(
 
         fun bind(
                 context: Context,
-                searchResult: SearchResult,
-                onShowSimilar: (SearchResult) -> Unit,
-                onWatchedIt: (SearchResult) -> Unit
+                searchResult: MovieViewEntity,
+                onShowSimilar: (MovieViewEntity) -> Unit,
+                onWatchedIt: (MovieViewEntity) -> Unit
         ) = with(view) {
-            loadImage(context, searchResult)
+            loadImage(context, searchResult.posterUrl)
             title.text = searchResult.title
             description.text = searchResult.description
             similarMoviesButton.setOnClickListener { onShowSimilar(searchResult) }
@@ -69,8 +70,8 @@ class SearchAdapter(
 
         }
 
-        private fun loadImage(context: Context, searchResult: SearchResult) = with(view) {
-            ImageLoader.with(context).load(searchResult.fullPosterPath, posterImageView)
+        private fun loadImage(context: Context, url: String) = with(view) {
+            ImageLoader.with(context).load(url, posterImageView)
         }
     }
 

@@ -25,9 +25,7 @@ import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.suggestions.MainActivity
-import com.hellmund.primetime.ui.suggestions.MainFragment
-import com.hellmund.primetime.ui.suggestions.RecommendationsType
+import com.hellmund.primetime.ui.suggestions.*
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.isVisible
 import com.hellmund.primetime.utils.observe
@@ -267,16 +265,15 @@ class SearchFragment : Fragment(), TextWatcher,
                 .show()
     }*/
 
-    private fun addRating(searchResult: SearchResult, rating: Int) {
-        val message: String = if (rating == 1) {
-            getString(R.string.will_more_like_this)
-        } else {
-            getString(R.string.will_less_like_this)
+    private fun addRating(rating: Rating) {
+        val message = when (rating) {
+            is Rating.Like -> getString(R.string.will_more_like_this)
+            is Rating.Dislike -> getString(R.string.will_less_like_this)
         }
 
         // val result = results_list.adapter.getItem(position) as SearchResult
         // History.add(result, rating);
-        val historyMovie = HistoryMovie.fromSearchResult(searchResult, rating)
+        val historyMovie = HistoryMovie.fromRating(rating)
         viewModel.addToHistory(historyMovie)
 
         Snackbar.make(results_list, message, Snackbar.LENGTH_LONG)
@@ -307,8 +304,8 @@ class SearchFragment : Fragment(), TextWatcher,
         historySnackbar.dismiss()
     }
 
-    private fun addToWatchlist(searchResult: SearchResult) {
-        viewModel.addToWatchlist(searchResult)
+    private fun addToWatchlist(movie: MovieViewEntity) {
+        viewModel.addToWatchlist(movie)
 
         /*val progressDialog = ProgressDialog(requireContext())
         progressDialog.setMessage("Adding movie to watchlist ...")
@@ -339,7 +336,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun showSimilarMovies(position: Int) {
-        val result = results_list.adapter.getItem(position) as SearchResult
+        val result = results_list.adapter.getItem(position) as MovieViewEntity
         val id = result.id
         val title = result.title
 
@@ -368,14 +365,14 @@ class SearchFragment : Fragment(), TextWatcher,
         return false
     }
 
-    private fun showSimilarMovies(searchResult: SearchResult) {
-        val type = RecommendationsType.BasedOnMovie(searchResult.id, searchResult.title)
+    private fun showSimilarMovies(movie: MovieViewEntity) {
+        val type = RecommendationsType.BasedOnMovie(movie.id, movie.title)
         val fragment = MainFragment.newInstance(type)
         showFragment(fragment)
     }
 
-    private fun onWatched(searchResult: SearchResult) {
-        val title = searchResult.title
+    private fun onWatched(movie: MovieViewEntity) {
+        val title = movie.title
 
         val options = arrayOf(
                 getString(R.string.show_more_like_this),
@@ -384,9 +381,10 @@ class SearchFragment : Fragment(), TextWatcher,
 
         AlertDialog.Builder(requireContext())
                 .setTitle(title)
-                .setItems(options) { _, which ->
-                    val rating = if (which == 0) Constants.LIKE else Constants.DISLIKE
-                    addRating(searchResult, rating)
+                .setItems(options) { _, index ->
+                    val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
+                    // val rating = if (which == 0) Constants.LIKE else Constants.DISLIKE
+                    addRating(rating)
                 }
                 .setCancelable(true)
                 .show()
