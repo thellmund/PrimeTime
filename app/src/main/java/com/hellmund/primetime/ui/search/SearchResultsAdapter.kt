@@ -5,12 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import androidx.core.view.isVisible
 import com.hellmund.primetime.R
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.Transformation
+import com.hellmund.primetime.utils.showInfoBox
 import kotlinx.android.synthetic.main.list_item_search_results.view.*
 
-class SearchAdapter(
+class SearchResultsAdapter(
         private val context: Context,
         private val onShowSimilar: (MovieViewEntity) -> Unit,
         private val onWatched: (MovieViewEntity) -> Unit
@@ -54,6 +57,11 @@ class SearchAdapter(
         notifyDataSetChanged()
     }
 
+    fun clear() {
+        items.clear()
+        notifyDataSetChanged()
+    }
+
     class ViewHolder(private val view: View) {
 
         fun bind(
@@ -64,14 +72,21 @@ class SearchAdapter(
         ) = with(view) {
             loadImage(context, searchResult.posterUrl)
             title.text = searchResult.title
+            genres.isVisible = searchResult.formattedGenres.isNotBlank()
+            genres.text = searchResult.formattedGenres
             description.text = searchResult.description
             similarMoviesButton.setOnClickListener { onShowSimilar(searchResult) }
             watchedItButton.setOnClickListener { onWatchedIt(searchResult) }
-
+            setOnClickListener { context.showInfoBox(searchResult.description) }
         }
 
         private fun loadImage(context: Context, url: String) = with(view) {
-            ImageLoader.with(context).load(url, posterImageView)
+            val transformations = arrayOf<Transformation>(
+                    Transformation.Placeholder(R.drawable.poster_placeholder))
+
+            ImageLoader
+                    .with(context)
+                    .load(url = url, transformations = transformations, into = posterImageView)
         }
     }
 

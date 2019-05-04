@@ -46,8 +46,8 @@ class SearchFragment : Fragment(), TextWatcher,
     @Inject
     lateinit var database: AppDatabase
 
-    private val searchAdapter: SearchAdapter by lazy {
-        SearchAdapter(
+    private val searchResultsAdapter: SearchResultsAdapter by lazy {
+        SearchResultsAdapter(
                 requireContext(),
                 onShowSimilar = this::showSimilarMovies,
                 onWatched = this::onWatched
@@ -96,7 +96,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun render(viewState: SearchViewState) {
-        searchAdapter.update(viewState.data)
+        searchResultsAdapter.update(viewState.data)
 
         results_list.isVisible = viewState.data.isNotEmpty()
         loading_container.isVisible = viewState.isLoading
@@ -107,14 +107,6 @@ class SearchFragment : Fragment(), TextWatcher,
         viewState.rating?.let {
             showAddedToHistorySnackbar(it)
         } ?: dismissAddedToHistorySnackbar()
-
-        /*if (input.isEmpty()) {
-                search_box.text.clear()
-                search_box.requestFocus()
-            } else {
-                toggleKeyboard(false)
-                downloadQueryResults(input)
-            }*/
     }
 
     private fun handleSearchIntent(type: RecommendationsType) {
@@ -136,13 +128,15 @@ class SearchFragment : Fragment(), TextWatcher,
 
         backButton.setOnClickListener {
             backButton.isVisible = false
+            clearSearchBarContent()
             toggleKeyboard(false)
             toggleSearchResults(false)
         }
 
         search_box.setOnFocusChangeListener { _, hasFocus ->
-            backButton.isVisible = hasFocus
+            backButton.isVisible = hasFocus || searchResultsContainer.isVisible
             if (hasFocus) {
+                searchResultsAdapter.clear()
                 toggleSearchResults(true)
             }
         }
@@ -195,17 +189,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun initSearchResultsRecyclerView() {
-        results_list.adapter = searchAdapter
-
-        /*results_list.setOnItemClickListener { _, _, position, _ ->
-            showSimilarMovies(position)
-        }*/
-
-        // TODO
-        /*results_list.setOnItemLongClickListener { _, _, position, _ ->
-            displayRatingDialog(position)
-            true
-        }*/
+        results_list.adapter = searchResultsAdapter
     }
 
     override fun onResume() {

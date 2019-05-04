@@ -24,7 +24,13 @@ fun Context.showInfoDialog(messageResId: Int) {
 fun Context.showInfoDialog(message: String) {
     AlertDialog.Builder(this)
             .setMessage(message)
-            .setPositiveButton(R.string.ok) { dialog, which -> dialog.dismiss() }
+            .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
+            .show()
+}
+
+fun Context.showInfoBox(message: String) {
+    AlertDialog.Builder(this)
+            .setMessage(message)
             .show()
 }
 
