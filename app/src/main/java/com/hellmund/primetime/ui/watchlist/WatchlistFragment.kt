@@ -4,9 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AlphaAnimation
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.transition.TransitionManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
@@ -25,10 +26,6 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
     lateinit var viewModelProvider: Provider<WatchlistViewModel>
 
     private val viewModel: WatchlistViewModel by lazyViewModel { viewModelProvider }
-
-    private val adapter: WatchlistAdapter by lazy {
-        WatchlistAdapter(requireFragmentManager(), this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +48,6 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
-
-        viewPager.adapter = adapter
-        indicator.setViewPager(viewPager)
-
         viewModel.viewState.observe(this, this::render)
     }
 
@@ -63,20 +56,29 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
     }
 
     private fun render(viewState: WatchlistViewState) {
-        adapter.update(viewState.data)
+        if (viewState.data.isNotEmpty()) {
+            updateWatchlistAdapter(viewState)
+        }
 
-        if (viewState.data.isEmpty()) {
-            val animation = AlphaAnimation(1.0f, 0.0f)
-            animation.duration = 300
-            content.animation = animation
-            content.animate()
-            placeholder.visibility = View.VISIBLE
-        } else {
-            val animation = AlphaAnimation(0.0f, 1.0f)
-            animation.duration = 300
-            content.animation = animation
-            content.animate()
-            placeholder.visibility = View.GONE
+        TransitionManager.beginDelayedTransition(container)
+        content.isVisible = viewState.data.isNotEmpty()
+        placeholder.isVisible = viewState.data.isEmpty()
+    }
+
+    private fun updateWatchlistAdapter(viewState: WatchlistViewState) {
+        val oldItemCount = viewPager.adapter?.count ?: 0
+        val oldIndex = viewPager.currentItem
+
+        val adapter = WatchlistAdapter(requireFragmentManager(), this, viewState.data)
+        viewPager.adapter = adapter
+        indicator.setViewPager(viewPager)
+
+        viewState.deletedIndex?.let { index ->
+            if (oldIndex == oldItemCount - 1) {
+                viewPager.currentItem = oldIndex - 1
+            } else {
+                viewPager.currentItem = oldIndex
+            }
         }
     }
 

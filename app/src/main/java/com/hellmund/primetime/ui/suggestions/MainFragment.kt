@@ -13,9 +13,12 @@ import com.hellmund.primetime.ui.settings.SettingsActivity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
+import org.jetbrains.anko.support.v4.runOnUiThread
 import java.lang.Math.round
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.concurrent.schedule
 
 class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.ViewPagerHost {
 
@@ -95,7 +98,11 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     }
 
     override fun scrollToNext() {
-        suggestions.scrollToNext()
+        Timer().schedule(350) {
+            runOnUiThread {
+                suggestions.scrollToNext()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

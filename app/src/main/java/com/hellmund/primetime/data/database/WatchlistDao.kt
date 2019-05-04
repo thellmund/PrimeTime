@@ -12,7 +12,7 @@ import io.reactivex.Single
 @Dao
 interface WatchlistDao {
 
-    @Query("SELECT * FROM watchlist_movies")
+    @Query("SELECT * FROM watchlist_movies ORDER BY timestamp")
     fun getAll(): Single<List<WatchlistMovie>>
 
     @Query("SELECT * FROM watchlist_movies WHERE id = :movieId")

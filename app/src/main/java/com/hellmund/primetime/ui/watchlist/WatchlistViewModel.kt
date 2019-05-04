@@ -16,7 +16,8 @@ import javax.inject.Inject
 data class WatchlistViewState(
         val data: List<WatchlistMovieViewEntity> = emptyList(),
         val isLoading: Boolean = false,
-        val error: Throwable? = null
+        val error: Throwable? = null,
+        val deletedIndex: Int? = null
 )
 
 sealed class Action {
@@ -99,9 +100,12 @@ class WatchlistViewModel @Inject constructor(
             result: Result
     ): WatchlistViewState {
         return when (result) {
-            is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
-            is Result.Error -> viewState.copy(isLoading = false, error = result.error)
-            is Result.Removed -> viewState.copy(data = viewState.data.minus(result.movie))
+            is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null, deletedIndex = null)
+            is Result.Error -> viewState.copy(isLoading = false, error = result.error, deletedIndex = null)
+            is Result.Removed -> {
+                val index = viewState.data.indexOf(result.movie)
+                viewState.copy(data = viewState.data.minus(result.movie), deletedIndex = index)
+            }
         }
     }
 

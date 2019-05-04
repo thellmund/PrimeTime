@@ -7,16 +7,9 @@ import com.hellmund.primetime.ui.watchlist.details.WatchlistMovieFragment
 
 class WatchlistAdapter(
         fragmentManager: FragmentManager,
-        private val listener: WatchlistMovieFragment.OnInteractionListener
+        private val listener: WatchlistMovieFragment.OnInteractionListener,
+        private val movies: List<WatchlistMovieViewEntity> = listOf()
 ) : FragmentStatePagerAdapter(fragmentManager) {
-
-    private val movies = mutableListOf<WatchlistMovieViewEntity>()
-
-    fun update(newMovies: List<WatchlistMovieViewEntity>) {
-        movies.clear()
-        movies.addAll(newMovies)
-        notifyDataSetChanged()
-    }
 
     override fun getItem(position: Int): Fragment {
         return WatchlistMovieFragment.newInstance(movies[position], listener)
