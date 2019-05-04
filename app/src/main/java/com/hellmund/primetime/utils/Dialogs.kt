@@ -17,6 +17,10 @@ fun Context.showLoading(messageResId: Int): ProgressDialog {
     }
 }
 
+fun Context.showInfoDialog(messageResId: Int) {
+    showInfoDialog(getString(messageResId))
+}
+
 fun Context.showInfoDialog(message: String) {
     AlertDialog.Builder(this)
             .setMessage(message)
