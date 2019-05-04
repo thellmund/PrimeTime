@@ -1,6 +1,5 @@
 package com.hellmund.primetime.ui.suggestions.data
 
-import android.util.Log
 import com.hellmund.primetime.data.api.ApiService
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
@@ -8,6 +7,7 @@ import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.VideoResolver
+import com.hellmund.primetime.utils.ErrorHelper
 import io.reactivex.Observable
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
@@ -59,6 +59,7 @@ class MoviesRepository @Inject constructor(
     private fun fetchNowPlayingRecommendations(): Observable<List<Movie>> {
         return apiService
                 .nowPlaying()
+                .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
     }
@@ -66,6 +67,7 @@ class MoviesRepository @Inject constructor(
     private fun fetchUpcomingRecommendations(): Observable<List<Movie>> {
         return apiService
                 .upcoming()
+                .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
     }
@@ -73,6 +75,7 @@ class MoviesRepository @Inject constructor(
     private fun fetchRecommendations(movieId: Int): Observable<List<Movie>> {
         return apiService
                 .recommendations(movieId)
+                .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
     }
@@ -80,6 +83,7 @@ class MoviesRepository @Inject constructor(
     private fun fetchGenreRecommendations(genreId: Int): Observable<List<Movie>> {
         return apiService
                 .genreRecommendations(genreId)
+                .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
     }
@@ -87,6 +91,7 @@ class MoviesRepository @Inject constructor(
     private fun fetchTopRatedMovies(): Observable<List<Movie>> {
         return apiService
                 .topRatedMovies()
+                .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
     }
@@ -94,6 +99,7 @@ class MoviesRepository @Inject constructor(
     fun fetchVideo(movie: MovieViewEntity): Observable<String> {
         return apiService
                 .videos(movie.id)
+                .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
                 .map { VideoResolver.findBest(movie.title, it) }
@@ -102,20 +108,22 @@ class MoviesRepository @Inject constructor(
     fun fetchMovie(movieId: Int): Observable<Movie> {
         return apiService
                 .movie(movieId)
+                .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
     }
 
     fun searchMovies(query: String): Observable<List<Movie>> {
         return apiService
                 .search(query)
+                .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
-                .doOnError { Log.d("TAG", "", it) }
                 .map { it.results }
     }
 
     fun fetchPopularMovies(): Observable<List<Movie>> {
         return apiService
                 .popular()
+                .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
     }

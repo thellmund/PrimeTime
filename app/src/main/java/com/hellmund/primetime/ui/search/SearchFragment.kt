@@ -37,6 +37,9 @@ import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
 
+private const val ENABLED = 1f
+private const val DISABLED = 0.4f
+
 class SearchFragment : Fragment(), TextWatcher,
         TextView.OnEditorActionListener, MainActivity.Reselectable {
 
@@ -156,7 +159,7 @@ class SearchFragment : Fragment(), TextWatcher,
         }
 
         search_clear.setOnClickListener {
-            if (it.alpha == Constants.ENABLED) {
+            if (it.alpha == ENABLED) {
                 clearSearchBarContent()
                 toggleKeyboard(true)
             }

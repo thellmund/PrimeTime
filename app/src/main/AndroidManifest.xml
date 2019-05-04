@@ -67,17 +67,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hellmund.primetime.ui.suggestions.MainActivity" />
         </activity>
-        <activity
-            android:name=".ui.search.SearchActivity"
-            android:windowSoftInputMode="stateVisible">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.hellmund.primetime.ui.suggestions.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ui.watchlist.WatchlistActivity"
-            android:label="@string/watchlist" />
-
         <receiver android:name=".utils.NotificationPublisher" />
     </application>
 

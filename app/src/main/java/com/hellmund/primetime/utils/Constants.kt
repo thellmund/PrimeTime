@@ -1,0 +1,35 @@
+package com.hellmund.primetime.utils
+
+object Constants {
+
+    const val SINGLE_MOVIE = "singleMovieRecommendation"
+    const val MOVIE_ID = "movieID"
+    const val MOVIE_TITLE = "movieTitle"
+
+    const val NOW_PLAYING_INTENT = "now_playing"
+    const val UPCOMING_INTENT = "upcoming"
+    const val WATCHLIST_INTENT = "watchlist"
+    const val SEARCH_INTENT = "search"
+
+    @JvmField
+    val KEY_INCLUDED = "primetime_my_genres"
+
+    @JvmField
+    val KEY_EXCLUDED = "primetime_excluded_genres"
+
+    @JvmField
+    val KEY_STREAMING_SERVICES = "primetime_my_streaming_services"
+
+    @JvmField
+    val KEY_NOTIFICATIONS = "primetime_release_notifications"
+
+    @JvmField
+    val KEY_PLAY_STORE = "primetime_rate_playstore"
+
+    @JvmField
+    val KEY_ABOUT = "primetime_about_app"
+
+    const val LIKE = 1
+    const val DISLIKE = 0
+
+}
