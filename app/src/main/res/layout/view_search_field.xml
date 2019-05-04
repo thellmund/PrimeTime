@@ -8,11 +8,12 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:background="@android:color/transparent"
         android:contentDescription="@string/clear_search"
         android:paddingStart="@dimen/default_space"
         android:paddingEnd="@dimen/default_space"
@@ -42,11 +43,12 @@
         android:textColorHint="#b3000000"
         tools:targetApi="o" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/search_clear"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:background="@android:color/transparent"
         android:contentDescription="@string/clear_search"
         android:paddingLeft="@dimen/large_space"
         android:paddingRight="@dimen/large_space"

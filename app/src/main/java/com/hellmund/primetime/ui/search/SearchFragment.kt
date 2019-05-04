@@ -13,7 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -27,8 +27,8 @@ import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.suggestions.*
 import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.isVisible
 import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.supportActionBar
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.state_layout_search_results.*
 import kotlinx.android.synthetic.main.view_search_field.*
@@ -37,19 +37,8 @@ import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
 
-private const val ENABLED = 1f
-private const val DISABLED = 0.4f
-
 class SearchFragment : Fragment(), TextWatcher,
         TextView.OnEditorActionListener, MainActivity.Reselectable {
-
-    /*private val viewModel: SearchViewModel by lazy {
-        val genresProvider = RealGenresProvider(defaultSharedPreferences)
-        val repository = MoviesRepository(ApiClient.instance, genresProvider)
-        val historyRepository = HistoryRepository(PrimeTimeDatabase.getInstance(requireContext()))
-        val factory = SearchViewModel.Factory(repository, historyRepository)
-        ViewModelProviders.of(requireActivity(), factory).get(SearchViewModel::class.java)
-    }*/
 
     @Inject
     lateinit var viewModelProvider: Provider<SearchViewModel>
@@ -85,9 +74,7 @@ class SearchFragment : Fragment(), TextWatcher,
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_search, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -105,7 +92,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun initToolbar() {
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.search)
+        supportActionBar?.title = getString(R.string.search)
     }
 
     private fun render(viewState: SearchViewState) {
@@ -148,6 +135,8 @@ class SearchFragment : Fragment(), TextWatcher,
         search_box.addTextChangedListener(this)
 
         backButton.setOnClickListener {
+            backButton.isVisible = false
+            toggleKeyboard(false)
             toggleSearchResults(false)
         }
 
@@ -159,7 +148,7 @@ class SearchFragment : Fragment(), TextWatcher,
         }
 
         search_clear.setOnClickListener {
-            if (it.alpha == ENABLED) {
+            if (it.alpha == 1f) {
                 clearSearchBarContent()
                 toggleKeyboard(true)
             }
@@ -222,12 +211,12 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onResume() {
         super.onResume()
         initToolbar()
-        // TODO (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+        supportActionBar?.hide()
     }
 
     override fun onPause() {
         super.onPause()
-        // TODO (requireActivity() as AppCompatActivity).supportActionBar?.show()
+        supportActionBar?.show()
     }
 
     override fun onReselected() {

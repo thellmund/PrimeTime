@@ -2,12 +2,13 @@ package com.hellmund.primetime.utils
 
 import android.app.ProgressDialog
 import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.button.MaterialButton
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import org.threeten.bp.LocalDate
@@ -47,5 +48,5 @@ var ProgressDialog.isVisible: Boolean
         if (value) show() else dismiss()
     }
 
-val MaterialButton.margins: ViewGroup.MarginLayoutParams?
-    get() = layoutParams as? ViewGroup.MarginLayoutParams
+val Fragment.supportActionBar: ActionBar?
+    get() = (requireActivity() as? AppCompatActivity)?.supportActionBar

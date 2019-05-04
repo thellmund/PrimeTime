@@ -15,6 +15,7 @@
         android:paddingStart="@dimen/activity_margin"
         android:paddingEnd="@dimen/activity_margin"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/white"
         tools:text="Lorem ipsum" />
 
 </FrameLayout>
