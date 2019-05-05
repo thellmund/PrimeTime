@@ -5,13 +5,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui.search.EqualSpacingGridItemDecoration
+import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.ui.settings.SettingsActivity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
-import com.hellmund.primetime.utils.*
+import com.hellmund.primetime.utils.OnboardingHelper
+import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.showItemsDialog
+import com.hellmund.primetime.utils.showSingleSelectDialog
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import java.lang.Math.round
@@ -23,12 +30,19 @@ import kotlin.concurrent.schedule
 class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.ViewPagerHost {
 
     @Inject
+    lateinit var onboardingHelper: OnboardingHelper
+
+    @Inject
     lateinit var viewModelProvider: Provider<MainViewModel>
 
     private val viewModel: MainViewModel by lazyViewModel { viewModelProvider }
 
     private val type: RecommendationsType by lazy {
         arguments?.getParcelable(KEY_RECOMMENDATIONS_TYPE) as RecommendationsType
+    }
+
+    private val adapter2: SuggestionsAdapter2 by lazy {
+        SuggestionsAdapter2(this::openMovieDetails, this::openRatingDialog)
     }
 
     override fun onAttach(context: Context) {
@@ -46,30 +60,62 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_main, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_main, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolbarSubtitle(type)
+        setupPersonalizationBanner()
+        setupRecyclerView()
         viewModel.viewState.observe(this, this::render)
     }
 
+    private fun setupPersonalizationBanner() {
+        if (onboardingHelper.isFirstLaunch) {
+            banner.setOnClickListener {
+                val intent = SelectGenresActivity.newIntent(requireContext())
+                requireContext().startActivity(intent)
+            }
+            banner.show()
+        }
+    }
+
+    private fun setupRecyclerView() {
+        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        recyclerView.adapter = adapter2
+
+        val spacing = round(resources.getDimension(R.dimen.default_space))
+        recyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
+    }
+
     private fun render(viewState: MainViewState) {
-        val margin = round(resources.getDimension(R.dimen.default_space))
+        adapter2.update(viewState.data)
 
-        val adapter = SuggestionsAdapter(requireFragmentManager(), this, this::retry)
-        adapter.movies = viewState.data
-        adapter.pageWidth = if (requireContext().isLandscapeMode) 0.5f else 1.0f
-
-        suggestions.adapter = adapter
-        suggestions.pageMargin = margin
-
-        progressBar.visibility = if (viewState.isLoading) View.VISIBLE else View.GONE
-        suggestions.visibility = if (viewState.isLoading) View.GONE else View.VISIBLE
+        progressBar.isVisible = viewState.isLoading
+        recyclerView.isVisible = viewState.isLoading.not()
 
         // TODO Error handling
+    }
+
+    private fun openMovieDetails(movie: MovieViewEntity) {
+        val fragment = MovieDetailsFragment.newInstance(movie)
+        fragment.show(requireFragmentManager(), fragment.tag)
+    }
+
+    private fun openRatingDialog(movie: MovieViewEntity) {
+        val options = arrayOf(
+                getString(R.string.show_more_like_this),
+                getString(R.string.show_less_like_this)
+        )
+
+        requireContext().showItemsDialog(
+                titleResId = R.string.adjust_recommendations,
+                items = options,
+                onSelected = { index ->
+                    val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
+                    viewModel.handleRating(rating)
+                }
+        )
     }
 
     private fun retry() {
@@ -94,13 +140,13 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     }
 
     override fun scrollToPrevious() {
-        suggestions.scrollToPrevious()
+        // suggestions.scrollToPrevious()
     }
 
     override fun scrollToNext() {
         Timer().schedule(350) {
             runOnUiThread {
-                suggestions.scrollToNext()
+                // suggestions.scrollToNext()
             }
         }
     }
@@ -149,7 +195,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     }
 
     override fun onReselected() {
-        suggestions.scrollToStart()
+        recyclerView.smoothScrollToPosition(0)
     }
 
     companion object {

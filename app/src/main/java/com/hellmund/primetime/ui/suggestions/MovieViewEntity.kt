@@ -8,6 +8,7 @@ import kotlinx.android.parcel.Parcelize
 data class MovieViewEntity(
         val id: Int,
         val posterUrl: String,
+        val backdropUrl: String,
         val title: String,
         val formattedGenres: String,
         val description: String,

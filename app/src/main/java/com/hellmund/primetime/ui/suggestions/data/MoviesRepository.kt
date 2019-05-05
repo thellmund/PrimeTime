@@ -72,7 +72,7 @@ class MoviesRepository @Inject constructor(
                 .map { it.results }
     }
 
-    private fun fetchRecommendations(movieId: Int): Observable<List<Movie>> {
+    fun fetchRecommendations(movieId: Int): Observable<List<Movie>> {
         return apiService
                 .recommendations(movieId)
                 .doOnError(ErrorHelper.logAndIgnore())

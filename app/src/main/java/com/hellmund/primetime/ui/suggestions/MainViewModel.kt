@@ -3,11 +3,13 @@ package com.hellmund.primetime.ui.suggestions
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.hellmund.primetime.data.database.HistoryMovie
+import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.suggestions.data.MovieRankingProcessor
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -29,16 +31,19 @@ sealed class Action {
     data class RefreshMovieRecommendations(
             val type: RecommendationsType = RecommendationsType.Personalized
     ) : Action()
+    data class StoreRating(val rating: Rating) : Action()
 }
 
 sealed class Result {
     object Loading : Result()
     data class Data(val data: List<MovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
+    data class RatingStored(val movie: MovieViewEntity) : Result()
 }
 
 class MainViewModel @Inject constructor(
         private val repository: MoviesRepository,
+        private val historyRepository: HistoryRepository,
         private val rankingProcessor: MovieRankingProcessor,
         private val viewEntityMapper: MoviesViewEntityMapper
 ) : ViewModel() {
@@ -60,6 +65,7 @@ class MainViewModel @Inject constructor(
     private fun processAction(action: Action): Observable<Result> {
         return when (action) {
             is Action.RefreshMovieRecommendations -> fetchRecommendations(action.type)
+            is Action.StoreRating -> storeRating(action.rating)
         }
     }
 
@@ -73,14 +79,29 @@ class MainViewModel @Inject constructor(
                 .startWith(Result.Loading)
     }
 
+
+    private fun storeRating(rating: Rating): Observable<Result> {
+        val historyMovie = HistoryMovie.fromRating(rating)
+        return Completable
+                .fromCallable {
+                    historyRepository.store(historyMovie)
+                    Completable.complete()
+                }
+                .andThen(Observable.just(Result.RatingStored(rating.movie) as Result))
+    }
+
     private fun reduceState(
             viewState: MainViewState,
             result: Result
     ): MainViewState {
         return when (result) {
-            Result.Loading -> viewState.copy(isLoading = true, error = null)
+            is Result.Loading -> viewState.copy(isLoading = true, error = null)
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
             is Result.Error -> viewState.copy(isLoading = false, error = result.error)
+            is Result.RatingStored -> {
+                val movies = viewState.data.minus(result.movie)
+                viewState.copy(data = movies)
+            }
         }
     }
 
@@ -97,7 +118,11 @@ class MainViewModel @Inject constructor(
         refreshRelay.accept(Action.RefreshMovieRecommendations(recommendationsType))
     }
 
-    class Factory(
+    fun handleRating(rating: Rating) {
+        refreshRelay.accept(Action.StoreRating(rating))
+    }
+
+    /*class Factory(
             private val repository: MoviesRepository,
             private val rankingProcessor: MovieRankingProcessor,
             private val viewEntityMapper: MoviesViewEntityMapper
@@ -108,6 +133,6 @@ class MainViewModel @Inject constructor(
             return MainViewModel(repository, rankingProcessor, viewEntityMapper) as T
         }
 
-    }
+    }*/
 
 }

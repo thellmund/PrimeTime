@@ -3,7 +3,6 @@ package com.hellmund.primetime.di
 import android.content.Context
 import com.hellmund.primetime.ui.history.HistoryFragment
 import com.hellmund.primetime.ui.introduction.IntroductionActivity
-import com.hellmund.primetime.ui.introduction.SplashScreenActivity
 import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
@@ -50,7 +49,6 @@ interface AppComponent {
     fun inject(selectMoviesActivity: SelectMoviesActivity)
     fun inject(selectStreamingServicesActivity: SelectStreamingServicesActivity)
     fun inject(settingsFragment: SettingsFragment)
-    fun inject(splashScreenActivity: SplashScreenActivity)
     fun inject(watchlistFragment: WatchlistFragment)
 
     @Component.Builder

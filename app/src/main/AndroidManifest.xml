@@ -14,11 +14,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,ManifestResource">
-        <activity android:name=".ui.selectstreamingservices.SelectStreamingServicesActivity"></activity>
         <activity
             android:name=".ui.suggestions.MainActivity"
             android:exported="true"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.Launcher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
         <activity
             android:name=".ui.about.AboutActivity"
             android:label="@string/title_activity_about">
@@ -40,21 +50,6 @@
             android:label="@string/title_activity_introduction"
             android:theme="@style/AppTheme.Introduction" />
         <activity
-            android:name=".ui.introduction.SplashScreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
-        </activity>
-        <activity
             android:name=".ui.selectgenres.SelectGenresActivity"
             android:label="@string/select_genres_header" />
         <activity
@@ -67,6 +62,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hellmund.primetime.ui.suggestions.MainActivity" />
         </activity>
+        <activity android:name=".ui.selectstreamingservices.SelectStreamingServicesActivity" />
         <receiver android:name=".utils.NotificationPublisher" />
     </application>
 

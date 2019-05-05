@@ -1,11 +1,10 @@
 package com.hellmund.primetime.ui.suggestions
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.transaction
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.di.injector
@@ -19,6 +18,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_toolbar.*
 import javax.inject.Inject
 
+private const val SHORTCUT_EXTRA = "intent"
+
 class MainActivity : AppCompatActivity() {
 
     @Inject
@@ -29,12 +30,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
 
         injector.inject(this)
 
+        setSupportActionBar(toolbar)
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallback, false)
 
         bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
@@ -77,10 +79,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFragment(fragment: Fragment) {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.contentFrame, fragment)
-                .commit()
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
+
+        supportFragmentManager.transaction {
+            replace(R.id.contentFrame, fragment)
+
+            // TODO
+            /*if (currentFragment is MainFragment) {
+                addToBackStack(null)
+            }*/
+        }
     }
 
     private fun openHome() {
@@ -129,23 +137,6 @@ class MainActivity : AppCompatActivity() {
 
     interface Reselectable {
         fun onReselected()
-    }
-
-    companion object {
-
-        private const val SHORTCUT_EXTRA = "intent"
-
-        fun newIntent(
-                context: Context,
-                action: String? = null
-        ): Intent {
-            val intent = Intent(context, MainActivity::class.java)
-            action?.let {
-                intent.putExtra(SHORTCUT_EXTRA, it)
-            }
-            return intent
-        }
-
     }
 
 }

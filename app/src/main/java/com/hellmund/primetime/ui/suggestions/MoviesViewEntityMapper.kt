@@ -25,6 +25,7 @@ class MovieViewEntityMapper @Inject constructor(
         return MovieViewEntity(
                 id = movie.id,
                 posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
+                backdropUrl = "https://image.tmdb.org/t/p/w500${movie.backdropPath}",
                 title = movie.title,
                 formattedGenres = valueFormatter.formatGenres(movie),
                 description = movie.description,

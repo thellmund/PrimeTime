@@ -103,9 +103,8 @@ class SelectGenresActivity : AppCompatActivity() {
 
         private const val MIN_COUNT = 2
 
-        fun newIntent(context: Context): Intent {
-            return Intent(context, SelectGenresActivity::class.java)
-        }
+        fun newIntent(context: Context): Intent = Intent(context, SelectGenresActivity::class.java)
+
     }
 
 }

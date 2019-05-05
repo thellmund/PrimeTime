@@ -18,6 +18,7 @@ import javax.inject.Inject
 
 sealed class ViewModelAction {
     object LoadStreamingServices : ViewModelAction()
+    object LoadRecommendations : ViewModelAction()
     object LoadAdditionalInformation : ViewModelAction()
     object LoadTrailer : ViewModelAction()
     object OpenImdb : ViewModelAction()
@@ -29,6 +30,7 @@ sealed class ViewModelAction {
 
 sealed class ViewModelEvent {
     data class StreamingServicesLoaded(val services: List<StreamingService>) : ViewModelEvent()
+    data class RecommendationsLoaded(val movies: List<MovieViewEntity>) : ViewModelEvent()
     data class AdditionalInformationLoaded(val movie: MovieViewEntity) : ViewModelEvent()
     object TrailerLoading : ViewModelEvent()
     data class TrailerLoaded(val url: String) : ViewModelEvent()
@@ -38,6 +40,7 @@ sealed class ViewModelEvent {
     object RemovedFromWatchlist : ViewModelEvent()
     object ShowRemoveFromWatchlistDialog : ViewModelEvent()
     data class WatchStatus(val watchStatus: Movie.WatchStatus) : ViewModelEvent()
+    object None : ViewModelEvent()
 }
 
 sealed class Rating(val movie: MovieViewEntity) {
@@ -49,6 +52,7 @@ class SuggestionsViewModel @Inject constructor(
         private val repository: MoviesRepository,
         private val historyRepository: HistoryRepository,
         private val watchlistRepository: WatchlistRepository,
+        private val viewEntitiesMapper: MoviesViewEntityMapper,
         private val viewEntityMapper: MovieViewEntityMapper,
         private var movie: MovieViewEntity
 ) : ViewModel() {
@@ -69,6 +73,7 @@ class SuggestionsViewModel @Inject constructor(
     private fun processAction(action: ViewModelAction): Observable<ViewModelEvent> {
         return when (action) {
             is ViewModelAction.LoadStreamingServices -> fetchStreamingServices()
+            is ViewModelAction.LoadRecommendations -> fetchRecommendations()
             is ViewModelAction.LoadWatchStatus -> fetchWatchStatus()
             is ViewModelAction.LoadAdditionalInformation -> fetchInformation()
             is ViewModelAction.LoadTrailer -> fetchTrailer()
@@ -83,6 +88,15 @@ class SuggestionsViewModel @Inject constructor(
         return Observable
                 .just(listOf(StreamingService("iTunes", true), StreamingService("Netflix", true)))
                 .map { ViewModelEvent.StreamingServicesLoaded(it) }
+    }
+
+    private fun fetchRecommendations(): Observable<ViewModelEvent> {
+        return repository
+                .fetchRecommendations(movie.id)
+                .subscribeOn(Schedulers.io())
+                .map(viewEntitiesMapper)
+                .map { ViewModelEvent.RecommendationsLoaded(it) as ViewModelEvent }
+                .onErrorReturnItem(ViewModelEvent.None)
     }
 
     private fun fetchWatchStatus(): Observable<ViewModelEvent> {
@@ -170,6 +184,10 @@ class SuggestionsViewModel @Inject constructor(
 
     fun loadAdditionalInformation() {
         actionsRelay.accept(ViewModelAction.LoadAdditionalInformation)
+    }
+
+    fun loadRecommendations() {
+        actionsRelay.accept(ViewModelAction.LoadRecommendations)
     }
 
     fun openImdb() {

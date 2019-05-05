@@ -9,6 +9,7 @@ import org.threeten.bp.LocalDate
 data class Movie(
         val id: Int,
         @SerializedName("poster_path") val posterPath: String,
+        @SerializedName("backdrop_path") val backdropPath: String,
         val title: String,
         @SerializedName("genre_ids") val genreIds: List<Int>? = emptyList(),
         @SerializedName("genres") val genres: List<Genre>? = emptyList(),
