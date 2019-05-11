@@ -32,6 +32,7 @@ class MovieViewEntityMapper @Inject constructor(
                 releaseYear = valueFormatter.formatReleaseYear(movie.releaseDate),
                 popularity = movie.popularity,
                 formattedVoteAverage = "${movie.voteAverage} / 10",
+                formattedVoteCount = valueFormatter.formatCount(movie.voteCount),
                 formattedRuntime = valueFormatter.formatRuntime(movie.runtime),
                 imdbId = movie.imdbId,
                 raw = movie

@@ -67,7 +67,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     init {
         compositeDisposable += actionsRelay
-                .switchMap(this::processAction)
+                .flatMap(this::processAction)
                 .subscribe(this::render)
         actionsRelay.accept(ViewModelAction.LoadStreamingServices)
     }
@@ -130,8 +130,12 @@ class MovieDetailsViewModel @Inject constructor(
         return repository
                 .fetchMovie(movie.id)
                 .map(viewEntityMapper)
-                .doOnNext { movie = it }
-                .map { ViewModelEvent.AdditionalInformationLoaded(it) }
+                .doOnNext {
+                    movie = it
+                }
+                .map {
+                    ViewModelEvent.AdditionalInformationLoaded(it)
+                }
     }
 
     private fun fetchTrailer(): Observable<ViewModelEvent> {

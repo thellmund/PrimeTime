@@ -89,6 +89,11 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         descriptionTextView.text = movie.description
         genresTextView.text = movie.formattedGenres
 
+        releaseTextView.text = movie.releaseYear
+        durationTextView.text = movie.formattedRuntime
+        ratingTextView.text = movie.formattedVoteAverage
+        votesTextView.text = movie.formattedVoteCount
+
         recommendationsRecyclerView.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         recommendationsRecyclerView.adapter = recommendationsAdapter
@@ -97,9 +102,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         val spacing = round(resources.getDimension(R.dimen.small_space))
         recommendationsRecyclerView.addItemDecoration(EqualHorizontalSpacingItemDecoration(spacing))
 
-        if (movie.hasAdditionalInformation) {
-            // displayRuntime()
-        } else {
+        if (movie.hasAdditionalInformation.not()) {
             downloadAdditionalInformation()
         }
 
@@ -167,7 +170,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     }
 
     private fun showMovieDetails(movie: MovieViewEntity) {
-        // runtime.text = movie.formattedRuntime
+        durationTextView.text = movie.formattedRuntime
     }
 
     private fun onAddedToWatchlist() {

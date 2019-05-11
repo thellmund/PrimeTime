@@ -15,6 +15,7 @@ data class MovieViewEntity(
         val releaseYear: String,
         val popularity: Float,
         val formattedVoteAverage: String,
+        val formattedVoteCount: String,
         val formattedRuntime: String,
         val imdbId: String? = null,
         val raw: Movie

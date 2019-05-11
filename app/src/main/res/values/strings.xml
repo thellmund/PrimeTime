@@ -216,4 +216,13 @@
     <string name="similar_movies">Similar movies</string>
     <string name="no_recommendations_available">No recommendations available</string>
 
+    <plurals name="vote_count_format_string">
+        <item quantity="one">%d votes</item>
+        <item quantity="other">%d votes</item>
+    </plurals>
+
+    <string name="thousand_votes_format_string">%dK votes</string>
+    <string name="duration">Duration</string>
+    <string name="release">Release</string>
+
 </resources>

@@ -17,6 +17,7 @@ data class Movie(
         @SerializedName("release_date") val releaseDate: LocalDate?,
         val popularity: Float,
         @SerializedName("vote_average") val voteAverage: Float,
+        @SerializedName("vote_count") val voteCount: Int,
         val runtime: Int? = null,
         @SerializedName("imdb_id") val imdbId: String? = null
 ) : Parcelable {

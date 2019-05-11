@@ -16,6 +16,7 @@ interface ValueFormatter {
     fun formatRuntime(runtime: Int?): String
     fun formatDate(date: LocalDate): String
     fun formatRating(rating: Int): String
+    fun formatCount(count: Int): String
 }
 
 class RealValueFormatter @Inject constructor(
@@ -49,7 +50,7 @@ class RealValueFormatter @Inject constructor(
     }
 
     override fun formatRuntime(runtime: Int?): String {
-        runtime ?: return context.getString(R.string.no_information)
+        runtime ?: return context.getString(R.string.loading)
 
         val hours = String.format(Locale.getDefault(), "%01d", runtime / 60)
         val minutes = String.format(Locale.getDefault(), "%02d", runtime % 60)
@@ -61,6 +62,15 @@ class RealValueFormatter @Inject constructor(
     override fun formatRating(rating: Int): String {
         val resId = if (rating == Constants.LIKE) R.string.liked else R.string.disliked
         return context.getString(resId)
+    }
+
+    override fun formatCount(count: Int): String {
+        return if (count < 1_000) {
+            context.resources.getQuantityString(R.plurals.vote_count_format_string, count, count)
+        } else {
+            val value = count / 1_000
+            context.getString(R.string.thousand_votes_format_string, value)
+        }
     }
 
 }

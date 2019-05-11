@@ -33,11 +33,12 @@
         android:layout_width="100dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
         app:cardCornerRadius="@dimen/small_space"
         app:cardElevation="@dimen/small_space"
-        app:layout_constraintBottom_toBottomOf="@id/genresTextView"
         app:layout_constraintDimensionRatio="H,2:3"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/backdropImageView"
         app:riv_corner_radius="@dimen/small_space">
 
         <ImageView
@@ -55,16 +56,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_space"
-        android:layout_marginTop="@dimen/default_space"
         android:layout_marginEnd="@dimen/default_space"
         android:fontFamily="sans-serif-medium"
-        android:lines="1"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/genresTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/posterContainer"
-        app:layout_constraintTop_toBottomOf="@id/backdropImageView"
+        app:layout_constraintTop_toTopOf="@id/posterContainer"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="The Social Network" />
 
@@ -73,12 +72,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/small_space"
         android:layout_marginEnd="@dimen/default_space"
         android:layout_marginBottom="@dimen/default_space"
         android:textColor="@android:color/white"
         android:textIsSelectable="true"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/posterContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/posterContainer"
         app:layout_constraintTop_toBottomOf="@id/titleTextView"
@@ -119,12 +118,175 @@
 
     </FrameLayout>
 
+    <View
+        android:id="@+id/metadataTopDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
+        android:layout_marginEnd="@dimen/default_space"
+        android:background="#bdbdbd"
+        app:layout_constraintBottom_toTopOf="@id/releaseContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonsContainer" />
+
+    <LinearLayout
+        android:id="@+id/releaseContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
+        android:layout_marginEnd="@dimen/default_space"
+        android:layout_marginBottom="@dimen/default_space"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/durationContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/metadataTopDivider">
+
+        <TextView
+            android:id="@+id/releaseTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textIsSelectable="true"
+            android:textSize="16sp"
+            tools:text="2019" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/release" />
+
+    </LinearLayout>
+
+    <!--<TextView
+        android:id="@+id/releaseTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
+        android:layout_marginEnd="@dimen/default_space"
+        android:layout_marginBottom="@dimen/default_space"
+        android:drawableTop="@drawable/ic_today_white_24dp"
+        android:drawablePadding="@dimen/tiny_space"
+        android:gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/durationContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonsContainer"
+        tools:text="2018" />-->
+
+    <!--<TextView
+        android:id="@+id/runtimeTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
+        android:layout_marginEnd="@dimen/default_space"
+        android:layout_marginBottom="@dimen/default_space"
+        android:drawableTop="@drawable/ic_access_time_white_24dp"
+        android:drawablePadding="@dimen/tiny_space"
+        android:gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/ratingContainer"
+        app:layout_constraintStart_toEndOf="@id/releaseTextView"
+        app:layout_constraintTop_toBottomOf="@id/buttonsContainer"
+        tools:text="1:23" />-->
+
+    <LinearLayout
+        android:id="@+id/durationContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
+        android:layout_marginEnd="@dimen/default_space"
+        android:layout_marginBottom="@dimen/default_space"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/ratingContainer"
+        app:layout_constraintStart_toEndOf="@id/releaseContainer"
+        app:layout_constraintTop_toBottomOf="@id/metadataTopDivider">
+
+        <TextView
+            android:id="@+id/durationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textIsSelectable="true"
+            android:textSize="16sp"
+            tools:text="1:23" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/duration" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ratingContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
+        android:layout_marginEnd="@dimen/default_space"
+        android:layout_marginBottom="@dimen/default_space"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/durationContainer"
+        app:layout_constraintTop_toBottomOf="@id/metadataTopDivider">
+
+        <TextView
+            android:id="@+id/ratingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textIsSelectable="true"
+            android:textSize="16sp"
+            tools:text="8 / 10" />
+
+        <TextView
+            android:id="@+id/votesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:text="4K votes" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/metadataBottomDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
+        android:layout_marginEnd="@dimen/default_space"
+        android:layout_marginBottom="@dimen/default_space"
+        android:background="#bdbdbd"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/releaseContainer" />
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonsContainer">
+        app:layout_constraintTop_toBottomOf="@id/metadataBottomDivider">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -158,7 +320,7 @@
                 android:textSize="16sp" />
 
             <View
-                android:id="@+id/divider"
+                android:id="@+id/similarMoviesDivider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginStart="@dimen/default_space"
