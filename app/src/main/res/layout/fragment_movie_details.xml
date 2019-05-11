@@ -28,25 +28,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/backdropImageView" />
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/posterImageView"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/posterContainer"
         android:layout_width="100dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/default_space"
-        android:layout_marginTop="100dp"
-        android:contentDescription="@string/movie_poster"
-        android:scaleType="centerCrop"
+        app:cardCornerRadius="@dimen/small_space"
+        app:cardElevation="@dimen/small_space"
+        app:layout_constraintBottom_toBottomOf="@id/genresTextView"
         app:layout_constraintDimensionRatio="H,2:3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/genresTextView"
-        app:riv_corner_radius="@dimen/small_space"
-        tools:src="@drawable/poster_placeholder" />
+        app:riv_corner_radius="@dimen/small_space">
+
+        <ImageView
+            android:id="@+id/posterImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/movie_poster"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/poster_placeholder" />
+
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
         android:layout_marginEnd="@dimen/default_space"
         android:fontFamily="sans-serif-medium"
         android:lines="1"
@@ -54,7 +63,7 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/genresTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/posterImageView"
+        app:layout_constraintStart_toEndOf="@id/posterContainer"
         app:layout_constraintTop_toBottomOf="@id/backdropImageView"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="The Social Network" />
@@ -65,12 +74,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_space"
         android:layout_marginEnd="@dimen/default_space"
+        android:layout_marginBottom="@dimen/default_space"
         android:textColor="@android:color/white"
         android:textIsSelectable="true"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/posterImageView"
+        app:layout_constraintBottom_toBottomOf="@id/posterContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/posterImageView"
+        app:layout_constraintStart_toEndOf="@id/posterContainer"
         app:layout_constraintTop_toBottomOf="@id/titleTextView"
         tools:text="Action, Adventure" />
 
@@ -84,7 +94,7 @@
         android:layout_marginBottom="@dimen/default_space"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/posterImageView">
+        app:layout_constraintTop_toBottomOf="@id/posterContainer">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addToWatchlistButton"

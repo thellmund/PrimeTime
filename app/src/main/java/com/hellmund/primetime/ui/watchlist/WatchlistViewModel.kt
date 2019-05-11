@@ -25,12 +25,14 @@ sealed class Action {
     data class DatabaseLoaded(val data: List<WatchlistMovieViewEntity>) : Action()
     data class Remove(val movie: WatchlistMovieViewEntity) : Action()
     data class Rated(val movie: WatchlistMovieViewEntity, val rating: Int) : Action()
+    data class ToggleNotification(val movie: WatchlistMovieViewEntity) : Action()
 }
 
 sealed class Result {
     data class Data(val data: List<WatchlistMovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
     data class Removed(val movie: WatchlistMovieViewEntity) : Result()
+    data class NotificationToggled(val movie: WatchlistMovieViewEntity) : Result()
 }
 
 class WatchlistViewModel @Inject constructor(
@@ -68,7 +70,16 @@ class WatchlistViewModel @Inject constructor(
             is Action.DatabaseLoaded -> Observable.just(Result.Data(action.data))
             is Action.Remove -> removeMovie(action.movie)
             is Action.Rated -> rateMovie(action.movie, action.rating)
+            is Action.ToggleNotification -> toggleAndStoreNotification(action.movie)
         }
+    }
+
+    private fun toggleAndStoreNotification(movie: WatchlistMovieViewEntity): Observable<Result> {
+        val newMovie = movie.raw.copy(notificationsActivated = movie.raw.notificationsActivated.not())
+        val newViewEntity = movie.copy(notificationsActivated = movie.notificationsActivated.not())
+        return repository
+                .store(newMovie)
+                .andThen(Observable.just(Result.NotificationToggled(newViewEntity) as Result))
     }
 
     private fun fetchMovies(): Observable<Result> {
@@ -106,11 +117,21 @@ class WatchlistViewModel @Inject constructor(
                 val index = viewState.data.indexOf(result.movie)
                 viewState.copy(data = viewState.data.minus(result.movie), deletedIndex = index)
             }
+            is Result.NotificationToggled -> {
+                val index = viewState.data.indexOfFirst { it.id == result.movie.id }
+                val newData = viewState.data.toMutableList()
+                newData[index] = result.movie
+                viewState.copy(data = newData)
+            }
         }
     }
 
     fun remove(movie: WatchlistMovieViewEntity) {
         refreshRelay.accept(Action.Remove(movie))
+    }
+
+    fun toggleNotification(movie: WatchlistMovieViewEntity) {
+        refreshRelay.accept(Action.ToggleNotification(movie))
     }
 
     fun onMovieRated(movie: WatchlistMovieViewEntity, rating: Int) {

@@ -10,6 +10,7 @@ data class WatchlistMovieViewEntity(
         val id: Int,
         val title: String,
         val posterUrl: String,
+        val description: String,
         val hasRuntime: Boolean,
         val formattedRuntime: String,
         val formattedReleaseDate: String,

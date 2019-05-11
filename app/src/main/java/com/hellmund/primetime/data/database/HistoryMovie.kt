@@ -2,7 +2,6 @@ package com.hellmund.primetime.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.suggestions.details.Rating
 import com.hellmund.primetime.ui.watchlist.WatchlistMovieViewEntity
 import org.threeten.bp.LocalDate
@@ -19,10 +18,6 @@ data class HistoryMovie(
     override fun compareTo(other: HistoryMovie): Int = other.timestamp.compareTo(timestamp)
 
     companion object {
-
-        fun fromMovie(movie: Movie, rating: Int): HistoryMovie {
-            return HistoryMovie(movie.id, movie.title, rating, LocalDate.now(), false)
-        }
 
         fun fromRating(rating: Rating): HistoryMovie {
             val movie = rating.movie

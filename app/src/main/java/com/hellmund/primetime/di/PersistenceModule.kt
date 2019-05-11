@@ -1,8 +1,8 @@
 package com.hellmund.primetime.di
 
-import androidx.room.Room
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.room.Room
 import com.hellmund.primetime.data.database.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -20,6 +20,7 @@ class PersistenceModule {
         return Room
                 .databaseBuilder(context, AppDatabase::class.java, "db")
                 .allowMainThreadQueries() // TODO
+                .fallbackToDestructiveMigration()
                 .build()
     }
 

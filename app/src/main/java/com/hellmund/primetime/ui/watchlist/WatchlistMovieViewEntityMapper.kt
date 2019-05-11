@@ -19,6 +19,7 @@ class WatchlistMovieViewEntityMapper @Inject constructor(
                 movie.id,
                 movie.title,
                 "https://image.tmdb.org/t/p/w500${movie.posterURL}",
+                movie.description,
                 movie.runtime > 0,
                 valueFormatter.formatRuntime(movie.runtime),
                 valueFormatter.formatReleaseYear(movie.releaseDate),

@@ -12,6 +12,9 @@ interface HistoryDao {
     @Query("SELECT * FROM history_movies ORDER BY timestamp DESC")
     fun getAll(): Maybe<List<HistoryMovie>>
 
+    @Query("SELECT * FROM history_movies WHERE rating = 1 ORDER BY timestamp DESC")
+    fun getLiked(): Maybe<List<HistoryMovie>>
+
     @Query("SELECT COUNT(*) FROM history_movies WHERE id = :movieId")
     fun count(movieId: Int): Maybe<Int>
 

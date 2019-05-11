@@ -8,24 +8,29 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.transition.TransitionManager
+import androidx.viewpager2.widget.ViewPager2
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.history.HistoryActivity
-import com.hellmund.primetime.ui.watchlist.details.WatchlistMovieFragment
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.showCancelableDialog
 import com.hellmund.primetime.utils.showItemsDialog
 import kotlinx.android.synthetic.main.fragment_watchlist.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListener {
+class WatchlistFragment : Fragment() {
 
     @Inject
     lateinit var viewModelProvider: Provider<WatchlistViewModel>
 
     private val viewModel: WatchlistViewModel by lazyViewModel { viewModelProvider }
+
+    private val adapter: WatchlistAdapter by lazy {
+        WatchlistAdapter(this::onWatchedIt, this::onRemove, this::onNotificationToggle)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +51,7 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
+        setupViewPager()
         viewModel.viewState.observe(this, this::render)
     }
 
@@ -53,38 +59,33 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
         (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.watchlist)
     }
 
+    private fun setupViewPager() {
+        viewPager.adapter = adapter
+        viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+
+        // TODO: Page indicator
+    }
+
     private fun render(viewState: WatchlistViewState) {
-        if (viewState.data.isNotEmpty()) {
-            updateWatchlistAdapter(viewState)
-        }
+        adapter.update(viewState.data)
 
         TransitionManager.beginDelayedTransition(container)
-        content.isVisible = viewState.data.isNotEmpty()
+        viewPager.isVisible = viewState.data.isNotEmpty()
         placeholder.isVisible = viewState.data.isEmpty()
     }
 
-    private fun updateWatchlistAdapter(viewState: WatchlistViewState) {
-        val oldItemCount = viewPager.adapter?.count ?: 0
-        val oldIndex = viewPager.currentItem
-
-        val adapter = WatchlistAdapter(requireFragmentManager(), this, viewState.data)
-        viewPager.adapter = adapter
-        indicator.setViewPager(viewPager)
-
-        viewState.deletedIndex?.let { index ->
-            if (oldIndex == oldItemCount - 1) {
-                viewPager.currentItem = oldIndex - 1
-            } else {
-                viewPager.currentItem = oldIndex
-            }
-        }
+    private fun onNotificationToggle(movie: WatchlistMovieViewEntity) {
+        viewModel.toggleNotification(movie)
     }
 
-    override fun onRemove(movie: WatchlistMovieViewEntity) {
-        viewModel.remove(movie)
+    private fun onRemove(movie: WatchlistMovieViewEntity) {
+        requireContext().showCancelableDialog(
+                messageResId = R.string.remove_from_watchlist_header,
+                positiveResId = R.string.remove,
+                onPositive = { viewModel.remove(movie) })
     }
 
-    override fun onWatchedIt(movie: WatchlistMovieViewEntity) {
+    private fun onWatchedIt(movie: WatchlistMovieViewEntity) {
         val header = getString(R.string.rate_movie, movie.title)
         val options = arrayOf(getString(R.string.like), getString(R.string.dislike))
 
@@ -93,13 +94,9 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
                 items = options,
                 onSelected = { index ->
                     val rating = if (index == 0) Constants.LIKE else Constants.DISLIKE
-                    onMovieRated(movie, rating)
+                    viewModel.onMovieRated(movie, rating)
                 }
         )
-    }
-
-    private fun onMovieRated(movie: WatchlistMovieViewEntity, rating: Int) {
-        viewModel.onMovieRated(movie, rating)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

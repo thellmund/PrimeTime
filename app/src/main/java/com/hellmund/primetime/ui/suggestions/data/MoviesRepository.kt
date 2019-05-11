@@ -41,7 +41,7 @@ class MoviesRepository @Inject constructor(
             filterGenres: List<Genre>? = null
     ): Observable<List<Movie>> {
         val personalized = historyRepository
-                .getAll()
+                .getLiked()
                 .flattenAsObservable { it }
                 .sorted()
                 .take(10)

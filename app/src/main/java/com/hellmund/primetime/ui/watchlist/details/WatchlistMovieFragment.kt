@@ -144,12 +144,10 @@ class WatchlistMovieFragment : Fragment() {
     companion object {
 
         fun newInstance(
-                movie: WatchlistMovieViewEntity,
-                interactionListener: OnInteractionListener
+                movie: WatchlistMovieViewEntity
         ): WatchlistMovieFragment {
             return WatchlistMovieFragment().apply {
                 arguments = bundleOf(KEY_WATCHLIST_MOVIE to movie)
-                listener = interactionListener
             }
         }
 

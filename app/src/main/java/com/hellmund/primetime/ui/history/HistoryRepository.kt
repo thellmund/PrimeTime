@@ -11,13 +11,11 @@ class HistoryRepository @Inject constructor(
         private val database: AppDatabase
 ) {
 
-    fun getAll(): Maybe<List<HistoryMovie>> {
-        return database.historyDao().getAll()
-    }
+    fun getAll(): Maybe<List<HistoryMovie>> = database.historyDao().getAll()
 
-    fun count(movieId: Int): Maybe<Int> {
-        return database.historyDao().count(movieId)
-    }
+    fun getLiked(): Maybe<List<HistoryMovie>> = database.historyDao().getLiked()
+
+    fun count(movieId: Int): Maybe<Int> = database.historyDao().count(movieId)
 
     fun store(vararg historyMovie: HistoryMovie) {
         database.historyDao().store(*historyMovie)
