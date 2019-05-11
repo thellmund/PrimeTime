@@ -9,7 +9,6 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.Transformation
 import kotlinx.android.synthetic.main.list_item_movies.view.*
-import kotlinx.android.synthetic.main.list_item_samples_list.view.posterImageView
 
 class MoviesAdapter(
         private val onClick: (MovieViewEntity) -> Unit,
@@ -71,7 +70,7 @@ class MoviesAdapter(
             ImageLoader
                     .with(context)
                     .load(
-                            url =movie.posterUrl,
+                            url = movie.posterUrl,
                             transformations = transformations,
                             into = posterImageView
                     )

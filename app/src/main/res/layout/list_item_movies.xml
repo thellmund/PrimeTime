@@ -21,8 +21,9 @@
         android:id="@+id/menuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:padding="@dimen/small_space"
+        android:layout_margin="@dimen/tiny_space"
+        android:background="@drawable/background_more_button"
+        android:padding="@dimen/tiny_space"
         android:src="@drawable/ic_more_vert_white_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
