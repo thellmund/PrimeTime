@@ -85,9 +85,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFragment(fragment: Fragment) {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
+        // val currentFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
 
         supportFragmentManager.transaction {
+            setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
             replace(R.id.contentFrame, fragment)
 
             // TODO

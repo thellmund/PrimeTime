@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/activity_margin"
+    android:animateLayoutChanges="true"
     android:background="@drawable/background_search_field"
     android:gravity="center_vertical"
     android:orientation="horizontal">

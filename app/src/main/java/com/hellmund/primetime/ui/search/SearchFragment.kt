@@ -198,12 +198,12 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onResume() {
         super.onResume()
         initToolbar()
-        supportActionBar?.hide()
+        // supportActionBar?.hide()
     }
 
     override fun onPause() {
         super.onPause()
-        supportActionBar?.show()
+        // supportActionBar?.show()
     }
 
     override fun onReselected() {
