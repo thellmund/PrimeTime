@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.settings
+package com.hellmund.primetime.ui.settings.delegates
 
 import androidx.preference.Preference
 import com.hellmund.primetime.data.model.Genre

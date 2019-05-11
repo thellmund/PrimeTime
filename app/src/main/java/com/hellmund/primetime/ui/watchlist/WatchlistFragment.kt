@@ -41,9 +41,7 @@ class WatchlistFragment : Fragment(), WatchlistMovieFragment.OnInteractionListen
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_watchlist, container, false)
-    }
+    ): View = inflater.inflate(R.layout.fragment_watchlist, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

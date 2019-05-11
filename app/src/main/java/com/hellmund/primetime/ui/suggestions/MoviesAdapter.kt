@@ -7,31 +7,35 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.ImageLoader
-import kotlinx.android.synthetic.main.list_item_samples_list.view.*
+import com.hellmund.primetime.utils.Transformation
+import kotlinx.android.synthetic.main.list_item_movies.view.*
+import kotlinx.android.synthetic.main.list_item_samples_list.view.posterImageView
 
-class SuggestionsAdapter2(
+class MoviesAdapter(
         private val onClick: (MovieViewEntity) -> Unit,
-        private val onLongClick: (MovieViewEntity) -> Unit
-) : RecyclerView.Adapter<SuggestionsAdapter2.ViewHolder>() {
+        private val onMenuClick: (MovieViewEntity) -> Unit
+) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     private val items = mutableListOf<MovieViewEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_samples_list, parent, false)
+                .inflate(R.layout.list_item_movies, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position], onClick, onLongClick)
+        holder.bind(items[position], onClick, onMenuClick)
     }
 
     override fun getItemCount(): Int = items.size
 
     fun update(newItems: List<MovieViewEntity>) {
         val diffResult = DiffUtil.calculateDiff(DiffUtilCallback(items, newItems))
+
         items.clear()
         items += newItems
+
         diffResult.dispatchUpdatesTo(this)
     }
 
@@ -61,12 +65,19 @@ class SuggestionsAdapter2(
                 onClick: (MovieViewEntity) -> Unit,
                 onLongClick: (MovieViewEntity) -> Unit
         ) = with(itemView) {
-            ImageLoader.with(context).load(movie.posterUrl, into = posterImageView)
+            val transformations: Array<Transformation> =
+                    arrayOf(Transformation.Placeholder(R.drawable.poster_placeholder))
+
+            ImageLoader
+                    .with(context)
+                    .load(
+                            url =movie.posterUrl,
+                            transformations = transformations,
+                            into = posterImageView
+                    )
+
             setOnClickListener { onClick(movie) }
-            setOnLongClickListener {
-                onLongClick(movie)
-                true
-            }
+            menuButton.setOnClickListener { onLongClick(movie) }
         }
 
     }

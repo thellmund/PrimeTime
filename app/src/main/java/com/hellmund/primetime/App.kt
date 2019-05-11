@@ -3,7 +3,8 @@ package com.hellmund.primetime
 import android.app.Application
 import com.hellmund.primetime.di.AppComponent
 import com.hellmund.primetime.di.DaggerAppComponent
-import com.hellmund.primetime.utils.NotificationUtils
+import com.hellmund.primetime.utils.NotificationUtils.createChannel
+import com.hellmund.primetime.utils.NotificationUtils.scheduleNotifications
 import com.jakewharton.threetenabp.AndroidThreeTen
 import timber.log.Timber
 
@@ -17,8 +18,8 @@ class App : Application() {
         initThreeTen()
         initTimber()
 
-        NotificationUtils.createChannel(this)
-        NotificationUtils.scheduleNotifications(this)
+        createChannel(this)
+        scheduleNotifications(this)
     }
 
     private fun buildComponent() {

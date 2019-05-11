@@ -214,5 +214,6 @@
     <string name="streaming_services">Streaming services</string>
     <string name="available_on_format_string">Available on %s</string>
     <string name="similar_movies">Similar movies</string>
+    <string name="no_recommendations_available">No recommendations available</string>
 
 </resources>

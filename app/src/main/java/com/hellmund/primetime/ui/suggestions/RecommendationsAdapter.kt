@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.Transformation
 import kotlinx.android.synthetic.main.list_item_samples_list.view.*
 
 // TODO: Make this into single MoviesAdapter, used in multiple places
@@ -39,7 +40,17 @@ class RecommendationsAdapter(
                 movie: MovieViewEntity,
                 onClick: (MovieViewEntity) -> Unit
         ) = with(itemView) {
-            ImageLoader.with(context).load(movie.posterUrl, into = posterImageView)
+            val transformations: Array<Transformation> =
+                    arrayOf(Transformation.Placeholder(R.drawable.poster_placeholder))
+
+            ImageLoader
+                    .with(context)
+                    .load(
+                            url =movie.posterUrl,
+                            transformations = transformations,
+                            into = posterImageView
+                    )
+
             setOnClickListener { onClick(movie) }
         }
 

@@ -1,6 +1,7 @@
 package com.hellmund.primetime.di
 
 import android.content.Context
+import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.ui.history.HistoryFragment
 import com.hellmund.primetime.ui.introduction.IntroductionActivity
 import com.hellmund.primetime.ui.search.SearchFragment
@@ -39,6 +40,7 @@ interface AppComponent {
     fun suggestionComponent(): SuggestionComponent.Builder
     fun watchlistMovieComponent(): WatchlistMovieComponent.Builder
 
+    fun inject(genresWorker: GenresPrefetcher.RefreshGenresWorker)
     fun inject(historyFragment: HistoryFragment)
     fun inject(introductionActivity: IntroductionActivity)
     fun inject(notificationPublisher: NotificationPublisher)

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.ApiGenre
+import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
@@ -25,6 +26,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var genresRepository: GenresRepository
 
+    @Inject
+    lateinit var genresPrefetcher: GenresPrefetcher
+
     private val fragmentLifecycleCallback: FragmentLifecycleCallback by lazy {
         FragmentLifecycleCallback(this)
     }
@@ -38,6 +42,8 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallback, false)
+
+        genresPrefetcher.run()
 
         bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
             val fragment = createFragment(menuItem)

@@ -1,8 +1,7 @@
 package com.hellmund.primetime.ui.suggestions.di
 
-import com.hellmund.primetime.ui.suggestions.MovieDetailsFragment
+import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
-import com.hellmund.primetime.ui.suggestions.SuggestionFragment
 import dagger.BindsInstance
 import dagger.Subcomponent
 
@@ -10,7 +9,6 @@ import dagger.Subcomponent
 interface SuggestionComponent {
 
     fun inject(movieDetailsFragment: MovieDetailsFragment)
-    fun inject(suggestionFragment: SuggestionFragment)
 
     @Subcomponent.Builder
     interface Builder {

@@ -32,7 +32,7 @@ class RealStreamingServicesStore @Inject constructor(
 
     override val all: List<StreamingService>
         get() = sharedPrefs
-                .getStringSet(KEY_STREAMING_SERVICES, emptySet())
+                .getStringSet(KEY_STREAMING_SERVICES, emptySet())!!
                 .map { gson.fromJson(it, StreamingService::class.java) }
                 .toList()
                 .sortedBy { it.name.toLowerCase() }

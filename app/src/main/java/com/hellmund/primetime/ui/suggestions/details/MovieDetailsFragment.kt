@@ -1,9 +1,10 @@
-package com.hellmund.primetime.ui.suggestions
+package com.hellmund.primetime.ui.suggestions.details
 
 import android.app.ProgressDialog
 import android.content.Context
-import android.graphics.PorterDuff
+import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,9 +20,13 @@ import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.selectstreamingservices.EqualHorizontalSpacingItemDecoration
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
-import com.hellmund.primetime.utils.*
+import com.hellmund.primetime.ui.suggestions.MovieViewEntity
+import com.hellmund.primetime.ui.suggestions.RecommendationsAdapter
+import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.openUrl
+import com.hellmund.primetime.utils.showLoading
 import kotlinx.android.synthetic.main.fragment_movie_details.*
-import kotlinx.android.synthetic.main.fragment_movie_suggestion.*
 import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
@@ -32,16 +37,16 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     lateinit var imageLoader: ImageLoader
 
     @Inject
-    lateinit var viewModelProvider: Provider<SuggestionsViewModel>
+    lateinit var viewModelProvider: Provider<MovieDetailsViewModel>
 
-    private val viewModel: SuggestionsViewModel by lazyViewModel { viewModelProvider }
+    private val viewModel: MovieDetailsViewModel by lazyViewModel { viewModelProvider }
 
     private val movie: MovieViewEntity by lazy {
         checkNotNull(arguments?.getParcelable<MovieViewEntity>(KEY_MOVIE))
     }
 
     private val recommendationsAdapter: RecommendationsAdapter by lazy {
-        RecommendationsAdapter(this::onRecommendationClicked)
+        RecommendationsAdapter(onClick = this::onRecommendationClicked)
     }
 
     private var progressDialog: ProgressDialog? = null
@@ -76,15 +81,13 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         moreInfoButton.setOnClickListener { viewModel.openImdb() }
 
         addToWatchlistButton.setOnClickListener { viewModel.addToWatchlist() }
-        // TODO rating_button.setOnClickListener { openRatingDialog() }
+        removeFromWatchlistButton.setOnClickListener { viewModel.removeFromWatchlist() }
     }
 
     private fun fillInContent() {
         titleTextView.text = movie.title
         descriptionTextView.text = movie.description
         genresTextView.text = movie.formattedGenres
-        // rating.text = movie.formattedVoteAverage
-        // release.text = movie.releaseYear
 
         recommendationsRecyclerView.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -112,7 +115,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     }
 
     private fun downloadPosters() {
-        imageLoader.load(url = movie.posterUrl, into = posterImageView)
+        imageLoader.load(url = movie.posterUrl, into = posterImageView, onComplete = this::onImageLoaded)
         imageLoader.load(url = movie.backdropUrl, into = backdropImageView)
     }
 
@@ -124,7 +127,6 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
             is ViewModelEvent.ImdbLinkLoaded -> openUrl(event.url)
             is ViewModelEvent.RatingStored ->  onRatingStored()
             is ViewModelEvent.AddedToWatchlist -> onAddedToWatchlist()
-            is ViewModelEvent.ShowRemoveFromWatchlistDialog -> displayRemoveDialog()
             is ViewModelEvent.RemovedFromWatchlist -> onRemovedFromWatchlist()
             is ViewModelEvent.WatchStatus -> updateWatchlistButton(event.watchStatus)
             is ViewModelEvent.StreamingServicesLoaded -> showStreamingServices(event.services)
@@ -140,7 +142,8 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     }
 
     private fun showRecommendations(movies: List<MovieViewEntity>) {
-        progressBar.isVisible = movies.isEmpty()
+        progressBar.isVisible = false
+        noRecommendationsPlaceholder.isVisible = movies.isEmpty()
         recommendationsRecyclerView.isVisible = movies.isNotEmpty()
         recommendationsAdapter.update(movies)
     }
@@ -171,51 +174,26 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         updateWatchlistButton(Movie.WatchStatus.ON_WATCHLIST)
     }
 
-    private fun displayRemoveDialog() {
-        requireContext().showCancelableDialog(
-                messageResId = R.string.remove_from_watchlist_header,
-                positiveResId = R.string.remove,
-                onPositive = { viewModel.removeFromWatchlist() }
-        )
-    }
-
     private fun onRemovedFromWatchlist() {
         updateWatchlistButton(Movie.WatchStatus.NOT_WATCHED)
     }
 
     private fun updateWatchlistButton(watchStatus: Movie.WatchStatus) {
-        setButtonText(watchStatus)
-        setButtonColor(watchStatus)
+        addToWatchlistButton.isVisible = watchStatus != Movie.WatchStatus.ON_WATCHLIST
+        removeFromWatchlistButton.isVisible = watchStatus == Movie.WatchStatus.ON_WATCHLIST
     }
 
-    private fun setButtonText(watchStatus: Movie.WatchStatus) {
-        val textResId = when {
-            watchStatus === Movie.WatchStatus.NOT_WATCHED -> R.string.add_to_watchlist
-            watchStatus === Movie.WatchStatus.ON_WATCHLIST -> R.string.remove_from_watchlist
-            else -> R.string.watched_it
-        }
-        addToWatchlistButton.setText(textResId)
-    }
-
-    private fun setButtonColor(watchStatus: Movie.WatchStatus) {
-        val color = posterPaletteSwatch?.rgb ?: return
-        val finalColor = when (watchStatus) {
-            Movie.WatchStatus.NOT_WATCHED -> color
-            else -> ColorUtils.darken(color)
-        }
-        addToWatchlistButton.background.setColorFilter(finalColor, PorterDuff.Mode.MULTIPLY)
-    }
-
-    private val posterPaletteSwatch: Palette.Swatch?
-        get() {
-            if (background == null || background.drawable == null) {
-                return null
+    private fun onImageLoaded(drawable: Drawable) {
+        val cover = (drawable as BitmapDrawable).bitmap
+        Palette.from(cover).generate { palette ->
+            palette?.let {
+                val color = it.mutedSwatch?.rgb ?: return@let
+                val colorStateList = ColorStateList.valueOf(color)
+                addToWatchlistButton.backgroundTintList = colorStateList
+                removeFromWatchlistButton.strokeColor = colorStateList
             }
-
-            val cover = (posterImageView.drawable as BitmapDrawable).bitmap
-            val palette = Palette.from(cover).generate()
-            return palette.vibrantSwatch
         }
+    }
 
     companion object {
 

@@ -5,44 +5,52 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.search.EqualSpacingGridItemDecoration
+import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.ui.settings.SettingsActivity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
+import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
+import com.hellmund.primetime.ui.suggestions.details.Rating
 import com.hellmund.primetime.utils.OnboardingHelper
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showItemsDialog
-import com.hellmund.primetime.utils.showSingleSelectDialog
+import com.hellmund.primetime.utils.showMultiSelectDialog
 import kotlinx.android.synthetic.main.fragment_main.*
-import org.jetbrains.anko.support.v4.runOnUiThread
 import java.lang.Math.round
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.concurrent.schedule
 
-class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.ViewPagerHost {
+class MainFragment : Fragment(), MainActivity.Reselectable {
 
     @Inject
     lateinit var onboardingHelper: OnboardingHelper
+
+    @Inject
+    lateinit var genresRepository: GenresRepository
 
     @Inject
     lateinit var viewModelProvider: Provider<MainViewModel>
 
     private val viewModel: MainViewModel by lazyViewModel { viewModelProvider }
 
-    private val type: RecommendationsType by lazy {
-        arguments?.getParcelable(KEY_RECOMMENDATIONS_TYPE) as RecommendationsType
-    }
+    private lateinit var type: RecommendationsType
 
-    private val adapter2: SuggestionsAdapter2 by lazy {
-        SuggestionsAdapter2(this::openMovieDetails, this::openRatingDialog)
+    private var pagesLoaded: Int = 0
+    private var isLoadingMore: Boolean = false
+
+    private val adapter: MoviesAdapter by lazy {
+        MoviesAdapter(
+                onClick = this::openMovieDetails,
+                onMenuClick = this::openRatingDialog
+        )
     }
 
     override fun onAttach(context: Context) {
@@ -53,6 +61,8 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        type = checkNotNull(arguments?.getParcelable(KEY_RECOMMENDATIONS_TYPE))
         viewModel.refresh(type)
     }
 
@@ -81,18 +91,38 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     }
 
     private fun setupRecyclerView() {
+        swipeRefreshLayout.isRefreshing = true
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        recyclerView.adapter = adapter2
+        recyclerView.adapter = adapter
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val isAtBottom = recyclerView.canScrollVertically(1).not()
+
+                if (isAtBottom && isLoadingMore.not()) {
+                    viewModel.refresh(type, pagesLoaded + 1)
+                    isLoadingMore = true
+                }
+            }
+        })
 
         val spacing = round(resources.getDimension(R.dimen.default_space))
         recyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
     }
 
     private fun render(viewState: MainViewState) {
-        adapter2.update(viewState.data)
+        type = viewState.recommendationsType
+        pagesLoaded = viewState.pagesLoaded
+        isLoadingMore = false
 
-        progressBar.isVisible = viewState.isLoading
-        recyclerView.isVisible = viewState.isLoading.not()
+        viewState.filtered?.let {
+            adapter.update(it)
+        } ?: adapter.update(viewState.data)
+
+        swipeRefreshLayout.isRefreshing = viewState.isLoading && viewState.pagesLoaded == 1
 
         // TODO Error handling
     }
@@ -120,7 +150,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
     private fun retry() {
         // TODO: Use current RecommendationsType
-        viewModel.refresh(Personalized)
+        viewModel.refresh(Personalized())
     }
 
     private fun setToolbarSubtitle(type: RecommendationsType) {
@@ -139,20 +169,8 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
         startActivity(intent)
     }
 
-    override fun scrollToPrevious() {
-        // suggestions.scrollToPrevious()
-    }
-
-    override fun scrollToNext() {
-        Timer().schedule(350) {
-            runOnUiThread {
-                // suggestions.scrollToNext()
-            }
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (type == Personalized) {
+        if (type is Personalized) {
             inflater.inflate(R.menu.menu_main, menu)
         }
     }
@@ -176,22 +194,29 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
     }
 
     private fun showFilterDialog() {
-        val checked = 0 // TODO
-        requireContext().showSingleSelectDialog(
+        val genres = genresRepository.preferredGenres.blockingFirst()
+        val genreNames = genres
+                .map { it.name }
+                .toTypedArray()
+
+        val checkedItems = when (val type = type) {
+            is Personalized -> {
+                val selectedGenres = type.genres ?: genres
+                genres.map { selectedGenres.contains(it) }.toBooleanArray()
+            }
+            else -> genres.map { true }.toBooleanArray()
+        }
+
+        requireContext().showMultiSelectDialog(
                 titleResId = R.string.filter_recommendations,
-                choices = arrayOf("All", "From my streaming services"),
-                checked = checked,
-                positiveResId = R.string.done,
-                onSelected = { selected ->
-                    if (selected != checked) {
-                        applyStreamingFilter(selected == 1)
-                    }
+                items = genreNames,
+                checkedItems = checkedItems,
+                positiveResId = R.string.filter,
+                onConfirmed = { selected ->
+                    val selectedGenres = genres.filterIndexed { i, _ -> selected.contains(i) }
+                    viewModel.filter(selectedGenres)
                 }
         )
-    }
-
-    private fun applyStreamingFilter(limitToStreamingServices: Boolean) {
-
     }
 
     override fun onReselected() {
@@ -204,9 +229,9 @@ class MainFragment : Fragment(), MainActivity.Reselectable, SuggestionFragment.V
 
         @JvmStatic
         fun newInstance(
-                type: RecommendationsType = Personalized
+                type: RecommendationsType = Personalized()
         ) = MainFragment().apply {
-            arguments = Bundle().apply { putParcelable(KEY_RECOMMENDATIONS_TYPE, type) }
+            arguments = bundleOf(KEY_RECOMMENDATIONS_TYPE to type)
         }
 
     }

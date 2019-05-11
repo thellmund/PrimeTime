@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.settings
+package com.hellmund.primetime.ui.settings.delegates
 
 import android.content.Context
 import androidx.preference.MultiSelectListPreference

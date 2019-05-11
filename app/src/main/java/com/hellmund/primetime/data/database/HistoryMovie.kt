@@ -3,7 +3,7 @@ package com.hellmund.primetime.data.database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.ui.suggestions.Rating
+import com.hellmund.primetime.ui.suggestions.details.Rating
 import com.hellmund.primetime.ui.watchlist.WatchlistMovieViewEntity
 import org.threeten.bp.LocalDate
 

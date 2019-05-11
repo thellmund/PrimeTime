@@ -14,6 +14,10 @@ import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.about.AboutActivity
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingServicesStore
+import com.hellmund.primetime.ui.settings.delegates.GenresDelegate
+import com.hellmund.primetime.ui.settings.delegates.GenresValidator
+import com.hellmund.primetime.ui.settings.delegates.StreamingServicesDelegate
+import com.hellmund.primetime.ui.settings.delegates.ValidationResult
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.openUrl
 import com.hellmund.primetime.utils.showInfoDialog

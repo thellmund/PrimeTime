@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.suggestions
+package com.hellmund.primetime.ui.suggestions.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +7,9 @@ import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
+import com.hellmund.primetime.ui.suggestions.MovieViewEntity
+import com.hellmund.primetime.ui.suggestions.MovieViewEntityMapper
+import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
 import com.hellmund.primetime.utils.plusAssign
@@ -38,7 +41,6 @@ sealed class ViewModelEvent {
     data class RatingStored(val rating: Rating) : ViewModelEvent()
     object AddedToWatchlist : ViewModelEvent()
     object RemovedFromWatchlist : ViewModelEvent()
-    object ShowRemoveFromWatchlistDialog : ViewModelEvent()
     data class WatchStatus(val watchStatus: Movie.WatchStatus) : ViewModelEvent()
     object None : ViewModelEvent()
 }
@@ -48,7 +50,7 @@ sealed class Rating(val movie: MovieViewEntity) {
     class Dislike(movie: MovieViewEntity) : Rating(movie)
 }
 
-class SuggestionsViewModel @Inject constructor(
+class MovieDetailsViewModel @Inject constructor(
         private val repository: MoviesRepository,
         private val historyRepository: HistoryRepository,
         private val watchlistRepository: WatchlistRepository,
@@ -158,7 +160,7 @@ class SuggestionsViewModel @Inject constructor(
                 .flatMapObservable {
                     if (it > 0) {
                         // Already on watchlist
-                        Observable.just(ViewModelEvent.ShowRemoveFromWatchlistDialog)
+                        Observable.just(ViewModelEvent.RemovedFromWatchlist)
                     } else {
                         storeInWatchlist(movie)
                     }
@@ -166,8 +168,9 @@ class SuggestionsViewModel @Inject constructor(
     }
 
     private fun storeInWatchlist(movie: MovieViewEntity): Observable<ViewModelEvent> {
-        return watchlistRepository
-                .store(movie.raw)
+        return repository
+                .fetchMovie(movie.id)
+                .flatMapCompletable { watchlistRepository.store(it) }
                 .subscribeOn(Schedulers.io())
                 .andThen(Observable.just(ViewModelEvent.AddedToWatchlist as ViewModelEvent))
     }

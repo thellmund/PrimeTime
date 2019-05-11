@@ -63,7 +63,7 @@ fun Context.showItemsDialog(
 ): Dialog {
     return AlertDialog.Builder(this)
             .setTitle(title)
-            .setItems(items) { dialog, which -> onSelected?.invoke(which) }
+            .setItems(items) { _, which -> onSelected?.invoke(which) }
             .setCancelable(true)
             .show()
 }
@@ -85,5 +85,26 @@ fun Context.showSingleSelectDialog(
                 onSelected(selected)
             }
             .setCancelable(true)
+            .show()
+}
+
+fun Context.showMultiSelectDialog(
+        @StringRes titleResId: Int,
+        items: Array<String>,
+        checkedItems: BooleanArray,
+        @StringRes positiveResId: Int,
+        onConfirmed: (selected: List<Int>) -> Unit
+) {
+    AlertDialog.Builder(this)
+            .setTitle(titleResId)
+            .setMultiChoiceItems(items, checkedItems) { _, index, isSelected ->
+                checkedItems[index] = isSelected
+            }
+            .setCancelable(true)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(positiveResId) { _, _ ->
+                val selected = (0 until items.size).filterIndexed { i, _ -> checkedItems[i] }
+                onConfirmed(selected)
+            }
             .show()
 }

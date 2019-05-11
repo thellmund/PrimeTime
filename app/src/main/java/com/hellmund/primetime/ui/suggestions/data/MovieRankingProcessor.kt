@@ -36,6 +36,7 @@ class MovieRankingProcessor @Inject constructor(
     ): List<Movie> {
         return movies
                 .asSequence()
+                .distinct()
                 .filter { isKnownMovie(it) }
                 .filter { isReleased(it, type) }
                 .filter { hasEnoughInformation(it) }

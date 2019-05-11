@@ -50,3 +50,5 @@ var ProgressDialog.isVisible: Boolean
 
 val Fragment.supportActionBar: ActionBar?
     get() = (requireActivity() as? AppCompatActivity)?.supportActionBar
+
+fun <T> Set<T>.containsAny(elements: Collection<T>): Boolean = elements.any { contains(it) }

@@ -1,6 +1,7 @@
 package com.hellmund.primetime.ui.selectmovies
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -10,7 +11,7 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.search.EqualSpacingGridItemDecoration
-import com.hellmund.primetime.ui.selectstreamingservices.SelectStreamingServicesActivity
+import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.activity_select_movies.*
 import kotlinx.android.synthetic.main.view_samples_error.*
@@ -30,6 +31,9 @@ class SelectMoviesActivity : AppCompatActivity() {
     private val adapter: SamplesAdapter by lazy {
         SamplesAdapter(viewModel::onItemClick)
     }
+
+    @Inject
+    lateinit var onboardingHelper: OnboardingHelper
 
     @Inject
     lateinit var viewModelProvider: Provider<SelectMoviesViewModel>
@@ -93,7 +97,7 @@ class SelectMoviesActivity : AppCompatActivity() {
 
         if (this.isConnected) {
             saveSelection()
-            openStreamingServicesSelection()
+            openNext()
         } else {
             this.showToast(getString(R.string.not_connected))
         }
@@ -112,9 +116,16 @@ class SelectMoviesActivity : AppCompatActivity() {
         viewModel.store(selected)
     }
 
-    private fun openStreamingServicesSelection() {
-        val intent = SelectStreamingServicesActivity.newIntent(this)
+    private fun openNext() {
+        onboardingHelper.isFirstLaunch = false
+
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        finish()
+
+        // TODO
+        /*val intent = SelectStreamingServicesActivity.newIntent(this)
+        startActivity(intent)*/
     }
 
     companion object {

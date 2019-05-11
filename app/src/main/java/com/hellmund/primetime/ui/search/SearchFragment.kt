@@ -25,7 +25,11 @@ import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.suggestions.*
+import com.hellmund.primetime.ui.suggestions.MainActivity
+import com.hellmund.primetime.ui.suggestions.MainFragment
+import com.hellmund.primetime.ui.suggestions.MovieViewEntity
+import com.hellmund.primetime.ui.suggestions.RecommendationsType
+import com.hellmund.primetime.ui.suggestions.details.Rating
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.supportActionBar
@@ -127,14 +131,13 @@ class SearchFragment : Fragment(), TextWatcher,
         search_box.addTextChangedListener(this)
 
         backButton.setOnClickListener {
-            backButton.isVisible = false
             clearSearchBarContent()
             toggleKeyboard(false)
             toggleSearchResults(false)
         }
 
         search_box.setOnFocusChangeListener { _, hasFocus ->
-            backButton.isVisible = hasFocus || searchResultsContainer.isVisible
+            backButton.isVisible = hasFocus
             if (hasFocus) {
                 searchResultsAdapter.clear()
                 toggleSearchResults(true)
@@ -206,7 +209,12 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onReselected() {
         val current = requireFragmentManager().findFragmentById(R.id.contentFrame)
         if (current is SearchFragment) {
-            toggleKeyboard(true)
+            if (searchResultsContainer.isVisible) {
+                searchResultsContainer.isVisible = false
+                categoriesRecyclerView.isVisible = true
+            } else {
+                toggleKeyboard(true)
+            }
         }
     }
 
@@ -218,37 +226,12 @@ class SearchFragment : Fragment(), TextWatcher,
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
-    /*private fun displayRatingDialog(position: Int) {
-        val result = results_list.adapter.getItem(position) as SearchResult
-        val title = result.title
-
-        val options = arrayOf(
-                getString(R.string.show_more_like_this),
-                getString(R.string.show_less_like_this)
-        )
-
-        AlertDialog.Builder(requireContext())
-                .setTitle(title)
-                .setItems(options) { _, which ->
-                    if (which == 2) {
-                        addToWatchlist(result)
-                    } else {
-                        val rating = if (which == 0) Constants.LIKE else Constants.DISLIKE
-                        addRating(position, rating)
-                    }
-                }
-                .setCancelable(true)
-                .show()
-    }*/
-
     private fun addRating(rating: Rating) {
         val message = when (rating) {
             is Rating.Like -> getString(R.string.will_more_like_this)
             is Rating.Dislike -> getString(R.string.will_less_like_this)
         }
 
-        // val result = results_list.adapter.getItem(position) as SearchResult
-        // History.add(result, rating);
         val historyMovie = HistoryMovie.fromRating(rating)
         viewModel.addToHistory(historyMovie)
 

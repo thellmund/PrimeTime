@@ -1,6 +1,7 @@
 package com.hellmund.primetime.ui.suggestions.data
 
 import com.hellmund.primetime.data.api.ApiService
+import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
@@ -13,6 +14,8 @@ import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+data class MoviesResponse(val results: List<Movie>)
+
 class MoviesRepository @Inject constructor(
         private val apiService: ApiService,
         private val genresRepository: GenresRepository,
@@ -21,17 +24,22 @@ class MoviesRepository @Inject constructor(
 
     private val resultsZipper = ResultsZipper()
 
-    fun fetchRecommendations(type: RecommendationsType): Observable<List<Movie>> {
+    fun fetchRecommendations(
+            type: RecommendationsType,
+            page: Int
+    ): Observable<List<Movie>> {
         return when (type) {
-            is RecommendationsType.Personalized -> fetchPersonalizedRecommendations()
-            is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id)
-            is RecommendationsType.NowPlaying -> fetchNowPlayingRecommendations()
-            is RecommendationsType.Upcoming -> fetchUpcomingRecommendations()
-            is RecommendationsType.ByGenre -> fetchGenreRecommendations(type.genre.id)
+            is RecommendationsType.Personalized -> fetchPersonalizedRecommendations(type.genres)
+            is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id, page)
+            is RecommendationsType.NowPlaying -> fetchNowPlayingRecommendations(page)
+            is RecommendationsType.Upcoming -> fetchUpcomingRecommendations(page)
+            is RecommendationsType.ByGenre -> fetchGenreRecommendations(type.genre.id, page)
         }
     }
 
-    private fun fetchPersonalizedRecommendations(): Observable<List<Movie>> {
+    private fun fetchPersonalizedRecommendations(
+            filterGenres: List<Genre>? = null
+    ): Observable<List<Movie>> {
         val personalized = historyRepository
                 .getAll()
                 .flattenAsObservable { it }
@@ -42,47 +50,60 @@ class MoviesRepository @Inject constructor(
                 .map { it.flatten() }
                 .toObservable()
 
-        val genres = genresRepository
-                .preferredGenres
+        val genres = filterGenres?.let { Observable.just(it) } ?: genresRepository.preferredGenres
+        val byGenre = genres
                 .flatMapIterable { it }
                 .flatMap { fetchGenreRecommendations(it.id) }
 
         val topRated = fetchTopRatedMovies()
 
-        return Observable.zip(personalized, genres, topRated, resultsZipper)
+        return Observable.zip(personalized, byGenre, topRated, resultsZipper)
     }
 
-    private fun fetchMovieBasedRecommendations(movieId: Int): Observable<List<Movie>> {
-        return fetchRecommendations(movieId).subscribeOn(Schedulers.io())
+    private fun fetchMovieBasedRecommendations(
+            movieId: Int,
+            page: Int
+    ): Observable<List<Movie>> {
+        return fetchRecommendations(movieId, page).subscribeOn(Schedulers.io())
     }
 
-    private fun fetchNowPlayingRecommendations(): Observable<List<Movie>> {
+    private fun fetchNowPlayingRecommendations(
+            page: Int
+    ): Observable<List<Movie>> {
         return apiService
-                .nowPlaying()
+                .nowPlaying(page)
                 .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
     }
 
-    private fun fetchUpcomingRecommendations(): Observable<List<Movie>> {
+    private fun fetchUpcomingRecommendations(
+            page: Int
+    ): Observable<List<Movie>> {
         return apiService
-                .upcoming()
+                .upcoming(page)
                 .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
     }
 
-    fun fetchRecommendations(movieId: Int): Observable<List<Movie>> {
+    fun fetchRecommendations(
+            movieId: Int,
+            page: Int = 1
+    ): Observable<List<Movie>> {
         return apiService
-                .recommendations(movieId)
+                .recommendations(movieId, page)
                 .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
     }
 
-    private fun fetchGenreRecommendations(genreId: Int): Observable<List<Movie>> {
+    private fun fetchGenreRecommendations(
+            genreId: Int,
+            page: Int = 1
+    ): Observable<List<Movie>> {
         return apiService
-                .genreRecommendations(genreId)
+                .genreRecommendations(genreId, page)
                 .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
