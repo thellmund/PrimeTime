@@ -1,54 +1,47 @@
 package com.hellmund.primetime.ui.selectmovies
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.hellmund.primetime.R
-import com.hellmund.primetime.utils.ImageLoader
-import com.hellmund.primetime.utils.showToast
-import kotlinx.android.synthetic.main.list_item_samples_list.view.*
+import androidx.recyclerview.widget.RecyclerView
 
 class SamplesAdapter(
         private val onItemClick: (Sample) -> Unit
 ) : RecyclerView.Adapter<SamplesAdapter.ViewHolder>() {
 
-    val items = mutableListOf<Sample>()
+    private val items = mutableListOf<AdapterItem>()
+
+    val selected: List<Sample>
+        get() = items
+                .mapNotNull { it as? AdapterItem.Movie }
+                .map { it.sample }
+                .filter { it.selected }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_samples_list, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position], onItemClick)
+        items[position].bind(holder, onItemClick)
     }
 
     override fun getItemCount(): Int = items.size
 
-    fun update(newItems: List<Sample>) {
+    override fun getItemViewType(position: Int): Int {
+        return items[position].viewType
+    }
+
+    fun update(samples: List<Sample>) {
+        val newItems = if (samples.isNotEmpty()) {
+            samples.map { AdapterItem.Movie(it) } + AdapterItem.Loading
+        } else emptyList()
+
         items.clear()
         items += newItems
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        fun bind(item: Sample, onItemClick: (Sample) -> Unit) = with(itemView) {
-            container.alpha = if (item.selected) 1f else 0.4f
-            ImageLoader.with(context).load(
-                    url = item.fullPosterUrl,
-                    into = posterImageView
-            )
-
-            container.setOnClickListener { onItemClick(item) }
-            container.setOnLongClickListener {
-                context.showToast(item.title)
-                true
-            }
-        }
-
-    }
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 }

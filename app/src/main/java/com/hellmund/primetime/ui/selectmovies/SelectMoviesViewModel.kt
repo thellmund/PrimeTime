@@ -14,8 +14,10 @@ import org.jetbrains.anko.doAsync
 import javax.inject.Inject
 
 data class SelectMoviesViewState(
+        val pages: Int = 1,
         val data: List<Sample> = emptyList(),
         val isLoading: Boolean = false,
+        val isLoadingMore: Boolean = false,
         val error: Throwable? = null
 ) {
     val isError: Boolean
@@ -23,15 +25,16 @@ data class SelectMoviesViewState(
 }
 
 sealed class Action {
-    object Refresh : Action()
+    data class Refresh(val page: Int = 1) : Action()
     data class Selected(val sample: Sample) : Action()
 }
 
 sealed class Result {
     object Loading : Result()
-    data class Data(val data: List<Sample>) : Result()
+    data class Data(val data: List<Sample>, val page: Int) : Result()
     data class Error(val error: Throwable) : Result()
     data class SelectionChanged(val sample: Sample) : Result()
+    object None : Result()
 }
 
 class SelectMoviesViewModel @Inject constructor(
@@ -45,29 +48,34 @@ class SelectMoviesViewModel @Inject constructor(
     private val _viewState = MutableLiveData<SelectMoviesViewState>()
     val viewState: LiveData<SelectMoviesViewState> = _viewState
 
+    private var page: Int = 1
+
     init {
         val initialViewState = SelectMoviesViewState(isLoading = true)
         compositeDisposable += refreshRelay
                 .switchMap(this::processAction)
                 .scan(initialViewState, this::reduceState)
                 .subscribe(this::render)
-        refreshRelay.accept(Action.Refresh)
+        refreshRelay.accept(Action.Refresh())
     }
 
     private fun processAction(action: Action): Observable<Result> {
         return when (action) {
-            is Action.Refresh -> fetchMovies()
+            is Action.Refresh -> fetchMovies(action.page)
             is Action.Selected -> toggleSelection(action.sample)
         }
     }
 
-    private fun fetchMovies(): Observable<Result> {
+    private fun fetchMovies(
+            page: Int
+    ): Observable<Result> {
         return genresRepository.preferredGenres
-                .flatMap { repository.fetch(it) }
+                .flatMap { repository.fetch(it, page) }
                 .subscribeOn(Schedulers.io())
-                .map { Result.Data(it) as Result }
+                .doOnNext { this.page++ }
+                .map { Result.Data(it, page) as Result }
                 .onErrorReturn { Result.Error(it) }
-                .startWith(Result.Loading)
+                .startWith(if (page == 1) Result.Loading else Result.None)
     }
 
     private fun toggleSelection(sample: Sample): Observable<Result> {
@@ -81,7 +89,10 @@ class SelectMoviesViewModel @Inject constructor(
     ): SelectMoviesViewState {
         return when (result) {
             is Result.Loading -> viewState.copy(isLoading = true, error = null)
-            is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
+            is Result.Data -> {
+                val data = if (result.page == 1) result.data else viewState.data + result.data
+                viewState.copy(pages = result.page, data = data, isLoading = false, error = null)
+            }
             is Result.Error -> viewState.copy(isLoading = false, error = result.error)
             is Result.SelectionChanged -> {
                 // TODO Clean up
@@ -91,6 +102,7 @@ class SelectMoviesViewModel @Inject constructor(
                 newItems[index] = result.sample
                 viewState.copy(data = newItems)
             }
+            is Result.None -> viewState
         }
     }
 
@@ -99,7 +111,7 @@ class SelectMoviesViewModel @Inject constructor(
     }
 
     fun refresh() {
-        refreshRelay.accept(Action.Refresh)
+        refreshRelay.accept(Action.Refresh(page))
     }
 
     fun onItemClick(sample: Sample) {

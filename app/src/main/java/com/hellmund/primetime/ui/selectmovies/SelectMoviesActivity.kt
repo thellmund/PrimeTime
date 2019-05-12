@@ -15,7 +15,6 @@ import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.activity_select_movies.*
 import kotlinx.android.synthetic.main.view_samples_error.*
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -40,6 +39,8 @@ class SelectMoviesActivity : AppCompatActivity() {
 
     private val viewModel: SelectMoviesViewModel by lazyViewModel { viewModelProvider }
 
+    private var isLoadingMore: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_movies)
@@ -57,8 +58,14 @@ class SelectMoviesActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         gridView.adapter = adapter
         gridView.itemAnimator = DefaultItemAnimator()
-
         gridView.layoutManager = GridLayoutManager(this, 3)
+
+        gridView.onBottomReached {
+            if (isLoadingMore.not()) {
+                viewModel.refresh()
+                isLoadingMore = true
+            }
+        }
 
         val spacing = Math.round(resources.getDimension(R.dimen.default_space))
         gridView.addItemDecoration(EqualSpacingGridItemDecoration(spacing, 3))
@@ -84,7 +91,7 @@ class SelectMoviesActivity : AppCompatActivity() {
         button.isEnabled = hasSelectedEnough
 
         if (hasSelectedEnough) {
-            button.setText(R.string.next)
+            button.setText(R.string.finish)
         } else {
             button.text = getString(R.string.select_more_format_string, remaining)
         }
@@ -104,15 +111,7 @@ class SelectMoviesActivity : AppCompatActivity() {
     }
 
     private fun saveSelection() {
-        val samples = adapter.items
-        val selected = ArrayList<Sample>()
-
-        for (sample in samples) {
-            if (sample.selected) {
-                selected.add(sample)
-            }
-        }
-
+        val selected = adapter.selected
         viewModel.store(selected)
     }
 

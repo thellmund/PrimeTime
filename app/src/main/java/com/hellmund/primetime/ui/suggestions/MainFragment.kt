@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
@@ -19,10 +18,7 @@ import com.hellmund.primetime.ui.settings.SettingsActivity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.ui.suggestions.details.Rating
-import com.hellmund.primetime.utils.OnboardingHelper
-import com.hellmund.primetime.utils.observe
-import com.hellmund.primetime.utils.showItemsDialog
-import com.hellmund.primetime.utils.showMultiSelectDialog
+import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.lang.Math.round
 import javax.inject.Inject
@@ -87,6 +83,8 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
                 requireContext().startActivity(intent)
             }
             banner.show()
+        } else {
+            banner.dismiss()
         }
     }
 
@@ -97,17 +95,12 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.adapter = adapter
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val isAtBottom = recyclerView.canScrollVertically(1).not()
-
-                if (isAtBottom && isLoadingMore.not()) {
-                    viewModel.refresh(type, pagesLoaded + 1)
-                    isLoadingMore = true
-                }
+        recyclerView.onBottomReached {
+            if (isLoadingMore.not()) {
+                viewModel.refresh(type, pagesLoaded + 1)
+                isLoadingMore = true
             }
-        })
+        }
 
         val spacing = round(resources.getDimension(R.dimen.default_space))
         recyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))

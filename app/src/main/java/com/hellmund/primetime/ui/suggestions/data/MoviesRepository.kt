@@ -41,6 +41,13 @@ class MoviesRepository @Inject constructor(
     private fun fetchPersonalizedRecommendations(
             filterGenres: List<Genre>? = null
     ): Observable<List<Movie>> {
+        // TODO: Fix this workaround
+        // TODO: Add new movies to results
+        val hasAddedGenres = genresRepository.preferredGenres.blockingFirst().isNotEmpty()
+        if (hasAddedGenres.not()) {
+            return fetchTopRatedMovies()
+        }
+
         val personalized = historyRepository
                 .getLiked()
                 .flattenAsObservable { it }
@@ -48,7 +55,9 @@ class MoviesRepository @Inject constructor(
                 .take(10)
                 .flatMap { fetchRecommendations(it.id) }
                 .toList()
-                .map { it.flatten() }
+                .map {
+                    it.flatten()
+                }
                 .toObservable()
 
         val genres = filterGenres?.let { Observable.just(it) } ?: genresRepository.preferredGenres
@@ -107,7 +116,9 @@ class MoviesRepository @Inject constructor(
                 .genreRecommendations(genreId, page)
                 .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
-                .map { it.results }
+                .map {
+                    it.results
+                }
     }
 
     private fun fetchTopRatedMovies(): Observable<List<Movie>> {
@@ -115,7 +126,9 @@ class MoviesRepository @Inject constructor(
                 .topRatedMovies()
                 .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
-                .map { it.results }
+                .map {
+                    it.results
+                }
     }
 
     fun fetchVideo(movie: MovieViewEntity): Observable<String> {

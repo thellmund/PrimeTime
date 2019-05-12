@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -52,3 +53,16 @@ val Fragment.supportActionBar: ActionBar?
     get() = (requireActivity() as? AppCompatActivity)?.supportActionBar
 
 fun <T> Set<T>.containsAny(elements: Collection<T>): Boolean = elements.any { contains(it) }
+
+fun RecyclerView.onBottomReached(block: () -> Unit) {
+    addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val isAtBottom = recyclerView.canScrollVertically(1).not()
+
+            if (isAtBottom) {
+                block()
+            }
+        }
+    })
+}

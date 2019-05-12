@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorAccent"
     android:orientation="vertical">
 
@@ -66,7 +67,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dismiss"
+            android:text="@string/dismiss"
             android:textAllCaps="false"
             android:textColor="@android:color/white" />
 
@@ -75,7 +76,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Get started"
+            android:text="@string/get_started"
             android:textAllCaps="false"
             android:textColor="@android:color/white" />
 

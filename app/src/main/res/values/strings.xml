@@ -226,5 +226,6 @@
     <string name="release">Release</string>
     <string name="no_reviews_available">No reviews available</string>
     <string name="reviews">Reviews</string>
+    <string name="dismiss">Dismiss</string>
 
 </resources>

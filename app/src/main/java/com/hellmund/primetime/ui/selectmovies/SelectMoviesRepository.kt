@@ -15,13 +15,19 @@ class SelectMoviesRepository @Inject constructor(
         private val historyRepository: HistoryRepository
 ) {
 
-    fun fetch(genres: List<Genre>): Observable<List<Sample>> {
+    fun fetch(
+            genres: List<Genre>,
+            page: Int
+    ): Observable<List<Sample>> {
         return Observable
-                .fromCallable { fetchSync(genres) }
+                .fromCallable { fetchSync(genres, page) }
                 .subscribeOn(Schedulers.io())
     }
 
-    private fun fetchSync(genres: List<Genre>): List<Sample> {
+    private fun fetchSync(
+            genres: List<Genre>,
+            page: Int
+    ): List<Sample> {
         val moviesPerGenre = 30 / genres.size
         val currentYear = Calendar.getInstance().get(YEAR)
         val startYear = currentYear - 4
@@ -33,7 +39,7 @@ class SelectMoviesRepository @Inject constructor(
             val movieResults = mutableListOf<Sample>()
             for (year in years) {
                 movieResults += apiService
-                        .discoverMovies(withGenres = genre.id, releaseYear = year)
+                        .discoverMovies(genre = genre.id, releaseYear = year, page = page)
                         .map { it.results }
                         .blockingFirst()
             }
