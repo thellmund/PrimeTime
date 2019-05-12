@@ -64,7 +64,7 @@ class SelectGenresActivity : AppCompatActivity() {
         genres.clear()
         genres += viewState.data
 
-        progressBar.isVisible = viewState.isLoading
+        recommendationsProgressBar.isVisible = viewState.isLoading
         chipGroup.isVisible = viewState.isLoading.not()
 
         showGenres(viewState.data)

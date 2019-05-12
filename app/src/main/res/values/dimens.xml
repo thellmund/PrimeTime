@@ -12,5 +12,6 @@
 
     <dimen name="large_button">64dp</dimen>
 
+    <dimen name="small_icon">24dp</dimen>
     <dimen name="default_icon">48dp</dimen>
 </resources>

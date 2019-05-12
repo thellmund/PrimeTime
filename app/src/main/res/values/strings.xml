@@ -224,5 +224,7 @@
     <string name="thousand_votes_format_string">%dK votes</string>
     <string name="duration">Duration</string>
     <string name="release">Release</string>
+    <string name="no_reviews_available">No reviews available</string>
+    <string name="reviews">Reviews</string>
 
 </resources>

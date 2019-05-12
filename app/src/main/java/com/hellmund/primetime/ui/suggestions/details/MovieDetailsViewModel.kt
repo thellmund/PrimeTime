@@ -22,6 +22,7 @@ import javax.inject.Inject
 sealed class ViewModelAction {
     object LoadStreamingServices : ViewModelAction()
     object LoadRecommendations : ViewModelAction()
+    object LoadReviews : ViewModelAction()
     object LoadAdditionalInformation : ViewModelAction()
     object LoadTrailer : ViewModelAction()
     object OpenImdb : ViewModelAction()
@@ -34,6 +35,7 @@ sealed class ViewModelAction {
 sealed class ViewModelEvent {
     data class StreamingServicesLoaded(val services: List<StreamingService>) : ViewModelEvent()
     data class RecommendationsLoaded(val movies: List<MovieViewEntity>) : ViewModelEvent()
+    data class ReviewsLoaded(val reviews: List<Review>) : ViewModelEvent()
     data class AdditionalInformationLoaded(val movie: MovieViewEntity) : ViewModelEvent()
     object TrailerLoading : ViewModelEvent()
     data class TrailerLoaded(val url: String) : ViewModelEvent()
@@ -76,6 +78,7 @@ class MovieDetailsViewModel @Inject constructor(
         return when (action) {
             is ViewModelAction.LoadStreamingServices -> fetchStreamingServices()
             is ViewModelAction.LoadRecommendations -> fetchRecommendations()
+            is ViewModelAction.LoadReviews -> fetchReviews()
             is ViewModelAction.LoadWatchStatus -> fetchWatchStatus()
             is ViewModelAction.LoadAdditionalInformation -> fetchInformation()
             is ViewModelAction.LoadTrailer -> fetchTrailer()
@@ -95,9 +98,17 @@ class MovieDetailsViewModel @Inject constructor(
     private fun fetchRecommendations(): Observable<ViewModelEvent> {
         return repository
                 .fetchRecommendations(movie.id)
-                .subscribeOn(Schedulers.io())
                 .map(viewEntitiesMapper)
                 .map { ViewModelEvent.RecommendationsLoaded(it) as ViewModelEvent }
+                .onErrorReturnItem(ViewModelEvent.None)
+    }
+
+    private fun fetchReviews(): Observable<ViewModelEvent> {
+        return repository
+                .fetchReviews(movie.id)
+                .map {
+                    ViewModelEvent.ReviewsLoaded(it) as ViewModelEvent
+                }
                 .onErrorReturnItem(ViewModelEvent.None)
     }
 
@@ -130,12 +141,8 @@ class MovieDetailsViewModel @Inject constructor(
         return repository
                 .fetchMovie(movie.id)
                 .map(viewEntityMapper)
-                .doOnNext {
-                    movie = it
-                }
-                .map {
-                    ViewModelEvent.AdditionalInformationLoaded(it)
-                }
+                .doOnNext { movie = it }
+                .map { ViewModelEvent.AdditionalInformationLoaded(it) }
     }
 
     private fun fetchTrailer(): Observable<ViewModelEvent> {
@@ -195,6 +202,10 @@ class MovieDetailsViewModel @Inject constructor(
 
     fun loadRecommendations() {
         actionsRelay.accept(ViewModelAction.LoadRecommendations)
+    }
+
+    fun loadReviews() {
+        actionsRelay.accept(ViewModelAction.LoadReviews)
     }
 
     fun openImdb() {

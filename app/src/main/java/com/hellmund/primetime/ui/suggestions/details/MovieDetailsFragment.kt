@@ -19,6 +19,7 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.selectstreamingservices.EqualHorizontalSpacingItemDecoration
+import com.hellmund.primetime.ui.selectstreamingservices.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsAdapter
@@ -48,6 +49,8 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     private val recommendationsAdapter: RecommendationsAdapter by lazy {
         RecommendationsAdapter(onClick = this::onRecommendationClicked)
     }
+
+    private val reviewsAdapter: ReviewsAdapter by lazy { ReviewsAdapter() }
 
     private var progressDialog: ProgressDialog? = null
 
@@ -94,27 +97,23 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         ratingTextView.text = movie.formattedVoteAverage
         votesTextView.text = movie.formattedVoteCount
 
+        val spacing = round(resources.getDimension(R.dimen.small_space))
+
         recommendationsRecyclerView.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         recommendationsRecyclerView.adapter = recommendationsAdapter
-        recommendationsRecyclerView.setHasFixedSize(true)
-
-        val spacing = round(resources.getDimension(R.dimen.small_space))
         recommendationsRecyclerView.addItemDecoration(EqualHorizontalSpacingItemDecoration(spacing))
 
+        reviewsRecyclerView.adapter = reviewsAdapter
+        reviewsRecyclerView.setHasFixedSize(true)
+        reviewsRecyclerView.addItemDecoration(EqualSpacingItemDecoration(spacing))
+
         if (movie.hasAdditionalInformation.not()) {
-            downloadAdditionalInformation()
+            viewModel.loadAdditionalInformation()
         }
 
-        downloadRecommendations()
-    }
-
-    private fun downloadAdditionalInformation() {
-        viewModel.loadAdditionalInformation()
-    }
-
-    private fun downloadRecommendations() {
         viewModel.loadRecommendations()
+        viewModel.loadReviews()
     }
 
     private fun downloadPosters() {
@@ -134,6 +133,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
             is ViewModelEvent.WatchStatus -> updateWatchlistButton(event.watchStatus)
             is ViewModelEvent.StreamingServicesLoaded -> showStreamingServices(event.services)
             is ViewModelEvent.RecommendationsLoaded -> showRecommendations(event.movies)
+            is ViewModelEvent.ReviewsLoaded -> showReviews(event.reviews)
         }
     }
 
@@ -145,10 +145,17 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     }
 
     private fun showRecommendations(movies: List<MovieViewEntity>) {
-        progressBar.isVisible = false
+        recommendationsProgressBar.isVisible = false
         noRecommendationsPlaceholder.isVisible = movies.isEmpty()
         recommendationsRecyclerView.isVisible = movies.isNotEmpty()
         recommendationsAdapter.update(movies)
+    }
+
+    private fun showReviews(reviews: List<Review>) {
+        reviewsProgressBar.isVisible = false
+        noReviewsPlaceholder.isVisible = reviews.isEmpty()
+        reviewsProgressBar.isVisible = reviews.isNotEmpty()
+        reviewsAdapter.update(reviews)
     }
 
     private fun onRecommendationClicked(movie: MovieViewEntity) {

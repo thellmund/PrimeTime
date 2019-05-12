@@ -106,6 +106,7 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'me.relex:circleindicator:2.1.0'
     implementation 'org.jetbrains.anko:anko:0.10.8'
+    implementation 'ru.noties.markwon:core:3.0.1'
 
     // Testing
     androidTestImplementation 'androidx.annotation:annotation:1.0.2'

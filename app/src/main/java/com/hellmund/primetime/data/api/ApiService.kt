@@ -5,6 +5,7 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.selectmovies.SamplesResponse
 import com.hellmund.primetime.ui.suggestions.VideosResponse
 import com.hellmund.primetime.ui.suggestions.data.MoviesResponse
+import com.hellmund.primetime.ui.suggestions.details.ReviewsResponse
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -59,5 +60,8 @@ interface ApiService {
 
     @GET("movie/popular")
     fun popular(): Observable<MoviesResponse>
+
+    @GET("movie/{movieId}/reviews")
+    fun reviews(@Path("movieId") movieId: Int): Observable<ReviewsResponse>
 
 }

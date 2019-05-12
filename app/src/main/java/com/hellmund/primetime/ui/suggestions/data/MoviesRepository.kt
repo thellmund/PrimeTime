@@ -8,6 +8,7 @@ import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.VideoResolver
+import com.hellmund.primetime.ui.suggestions.details.Review
 import com.hellmund.primetime.utils.ErrorHelper
 import io.reactivex.Observable
 import io.reactivex.functions.Function3
@@ -144,6 +145,14 @@ class MoviesRepository @Inject constructor(
     fun fetchPopularMovies(): Observable<List<Movie>> {
         return apiService
                 .popular()
+                .doOnError(ErrorHelper.logAndIgnore())
+                .subscribeOn(Schedulers.io())
+                .map { it.results }
+    }
+
+    fun fetchReviews(movieId: Int): Observable<List<Review>> {
+        return apiService
+                .reviews(movieId)
                 .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
                 .map { it.results }
