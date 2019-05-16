@@ -1,16 +1,20 @@
 package com.hellmund.primetime.ui.watchlist
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.NotificationUtils
 import com.hellmund.primetime.utils.Transformation
 import kotlinx.android.synthetic.main.list_item_watchlist.view.*
+
+private const val COLLAPSED_LINES = 2
 
 class WatchlistAdapter(
         private val onWatchedIt: (WatchlistMovieViewEntity) -> Unit,
@@ -77,7 +81,8 @@ class WatchlistAdapter(
                             into = posterImageView
                     )
 
-            title.text = movie.title
+            // title.text = movie.title
+            description.text = movie.description
             runtime_text.text = movie.formattedRuntime
 
             val releaseDate = movie.formattedReleaseDate
@@ -91,6 +96,17 @@ class WatchlistAdapter(
             watched_button.setOnClickListener { onWatchedIt(movie) }
             remove_button.setOnClickListener { onRemove(movie) }
             notification_icon.setOnClickListener { onNotificationToggle(movie) }
+
+            infoContainer.setOnClickListener {
+                TransitionManager.beginDelayedTransition(card_view)
+                if (description.maxLines == COLLAPSED_LINES) {
+                    description.maxLines = Int.MAX_VALUE
+                    description.ellipsize = null
+                } else {
+                    description.maxLines = COLLAPSED_LINES
+                    description.ellipsize = TextUtils.TruncateAt.END
+                }
+            }
 
             if (movie.isUnreleased) {
                 setNotificationIcon(movie)

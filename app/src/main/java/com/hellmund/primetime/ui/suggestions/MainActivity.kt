@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity() {
         FragmentLifecycleCallback(this)
     }
 
+    private val currentFragment: Fragment
+        get() = checkNotNull(supportFragmentManager.findFragmentById(R.id.contentFrame))
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -52,10 +55,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         bottomNavigation.setOnNavigationItemReselectedListener {
-            val fragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
-            if (fragment is Reselectable) {
-                fragment.onReselected()
-            }
+            val reselectable = currentFragment as? Reselectable
+            reselectable?.onReselected()
         }
 
         if (savedInstanceState == null) {
@@ -130,10 +131,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack()
-        } else {
-            openHome()
+        val isHome = currentFragment is MainFragment
+        val hasBackStack = supportFragmentManager.backStackEntryCount > 0
+
+        when {
+            hasBackStack -> supportFragmentManager.popBackStack()
+            isHome.not() -> openHome()
+            else -> super.onBackPressed()
         }
     }
 

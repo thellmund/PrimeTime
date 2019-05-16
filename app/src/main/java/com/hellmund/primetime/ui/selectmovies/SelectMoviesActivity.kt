@@ -1,6 +1,5 @@
 package com.hellmund.primetime.ui.selectmovies
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -19,13 +18,6 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class SelectMoviesActivity : AppCompatActivity() {
-
-    private val progressDialog: ProgressDialog by lazy {
-        ProgressDialog(this).apply {
-            setMessage(getString(R.string.downloading_samples))
-            setCancelable(false)
-        }
-    }
 
     private val adapter: SamplesAdapter by lazy {
         SamplesAdapter(viewModel::onItemClick)
@@ -72,8 +64,12 @@ class SelectMoviesActivity : AppCompatActivity() {
     }
 
     private fun render(viewState: SelectMoviesViewState) {
-        progressDialog.isVisible = viewState.isLoading
         adapter.update(viewState.data)
+
+        if (viewState.isLoading.not()) {
+            shimmerLayout.stopShimmer()
+            shimmerLayout.setShimmer(null)
+        }
 
         val selected = viewState.data.filter { it.selected }
         updateNextButton(selected.size)

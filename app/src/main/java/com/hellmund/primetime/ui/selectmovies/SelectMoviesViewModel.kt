@@ -38,7 +38,7 @@ sealed class Result {
 }
 
 class SelectMoviesViewModel @Inject constructor(
-        private val repository: SelectMoviesRepository,
+        private val repository: SamplesRepository,
         private val genresRepository: GenresRepository
 ) : ViewModel() {
 
@@ -131,7 +131,7 @@ class SelectMoviesViewModel @Inject constructor(
     }
 
     class Factory(
-            private val repository: SelectMoviesRepository,
+            private val repository: SamplesRepository,
             private val genresRepository: GenresRepository
     ) : ViewModelProvider.Factory {
 

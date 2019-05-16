@@ -13,7 +13,7 @@ class SamplesAdapter(
 
     val selected: List<Sample>
         get() = items
-                .mapNotNull { it as? AdapterItem.Movie }
+                .mapNotNull { it as? AdapterItem.Movie.Item }
                 .map { it.sample }
                 .filter { it.selected }
 
@@ -34,8 +34,10 @@ class SamplesAdapter(
 
     fun update(samples: List<Sample>) {
         val newItems = if (samples.isNotEmpty()) {
-            samples.map { AdapterItem.Movie(it) } + AdapterItem.Loading
-        } else emptyList()
+            samples.map { AdapterItem.Movie.Item(it) } + AdapterItem.LoadingMore
+        } else {
+            MutableList(25) { AdapterItem.Movie.Empty }
+        }
 
         items.clear()
         items += newItems

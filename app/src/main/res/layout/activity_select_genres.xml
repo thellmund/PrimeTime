@@ -5,16 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:padding="@dimen/default_space"
     tools:context=".ui.selectgenres.SelectGenresActivity">
 
     <TextView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
+        android:layout_marginEnd="@dimen/default_space"
+        android:fontFamily="sans-serif-black"
         android:text="@string/select_genres_header"
         android:textColor="@android:color/white"
-        android:textSize="20sp"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,6 +35,8 @@
         android:id="@+id/chipGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginEnd="@dimen/default_space"
         android:visibility="gone"
         app:chipSpacing="@dimen/small_space"
         app:chipSpacingHorizontal="@dimen/small_space"
@@ -46,6 +51,7 @@
         android:id="@+id/button"
         style="@style/LargeButton"
         android:layout_gravity="bottom"
+        android:layout_margin="@dimen/small_space"
         android:clickable="false"
         android:enabled="false"
         android:text="@string/next"

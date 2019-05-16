@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.list_item_category.view.*
 
 class SearchCategoriesAdapter(
         private val categories: List<String>,
-        private val listener: (String) -> Unit
+        private val onItemClick: (String) -> Unit
 ) : RecyclerView.Adapter<SearchCategoriesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -18,7 +18,7 @@ class SearchCategoriesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(categories[position], listener)
+        holder.bind(categories[position], onItemClick)
     }
 
     override fun getItemCount(): Int = categories.size

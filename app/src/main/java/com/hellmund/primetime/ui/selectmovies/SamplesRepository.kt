@@ -6,11 +6,10 @@ import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import java.util.*
-import java.util.Calendar.YEAR
+import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
-class SelectMoviesRepository @Inject constructor(
+class SamplesRepository @Inject constructor(
         private val apiService: ApiService,
         private val historyRepository: HistoryRepository
 ) {
@@ -29,9 +28,9 @@ class SelectMoviesRepository @Inject constructor(
             page: Int
     ): List<Sample> {
         val moviesPerGenre = 30 / genres.size
-        val currentYear = Calendar.getInstance().get(YEAR)
-        val startYear = currentYear - 4
-        val years = startYear..currentYear
+        val endYear = LocalDate.now().minusYears(1).year
+        val startYear = endYear - 1
+        val years = startYear..endYear
 
         val results = mutableListOf<List<Sample>>()
 
