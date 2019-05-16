@@ -15,6 +15,7 @@ import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.Constants.SEARCH_INTENT
 import com.hellmund.primetime.utils.Constants.WATCHLIST_INTENT
+import com.hellmund.primetime.utils.backStack
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_toolbar.*
 import javax.inject.Inject
@@ -86,16 +87,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFragment(fragment: Fragment) {
-        // val currentFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
+        val backStack = supportFragmentManager.backStack
+
+        val mainFragmentName = MainFragment::class.java.simpleName
+        val isMainInBackStack = backStack.lastOrNull()?.name == mainFragmentName
+
+        if (fragment is MainFragment && isMainInBackStack) {
+            supportFragmentManager.popBackStack()
+            return
+        }
 
         supportFragmentManager.transaction {
             setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
             replace(R.id.contentFrame, fragment)
 
-            // TODO
-            /*if (currentFragment is MainFragment) {
-                addToBackStack(null)
-            }*/
+            if (currentFragment is MainFragment && backStack.isEmpty()) {
+                addToBackStack(currentFragment.javaClass.simpleName)
+            }
         }
     }
 

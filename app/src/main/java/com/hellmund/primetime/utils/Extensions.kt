@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -66,3 +67,8 @@ fun RecyclerView.onBottomReached(block: () -> Unit) {
         }
     })
 }
+
+val FragmentManager.backStack: List<FragmentManager.BackStackEntry>
+    get() = (0 until backStackEntryCount).map {
+        getBackStackEntryAt(it)
+    }
