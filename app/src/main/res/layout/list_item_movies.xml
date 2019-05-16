@@ -11,6 +11,7 @@
         android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
+        android:src="@drawable/poster_placeholder"
         app:layout_constraintDimensionRatio="H,2:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

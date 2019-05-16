@@ -90,7 +90,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun setupRecyclerView() {
-        swipeRefreshLayout.isRefreshing = true
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
 
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -117,7 +116,10 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
             adapter.update(it)
         } ?: adapter.update(viewState.data)
 
-        swipeRefreshLayout.isRefreshing = viewState.isLoading && viewState.pagesLoaded == 1
+        if (viewState.isLoading.not()) {
+            shimmerLayout.stopShimmer()
+            shimmerLayout.setShimmer(null)
+        }
 
         // TODO Error handling
     }

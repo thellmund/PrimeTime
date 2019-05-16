@@ -3,55 +3,8 @@ package com.hellmund.primetime.ui.suggestions
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.hellmund.primetime.R
-import com.hellmund.primetime.utils.ImageLoader
-import com.hellmund.primetime.utils.Transformation
-import kotlinx.android.synthetic.main.list_item_movies.view.*
-
-sealed class AdapterItem(@LayoutRes val viewType: Int) {
-
-    abstract fun bind(
-            holder: MoviesAdapter.ViewHolder,
-            onClick: (MovieViewEntity) -> Unit,
-            onLongClick: (MovieViewEntity) -> Unit
-    )
-
-    data class Movie(val movie: MovieViewEntity) : AdapterItem(R.layout.list_item_movies) {
-
-        override fun bind(
-                holder: MoviesAdapter.ViewHolder,
-                onClick: (MovieViewEntity) -> Unit,
-                onLongClick: (MovieViewEntity) -> Unit
-        ) = with(holder.itemView) {
-            val transformations: Array<Transformation> =
-                    arrayOf(Transformation.Placeholder(R.drawable.poster_placeholder))
-
-            ImageLoader
-                    .with(context)
-                    .load(
-                            url = movie.posterUrl,
-                            transformations = transformations,
-                            into = posterImageView
-                    )
-
-            setOnClickListener { onClick(movie) }
-            menuButton.setOnClickListener { onLongClick(movie) }
-        }
-
-    }
-
-    object Loading : AdapterItem(R.layout.list_item_load_more) {
-        override fun bind(
-                holder: MoviesAdapter.ViewHolder,
-                onClick: (MovieViewEntity) -> Unit,
-                onLongClick: (MovieViewEntity) -> Unit
-        ) = Unit
-    }
-
-}
 
 class MoviesAdapter(
         private val onClick: (MovieViewEntity) -> Unit,
@@ -77,8 +30,10 @@ class MoviesAdapter(
 
     fun update(movies: List<MovieViewEntity>) {
         val newItems = if (movies.isNotEmpty()) {
-            movies.map { AdapterItem.Movie(it) } + AdapterItem.Loading
-        } else emptyList()
+            movies.map { AdapterItem.Movie.Item(it) } + AdapterItem.LoadMore
+        } else {
+            MutableList(25) { AdapterItem.Movie.Empty }
+        }
 
         val diffResult = DiffUtil.calculateDiff(DiffUtilCallback(items, newItems))
 
@@ -102,10 +57,11 @@ class MoviesAdapter(
             val newItem = newItems[newItemPosition]
 
             return when {
-                oldItem is AdapterItem.Movie && newItem is AdapterItem.Movie -> {
+                oldItem is AdapterItem.Movie.Item && newItem is AdapterItem.Movie.Item -> {
                     oldItem.movie.id == newItem.movie.id
                 }
-                oldItem is AdapterItem.Loading && newItem is AdapterItem.Loading -> true
+                oldItem is AdapterItem.Movie.Empty && newItem is AdapterItem.Movie.Empty -> true
+                oldItem is AdapterItem.LoadMore && newItem is AdapterItem.LoadMore -> true
                 else -> false
             }
         }
@@ -115,10 +71,11 @@ class MoviesAdapter(
             val newItem = newItems[newItemPosition]
 
             return when {
-                oldItem is AdapterItem.Movie && newItem is AdapterItem.Movie -> {
+                oldItem is AdapterItem.Movie.Item && newItem is AdapterItem.Movie.Item -> {
                     oldItem.movie == newItem.movie
                 }
-                oldItem is AdapterItem.Loading && newItem is AdapterItem.Loading -> true
+                oldItem is AdapterItem.Movie.Empty && newItem is AdapterItem.Movie.Empty -> true
+                oldItem is AdapterItem.LoadMore && newItem is AdapterItem.LoadMore -> true
                 else -> false
             }
         }
