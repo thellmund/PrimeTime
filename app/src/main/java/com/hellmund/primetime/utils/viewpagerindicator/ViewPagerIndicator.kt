@@ -41,6 +41,10 @@ class ViewPagerIndicator @JvmOverloads constructor(
         val viewPager = _viewPager ?: return
         val count = viewPager.adapter?.itemCount ?: return
 
+        if (count <= 1) {
+            return
+        }
+
         if (currentPosition >= count) {
             currentPosition = count - 1
             return
