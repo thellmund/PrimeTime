@@ -7,7 +7,6 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.transition.TransitionManager
 import androidx.viewpager2.widget.ViewPager2
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
@@ -69,9 +68,7 @@ class WatchlistFragment : Fragment() {
 
     private fun render(viewState: WatchlistViewState) {
         adapter.update(viewState.data)
-
-        TransitionManager.beginDelayedTransition(container)
-        viewPager.isVisible = viewState.data.isNotEmpty()
+        content.isVisible = viewState.data.isNotEmpty()
         placeholder.isVisible = viewState.data.isEmpty()
     }
 

@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/activity_margin">
+    android:paddingStart="@dimen/default_space"
+    android:paddingTop="@dimen/default_space"
+    android:paddingEnd="@dimen/default_space"
+    android:paddingBottom="@dimen/small_space">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
@@ -69,12 +72,12 @@
                     <TextView
                         android:id="@+id/description"
                         android:layout_width="match_parent"
-                        android:lineSpacingMultiplier="1.15"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/small_space"
                         android:layout_marginTop="@dimen/small_space"
                         android:layout_marginEnd="@dimen/small_space"
                         android:ellipsize="end"
+                        android:lineSpacingMultiplier="1.15"
                         android:maxLines="2"
                         android:textColor="@android:color/white"
                         android:textSize="15sp"

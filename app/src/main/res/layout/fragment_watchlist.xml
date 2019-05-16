@@ -8,6 +8,7 @@
     tools:context=".ui.watchlist.WatchlistFragment">
 
     <LinearLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -21,7 +22,8 @@
         <com.hellmund.primetime.utils.viewpagerindicator.ViewPagerIndicator
             android:id="@+id/indicator"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/large_space" />
+            android:layout_height="@dimen/default_space"
+            android:layout_marginBottom="@dimen/small_space" />
 
     </LinearLayout>
 
