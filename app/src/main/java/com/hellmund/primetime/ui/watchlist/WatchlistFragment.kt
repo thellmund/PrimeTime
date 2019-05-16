@@ -62,6 +62,7 @@ class WatchlistFragment : Fragment() {
     private fun setupViewPager() {
         viewPager.adapter = adapter
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        indicator.setViewPager(viewPager)
 
         // TODO: Page indicator
     }

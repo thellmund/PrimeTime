@@ -6,12 +6,6 @@
     android:background="@color/adapterBackground"
     tools:context=".ui.suggestions.MainFragment">
 
-    <!--<ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />-->
-
     <LinearLayout
         android:id="@+id/contentContainer"
         android:layout_width="match_parent"

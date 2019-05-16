@@ -106,13 +106,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openSearch(extra: String? = null) {
-        val type = extra?.let { createRecommendationsTypefromIntent(it) }
+        val type = extra?.let { createRecommendationsTypeFromIntent(it) }
         val fragment = SearchFragment.newInstance(type)
         showFragment(fragment)
         bottomNavigation.selectedItemId = R.id.search
     }
 
-    private fun createRecommendationsTypefromIntent(intent: String): RecommendationsType {
+    private fun createRecommendationsTypeFromIntent(intent: String): RecommendationsType {
         return when (intent) {
             Constants.NOW_PLAYING_INTENT -> RecommendationsType.NowPlaying
             Constants.UPCOMING_INTENT -> RecommendationsType.Upcoming
