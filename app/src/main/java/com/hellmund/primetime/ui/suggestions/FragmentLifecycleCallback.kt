@@ -18,7 +18,7 @@ class FragmentLifecycleCallback(
     }
 
     private val defaultToolbarColor: Int by lazy {
-        ContextCompat.getColor(activity, R.color.colorPrimary)
+        ContextCompat.getColor(activity, R.color.toolbar)
     }
 
     private val toolbar: Toolbar by lazy {
