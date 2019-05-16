@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/background_category_list_item"
-    android:foreground="?attr/selectableItemBackground">
+    android:background="@drawable/category_ripple">
 
     <TextView
         android:id="@+id/categoryName"
@@ -14,6 +13,7 @@
         android:minHeight="?attr/listPreferredItemHeight"
         android:paddingStart="@dimen/activity_margin"
         android:paddingEnd="@dimen/activity_margin"
+        android:fontFamily="sans-serif-medium"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/white"
         tools:text="Lorem ipsum" />

@@ -95,8 +95,13 @@ class SearchFragment : Fragment(), TextWatcher,
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        initToolbar()
+    }
+
     private fun initToolbar() {
-        supportActionBar?.title = null // getString(R.string.search)
+        supportActionBar?.title = null
     }
 
     private fun render(viewState: SearchViewState) {
@@ -200,17 +205,6 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun initSearchResultsRecyclerView() {
         results_list.adapter = searchResultsAdapter
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initToolbar()
-        // supportActionBar?.hide()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // supportActionBar?.show()
     }
 
     override fun onReselected() {
