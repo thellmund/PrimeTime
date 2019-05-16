@@ -96,7 +96,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun initToolbar() {
-        supportActionBar?.title = getString(R.string.search)
+        supportActionBar?.title = null // getString(R.string.search)
     }
 
     private fun render(viewState: SearchViewState) {
@@ -138,6 +138,13 @@ class SearchFragment : Fragment(), TextWatcher,
 
         search_box.setOnFocusChangeListener { _, hasFocus ->
             backButton.isVisible = hasFocus
+
+            if (hasFocus) {
+                supportActionBar?.hide()
+            } else {
+                supportActionBar?.show()
+            }
+
             if (hasFocus) {
                 searchResultsAdapter.clear()
                 toggleSearchResults(true)
@@ -265,33 +272,6 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun addToWatchlist(movie: MovieViewEntity) {
         viewModel.addToWatchlist(movie)
-
-        /*val progressDialog = ProgressDialog(requireContext())
-        progressDialog.setMessage("Adding movie to watchlist ...")
-        progressDialog.show()
-
-        requireActivity().supportLoaderManager
-                .initLoader(1, null, object : LoaderManager.LoaderCallbacks<Array<Long>> {
-            override fun onCreateLoader(id: Int, args: Bundle?): Loader<Array<Long>> {
-                return DownloadRuntimeReleaseLoader(requireContext(), searchResult.id)
-            }
-
-            override fun onLoadFinished(loader: Loader<Array<Long>>, results: Array<Long>) {
-                if (results[1] != null) {
-                    val releaseDate = Date(results[1])
-                    searchResult.releaseDate = releaseDate
-                }
-
-                if (results[0] != null) {
-                    val runtime = results[0].toInt()
-                    searchResult.runtime = runtime
-                    progressDialog.dismiss()
-                    UiUtils.showToast(requireContext(), R.string.added_to_watchlist)
-                }
-            }
-
-            override fun onLoaderReset(loader: Loader<Array<Long>>) {}
-        })*/
     }
 
     private fun showSimilarMovies(position: Int) {
@@ -348,18 +328,6 @@ class SearchFragment : Fragment(), TextWatcher,
                 .setCancelable(true)
                 .show()
     }
-
-    /*private fun toggleViews(state: Int) {
-        results_list.visibility = View.GONE
-        placeholder_container.visibility = View.GONE
-        loading_container.visibility = View.GONE
-
-        when (state) {
-            DISPLAY_LIST -> results_list.visibility = View.VISIBLE
-            DISPLAY_LOADING -> loading_container.visibility = View.VISIBLE
-            DISPLAY_EMPTY -> placeholder_container.visibility = View.VISIBLE
-        }
-    }*/
 
     private fun toggleKeyboard(show: Boolean) {
         val inputMethodManager = requireContext().inputMethodManager
