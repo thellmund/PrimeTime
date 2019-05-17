@@ -1,5 +1,6 @@
 package com.hellmund.primetime.utils
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,6 +14,7 @@ class NotificationPublisher : BroadcastReceiver() {
     @Inject
     lateinit var watchlistRepository: WatchlistRepository
 
+    @SuppressLint("CheckResult")
     override fun onReceive(context: Context, intent: Intent) {
         context.app.appComponent.inject(this)
 
@@ -20,13 +22,11 @@ class NotificationPublisher : BroadcastReceiver() {
             return
         }
 
-        val releases = watchlistRepository.getReleases().blockingGet()
-        if (releases.isEmpty()) {
-            return
-        }
-
-        val notification = NotificationUtils.buildNotification(context, releases)
-        context.notificationManager.notify(0, notification)
+        watchlistRepository
+                .getReleases()
+                .filter { it.isNotEmpty() }
+                .map { NotificationUtils.buildNotification(context, it) }
+                .subscribe { context.notificationManager.notify(0, it) }
     }
 
 }

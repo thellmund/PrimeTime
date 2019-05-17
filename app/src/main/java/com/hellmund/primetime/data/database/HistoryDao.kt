@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import io.reactivex.Completable
 import io.reactivex.Maybe
 
 @Dao
@@ -19,9 +20,9 @@ interface HistoryDao {
     fun count(movieId: Int): Maybe<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun store(vararg movie: HistoryMovie)
+    fun store(vararg movie: HistoryMovie): Completable
 
     @Query("DELETE FROM history_movies WHERE id = :id")
-    fun delete(id: Int)
+    fun delete(id: Int): Completable
 
 }

@@ -92,11 +92,8 @@ class MainViewModel @Inject constructor(
 
     private fun storeRating(rating: Rating): Observable<Result> {
         val historyMovie = HistoryMovie.fromRating(rating)
-        return Completable
-                .fromCallable {
-                    historyRepository.store(historyMovie)
-                    Completable.complete()
-                }
+        return historyRepository
+                .store(historyMovie)
                 .andThen(Observable.just(Result.RatingStored(rating.movie) as Result))
     }
 

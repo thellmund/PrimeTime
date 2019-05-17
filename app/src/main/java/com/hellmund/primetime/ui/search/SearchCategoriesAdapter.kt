@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_item_category.view.*
 
 class SearchCategoriesAdapter(
-        private val categories: List<String>,
         private val onItemClick: (String) -> Unit
 ) : RecyclerView.Adapter<SearchCategoriesAdapter.ViewHolder>() {
+
+    private val items = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -18,10 +19,16 @@ class SearchCategoriesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(categories[position], onItemClick)
+        holder.bind(items[position], onItemClick)
     }
 
-    override fun getItemCount(): Int = categories.size
+    override fun getItemCount(): Int = items.size
+
+    fun update(newItems: List<String>) {
+        items.clear()
+        items += newItems
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

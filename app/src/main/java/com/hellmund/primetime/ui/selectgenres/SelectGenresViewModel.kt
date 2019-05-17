@@ -10,23 +10,25 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.jetbrains.anko.doAsync
 import javax.inject.Inject
 
 data class SelectGenresViewState(
         val data: List<Genre> = emptyList(),
         val isLoading: Boolean = false,
-        val error: Throwable? = null
+        val error: Throwable? = null,
+        val isFinished: Boolean = false
 )
 
 sealed class Action {
     object Refresh : Action()
+    data class Store(val genres: List<Genre>) : Action()
 }
 
 sealed class Result {
     object Loading : Result()
     data class Data(val data: List<Genre>) : Result()
     data class Error(val error: Throwable) : Result()
+    object Finish : Result()
 }
 
 class SelectGenresViewModel @Inject constructor(
@@ -50,17 +52,23 @@ class SelectGenresViewModel @Inject constructor(
 
     private fun processAction(action: Action): Observable<Result> {
         return when (action) {
-            Action.Refresh -> fetchMovies()
+            is Action.Refresh -> fetchMovies()
+            is Action.Store -> storeGenres(action.genres)
         }
     }
 
     private fun fetchMovies(): Observable<Result> {
         return repository.fetchGenres()
                 .subscribeOn(Schedulers.io())
-
                 .map { Result.Data(it) as Result }
                 .onErrorReturn { Result.Error(it) }
                 .startWith(Result.Loading)
+    }
+
+    private fun storeGenres(genres: List<Genre>): Observable<Result> {
+        return repository
+                .storeGenres(genres)
+                .andThen(Observable.just(Result.Finish as Result))
     }
 
     private fun reduceState(
@@ -68,9 +76,10 @@ class SelectGenresViewModel @Inject constructor(
             result: Result
     ): SelectGenresViewState {
         return when (result) {
-            Result.Loading -> viewState.copy(isLoading = true, error = null)
+            is Result.Loading -> viewState.copy(isLoading = true, error = null)
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
             is Result.Error -> viewState.copy(isLoading = false, error = result.error)
+            is Result.Finish -> viewState.copy(isFinished = true)
         }
     }
 
@@ -79,9 +88,7 @@ class SelectGenresViewModel @Inject constructor(
     }
 
     fun store(genres: List<Genre>) {
-        doAsync {
-            repository.storeGenres(genres)
-        }
+        refreshRelay.accept(Action.Store(genres))
     }
 
     override fun onCleared() {

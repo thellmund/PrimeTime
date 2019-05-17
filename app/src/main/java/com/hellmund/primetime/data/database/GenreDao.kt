@@ -2,6 +2,7 @@ package com.hellmund.primetime.data.database
 
 import androidx.room.*
 import com.hellmund.primetime.data.model.Genre
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 
@@ -24,9 +25,6 @@ interface GenreDao {
     fun getGenre(name: String): Maybe<Genre>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun store(vararg genre: Genre)
-
-    @Delete
-    fun delete(genre: Genre)
+    fun store(vararg genre: Genre): Completable
 
 }

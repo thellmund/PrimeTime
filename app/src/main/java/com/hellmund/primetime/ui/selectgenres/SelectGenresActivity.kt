@@ -35,15 +35,9 @@ class SelectGenresActivity : AppCompatActivity() {
         container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         updateNextButton()
 
-        button.setOnClickListener {
-            saveGenres()
-            openMoviesSelection()
-        }
+        button.setOnClickListener { saveGenres() }
 
         viewModel.viewState.observe(this, this::render)
-
-        // TODO
-        // When selecting the first two genres, slide in the next button from the bottom
     }
 
     private fun updateNextButton(count: Int = 0) {
@@ -61,6 +55,11 @@ class SelectGenresActivity : AppCompatActivity() {
     }
 
     private fun render(viewState: SelectGenresViewState) {
+        if (viewState.isFinished) {
+            openMoviesSelection()
+            return
+        }
+
         genres.clear()
         genres += viewState.data
 

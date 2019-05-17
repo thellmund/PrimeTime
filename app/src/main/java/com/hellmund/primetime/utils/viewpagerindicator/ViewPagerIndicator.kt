@@ -74,7 +74,5 @@ class ViewPagerIndicator @JvmOverloads constructor(
         _viewPager?.registerOnPageChangeCallback(callback)
         invalidate()
     }
-
-
-
+    
 }

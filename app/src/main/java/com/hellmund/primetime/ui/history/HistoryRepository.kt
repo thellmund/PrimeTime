@@ -17,13 +17,13 @@ class HistoryRepository @Inject constructor(
 
     fun count(movieId: Int): Maybe<Int> = database.historyDao().count(movieId)
 
-    fun store(vararg historyMovie: HistoryMovie) {
-        database.historyDao().store(*historyMovie)
+    fun store(vararg historyMovie: HistoryMovie): Completable {
+        return database.historyDao().store(*historyMovie)
     }
 
     fun remove(movieId: Int): Completable {
-        return Completable
-                .fromCallable { database.historyDao().delete(movieId) }
+        return database.historyDao()
+                .delete(movieId)
                 .subscribeOn(Schedulers.io())
     }
 

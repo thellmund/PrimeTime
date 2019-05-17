@@ -7,7 +7,6 @@ import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -99,10 +98,7 @@ class WatchlistViewModel @Inject constructor(
     private fun rateMovie(movie: WatchlistMovieViewEntity, rating: Int): Observable<Result> {
         val historyMovie = HistoryMovie.fromWatchlistMovie(movie, rating)
         return repository.remove(movie.id)
-                .andThen {
-                    historyRepository.store(historyMovie)
-                    Completable.complete()
-                }
+                .andThen(historyRepository.store(historyMovie))
                 .andThen(Observable.just(Result.Removed(movie) as Result))
     }
 

@@ -129,7 +129,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun initRateAppPref() {
         val ratePrimeTime = requirePreference<Preference>(Constants.KEY_PLAY_STORE)
 
-        ratePrimeTime.setOnPreferenceClickListener { preference ->
+        ratePrimeTime.setOnPreferenceClickListener {
             openPlayStore()
             true
         }
@@ -167,6 +167,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         } catch (e: PackageManager.NameNotFoundException) {
             null
         }
+    }
+
+    override fun onDestroy() {
+        genresValidator.cancel()
+        super.onDestroy()
     }
 
     companion object {

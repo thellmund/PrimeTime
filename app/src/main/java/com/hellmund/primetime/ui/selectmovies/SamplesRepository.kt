@@ -4,6 +4,7 @@ import com.hellmund.primetime.data.api.ApiService
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import org.threeten.bp.LocalDate
@@ -51,8 +52,10 @@ class SamplesRepository @Inject constructor(
                 .toList()
     }
 
-    fun store(movies: List<HistoryMovie>) {
-        historyRepository.store(*movies.toTypedArray())
+    fun store(movies: List<HistoryMovie>): Completable {
+        return historyRepository
+                .store(*movies.toTypedArray())
+                .subscribeOn(Schedulers.io())
     }
 
 }

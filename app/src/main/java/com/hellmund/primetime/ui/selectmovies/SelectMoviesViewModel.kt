@@ -10,7 +10,6 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.jetbrains.anko.doAsync
 import javax.inject.Inject
 
 data class SelectMoviesViewState(
@@ -18,7 +17,8 @@ data class SelectMoviesViewState(
         val data: List<Sample> = emptyList(),
         val isLoading: Boolean = false,
         val isLoadingMore: Boolean = false,
-        val error: Throwable? = null
+        val error: Throwable? = null,
+        val isFinished: Boolean = false
 ) {
     val isError: Boolean
         get() = error != null
@@ -27,6 +27,7 @@ data class SelectMoviesViewState(
 sealed class Action {
     data class Refresh(val page: Int = 1) : Action()
     data class Selected(val sample: Sample) : Action()
+    data class Store(val samples: List<Sample>) : Action()
 }
 
 sealed class Result {
@@ -34,6 +35,7 @@ sealed class Result {
     data class Data(val data: List<Sample>, val page: Int) : Result()
     data class Error(val error: Throwable) : Result()
     data class SelectionChanged(val sample: Sample) : Result()
+    object Finished : Result()
     object None : Result()
 }
 
@@ -63,6 +65,7 @@ class SelectMoviesViewModel @Inject constructor(
         return when (action) {
             is Action.Refresh -> fetchMovies(action.page)
             is Action.Selected -> toggleSelection(action.sample)
+            is Action.Store -> storeSelection(action.samples)
         }
     }
 
@@ -81,6 +84,13 @@ class SelectMoviesViewModel @Inject constructor(
     private fun toggleSelection(sample: Sample): Observable<Result> {
         val newSample = sample.copy(selected = sample.selected.not())
         return Observable.just(Result.SelectionChanged(newSample))
+    }
+
+    private fun storeSelection(samples: List<Sample>): Observable<Result> {
+        return Observable
+                .fromCallable { samples.map { it.toHistoryMovie() } }
+                .flatMapCompletable { repository.store(it) }
+                .andThen(Observable.just(Result.Finished as Result))
     }
 
     private fun reduceState(
@@ -102,6 +112,7 @@ class SelectMoviesViewModel @Inject constructor(
                 newItems[index] = result.sample
                 viewState.copy(data = newItems)
             }
+            is Result.Finished -> viewState.copy(isFinished = true)
             is Result.None -> viewState
         }
     }
@@ -119,10 +130,7 @@ class SelectMoviesViewModel @Inject constructor(
     }
 
     fun store(movies: List<Sample>) {
-        doAsync {
-            val historyMovies = movies.map { it.toHistoryMovie() }
-            repository.store(historyMovies)
-        }
+        refreshRelay.accept(Action.Store(movies))
     }
 
     override fun onCleared() {

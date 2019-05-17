@@ -19,7 +19,6 @@ class PersistenceModule {
     ): AppDatabase {
         return Room
                 .databaseBuilder(context, AppDatabase::class.java, "db")
-                .allowMainThreadQueries() // TODO
                 .fallbackToDestructiveMigration()
                 .build()
     }

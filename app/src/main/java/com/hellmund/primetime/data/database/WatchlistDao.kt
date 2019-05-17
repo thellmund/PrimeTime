@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.hellmund.primetime.utils.endOfDay
 import com.hellmund.primetime.utils.startOfDay
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 
@@ -28,9 +29,9 @@ interface WatchlistDao {
     fun count(movieId: Int): Maybe<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun store(vararg movie: WatchlistMovie)
+    fun store(vararg movie: WatchlistMovie): Completable
 
     @Query("DELETE FROM watchlist_movies WHERE id = :id")
-    fun delete(id: Int)
+    fun delete(id: Int): Completable
 
 }

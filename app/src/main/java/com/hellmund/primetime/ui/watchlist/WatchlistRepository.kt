@@ -14,15 +14,15 @@ class WatchlistRepository @Inject constructor(
 ) {
 
     fun getAll(): Single<List<WatchlistMovie>> {
-        return database.watchlistDao().getAll()
+        return database.watchlistDao().getAll().subscribeOn(Schedulers.io())
     }
 
     fun getReleases(): Single<List<WatchlistMovie>> {
-        return database.watchlistDao().releases()
+        return database.watchlistDao().releases().subscribeOn(Schedulers.io())
     }
 
     fun get(movieId: Int): Maybe<WatchlistMovie> {
-        return database.watchlistDao().get(movieId)
+        return database.watchlistDao().get(movieId).subscribeOn(Schedulers.io())
     }
 
     fun count(movieId: Int): Maybe<Int> {
@@ -35,11 +35,11 @@ class WatchlistRepository @Inject constructor(
     }
 
     fun store(watchlistMovie: WatchlistMovie): Completable {
-        return Completable.fromCallable { database.watchlistDao().store(watchlistMovie) }
+        return database.watchlistDao().store(watchlistMovie).subscribeOn(Schedulers.io())
     }
 
     fun remove(movieId: Int): Completable {
-        return Completable.fromCallable { database.watchlistDao().delete(movieId) }
+        return database.watchlistDao().delete(movieId).subscribeOn(Schedulers.io())
     }
 
 }

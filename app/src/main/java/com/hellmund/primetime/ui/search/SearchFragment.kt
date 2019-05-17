@@ -23,6 +23,7 @@ import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.data.database.GenreDao
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.ApiGenre
+import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.suggestions.MainActivity
@@ -49,6 +50,10 @@ class SearchFragment : Fragment(), TextWatcher,
 
     @Inject
     lateinit var database: AppDatabase
+
+    private val categoriesAdapter: SearchCategoriesAdapter by lazy {
+        SearchCategoriesAdapter(onItemClick = this::onCategorySelected)
+    }
 
     private val searchResultsAdapter: SearchResultsAdapter by lazy {
         SearchResultsAdapter(
@@ -105,6 +110,9 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun render(viewState: SearchViewState) {
+        val categories = buildCategories(viewState.genres)
+        categoriesAdapter.update(categories)
+
         searchResultsAdapter.update(viewState.data)
 
         results_list.isVisible = viewState.data.isNotEmpty()
@@ -170,10 +178,9 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun initCategoriesRecyclerView() {
-        val adapter = SearchCategoriesAdapter(buildCategories(), this::onCategorySelected)
         categoriesRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         categoriesRecyclerView.itemAnimator = DefaultItemAnimator()
-        categoriesRecyclerView.adapter = adapter
+        categoriesRecyclerView.adapter = categoriesAdapter
 
         val spacing = round(resources.getDimension(R.dimen.default_space))
         categoriesRecyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
@@ -197,10 +204,10 @@ class SearchFragment : Fragment(), TextWatcher,
                 .commit()
     }
 
-    private fun buildCategories(): List<String> {
+    private fun buildCategories(genres: List<Genre>): List<String> {
         val categories = listOf(getString(R.string.now_playing), getString(R.string.upcoming))
-        val genres = genreDao.getAll().blockingGet().map { it.name }
-        return categories + genres
+        val genreNames = genres.map { it.name }
+        return categories + genreNames
     }
 
     private fun initSearchResultsRecyclerView() {

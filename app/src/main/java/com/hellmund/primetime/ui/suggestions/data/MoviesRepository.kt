@@ -10,6 +10,7 @@ import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.VideoResolver
 import com.hellmund.primetime.ui.suggestions.details.Review
 import com.hellmund.primetime.utils.ErrorHelper
+import com.hellmund.primetime.utils.OnboardingHelper
 import io.reactivex.Observable
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
@@ -20,7 +21,8 @@ data class MoviesResponse(val results: List<Movie>)
 class MoviesRepository @Inject constructor(
         private val apiService: ApiService,
         private val genresRepository: GenresRepository,
-        private val historyRepository: HistoryRepository
+        private val historyRepository: HistoryRepository,
+        private val onboardingHelper: OnboardingHelper
 ) {
 
     private val resultsZipper = ResultsZipper()
@@ -43,8 +45,7 @@ class MoviesRepository @Inject constructor(
     ): Observable<List<Movie>> {
         // TODO: Fix this workaround
         // TODO: Add new movies to results
-        val hasAddedGenres = genresRepository.preferredGenres.blockingFirst().isNotEmpty()
-        if (hasAddedGenres.not()) {
+        if (onboardingHelper.isFirstLaunch) {
             return fetchTopRatedMovies()
         }
 
@@ -55,9 +56,7 @@ class MoviesRepository @Inject constructor(
                 .take(10)
                 .flatMap { fetchRecommendations(it.id) }
                 .toList()
-                .map {
-                    it.flatten()
-                }
+                .map { it.flatten() }
                 .toObservable()
 
         val genres = filterGenres?.let { Observable.just(it) } ?: genresRepository.preferredGenres

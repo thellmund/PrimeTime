@@ -4,6 +4,8 @@ import androidx.preference.Preference
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.plusAssign
+import io.reactivex.disposables.CompositeDisposable
 import java.util.*
 import javax.inject.Inject
 
@@ -18,6 +20,8 @@ sealed class ValidationResult {
 class GenresValidator @Inject constructor(
         private val genresRepository: GenresRepository
 ) {
+
+    private val compositeDisposable = CompositeDisposable()
 
     fun validate(pref: Preference, newValue: Any): ValidationResult {
         val genreIds = newValue as Set<String>
@@ -35,7 +39,7 @@ class GenresValidator @Inject constructor(
                 genre.isExcluded = isExcludedGenres
             }
 
-            genresRepository.storeGenres(genres)
+            compositeDisposable += genresRepository.storeGenres(genres).subscribe()
 
             val results = genres.filter { if (isIncludedGenres) it.isPreferred else it.isExcluded }
             ValidationResult.Success(results)
@@ -92,6 +96,10 @@ class GenresValidator @Inject constructor(
         }
 
         return excludedIds.isEmpty() || Collections.disjoint(includedIds, excludedIds)
+    }
+
+    fun cancel() {
+        compositeDisposable.dispose()
     }
 
 }

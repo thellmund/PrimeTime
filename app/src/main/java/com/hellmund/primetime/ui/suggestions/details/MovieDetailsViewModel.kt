@@ -159,10 +159,10 @@ class MovieDetailsViewModel @Inject constructor(
 
     private fun storeRating(rating: Rating): Observable<ViewModelEvent> {
         val historyMovie = HistoryMovie.fromRating(rating)
-        return Observable
-                .fromCallable { historyRepository.store(historyMovie) }
+        return historyRepository
+                .store(historyMovie)
                 .subscribeOn(Schedulers.io())
-                .map { ViewModelEvent.RatingStored(rating) }
+                .andThen(Observable.just(ViewModelEvent.RatingStored(rating) as ViewModelEvent))
     }
 
     private fun onAddToWatchlist(): Observable<ViewModelEvent> {

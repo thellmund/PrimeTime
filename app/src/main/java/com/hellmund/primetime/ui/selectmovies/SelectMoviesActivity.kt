@@ -64,6 +64,11 @@ class SelectMoviesActivity : AppCompatActivity() {
     }
 
     private fun render(viewState: SelectMoviesViewState) {
+        if (viewState.isFinished) {
+            openNext()
+            return
+        }
+
         adapter.update(viewState.data)
 
         if (viewState.isLoading.not()) {
@@ -100,7 +105,6 @@ class SelectMoviesActivity : AppCompatActivity() {
 
         if (this.isConnected) {
             saveSelection()
-            openNext()
         } else {
             this.showToast(getString(R.string.not_connected))
         }
@@ -117,10 +121,6 @@ class SelectMoviesActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
-
-        // TODO
-        /*val intent = SelectStreamingServicesActivity.newIntent(this)
-        startActivity(intent)*/
     }
 
     companion object {
