@@ -1,5 +1,6 @@
 package com.hellmund.primetime.ui.suggestions.details
 
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.res.ColorStateList
@@ -13,6 +14,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Movie
@@ -53,6 +55,12 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     private val reviewsAdapter: ReviewsAdapter by lazy { ReviewsAdapter() }
 
     private var progressDialog: ProgressDialog? = null
+
+    override fun getTheme() = R.style.BottomSheetDialogTheme
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return BottomSheetDialog(requireContext(), theme)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
