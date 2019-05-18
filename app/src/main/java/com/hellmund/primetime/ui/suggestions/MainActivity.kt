@@ -39,8 +39,26 @@ class MainActivity : AppCompatActivity() {
         get() = supportFragmentManager.findFragmentById(R.id.contentFrame)
 
     private val onNavigationItemSelected = { menuItem: MenuItem ->
-        val fragment = createFragment(menuItem)
-        showFragment(fragment)
+        when (menuItem.itemId) {
+            R.id.home -> {
+                val isInMainFragment = currentFragment is MainFragment
+                val isInSearchTab = bottomNavigation.selectedItemId == R.id.search
+
+                if (isInMainFragment && isInSearchTab) {
+                    supportFragmentManager.popBackStack()
+                }
+
+                supportFragmentManager.popBackStack()
+            }
+            R.id.search -> {
+                val fragment = SearchFragment.newInstance()
+                showFragment(fragment)
+            }
+            R.id.watchlist -> {
+                val fragment = WatchlistFragment.newInstance()
+                showFragment(fragment)
+            }
+        }
         true
     }
 
@@ -55,9 +73,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         injector.inject(this)
-
-        setSupportActionBar(toolbar)
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallback, false)
+        setSupportActionBar(toolbar)
 
         genresPrefetcher.run()
 
@@ -73,47 +90,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createFragment(menuItem: MenuItem): Fragment {
-        return when (menuItem.itemId) {
-            R.id.home -> MainFragment.newInstance()
-            R.id.search -> SearchFragment.newInstance()
-            R.id.watchlist -> WatchlistFragment.newInstance()
-            else -> throw IllegalStateException()
-        }
-    }
-
     private fun handleShortcutOpen(intent: String) {
         when (intent) {
-            WATCHLIST_INTENT -> openWatchlist()
-            SEARCH_INTENT -> openSearch()
-            else -> openSearch(intent)
+            WATCHLIST_INTENT -> openWatchlistFromIntent()
+            SEARCH_INTENT -> openSearchFromIntent()
+            else -> openSearchFromIntent(intent)
         }
     }
 
-    private fun showFragment(newFragment: Fragment) {
-        val currentFragment = currentFragment
-        if (currentFragment == null) {
-            showFragment2(newFragment)
-            return
-        }
-
-        val isInMain = currentFragment is MainFragment
-        val isInSearchTab = bottomNavigation.selectedItemId == R.id.search
-        val isInSearchResultsFragment = isInMain && isInSearchTab
-
-        if (newFragment is MainFragment && isInSearchResultsFragment) {
-            supportFragmentManager.popBackStack()
-            supportFragmentManager.popBackStack()
-            return
-        } else if (newFragment is MainFragment) {
-            supportFragmentManager.popBackStack()
-            return
-        }
-
-        showFragment2(newFragment)
-    }
-
-    private fun showFragment2(fragment: Fragment) {
+    private fun showFragment(fragment: Fragment) {
         val isBackStackEmpty = supportFragmentManager.backStackEntryCount == 0
         supportFragmentManager.transaction {
             setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
@@ -125,7 +110,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun openSearch(extra: String? = null) {
+    fun openSearchFromIntent(extra: String? = null) {
         val type = extra?.let { createRecommendationsTypeFromIntent(it) }
         val fragment = SearchFragment.newInstance(type)
         showFragment(fragment)
@@ -144,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun openWatchlist() {
+    private fun openWatchlistFromIntent() {
         val fragment = WatchlistFragment.newInstance()
         showFragment(fragment)
         bottomNavigation.selectedItemId = R.id.watchlist
@@ -160,7 +145,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun adjustBottomNavigation() {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
         bottomNavigation.setOnNavigationItemSelectedListener(null)
         bottomNavigation.setOnNavigationItemReselectedListener(null)
         bottomNavigation.selectedItemId = when (currentFragment) {

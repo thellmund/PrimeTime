@@ -20,7 +20,7 @@ class DiscoverMoreFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         discoverMoreButton.setOnClickListener {
             val activity = requireActivity() as MainActivity
-            activity.openSearch()
+            activity.openSearchFromIntent()
         }
     }
 
