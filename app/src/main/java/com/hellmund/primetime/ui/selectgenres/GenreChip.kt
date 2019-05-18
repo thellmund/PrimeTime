@@ -20,6 +20,7 @@ class GenreChip @JvmOverloads constructor(
         isClickable = true
         isCheckedIconVisible = true
         textColor = Color.WHITE
+        textSize = 15f
         setChipBackgroundColorResource(R.color.selector_genre_chip_background)
     }
 
