@@ -21,7 +21,7 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.selectstreamingservices.EqualHorizontalSpacingItemDecoration
-import com.hellmund.primetime.ui.selectstreamingservices.EqualSpacingItemDecoration
+import com.hellmund.primetime.ui.shared.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsAdapter

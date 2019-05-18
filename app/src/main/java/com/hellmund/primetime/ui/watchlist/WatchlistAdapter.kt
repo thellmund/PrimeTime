@@ -81,21 +81,20 @@ class WatchlistAdapter(
                             into = posterImageView
                     )
 
-            // title.text = movie.title
             description.text = movie.description
-            runtime_text.text = movie.formattedRuntime
+            runtime.text = movie.formattedRuntime
 
             val releaseDate = movie.formattedReleaseDate
             if (movie.isUnreleased) {
-                release_text.text = context.getString(R.string.release_on, releaseDate)
+                release.text = context.getString(R.string.release_on, releaseDate)
             } else {
-                release_text.text = releaseDate
+                release.text = releaseDate
             }
 
-            watched_button.isVisible = movie.isUnreleased.not()
-            watched_button.setOnClickListener { onWatchedIt(movie) }
-            remove_button.setOnClickListener { onRemove(movie) }
-            notification_icon.setOnClickListener { onNotificationToggle(movie) }
+            watchedButton.isVisible = movie.isUnreleased.not()
+            watchedButton.setOnClickListener { onWatchedIt(movie) }
+            removeButton.setOnClickListener { onRemove(movie) }
+            notificationIcon.setOnClickListener { onNotificationToggle(movie) }
 
             infoContainer.setOnClickListener {
                 TransitionManager.beginDelayedTransition(card_view)
@@ -116,20 +115,19 @@ class WatchlistAdapter(
 
         private fun setNotificationIcon(movie: WatchlistMovieViewEntity) = with(itemView) {
             val isEnabled = NotificationUtils.areNotificationsEnabled(context)
-            notification_icon.isVisible = isEnabled
+            notificationIcon.isVisible = isEnabled
 
             if (movie.notificationsActivated) {
-                notification_icon.setImageResource(R.drawable.ic_notifications_active_white_24dp)
+                notificationIcon.setImageResource(R.drawable.ic_notifications_active_white_24dp)
             } else {
-                notification_icon.setImageResource(R.drawable.ic_notifications_none_white_24dp)
+                notificationIcon.setImageResource(R.drawable.ic_notifications_none_white_24dp)
             }
         }
 
         private fun setMovieOverlay(movie: WatchlistMovieViewEntity) = with(itemView) {
             val releaseDate = movie.formattedReleaseDate
-            runtime_text.text = context.getString(R.string.release_on, releaseDate)
-            runtime_icon.setImageResource(R.drawable.ic_today_white_24dp)
-            watched_button.isVisible = false
+            runtime.text = context.getString(R.string.release_on, releaseDate)
+            watchedButton.isVisible = false
         }
 
     }

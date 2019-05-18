@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.search
+package com.hellmund.primetime.ui.shared
 
 import android.graphics.Rect
 import android.view.View

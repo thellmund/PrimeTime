@@ -26,6 +26,7 @@ import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.ui.suggestions.MainFragment
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity

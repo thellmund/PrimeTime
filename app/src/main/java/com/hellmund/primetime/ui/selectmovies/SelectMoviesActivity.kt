@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.search.EqualSpacingGridItemDecoration
+import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.activity_select_movies.*

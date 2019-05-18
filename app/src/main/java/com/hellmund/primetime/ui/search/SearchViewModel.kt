@@ -147,16 +147,4 @@ class SearchViewModel @Inject constructor(
         super.onCleared()
     }
 
-    /*class Factory(
-            private val repository: MoviesRepository,
-            private val historyRepository: HistoryRepository
-    ) : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SearchViewModel(repository, historyRepository) as T
-        }
-
-    }*/
-
 }

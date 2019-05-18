@@ -27,7 +27,7 @@
                 android:scaleType="centerCrop" />
 
             <ImageButton
-                android:id="@+id/notification_icon"
+                android:id="@+id/notificationIcon"
                 android:layout_width="@dimen/default_icon"
                 android:layout_height="@dimen/default_icon"
                 android:layout_gravity="end|top"
@@ -52,21 +52,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
-
-                    <!-- Title -->
-                    <!--
-                    <TextView
-                        android:id="@+id/title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_space"
-                        android:layout_marginTop="@dimen/small_space"
-                        android:layout_marginEnd="@dimen/small_space"
-                        android:fontFamily="sans-serif-medium"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        tools:text="Lorem ipsum" />
-                    -->
 
                     <!-- Description -->
                     <TextView
@@ -101,16 +86,15 @@
                             android:orientation="horizontal">
 
                             <ImageView
-                                android:id="@+id/runtime_icon"
                                 android:layout_width="14dp"
                                 android:layout_height="14dp"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="@dimen/small_space"
-                                android:src="@drawable/ic_access_time_white_24dp"
+                                android:src="@drawable/ic_today_white_24dp"
                                 tools:ignore="ContentDescription" />
 
                             <TextView
-                                android:id="@+id/runtime_text"
+                                android:id="@+id/runtime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="#FFFFFF"
@@ -127,7 +111,6 @@
                             android:orientation="horizontal">
 
                             <ImageView
-                                android:id="@+id/release_icon"
                                 android:layout_width="14dp"
                                 android:layout_height="14dp"
                                 android:layout_gravity="center_vertical"
@@ -136,7 +119,7 @@
                                 tools:ignore="ContentDescription" />
 
                             <TextView
-                                android:id="@+id/release_text"
+                                android:id="@+id/release"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="#FFFFFF"
@@ -153,7 +136,7 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/watched_button"
+                            android:id="@+id/watchedButton"
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -164,7 +147,7 @@
                             android:textColor="@android:color/white" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/remove_button"
+                            android:id="@+id/removeButton"
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

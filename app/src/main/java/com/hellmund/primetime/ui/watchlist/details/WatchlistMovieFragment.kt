@@ -61,9 +61,9 @@ class WatchlistMovieFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        notification_icon.setOnClickListener { viewModel.onNotificationClick() }
-        watched_button.setOnClickListener { viewModel.onWatched() }
-        remove_button.setOnClickListener { viewModel.onRemove() }
+        notificationIcon.setOnClickListener { viewModel.onNotificationClick() }
+        watchedButton.setOnClickListener { viewModel.onWatched() }
+        removeButton.setOnClickListener { viewModel.onRemove() }
     }
 
     private fun render(viewState: WatchlistMovieViewState) {
@@ -72,16 +72,16 @@ class WatchlistMovieFragment : Fragment() {
         imageLoader.load(movie.posterUrl, posterImageView)
 
         title.text = movie.title
-        runtime_text.text = movie.formattedRuntime
+        runtime.text = movie.formattedRuntime
 
         val releaseDate = movie.formattedReleaseDate
         if (movie.isUnreleased) {
-            release_text.text = requireContext().getString(R.string.release_on, releaseDate)
+            release.text = requireContext().getString(R.string.release_on, releaseDate)
         } else {
-            release_text.text = releaseDate
+            release.text = releaseDate
         }
 
-        watched_button.isVisible = movie.isUnreleased.not()
+        watchedButton.isVisible = movie.isUnreleased.not()
 
         if (movie.isUnreleased) {
             setNotificationIcon(movie)
@@ -120,20 +120,20 @@ class WatchlistMovieFragment : Fragment() {
 
     private fun setNotificationIcon(movie: WatchlistMovieViewEntity) {
         val isEnabled = NotificationUtils.areNotificationsEnabled(requireContext())
-        notification_icon.isVisible = isEnabled
+        notificationIcon.isVisible = isEnabled
 
         if (movie.notificationsActivated) {
-            notification_icon.setImageResource(R.drawable.ic_notifications_active_white_24dp)
+            notificationIcon.setImageResource(R.drawable.ic_notifications_active_white_24dp)
         } else {
-            notification_icon.setImageResource(R.drawable.ic_notifications_none_white_24dp)
+            notificationIcon.setImageResource(R.drawable.ic_notifications_none_white_24dp)
         }
     }
 
     private fun setMovieOverlay(movie: WatchlistMovieViewEntity) {
         val releaseDate = movie.formattedReleaseDate
-        runtime_text.text = requireContext().getString(R.string.release_on, releaseDate)
-        runtime_icon.setImageResource(R.drawable.ic_today_white_24dp)
-        watched_button.isVisible = false
+        runtime.text = requireContext().getString(R.string.release_on, releaseDate)
+        runtimeIcon.setImageResource(R.drawable.ic_today_white_24dp)
+        watchedButton.isVisible = false
     }
 
     interface OnInteractionListener {

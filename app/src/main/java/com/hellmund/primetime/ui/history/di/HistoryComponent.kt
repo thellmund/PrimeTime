@@ -5,11 +5,6 @@ import com.hellmund.primetime.ui.history.HistoryRepository
 import dagger.Module
 import dagger.Provides
 
-/*@Subcomponent(modules = [HistoryModule::class])
-interface HistoryComponent {
-    fun inject(historyFragment: HistoryFragment)
-}*/
-
 @Module
 class HistoryModule {
 

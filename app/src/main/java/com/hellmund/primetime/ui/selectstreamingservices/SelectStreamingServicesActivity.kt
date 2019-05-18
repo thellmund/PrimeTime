@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.ui.shared.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.utils.OnboardingHelper
 import kotlinx.android.synthetic.main.activity_select_streaming_services.*

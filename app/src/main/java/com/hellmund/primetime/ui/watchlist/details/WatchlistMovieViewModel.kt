@@ -75,11 +75,11 @@ class WatchlistMovieViewModel @Inject constructor(
             result: Result
     ): WatchlistMovieViewState {
         return when (result) {
-            is Result.NotificationToggled -> viewState.copy(movie = result.data)
+            is Result.NotificationToggled -> viewState.copy(movie = result.data, isError = false)
             is Error -> viewState.copy(isError = true)
             is Result.ShowRemoveDialog -> viewState.copy(showRemoveDialog = true)
             is Result.HideRemoveDialog -> viewState.copy(showRemoveDialog = false)
-            else -> viewState // TODO
+            else -> viewState
         }
     }
 
