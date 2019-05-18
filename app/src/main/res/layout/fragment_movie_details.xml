@@ -107,6 +107,7 @@
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:backgroundTint="@color/background"
                 android:text="@string/add_to_watchlist"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"

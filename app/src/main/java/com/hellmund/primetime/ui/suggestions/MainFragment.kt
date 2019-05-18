@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.ui.settings.SettingsActivity
+import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.ui.suggestions.details.Rating
@@ -78,7 +78,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun setupPersonalizationBanner() {
-        if (onboardingHelper.isFirstLaunch) {
+        if (onboardingHelper.isFirstLaunch && type is Personalized) {
             banner.setOnClickListener {
                 val intent = SelectGenresActivity.newIntent(requireContext())
                 requireContext().startActivity(intent)

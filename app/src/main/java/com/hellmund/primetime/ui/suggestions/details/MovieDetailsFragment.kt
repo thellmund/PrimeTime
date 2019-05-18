@@ -21,8 +21,8 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.selectstreamingservices.EqualHorizontalSpacingItemDecoration
-import com.hellmund.primetime.ui.shared.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
+import com.hellmund.primetime.ui.shared.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsAdapter
 import com.hellmund.primetime.utils.ImageLoader
@@ -73,7 +73,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        viewModel.viewModelEvents.observe(viewLifecycleOwner, this::handleViewModelEvent)
+        viewModel.viewModelEvents.observe(this, this::handleViewModelEvent)
     }
 
     override fun onCreateView(
