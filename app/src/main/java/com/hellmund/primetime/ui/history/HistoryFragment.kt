@@ -43,7 +43,7 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        viewModel.viewState.observe(this, this::render)
+        viewModel.viewState.observe(viewLifecycleOwner, this::render)
     }
 
     private fun setupRecyclerView() {

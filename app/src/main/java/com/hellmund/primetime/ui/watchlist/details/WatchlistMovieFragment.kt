@@ -49,8 +49,8 @@ class WatchlistMovieFragment : Fragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
 
-        viewModel.viewState.observe(this, this::render)
-        viewModel.movieEvents.observe(this, this::handleMovieEvent)
+        viewModel.viewState.observe(viewLifecycleOwner, this::render)
+        viewModel.movieEvents.observe(viewLifecycleOwner, this::handleMovieEvent)
     }
 
     override fun onCreateView(

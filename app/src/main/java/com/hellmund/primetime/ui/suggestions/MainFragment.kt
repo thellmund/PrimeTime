@@ -74,7 +74,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         setToolbarSubtitle(type)
         setupPersonalizationBanner()
         setupRecyclerView()
-        viewModel.viewState.observe(this, this::render)
+        viewModel.viewState.observe(viewLifecycleOwner, this::render)
     }
 
     private fun setupPersonalizationBanner() {

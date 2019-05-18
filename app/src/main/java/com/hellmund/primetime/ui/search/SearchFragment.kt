@@ -92,7 +92,7 @@ class SearchFragment : Fragment(), TextWatcher,
         initCategoriesRecyclerView()
         initSearchResultsRecyclerView()
 
-        viewModel.viewState.observe(this, this::render)
+        viewModel.viewState.observe(viewLifecycleOwner, this::render)
 
         val type = arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE)
         type?.let {

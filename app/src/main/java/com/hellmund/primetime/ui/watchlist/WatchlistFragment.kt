@@ -51,7 +51,7 @@ class WatchlistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
         setupViewPager()
-        viewModel.viewState.observe(this, this::render)
+        viewModel.viewState.observe(viewLifecycleOwner, this::render)
     }
 
     private fun initToolbar() {

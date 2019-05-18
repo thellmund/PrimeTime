@@ -34,7 +34,6 @@ class SelectGenresActivity : AppCompatActivity() {
 
         container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         updateNextButton()
-
         button.setOnClickListener { saveGenres() }
 
         viewModel.viewState.observe(this, this::render)
