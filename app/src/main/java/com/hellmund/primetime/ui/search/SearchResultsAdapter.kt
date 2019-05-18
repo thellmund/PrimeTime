@@ -9,12 +9,11 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.Transformation
-import com.hellmund.primetime.utils.showInfoBox
 import kotlinx.android.synthetic.main.list_item_search_results.view.*
 
 class SearchResultsAdapter(
         private val imageLoader: ImageLoader,
-        private val onShowSimilar: (MovieViewEntity) -> Unit,
+        private val onItemClick: (MovieViewEntity) -> Unit,
         private val onWatched: (MovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<SearchResultsAdapter.ViewHolder>() {
 
@@ -27,7 +26,7 @@ class SearchResultsAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(imageLoader, items[position], onShowSimilar, onWatched)
+        holder.bind(imageLoader, items[position], onItemClick, onWatched)
     }
 
     override fun getItemCount(): Int = items.size
@@ -48,17 +47,21 @@ class SearchResultsAdapter(
         fun bind(
                 imageLoader: ImageLoader,
                 searchResult: MovieViewEntity,
-                onShowSimilar: (MovieViewEntity) -> Unit,
+                onItemClick: (MovieViewEntity) -> Unit,
                 onWatchedIt: (MovieViewEntity) -> Unit
         ) = with(itemView) {
             loadImage(imageLoader, searchResult.posterUrl)
+
             title.text = searchResult.title
             genres.isVisible = searchResult.formattedGenres.isNotBlank()
             genres.text = searchResult.formattedGenres
             description.text = searchResult.description
-            similarMoviesButton.setOnClickListener { onShowSimilar(searchResult) }
-            watchedItButton.setOnClickListener { onWatchedIt(searchResult) }
-            setOnClickListener { context.showInfoBox(searchResult.description) }
+
+            setOnClickListener { onItemClick(searchResult) }
+            setOnLongClickListener {
+                onWatchedIt(searchResult)
+                true
+            }
         }
 
         private fun loadImage(imageLoader: ImageLoader, url: String) = with(itemView) {

@@ -145,11 +145,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         )
     }
 
-    private fun retry() {
-        // TODO: Use current RecommendationsType
-        viewModel.refresh(Personalized())
-    }
-
     private fun setToolbarSubtitle(type: RecommendationsType) {
         val title = when (type) {
             is Personalized -> getString(R.string.app_name)

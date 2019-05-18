@@ -59,28 +59,4 @@
         app:layout_constraintTop_toBottomOf="@id/genres"
         tools:text="Lorem ipsum" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/similarMoviesButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_space"
-        android:layout_marginTop="@dimen/small_space"
-        android:text="@string/show_similar_movies"
-        android:textAllCaps="false"
-        app:layout_constraintStart_toEndOf="@id/posterImageView"
-        app:layout_constraintTop_toBottomOf="@id/description" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/watchedItButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_space"
-        android:layout_marginTop="@dimen/small_space"
-        android:text="@string/watched_it"
-        android:textAllCaps="false"
-        app:layout_constraintStart_toEndOf="@id/similarMoviesButton"
-        app:layout_constraintTop_toBottomOf="@id/description" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@ package com.hellmund.primetime.ui.search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
@@ -10,11 +11,13 @@ import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
+import com.hellmund.primetime.utils.StringProvider
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 data class SearchViewState(
@@ -22,9 +25,9 @@ data class SearchViewState(
         val data: List<MovieViewEntity> = emptyList(),
         val showClearButton: Boolean = false,
         val didPerformSearch: Boolean = false,
-        val rating: Int? = null,
         val isLoading: Boolean = false,
-        val error: Throwable? = null
+        val error: Throwable? = null,
+        val snackbarText: String? = null
 ) {
 
     val showPlaceholder: Boolean
@@ -45,15 +48,16 @@ sealed class Result {
     data class Data(val data: List<MovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
     data class ToggleClearButton(val show: Boolean) : Result()
-    data class ShowHistorySnackbar(val rating: Int) : Result()
-    object DismissHistorySnackbar : Result()
+    data class ShowSnackbar(val message: String) : Result()
+    object DismissSnackbar : Result()
 }
 
 class SearchViewModel @Inject constructor(
         private val repository: MoviesRepository,
         private val historyRepository: HistoryRepository,
         private val genresRepository: GenresRepository,
-        private val viewEntityMapper: MoviesViewEntityMapper
+        private val viewEntityMapper: MoviesViewEntityMapper,
+        private val stringProvider: StringProvider
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -98,11 +102,21 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun storeInHistory(historyMovie: HistoryMovie): Observable<Result> {
+        val messageResId = when (historyMovie.rating) {
+            0 -> R.string.will_less_like_this
+            else -> R.string.will_more_like_this
+        }
         return historyRepository
                 .store(historyMovie)
                 .subscribeOn(Schedulers.io())
-                .toObservable<Unit>()
-                .map { Result.ShowHistorySnackbar(historyMovie.rating) }
+                .andThen(createSelfDismissingSnackbar(messageResId))
+    }
+
+    private fun createSelfDismissingSnackbar(resId: Int): Observable<Result> {
+        val message = stringProvider.getString(resId)
+        return Observable.timer(4, TimeUnit.SECONDS)
+                .map { Result.DismissSnackbar as Result }
+                .startWith(Result.ShowSnackbar(message))
     }
 
     private fun reduceState(
@@ -115,8 +129,8 @@ class SearchViewModel @Inject constructor(
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null, didPerformSearch = true)
             is Result.Error -> viewState.copy(isLoading = false, error = result.error, didPerformSearch = true)
             is Result.ToggleClearButton -> viewState.copy(showClearButton = result.show)
-            is Result.ShowHistorySnackbar -> viewState.copy(rating = result.rating)
-            is Result.DismissHistorySnackbar -> viewState.copy(rating = null)
+            is Result.ShowSnackbar -> viewState.copy(snackbarText = result.message)
+            is Result.DismissSnackbar -> viewState.copy(snackbarText = null)
         }
     }
 
@@ -130,10 +144,6 @@ class SearchViewModel @Inject constructor(
 
     fun onTextChanged(input: String) {
         actionsRelay.accept(Action.Typed(input))
-    }
-
-    fun addToWatchlist(movie: MovieViewEntity) {
-        TODO()
     }
 
     fun addToHistory(historyMovie: HistoryMovie) {

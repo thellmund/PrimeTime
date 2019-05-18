@@ -15,9 +15,7 @@ import com.hellmund.primetime.ui.suggestions.MainFragment
 import com.hellmund.primetime.ui.suggestions.di.SuggestionComponent
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.ui.watchlist.di.WatchlistMovieComponent
-import com.hellmund.primetime.utils.NotificationPublisher
-import com.hellmund.primetime.utils.RealValueFormatter
-import com.hellmund.primetime.utils.ValueFormatter
+import com.hellmund.primetime.utils.*
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
@@ -67,5 +65,9 @@ abstract class AppModule {
     @Singleton
     @Binds
     abstract fun bindValueFormatter(impl: RealValueFormatter): ValueFormatter
+
+    @Singleton
+    @Binds
+    abstract fun bindStringProvider(impl: RealStringProvider): StringProvider
 
 }
