@@ -38,9 +38,10 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private val viewModel: MainViewModel by lazyViewModel { viewModelProvider }
 
-    private lateinit var type: RecommendationsType
+    private val type: RecommendationsType by lazy {
+        checkNotNull(arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE))
+    }
 
-    private var pagesLoaded: Int = 0
     private var isLoadingMore: Boolean = false
 
     private val adapter: MoviesAdapter by lazy {
@@ -52,15 +53,16 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        injector.inject(this)
+        injector.mainComponent()
+                .type(type)
+                .build()
+                .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-        type = checkNotNull(arguments?.getParcelable(KEY_RECOMMENDATIONS_TYPE))
-        viewModel.refresh(type)
+        viewModel.refresh() // TODO Move to ViewModel
     }
 
     override fun onCreateView(
@@ -98,7 +100,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
         recyclerView.onBottomReached {
             if (isLoadingMore.not()) {
-                viewModel.refresh(type, pagesLoaded + 1)
+                viewModel.refresh()
                 isLoadingMore = true
             }
         }
@@ -108,8 +110,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun render(viewState: MainViewState) {
-        type = viewState.recommendationsType
-        pagesLoaded = viewState.pagesLoaded
+        // TODO Move to ViewModel
         isLoadingMore = false
 
         viewState.filtered?.let {

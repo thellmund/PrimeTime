@@ -12,7 +12,6 @@ import com.hellmund.primetime.ui.suggestions.details.Rating
 import com.hellmund.primetime.utils.containsAny
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -52,7 +51,8 @@ class MainViewModel @Inject constructor(
         private val repository: MoviesRepository,
         private val historyRepository: HistoryRepository,
         private val rankingProcessor: MovieRankingProcessor,
-        private val viewEntityMapper: MoviesViewEntityMapper
+        private val viewEntityMapper: MoviesViewEntityMapper,
+        private val recommendationsType: RecommendationsType
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -60,6 +60,8 @@ class MainViewModel @Inject constructor(
 
     private val _viewState = MutableLiveData<MainViewState>()
     val viewState: LiveData<MainViewState> = _viewState
+
+    private var pagesLoaded: Int = 0
 
     init {
         val initialViewState = MainViewState(isLoading = true)
@@ -104,6 +106,7 @@ class MainViewModel @Inject constructor(
         return when (result) {
             is Result.Loading -> viewState.copy(isLoading = true, error = null)
             is Result.Data -> {
+                pagesLoaded = result.page
                 val newData = if (result.page == 1) result.data else viewState.data + result.data
                 viewState.copy(recommendationsType = result.type, data = newData, filtered = null, pagesLoaded = result.page, isLoading = false, error = null)
             }
@@ -131,11 +134,8 @@ class MainViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun refresh(
-            recommendationsType: RecommendationsType,
-            page: Int = 1
-    ) {
-        refreshRelay.accept(Action.LoadMovies(recommendationsType, page))
+    fun refresh() {
+        refreshRelay.accept(Action.LoadMovies(recommendationsType, pagesLoaded + 1))
     }
 
     fun filter(genres: List<Genre>) {

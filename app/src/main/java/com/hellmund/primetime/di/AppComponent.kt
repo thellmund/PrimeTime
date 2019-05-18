@@ -11,7 +11,7 @@ import com.hellmund.primetime.ui.selectstreamingservices.SelectStreamingServices
 import com.hellmund.primetime.ui.selectstreamingservices.di.StreamingServiceModule
 import com.hellmund.primetime.ui.settings.SettingsFragment
 import com.hellmund.primetime.ui.suggestions.MainActivity
-import com.hellmund.primetime.ui.suggestions.MainFragment
+import com.hellmund.primetime.ui.suggestions.di.MainComponent
 import com.hellmund.primetime.ui.suggestions.di.SuggestionComponent
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.ui.watchlist.di.WatchlistMovieComponent
@@ -31,6 +31,7 @@ import javax.inject.Singleton
 ])
 interface AppComponent {
 
+    fun mainComponent(): MainComponent.Builder
     fun suggestionComponent(): SuggestionComponent.Builder
     fun watchlistMovieComponent(): WatchlistMovieComponent.Builder
 
@@ -39,7 +40,6 @@ interface AppComponent {
     fun inject(introductionActivity: IntroductionActivity)
     fun inject(notificationPublisher: NotificationPublisher)
     fun inject(mainActivity: MainActivity)
-    fun inject(mainFragment: MainFragment)
     fun inject(searchFragment: SearchFragment)
     fun inject(selectGenresActivity: SelectGenresActivity)
     fun inject(selectMoviesActivity: SelectMoviesActivity)

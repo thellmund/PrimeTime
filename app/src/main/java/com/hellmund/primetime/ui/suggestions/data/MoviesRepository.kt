@@ -46,7 +46,6 @@ class MoviesRepository @Inject constructor(
     ): Observable<List<Movie>> {
         // TODO: Fix this workaround
         // TODO: Add new movies to results
-
         if (onboardingHelper.isFirstLaunch) {
             return fetchTopRatedMovies(page)
         }
