@@ -35,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         FragmentLifecycleCallback(this)
     }
 
-    private val currentFragment: Fragment
-        get() = checkNotNull(supportFragmentManager.findFragmentById(R.id.contentFrame))
+    private val currentFragment: Fragment?
+        get() = supportFragmentManager.findFragmentById(R.id.contentFrame)
 
     private val onNavigationItemSelected = { menuItem: MenuItem ->
         val fragment = createFragment(menuItem)
@@ -90,32 +90,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showFragment(fragment: Fragment) {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
-        val backStack = supportFragmentManager.backStack
+    private fun showFragment(newFragment: Fragment) {
+        val currentFragment = currentFragment
+        if (currentFragment == null) {
+            showFragment2(newFragment)
+            return
+        }
 
-        val mainFragmentName = MainFragment::class.java.simpleName
-        val isMainInBackStack = backStack.lastOrNull()?.name == mainFragmentName
+        val isInMain = currentFragment is MainFragment
+        val isInSearchTab = bottomNavigation.selectedItemId == R.id.search
+        val isInSearchResultsFragment = isInMain && isInSearchTab
 
-        if (fragment is MainFragment && isMainInBackStack) {
+        if (newFragment is MainFragment && isInSearchResultsFragment) {
+            supportFragmentManager.popBackStack()
+            supportFragmentManager.popBackStack()
+            return
+        } else if (newFragment is MainFragment) {
             supportFragmentManager.popBackStack()
             return
         }
 
+        showFragment2(newFragment)
+    }
+
+    private fun showFragment2(fragment: Fragment) {
+        val isBackStackEmpty = supportFragmentManager.backStackEntryCount == 0
         supportFragmentManager.transaction {
             setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
             replace(R.id.contentFrame, fragment)
 
-            if (currentFragment is MainFragment && backStack.isEmpty()) {
-                addToBackStack(currentFragment.javaClass.simpleName)
+            if (currentFragment is MainFragment && isBackStackEmpty) {
+                addToBackStack(null)
             }
         }
-    }
-
-    private fun openHome() {
-        val fragment = MainFragment.newInstance()
-        showFragment(fragment)
-        bottomNavigation.selectedItemId = R.id.home
     }
 
     fun openSearch(extra: String? = null) {
