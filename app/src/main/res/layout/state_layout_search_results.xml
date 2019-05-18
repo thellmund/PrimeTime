@@ -24,7 +24,7 @@
         android:visibility="gone">
 
         <ProgressBar
-            android:id="@+id/progress_bar"
+            android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleSmall"
             android:layout_width="60dp"
             android:layout_height="60dp"

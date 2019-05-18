@@ -7,13 +7,26 @@ import com.hellmund.primetime.utils.ValueFormatter
 import io.reactivex.functions.Function
 import javax.inject.Inject
 
+class HistoryMoviesViewEntityMapper @Inject constructor(
+        context: Context,
+        valueFormatter: ValueFormatter
+) : Function<List<HistoryMovie>, List<HistoryMovieViewEntity>> {
+
+    private val internalMapper = HistoryMovieViewEntityMapper(context, valueFormatter)
+
+    override fun apply(movies: List<HistoryMovie>): List<HistoryMovieViewEntity> {
+        return movies.map(internalMapper::apply)
+    }
+
+}
+
 class HistoryMovieViewEntityMapper @Inject constructor(
         private val context: Context,
         private val valueFormatter: ValueFormatter
-) : Function<List<HistoryMovie>, List<HistoryMovieViewEntity>> {
+) : Function<HistoryMovie, HistoryMovieViewEntity> {
 
-    override fun apply(movies: List<HistoryMovie>): List<HistoryMovieViewEntity> {
-        return movies.map(this::convert)
+    override fun apply(movie: HistoryMovie): HistoryMovieViewEntity {
+        return convert(movie)
     }
 
     private fun convert(movie: HistoryMovie): HistoryMovieViewEntity {
@@ -26,7 +39,8 @@ class HistoryMovieViewEntityMapper @Inject constructor(
                 movie.title,
                 movie.rating,
                 formattedDate,
-                formattedDetailsText
+                formattedDetailsText,
+                movie
         )
     }
 

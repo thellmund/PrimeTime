@@ -3,6 +3,7 @@ package com.hellmund.primetime.ui.history
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
@@ -20,16 +21,19 @@ sealed class Action {
     object Load : Action()
     data class DatabaseLoaded(val data: List<HistoryMovieViewEntity>) : Action()
     data class Remove(val movie: HistoryMovieViewEntity) : Action()
+    data class Update(val movie: HistoryMovie) : Action()
 }
 
 sealed class Result {
     data class Data(val data: List<HistoryMovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
     data class Removed(val movie: HistoryMovieViewEntity) : Result()
+    data class Updated(val movie: HistoryMovieViewEntity) : Result()
 }
 
 class HistoryViewModel @Inject constructor(
         private val repository: HistoryRepository,
+        private val viewEntitiesMapper: HistoryMoviesViewEntityMapper,
         private val viewEntityMapper: HistoryMovieViewEntityMapper
 ) : ViewModel() {
 
@@ -43,7 +47,7 @@ class HistoryViewModel @Inject constructor(
         val initialViewState = HistoryViewState(isLoading = true)
 
         val databaseChanges = repository.getAll()
-                .map(viewEntityMapper)
+                .map(viewEntitiesMapper)
                 .onErrorReturn { emptyList() }
                 .toObservable()
                 .map { if (it.isNotEmpty()) { Action.DatabaseLoaded(it) } else { Action.Load } }
@@ -61,13 +65,14 @@ class HistoryViewModel @Inject constructor(
             is Action.Load -> fetchMovies()
             is Action.DatabaseLoaded -> Observable.just(Result.Data(action.data))
             is Action.Remove -> removeMovie(action.movie)
+            is Action.Update -> updateMovie(action.movie)
         }
     }
 
     private fun fetchMovies(): Observable<Result> {
         return repository.getAll()
                 .subscribeOn(Schedulers.io())
-                .map(viewEntityMapper)
+                .map(viewEntitiesMapper)
                 .map { Result.Data(it) as Result }
                 .onErrorReturn { Result.Error(it) }
                 .toObservable()
@@ -78,6 +83,14 @@ class HistoryViewModel @Inject constructor(
                 .andThen(Observable.just(Result.Removed(movie) as Result))
     }
 
+    private fun updateMovie(movie: HistoryMovie): Observable<Result> {
+        return repository
+                .store(movie)
+                .andThen(Observable.just(movie))
+                .map(viewEntityMapper)
+                .map { Result.Updated(it) }
+    }
+
     private fun reduceState(
             viewState: HistoryViewState,
             result: Result
@@ -86,11 +99,24 @@ class HistoryViewModel @Inject constructor(
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
             is Result.Error -> viewState.copy(isLoading = false, error = result.error)
             is Result.Removed -> viewState.copy(data = viewState.data.minus(result.movie))
+            is Result.Updated -> {
+                val index = viewState.data.indexOfFirst { it.id == result.movie.id }
+                val newData = viewState.data
+                        .toMutableList()
+                        .apply { set(index, result.movie) }
+                        .toList()
+                viewState.copy(data = newData)
+            }
         }
     }
 
     private fun render(viewState: HistoryViewState) {
         _viewState.postValue(viewState)
+    }
+
+    fun update(movie: HistoryMovieViewEntity, newRating: Int) {
+        val raw = movie.raw.copy(rating = newRating)
+        refreshRelay.accept(Action.Update(raw))
     }
 
     fun remove(movie: HistoryMovieViewEntity) {
@@ -101,18 +127,5 @@ class HistoryViewModel @Inject constructor(
         compositeDisposable.dispose()
         super.onCleared()
     }
-
-    /*
-    class Factory(
-            private val repository: HistoryRepository
-    ) : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return HistoryViewModel(repository) as T
-        }
-
-    }
-    */
 
 }

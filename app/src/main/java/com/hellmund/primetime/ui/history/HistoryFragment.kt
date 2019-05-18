@@ -3,7 +3,6 @@ package com.hellmund.primetime.ui.history
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.suggestions.MainActivity
@@ -44,18 +42,21 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recycler_view.adapter = adapter
+        setupRecyclerView()
         viewModel.viewState.observe(this, this::render)
     }
 
-    private fun render(viewState: HistoryViewState) {
-        recycler_view.isVisible = viewState.isLoading.not()
-        progress_bar.isVisible = viewState.isLoading
+    private fun setupRecyclerView() {
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView.adapter = adapter
+    }
 
+    private fun render(viewState: HistoryViewState) {
+        recyclerView.isVisible = viewState.isLoading.not()
+        progressBar.isVisible = viewState.isLoading
         adapter.update(viewState.data)
-        recycler_view.setHasFixedSize(true)
-        recycler_view.layoutManager = LinearLayoutManager(requireContext())
-        recycler_view.itemAnimator = DefaultItemAnimator()
     }
 
     private fun onOpenDialog(movie: HistoryMovieViewEntity) {
@@ -111,21 +112,14 @@ class HistoryFragment : Fragment() {
                 onSelected = {
                     if (it != checked) {
                         val newRating = if (it == 0) Constants.LIKE else Constants.DISLIKE
-                        // TODO updateRating(movie, position, newRating)
+                        updateRating(movie, newRating)
                     }
                 }
         )
     }
 
-    private fun updateRating(movie: HistoryMovie, position: Int, newRating: Int) {
-        movie.isUpdating = true
-        movie.rating = newRating
-        recycler_view.adapter?.notifyItemChanged(position)
-
-        Handler().postDelayed({
-            movie.isUpdating = false
-            recycler_view.adapter?.notifyItemChanged(position)
-        }, 500)
+    private fun updateRating(movie: HistoryMovieViewEntity, newRating: Int) {
+        viewModel.update(movie, newRating)
     }
 
     companion object {

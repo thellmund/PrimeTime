@@ -12,7 +12,7 @@ data class HistoryMovie(
         var title: String,
         var rating: Int,
         var timestamp: LocalDate,
-        var isUpdating: Boolean
+        var isUpdating: Boolean // TODO Remove
 ): Comparable<HistoryMovie> {
 
     override fun compareTo(other: HistoryMovie): Int = other.timestamp.compareTo(timestamp)
