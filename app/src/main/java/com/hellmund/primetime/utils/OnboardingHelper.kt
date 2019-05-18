@@ -4,6 +4,8 @@ import android.content.Context
 import org.jetbrains.anko.defaultSharedPreferences
 import javax.inject.Inject
 
+private const val KEY_FIRST_LAUNCH = "firstLaunchOfPrimeTime"
+
 class OnboardingHelper @Inject constructor(
         private val context: Context
 ) {
@@ -13,9 +15,5 @@ class OnboardingHelper @Inject constructor(
         set(value) {
             context.defaultSharedPreferences.edit().putBoolean(KEY_FIRST_LAUNCH, value).apply()
         }
-
-    companion object {
-        private const val KEY_FIRST_LAUNCH = "firstLaunchOfPrimeTime"
-    }
 
 }

@@ -11,23 +11,12 @@ object Constants {
     const val WATCHLIST_INTENT = "watchlist"
     const val SEARCH_INTENT = "search"
 
-    @JvmField
-    val KEY_INCLUDED = "primetime_my_genres"
-
-    @JvmField
-    val KEY_EXCLUDED = "primetime_excluded_genres"
-
-    @JvmField
-    val KEY_STREAMING_SERVICES = "primetime_my_streaming_services"
-
-    @JvmField
-    val KEY_NOTIFICATIONS = "primetime_release_notifications"
-
-    @JvmField
-    val KEY_PLAY_STORE = "primetime_rate_playstore"
-
-    @JvmField
-    val KEY_ABOUT = "primetime_about_app"
+    const val KEY_INCLUDED = "primetime_my_genres"
+    const val KEY_EXCLUDED = "primetime_excluded_genres"
+    const val KEY_STREAMING_SERVICES = "primetime_my_streaming_services"
+    const val KEY_NOTIFICATIONS = "primetime_release_notifications"
+    const val KEY_PLAY_STORE = "primetime_rate_playstore"
+    const val KEY_ABOUT = "primetime_about_app"
 
     const val LIKE = 1
     const val DISLIKE = 0

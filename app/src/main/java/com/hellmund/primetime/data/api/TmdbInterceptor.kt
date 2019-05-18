@@ -3,8 +3,11 @@ package com.hellmund.primetime.data.api
 import com.hellmund.primetime.utils.ApiUtils
 import okhttp3.Interceptor
 import okhttp3.Response
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TmdbInterceptor : Interceptor {
+@Singleton
+class TmdbInterceptor @Inject constructor() : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()

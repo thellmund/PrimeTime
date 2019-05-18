@@ -100,13 +100,13 @@ class SelectMoviesActivity : AppCompatActivity() {
 
     private fun saveMovies() {
         if (!button.isEnabled) {
-            this.showToast(getString(R.string.select_at_least, MIN_COUNT))
+            showToast(getString(R.string.select_at_least, MIN_COUNT))
         }
 
-        if (this.isConnected) {
+        if (isConnected) {
             saveSelection()
         } else {
-            this.showToast(getString(R.string.not_connected))
+            showToast(getString(R.string.not_connected))
         }
     }
 

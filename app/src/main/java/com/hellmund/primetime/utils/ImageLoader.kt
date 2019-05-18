@@ -10,14 +10,14 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import javax.inject.Inject
 
 sealed class Transformation {
-    object None : Transformation()
     object CenterCrop : Transformation()
     data class Placeholder(val resId: Int) : Transformation()
 }
 
-class ImageLoader private constructor(context: Context) {
+class ImageLoader @Inject constructor(context: Context) {
 
     private val requestManager: RequestManager = Glide.with(context)
 

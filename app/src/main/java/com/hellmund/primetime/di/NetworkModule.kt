@@ -17,16 +17,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-class NetworkModule {
+object NetworkModule {
 
-    @Singleton
-    @Provides
-    fun provideTmdbInterceptor(): TmdbInterceptor = TmdbInterceptor()
+    private const val BASE_URL = "https://api.themoviedb.org/3/"
 
-    @Singleton
-    @Provides
-    fun provideRetryInterceptor(): RetryInterceptor = RetryInterceptor()
-
+    @JvmStatic
     @Singleton
     @Provides
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
@@ -35,6 +30,7 @@ class NetworkModule {
         }
     }
 
+    @JvmStatic
     @Singleton
     @Provides
     fun provideOkHttpClient(
@@ -49,6 +45,7 @@ class NetworkModule {
                 .build()
     }
 
+    @JvmStatic
     @Singleton
     @Provides
     fun provideGson(): Gson {
@@ -57,6 +54,7 @@ class NetworkModule {
                 .create()
     }
 
+    @JvmStatic
     @Singleton
     @Provides
     fun provideApiService(
@@ -70,10 +68,6 @@ class NetworkModule {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(ApiService::class.java)
-    }
-
-    companion object {
-        private const val BASE_URL = "https://api.themoviedb.org/3/"
     }
 
 }

@@ -22,8 +22,7 @@ class App : Application() {
 
         createChannel(this)
         scheduleNotifications(this)
-
-        RxJavaPlugins.setErrorHandler(ErrorHelper.logAndIgnore())
+        initRxJavaErrorHandler()
     }
 
     private fun buildComponent() {
@@ -39,6 +38,10 @@ class App : Application() {
 
     private fun initTimber() {
         Timber.plant(Timber.DebugTree())
+    }
+
+    private fun initRxJavaErrorHandler() {
+        RxJavaPlugins.setErrorHandler(ErrorHelper.logAndIgnore())
     }
 
 }
