@@ -105,7 +105,6 @@ class SelectMoviesViewModel @Inject constructor(
             }
             is Result.Error -> viewState.copy(isLoading = false, error = result.error)
             is Result.SelectionChanged -> {
-                // TODO Clean up
                 val items = viewState.data
                 val index = items.indexOfFirst { it.id == result.sample.id }
                 val newItems = items.toMutableList()

@@ -35,12 +35,6 @@ class ReviewsAdapter: RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(review: Review) = with(itemView) {
-            // TODO: Markdown support
-            /*Markwon.create(context).apply {
-                val content = render(parse(review.content))
-                setParsedMarkdown(reviewTextView, content)
-            }*/
-
             reviewTextView.text = review.content
             setOnClickListener {
                 if (reviewTextView.maxLines == COLLAPSED_LINES) {

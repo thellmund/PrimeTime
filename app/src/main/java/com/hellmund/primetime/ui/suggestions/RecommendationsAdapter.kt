@@ -9,7 +9,6 @@ import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.Transformation
 import kotlinx.android.synthetic.main.list_item_samples_list.view.*
 
-// TODO: Make this into single MoviesAdapter, used in multiple places
 class RecommendationsAdapter(
         private val onClick: (MovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<RecommendationsAdapter.ViewHolder>() {

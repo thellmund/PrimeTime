@@ -65,7 +65,7 @@ class MovieRankingProcessor @Inject constructor(
     }
 
     private fun adjustRating(movie: Movie): MovieWithScore {
-        // TODO
+        // TODO Implement this
         return MovieWithScore(movie, movie.voteAverage)
     }
 

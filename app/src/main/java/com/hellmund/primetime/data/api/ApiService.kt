@@ -35,7 +35,9 @@ interface ApiService {
     ): Observable<MoviesResponse>
 
     @GET("movie/top_rated")
-    fun topRatedMovies(): Observable<MoviesResponse>
+    fun topRatedMovies(
+            @Query("page") page: Int
+    ): Observable<MoviesResponse>
 
     @GET("movie/{movieId}/recommendations")
     fun recommendations(

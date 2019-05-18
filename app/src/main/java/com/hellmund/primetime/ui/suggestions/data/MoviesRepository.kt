@@ -32,7 +32,7 @@ class MoviesRepository @Inject constructor(
             page: Int
     ): Observable<List<Movie>> {
         return when (type) {
-            is RecommendationsType.Personalized -> fetchPersonalizedRecommendations(type.genres)
+            is RecommendationsType.Personalized -> fetchPersonalizedRecommendations(type.genres, page)
             is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id, page)
             is RecommendationsType.NowPlaying -> fetchNowPlayingRecommendations(page)
             is RecommendationsType.Upcoming -> fetchUpcomingRecommendations(page)
@@ -41,12 +41,14 @@ class MoviesRepository @Inject constructor(
     }
 
     private fun fetchPersonalizedRecommendations(
-            filterGenres: List<Genre>? = null
+            filterGenres: List<Genre>? = null,
+            page: Int
     ): Observable<List<Movie>> {
         // TODO: Fix this workaround
         // TODO: Add new movies to results
+
         if (onboardingHelper.isFirstLaunch) {
-            return fetchTopRatedMovies()
+            return fetchTopRatedMovies(page)
         }
 
         val personalized = historyRepository
@@ -54,7 +56,7 @@ class MoviesRepository @Inject constructor(
                 .flattenAsObservable { it }
                 .sorted()
                 .take(10)
-                .flatMap { fetchRecommendations(it.id) }
+                .flatMap { fetchRecommendations(it.id, page) }
                 .toList()
                 .map { it.flatten() }
                 .toObservable()
@@ -62,9 +64,9 @@ class MoviesRepository @Inject constructor(
         val genres = filterGenres?.let { Observable.just(it) } ?: genresRepository.preferredGenres
         val byGenre = genres
                 .flatMapIterable { it }
-                .flatMap { fetchGenreRecommendations(it.id) }
+                .flatMap { fetchGenreRecommendations(it.id, page) }
 
-        val topRated = fetchTopRatedMovies()
+        val topRated = fetchTopRatedMovies(page)
 
         return Observable.zip(personalized, byGenre, topRated, resultsZipper)
     }
@@ -120,14 +122,14 @@ class MoviesRepository @Inject constructor(
                 }
     }
 
-    private fun fetchTopRatedMovies(): Observable<List<Movie>> {
+    private fun fetchTopRatedMovies(
+            page: Int = 1
+    ): Observable<List<Movie>> {
         return apiService
-                .topRatedMovies()
+                .topRatedMovies(page)
                 .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
-                .map {
-                    it.results
-                }
+                .map { it.results }
     }
 
     fun fetchVideo(movie: MovieViewEntity): Observable<String> {
