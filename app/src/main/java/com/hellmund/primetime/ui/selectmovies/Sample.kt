@@ -21,7 +21,7 @@ data class Sample(
         get() = "https://image.tmdb.org/t/p/w500$posterPath"
 
     fun toHistoryMovie(): HistoryMovie {
-        return HistoryMovie(id, title, Constants.LIKE, LocalDate.now(), false)
+        return HistoryMovie(id, title, Constants.LIKE, LocalDate.now())
     }
 
 }
