@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/searchResultsContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/background">
 
     <!-- RESULTS LIST VIEW -->
-    <ListView
-        android:id="@+id/results_list"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/resultsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="88dp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <!-- LOADING PLACEHOLDER -->
     <LinearLayout
-        android:id="@+id/loading_container"
+        android:id="@+id/loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="top"
@@ -35,7 +37,7 @@
 
     <!-- NO RESULTS PLACEHOLDER -->
     <LinearLayout
-        android:id="@+id/placeholder_container"
+        android:id="@+id/placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"

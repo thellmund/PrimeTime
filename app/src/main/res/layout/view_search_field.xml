@@ -23,7 +23,7 @@
         tools:visibility="visible" />
 
     <EditText
-        android:id="@+id/search_box"
+        android:id="@+id/searchBox"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:layout_marginStart="@dimen/default_space"
@@ -45,7 +45,7 @@
         tools:targetApi="o" />
 
     <ImageButton
-        android:id="@+id/search_clear"
+        android:id="@+id/clearSearchButton"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"

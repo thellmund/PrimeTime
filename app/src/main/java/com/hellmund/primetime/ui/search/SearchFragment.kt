@@ -1,7 +1,6 @@
 package com.hellmund.primetime.ui.search
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -32,7 +31,7 @@ import com.hellmund.primetime.ui.suggestions.MainFragment
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.details.Rating
-import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.supportActionBar
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -58,7 +57,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private val searchResultsAdapter: SearchResultsAdapter by lazy {
         SearchResultsAdapter(
-                requireContext(),
+                ImageLoader.with(requireContext()),
                 onShowSimilar = this::showSimilarMovies,
                 onWatched = this::onWatched
         )
@@ -116,11 +115,11 @@ class SearchFragment : Fragment(), TextWatcher,
 
         searchResultsAdapter.update(viewState.data)
 
-        results_list.isVisible = viewState.data.isNotEmpty()
-        loading_container.isVisible = viewState.isLoading
-        placeholder_container.isVisible = viewState.showPlaceholder
+        resultsRecyclerView.isVisible = viewState.data.isNotEmpty()
+        loading.isVisible = viewState.isLoading
+        placeholder.isVisible = viewState.showPlaceholder
 
-        search_clear.isVisible = viewState.showClearButton
+        clearSearchButton.isVisible = viewState.showClearButton
 
         viewState.rating?.let {
             showAddedToHistorySnackbar(it)
@@ -141,8 +140,8 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun initSearch() {
-        search_box.setOnEditorActionListener(this)
-        search_box.addTextChangedListener(this)
+        searchBox.setOnEditorActionListener(this)
+        searchBox.addTextChangedListener(this)
 
         backButton.setOnClickListener {
             clearSearchBarContent()
@@ -150,7 +149,7 @@ class SearchFragment : Fragment(), TextWatcher,
             toggleSearchResults(false)
         }
 
-        search_box.setOnFocusChangeListener { _, hasFocus ->
+        searchBox.setOnFocusChangeListener { _, hasFocus ->
             backButton.isVisible = hasFocus
 
             if (hasFocus) {
@@ -165,7 +164,7 @@ class SearchFragment : Fragment(), TextWatcher,
             }
         }
 
-        search_clear.setOnClickListener {
+        clearSearchButton.setOnClickListener {
             if (it.alpha == 1f) {
                 clearSearchBarContent()
                 toggleKeyboard(true)
@@ -212,7 +211,8 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun initSearchResultsRecyclerView() {
-        results_list.adapter = searchResultsAdapter
+        resultsRecyclerView.itemAnimator = DefaultItemAnimator()
+        resultsRecyclerView.adapter = searchResultsAdapter
     }
 
     override fun onReselected() {
@@ -244,14 +244,14 @@ class SearchFragment : Fragment(), TextWatcher,
         val historyMovie = HistoryMovie.fromRating(rating)
         viewModel.addToHistory(historyMovie)
 
-        Snackbar.make(results_list, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(resultsRecyclerView, message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) { /* TODO */ }
                 // TODO .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
                 .show()
     }
 
     private val historySnackbar: Snackbar by lazy {
-        Snackbar.make(results_list, "", Snackbar.LENGTH_LONG)
+        Snackbar.make(resultsRecyclerView, "", Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) { /* TODO */ }
                 // TODO .setActionTextColor(UiUtils.getSnackbarColor(requireContext()))
     }
@@ -277,7 +277,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun showSimilarMovies(position: Int) {
-        val result = results_list.adapter.getItem(position) as MovieViewEntity
+        /*val result = results_list.adapter.getItem(position) as MovieViewEntity
         val id = result.id
         val title = result.title
 
@@ -287,12 +287,12 @@ class SearchFragment : Fragment(), TextWatcher,
         intent.putExtra(Constants.MOVIE_TITLE, title)
 
         startActivity(intent)
-        requireActivity().finish()
+        requireActivity().finish()*/
     }
 
     private fun clearSearchBarContent() {
-        search_clear.alpha = 0.7f
-        search_box.text.clear()
+        clearSearchButton.alpha = 0.7f
+        searchBox.text.clear()
     }
 
     override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
@@ -335,16 +335,16 @@ class SearchFragment : Fragment(), TextWatcher,
         val inputMethodManager = requireContext().inputMethodManager
 
         if (show) {
-            search_box.requestFocus()
-            inputMethodManager.showSoftInput(search_box, InputMethodManager.SHOW_IMPLICIT)
+            searchBox.requestFocus()
+            inputMethodManager.showSoftInput(searchBox, InputMethodManager.SHOW_IMPLICIT)
         } else {
-            search_box.clearFocus()
-            inputMethodManager.hideSoftInputFromWindow(search_box.windowToken, 0)
+            searchBox.clearFocus()
+            inputMethodManager.hideSoftInputFromWindow(searchBox.windowToken, 0)
         }
     }
 
     override fun onDestroyView() {
-        search_box.removeTextChangedListener(this)
+        searchBox.removeTextChangedListener(this)
         super.onDestroyView()
     }
 

@@ -1,11 +1,10 @@
 package com.hellmund.primetime.ui.search
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.utils.ImageLoader
@@ -14,42 +13,24 @@ import com.hellmund.primetime.utils.showInfoBox
 import kotlinx.android.synthetic.main.list_item_search_results.view.*
 
 class SearchResultsAdapter(
-        private val context: Context,
+        private val imageLoader: ImageLoader,
         private val onShowSimilar: (MovieViewEntity) -> Unit,
         private val onWatched: (MovieViewEntity) -> Unit
-) : BaseAdapter() {
+) : RecyclerView.Adapter<SearchResultsAdapter.ViewHolder>() {
 
     private val items = mutableListOf<MovieViewEntity>()
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var view = convertView
-        val holder: ViewHolder
-
-        if (view == null) {
-            view = LayoutInflater.from(context)
-                    .inflate(R.layout.list_item_search_results, parent, false)
-            holder = ViewHolder(view)
-            view.tag = holder
-        } else {
-            holder = view.tag as ViewHolder
-        }
-
-        holder.bind(context, items[position], onShowSimilar, onWatched)
-
-        return view!!
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.list_item_search_results, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getCount(): Int {
-        return items.size
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(imageLoader, items[position], onShowSimilar, onWatched)
     }
 
-    override fun getItem(position: Int): Any {
-        return items[position]
-    }
-
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
+    override fun getItemCount(): Int = items.size
 
     fun update(newItems: List<MovieViewEntity>) {
         items.clear()
@@ -62,15 +43,15 @@ class SearchResultsAdapter(
         notifyDataSetChanged()
     }
 
-    class ViewHolder(private val view: View) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(
-                context: Context,
+                imageLoader: ImageLoader,
                 searchResult: MovieViewEntity,
                 onShowSimilar: (MovieViewEntity) -> Unit,
                 onWatchedIt: (MovieViewEntity) -> Unit
-        ) = with(view) {
-            loadImage(context, searchResult.posterUrl)
+        ) = with(itemView) {
+            loadImage(imageLoader, searchResult.posterUrl)
             title.text = searchResult.title
             genres.isVisible = searchResult.formattedGenres.isNotBlank()
             genres.text = searchResult.formattedGenres
@@ -80,14 +61,12 @@ class SearchResultsAdapter(
             setOnClickListener { context.showInfoBox(searchResult.description) }
         }
 
-        private fun loadImage(context: Context, url: String) = with(view) {
+        private fun loadImage(imageLoader: ImageLoader, url: String) = with(itemView) {
             val transformations = arrayOf<Transformation>(
                     Transformation.Placeholder(R.drawable.poster_placeholder))
-
-            ImageLoader
-                    .with(context)
-                    .load(url = url, transformations = transformations, into = posterImageView)
+            imageLoader.load(url = url, transformations = transformations, into = posterImageView)
         }
+
     }
 
 }

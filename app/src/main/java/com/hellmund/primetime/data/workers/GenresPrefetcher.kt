@@ -42,8 +42,8 @@ class GenresPrefetcher @Inject constructor() {
                     .filter { it.isEmpty() }
                     .flatMapObservable { genresRepository.fetchGenres() }
                     .single(emptyList())
-                    .doOnSuccess { genresRepository.storeGenres(it) }
-                    .map { Result.success() }
+                    .flatMapCompletable { genresRepository.storeGenres(it) }
+                    .andThen(Single.just(Result.success()))
                     .onErrorReturnItem(Result.retry())
         }
 
