@@ -82,9 +82,7 @@ class SearchViewModel @Inject constructor(
 
     private fun fetchGenres(): Observable<Result> {
         return genresRepository.all
-                .map {
-                    Result.GenresLoaded(it) as Result
-                }
+                .map { Result.GenresLoaded(it) as Result }
                 .toObservable()
     }
 

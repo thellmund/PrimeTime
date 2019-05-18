@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.transaction
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -33,7 +34,10 @@ import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.details.Rating
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.plusAssign
 import com.hellmund.primetime.utils.supportActionBar
+import io.reactivex.Maybe
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.state_layout_search_results.*
 import kotlinx.android.synthetic.main.view_search_field.*
@@ -68,6 +72,9 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private val viewModel: SearchViewModel by lazyViewModel { viewModelProvider }
+
+    // TODO Move to ViewModel
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -132,11 +139,10 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun showFragment(fragment: Fragment) {
-        requireFragmentManager()
-                .beginTransaction()
-                .replace(R.id.contentFrame, fragment)
-                .addToBackStack(null)
-                .commit()
+        requireFragmentManager().transaction {
+            replace(R.id.contentFrame, fragment)
+            addToBackStack(fragment.javaClass.simpleName)
+        }
     }
 
     private fun initSearch() {
@@ -187,21 +193,32 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun onCategorySelected(category: String) {
-        val type = when (category) {
-            "Now playing" -> RecommendationsType.NowPlaying
-            "Upcoming" -> RecommendationsType.Upcoming
+        val recommendationsType = when (category) {
+            "Now playing" -> Maybe.just(RecommendationsType.NowPlaying)
+            "Upcoming" -> Maybe.just(RecommendationsType.Upcoming)
             else -> {
-                val genre = genreDao.getGenre(category).blockingGet()
-                val apiGenre = ApiGenre(genre.id, genre.name)
-                RecommendationsType.ByGenre(apiGenre)
+                genreDao.getGenre(category)
+                        .map { ApiGenre(it.id, it.name) }
+                        .map { RecommendationsType.ByGenre(it) }
             }
         }
 
-        requireFragmentManager()
-                .beginTransaction()
-                .replace(R.id.contentFrame, MainFragment.newInstance(type))
-                .addToBackStack(null)
-                .commit()
+        compositeDisposable += recommendationsType
+                .map { MainFragment.newInstance(it) }
+                .subscribe {
+                    requireFragmentManager().transaction {
+                        replace(R.id.contentFrame, it)
+                        addToBackStack(null)
+                    }
+                }
+    }
+
+    private fun navigate(recommendationsType: RecommendationsType) {
+        val fragment = MainFragment.newInstance(recommendationsType)
+        requireFragmentManager().transaction {
+            replace(R.id.contentFrame, fragment)
+            addToBackStack(fragment.javaClass.simpleName)
+        }
     }
 
     private fun buildCategories(genres: List<Genre>): List<String> {
@@ -324,7 +341,6 @@ class SearchFragment : Fragment(), TextWatcher,
                 .setTitle(title)
                 .setItems(options) { _, index ->
                     val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
-                    // val rating = if (which == 0) Constants.LIKE else Constants.DISLIKE
                     addRating(rating)
                 }
                 .setCancelable(true)
@@ -346,6 +362,11 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onDestroyView() {
         searchBox.removeTextChangedListener(this)
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        compositeDisposable.dispose()
+        super.onDestroy()
     }
 
     companion object {

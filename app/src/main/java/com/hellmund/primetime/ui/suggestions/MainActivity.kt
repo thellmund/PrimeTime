@@ -5,6 +5,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.workers.GenresPrefetcher
@@ -37,6 +38,17 @@ class MainActivity : AppCompatActivity() {
     private val currentFragment: Fragment
         get() = checkNotNull(supportFragmentManager.findFragmentById(R.id.contentFrame))
 
+    private val onNavigationItemSelected = { menuItem: MenuItem ->
+        val fragment = createFragment(menuItem)
+        showFragment(fragment)
+        true
+    }
+
+    private val onNavigationItemReselected = BottomNavigationView.OnNavigationItemReselectedListener {
+        val reselectable = currentFragment as? Reselectable
+        reselectable?.onReselected()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -49,16 +61,8 @@ class MainActivity : AppCompatActivity() {
 
         genresPrefetcher.run()
 
-        bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
-            val fragment = createFragment(menuItem)
-            showFragment(fragment)
-            true
-        }
-
-        bottomNavigation.setOnNavigationItemReselectedListener {
-            val reselectable = currentFragment as? Reselectable
-            reselectable?.onReselected()
-        }
+        bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelected)
+        bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
 
         if (savedInstanceState == null) {
             showFragment(MainFragment.newInstance())
@@ -140,14 +144,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val isHome = currentFragment is MainFragment
-        val hasBackStack = supportFragmentManager.backStackEntryCount > 0
-
-        when {
-            hasBackStack -> supportFragmentManager.popBackStack()
-            isHome.not() -> openHome()
-            else -> super.onBackPressed()
+        if (supportFragmentManager.backStack.isNotEmpty()) {
+            supportFragmentManager.popBackStackImmediate()
+            adjustBottomNavigation()
+        } else {
+            super.onBackPressed()
         }
+    }
+
+    private fun adjustBottomNavigation() {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.contentFrame)
+        bottomNavigation.setOnNavigationItemSelectedListener(null)
+        bottomNavigation.setOnNavigationItemReselectedListener(null)
+        bottomNavigation.selectedItemId = when (currentFragment) {
+            is MainFragment -> R.id.home
+            is SearchFragment -> R.id.search
+            is WatchlistFragment -> R.id.watchlist
+            else -> throw IllegalStateException()
+        }
+        bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelected)
+        bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
     }
 
     override fun onDestroy() {
