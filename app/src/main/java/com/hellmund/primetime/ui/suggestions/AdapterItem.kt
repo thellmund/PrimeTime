@@ -26,6 +26,7 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
                     onClick: (MovieViewEntity) -> Unit,
                     onLongClick: (MovieViewEntity) -> Unit
             ) = with(holder.itemView) {
+                posterImageView.setImageResource(0)
                 menuButton.isVisible = false
             }
 
@@ -48,6 +49,7 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
                                 transformations = transformations,
                                 into = posterImageView
                         )
+                menuButton.isVisible = true
 
                 setOnClickListener { onClick(movie) }
                 menuButton.setOnClickListener { onLongClick(movie) }
