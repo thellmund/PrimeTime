@@ -162,10 +162,14 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         startActivity(intent)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val filterMenuItem = menu.findItem(R.id.action_filter)
+        filterMenuItem.isVisible = type is Personalized && onboardingHelper.isFirstLaunch.not()
+        super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (type is Personalized) {
-            inflater.inflate(R.menu.menu_main, menu)
-        }
+        inflater.inflate(R.menu.menu_main, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
