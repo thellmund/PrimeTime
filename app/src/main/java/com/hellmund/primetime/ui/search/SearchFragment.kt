@@ -18,13 +18,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.database.AppDatabase
-import com.hellmund.primetime.data.database.GenreDao
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.ui.suggestions.MainFragment
@@ -50,7 +49,7 @@ class SearchFragment : Fragment(), TextWatcher,
     lateinit var viewModelProvider: Provider<SearchViewModel>
 
     @Inject
-    lateinit var database: AppDatabase
+    lateinit var genresRepository: GenresRepository
 
     private val categoriesAdapter: SearchCategoriesAdapter by lazy {
         SearchCategoriesAdapter(onItemClick = this::onCategorySelected)
@@ -62,10 +61,6 @@ class SearchFragment : Fragment(), TextWatcher,
                 onItemClick = this::onItemClick,
                 onWatched = this::onWatched
         )
-    }
-
-    private val genreDao: GenreDao by lazy {
-        database.genreDao()
     }
 
     private val viewModel: SearchViewModel by lazyViewModel { viewModelProvider }
@@ -198,7 +193,8 @@ class SearchFragment : Fragment(), TextWatcher,
             "Now playing" -> Maybe.just(RecommendationsType.NowPlaying)
             "Upcoming" -> Maybe.just(RecommendationsType.Upcoming)
             else -> {
-                genreDao.getGenre(category)
+                genresRepository
+                        .getGenreByName(category)
                         .map { ApiGenre(it.id, it.name) }
                         .map { RecommendationsType.ByGenre(it) }
             }

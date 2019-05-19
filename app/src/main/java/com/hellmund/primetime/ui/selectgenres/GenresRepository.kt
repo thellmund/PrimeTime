@@ -43,6 +43,10 @@ class GenresRepository @Inject constructor(
             .getGenre(genreId.toInt())
             .subscribeOn(Schedulers.io())
 
+    fun getGenreByName(name: String): Maybe<Genre> = database.genreDao()
+            .getGenre(name)
+            .subscribeOn(Schedulers.io())
+
     fun getGenres(genreIds: Set<String>): Single<List<Genre>> {
         return Single
                 .fromCallable {
