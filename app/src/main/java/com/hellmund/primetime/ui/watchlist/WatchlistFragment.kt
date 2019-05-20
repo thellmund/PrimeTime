@@ -61,12 +61,12 @@ class WatchlistFragment : Fragment() {
     private fun setupViewPager() {
         viewPager.adapter = adapter
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        indicator.setViewPager(viewPager)
+        indicator.attachTo(viewPager)
     }
 
     private fun render(viewState: WatchlistViewState) {
         adapter.update(viewState.data)
-        indicator.invalidate()
+        indicator.reattach()
 
         content.isVisible = viewState.data.isNotEmpty()
         placeholder.isVisible = viewState.data.isEmpty()
