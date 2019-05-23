@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -77,10 +78,17 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setToolbarSubtitle(type)
         setupPersonalizationBanner()
+
         setupRecyclerView()
+        setupFab()
+
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setToolbarSubtitle()
     }
 
     private fun setupPersonalizationBanner() {
@@ -112,6 +120,11 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
         val spacing = round(resources.getDimension(R.dimen.default_space))
         recyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
+    }
+
+    private fun setupFab() {
+        filterFab.isVisible = type is Personalized && onboardingHelper.isFirstLaunch.not()
+        filterFab.setOnClickListener { showFilterDialog() }
     }
 
     private fun render(viewState: MainViewState) {
@@ -151,8 +164,8 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         )
     }
 
-    private fun setToolbarSubtitle(type: RecommendationsType) {
-        val title = when (type) {
+    private fun setToolbarSubtitle() {
+        val title = when (val type = type) {
             is Personalized -> getString(R.string.app_name)
             is RecommendationsType.BasedOnMovie -> type.title
             is RecommendationsType.NowPlaying -> getString(R.string.now_playing)
@@ -167,22 +180,13 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         startActivity(intent)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        val filterMenuItem = menu.findItem(R.id.action_filter)
-        filterMenuItem.isVisible = type is Personalized && onboardingHelper.isFirstLaunch.not()
-        super.onPrepareOptionsMenu(menu)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_filter -> {
-                showFilterDialog()
-                true
-            }
             R.id.action_settings -> {
                 openSettings()
                 true

@@ -153,7 +153,11 @@ class SearchFragment : Fragment(), TextWatcher,
             clearSearchBarContent()
             toggleSearchResults(false)
             toggleKeyboard(false)
+
             it.isVisible = searchBox.hasFocus() || searchResultsContainer.isVisible
+            if (searchResultsContainer.isVisible.not()) {
+                supportActionBar?.show()
+            }
         }
 
         searchBox.setOnFocusChangeListener { _, hasFocus ->

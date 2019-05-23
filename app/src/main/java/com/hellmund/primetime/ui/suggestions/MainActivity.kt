@@ -101,7 +101,6 @@ class MainActivity : AppCompatActivity() {
     private fun showFragment(fragment: Fragment) {
         val isBackStackEmpty = supportFragmentManager.backStackEntryCount == 0
         supportFragmentManager.transaction {
-            setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
             replace(R.id.contentFrame, fragment)
 
             if (currentFragment is MainFragment && isBackStackEmpty) {

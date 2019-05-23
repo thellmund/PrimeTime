@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.appbar.AppBarLayout
 import com.hellmund.primetime.R
 import com.hellmund.primetime.ui.search.SearchFragment
+import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 
 class FragmentLifecycleCallback(
         private val activity: AppCompatActivity
@@ -32,6 +33,11 @@ class FragmentLifecycleCallback(
     override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
         super.onFragmentResumed(fm, f)
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(fm.backStackEntryCount > 1)
+
+        when (f) {
+            is MainFragment, is WatchlistFragment -> activity.supportActionBar?.show()
+            else -> Unit
+        }
 
         if (f is SearchFragment) {
             toolbar.setBackgroundColor(searchToolbarColor)
