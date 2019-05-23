@@ -49,7 +49,10 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     }
 
     private val recommendationsAdapter: RecommendationsAdapter by lazy {
-        RecommendationsAdapter(onClick = this::onRecommendationClicked)
+        RecommendationsAdapter(
+                imageLoader = imageLoader,
+                onClick = this::onRecommendationClicked
+        )
     }
 
     private val reviewsAdapter: ReviewsAdapter by lazy { ReviewsAdapter() }

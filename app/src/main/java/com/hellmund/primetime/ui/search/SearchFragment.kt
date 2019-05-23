@@ -46,6 +46,9 @@ class SearchFragment : Fragment(), TextWatcher,
         TextView.OnEditorActionListener, MainActivity.Reselectable {
 
     @Inject
+    lateinit var imageLoader: ImageLoader
+
+    @Inject
     lateinit var viewModelProvider: Provider<SearchViewModel>
 
     @Inject
@@ -57,7 +60,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private val searchResultsAdapter: SearchResultsAdapter by lazy {
         SearchResultsAdapter(
-                ImageLoader.with(requireContext()),
+                imageLoader,
                 onItemClick = this::onItemClick,
                 onWatched = this::onWatched
         )

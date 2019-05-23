@@ -28,6 +28,9 @@ import javax.inject.Provider
 class MainFragment : Fragment(), MainActivity.Reselectable {
 
     @Inject
+    lateinit var imageLoader: ImageLoader
+
+    @Inject
     lateinit var onboardingHelper: OnboardingHelper
 
     @Inject
@@ -46,6 +49,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private val adapter: MoviesAdapter by lazy {
         MoviesAdapter(
+                imageLoader = imageLoader,
                 onClick = this::openMovieDetails,
                 onMenuClick = this::openRatingDialog
         )

@@ -10,6 +10,7 @@ import com.hellmund.primetime.utils.Transformation
 import kotlinx.android.synthetic.main.list_item_samples_list.view.*
 
 class RecommendationsAdapter(
+        private val imageLoader: ImageLoader,
         private val onClick: (MovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<RecommendationsAdapter.ViewHolder>() {
 
@@ -22,7 +23,7 @@ class RecommendationsAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(movies[position], onClick)
+        holder.bind(movies[position], imageLoader, onClick)
     }
 
     override fun getItemCount(): Int = movies.size
@@ -37,18 +38,17 @@ class RecommendationsAdapter(
 
         fun bind(
                 movie: MovieViewEntity,
+                imageLoader: ImageLoader,
                 onClick: (MovieViewEntity) -> Unit
         ) = with(itemView) {
             val transformations: Array<Transformation> =
                     arrayOf(Transformation.Placeholder(R.drawable.poster_placeholder))
 
-            ImageLoader
-                    .with(context)
-                    .load(
-                            url =movie.posterUrl,
-                            transformations = transformations,
-                            into = posterImageView
-                    )
+            imageLoader.load(
+                    url = movie.posterUrl,
+                    transformations = transformations,
+                    into = posterImageView
+            )
 
             setOnClickListener { onClick(movie) }
         }

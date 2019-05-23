@@ -20,8 +20,11 @@ import javax.inject.Provider
 class SelectMoviesActivity : AppCompatActivity() {
 
     private val adapter: SamplesAdapter by lazy {
-        SamplesAdapter(viewModel::onItemClick)
+        SamplesAdapter(imageLoader, viewModel::onItemClick)
     }
+
+    @Inject
+    lateinit var imageLoader: ImageLoader
 
     @Inject
     lateinit var onboardingHelper: OnboardingHelper

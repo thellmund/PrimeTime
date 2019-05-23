@@ -10,6 +10,7 @@ sealed class AdapterItem(val viewType: Int) {
 
     open fun bind(
             holder: SamplesAdapter.ViewHolder,
+            imageLoader: ImageLoader,
             onItemClick: (Sample) -> Unit
     ) = Unit
 
@@ -25,10 +26,11 @@ sealed class AdapterItem(val viewType: Int) {
 
             override fun bind(
                     holder: SamplesAdapter.ViewHolder,
+                    imageLoader: ImageLoader,
                     onItemClick: (Sample) -> Unit
             ) = with(holder.itemView) {
                 container.alpha = if (sample.selected) 1f else 0.4f
-                ImageLoader.with(context).load(
+                imageLoader.load(
                         url = sample.fullPosterUrl,
                         transformations = arrayOf(Transformation.Placeholder(R.drawable.poster_placeholder)),
                         into = posterImageView

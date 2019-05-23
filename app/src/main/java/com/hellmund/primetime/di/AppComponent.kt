@@ -68,14 +68,18 @@ interface AppComponent {
 }
 
 @Module
-abstract class AppModule {
+interface AppModule {
 
     @Singleton
     @Binds
-    abstract fun bindValueFormatter(impl: RealValueFormatter): ValueFormatter
+    fun bindImageLoader(impl: GlideImageLoader): ImageLoader
 
     @Singleton
     @Binds
-    abstract fun bindStringProvider(impl: RealStringProvider): StringProvider
+    fun bindValueFormatter(impl: RealValueFormatter): ValueFormatter
+
+    @Singleton
+    @Binds
+    fun bindStringProvider(impl: RealStringProvider): StringProvider
 
 }

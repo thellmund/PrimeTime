@@ -17,17 +17,26 @@ sealed class Transformation {
     data class Placeholder(val resId: Int) : Transformation()
 }
 
-class ImageLoader @Inject constructor(context: Context) {
-
-    private val requestManager: RequestManager = Glide.with(context)
-
-    @JvmOverloads
+interface ImageLoader {
     fun load(
             url: String,
             into: ImageView,
             transformations: Array<Transformation> = arrayOf(Transformation.CenterCrop),
             onComplete: ((Drawable) -> Unit)? = null,
             onError: (() -> Unit)? = null
+    )
+}
+
+class GlideImageLoader @Inject constructor(context: Context) : ImageLoader {
+
+    private val requestManager: RequestManager = Glide.with(context)
+
+    override fun load(
+            url: String,
+            into: ImageView,
+            transformations: Array<Transformation>,
+            onComplete: ((Drawable) -> Unit)?,
+            onError: (() -> Unit)?
     ) {
         val requestOptions = RequestOptions()
 
@@ -64,11 +73,6 @@ class ImageLoader @Inject constructor(context: Context) {
                     }
                 })
                 .into(into)
-    }
-
-    companion object {
-        @JvmStatic
-        fun with(context: Context) = ImageLoader(context)
     }
 
 }

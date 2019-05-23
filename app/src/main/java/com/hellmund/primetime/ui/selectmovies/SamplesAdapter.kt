@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.hellmund.primetime.utils.ImageLoader
 
 class SamplesAdapter(
+        private val imageLoader: ImageLoader,
         private val onItemClick: (Sample) -> Unit
 ) : RecyclerView.Adapter<SamplesAdapter.ViewHolder>() {
 
@@ -23,7 +25,7 @@ class SamplesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        items[position].bind(holder, onItemClick)
+        items[position].bind(holder, imageLoader, onItemClick)
     }
 
     override fun getItemCount(): Int = items.size

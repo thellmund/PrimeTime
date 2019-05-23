@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.list_item_watchlist.view.*
 private const val COLLAPSED_LINES = 2
 
 class WatchlistAdapter(
+        private val imageLoader: ImageLoader,
         private val onWatchedIt: (WatchlistMovieViewEntity) -> Unit,
         private val onRemove: (WatchlistMovieViewEntity) -> Unit,
         private val onNotificationToggle: (WatchlistMovieViewEntity) -> Unit
@@ -31,7 +32,7 @@ class WatchlistAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(movies[position], onWatchedIt, onRemove, onNotificationToggle)
+        holder.bind(movies[position], imageLoader, onWatchedIt, onRemove, onNotificationToggle)
     }
 
     override fun getItemCount(): Int = movies.size
@@ -66,20 +67,19 @@ class WatchlistAdapter(
 
         fun bind(
                 movie: WatchlistMovieViewEntity,
+                imageLoader: ImageLoader,
                 onWatchedIt: (WatchlistMovieViewEntity) -> Unit,
                 onRemove: (WatchlistMovieViewEntity) -> Unit,
                 onNotificationToggle: (WatchlistMovieViewEntity) -> Unit
         ) = with(itemView) {
-            ImageLoader
-                    .with(context)
-                    .load(
-                            url = movie.posterUrl,
-                            transformations = arrayOf(
-                                    Transformation.CenterCrop,
-                                    Transformation.Placeholder(R.drawable.poster_placeholder)
-                            ),
-                            into = posterImageView
-                    )
+            imageLoader.load(
+                    url = movie.posterUrl,
+                    transformations = arrayOf(
+                            Transformation.CenterCrop,
+                            Transformation.Placeholder(R.drawable.poster_placeholder)
+                    ),
+                    into = posterImageView
+            )
 
             description.text = movie.description
             runtime.text = movie.formattedRuntime

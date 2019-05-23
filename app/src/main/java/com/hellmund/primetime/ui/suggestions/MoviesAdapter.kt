@@ -5,8 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.hellmund.primetime.utils.ImageLoader
 
 class MoviesAdapter(
+        private val imageLoader: ImageLoader,
         private val onClick: (MovieViewEntity) -> Unit,
         private val onMenuClick: (MovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
@@ -19,7 +21,7 @@ class MoviesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        items[position].bind(holder, onClick, onMenuClick)
+        items[position].bind(holder, imageLoader, onClick, onMenuClick)
     }
 
     override fun getItemCount(): Int = items.size

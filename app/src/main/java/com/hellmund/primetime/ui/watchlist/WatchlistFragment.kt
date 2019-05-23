@@ -12,10 +12,7 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.history.HistoryActivity
-import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.observe
-import com.hellmund.primetime.utils.showCancelableDialog
-import com.hellmund.primetime.utils.showItemsDialog
+import com.hellmund.primetime.utils.*
 import kotlinx.android.synthetic.main.fragment_watchlist.*
 import javax.inject.Inject
 import javax.inject.Provider
@@ -23,12 +20,20 @@ import javax.inject.Provider
 class WatchlistFragment : Fragment() {
 
     @Inject
+    lateinit var imageLoader: ImageLoader
+
+    @Inject
     lateinit var viewModelProvider: Provider<WatchlistViewModel>
 
     private val viewModel: WatchlistViewModel by lazyViewModel { viewModelProvider }
 
     private val adapter: WatchlistAdapter by lazy {
-        WatchlistAdapter(this::onWatchedIt, this::onRemove, this::onNotificationToggle)
+        WatchlistAdapter(
+                imageLoader = imageLoader,
+                onWatchedIt = this::onWatchedIt,
+                onRemove = this::onRemove,
+                onNotificationToggle = this::onNotificationToggle
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

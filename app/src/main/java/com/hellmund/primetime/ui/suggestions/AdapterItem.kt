@@ -11,6 +11,7 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
 
     open fun bind(
             holder: MoviesAdapter.ViewHolder,
+            imageLoader: ImageLoader,
             onClick: (MovieViewEntity) -> Unit,
             onLongClick: (MovieViewEntity) -> Unit
     ) = Unit
@@ -23,6 +24,7 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
 
             override fun bind(
                     holder: MoviesAdapter.ViewHolder,
+                    imageLoader: ImageLoader,
                     onClick: (MovieViewEntity) -> Unit,
                     onLongClick: (MovieViewEntity) -> Unit
             ) = with(holder.itemView) {
@@ -36,15 +38,14 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
 
             override fun bind(
                     holder: MoviesAdapter.ViewHolder,
+                    imageLoader: ImageLoader,
                     onClick: (MovieViewEntity) -> Unit,
                     onLongClick: (MovieViewEntity) -> Unit
             ) = with(holder.itemView) {
                 val transformations: Array<Transformation> =
                         arrayOf(Transformation.Placeholder(R.drawable.poster_placeholder))
 
-                ImageLoader
-                        .with(context)
-                        .load(
+                imageLoader.load(
                                 url = movie.posterUrl,
                                 transformations = transformations,
                                 into = posterImageView
