@@ -28,12 +28,6 @@ fun Context.showInfoDialog(message: String) {
             .show()
 }
 
-fun Context.showInfoBox(message: String) {
-    AlertDialog.Builder(this)
-            .setMessage(message)
-            .show()
-}
-
 @JvmOverloads
 fun Context.showCancelableDialog(
         @StringRes messageResId: Int,

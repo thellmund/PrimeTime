@@ -93,6 +93,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private fun setupRecyclerView() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+        swipeRefreshLayout.setOnRefreshListener { viewModel.refresh() }
 
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
