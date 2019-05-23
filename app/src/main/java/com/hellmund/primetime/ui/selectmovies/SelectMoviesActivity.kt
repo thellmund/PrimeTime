@@ -36,7 +36,7 @@ class SelectMoviesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_movies)
-        injector.inject(this)
+        injector.selectMoviesComponent().inject(this)
 
         setupRecyclerView()
         updateNextButton()

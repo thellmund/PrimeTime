@@ -10,12 +10,17 @@ import io.reactivex.schedulers.Schedulers
 import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
-class SamplesRepository @Inject constructor(
+interface SamplesRepository {
+    fun fetch(genres: List<Genre>, page: Int): Observable<List<Sample>>
+    fun store(movies: List<HistoryMovie>): Completable
+}
+
+class RealSamplesRepository @Inject constructor(
         private val apiService: ApiService,
         private val historyRepository: HistoryRepository
-) {
+) : SamplesRepository {
 
-    fun fetch(
+    override fun fetch(
             genres: List<Genre>,
             page: Int
     ): Observable<List<Sample>> {
@@ -52,7 +57,7 @@ class SamplesRepository @Inject constructor(
                 .toList()
     }
 
-    fun store(movies: List<HistoryMovie>): Completable {
+    override fun store(movies: List<HistoryMovie>): Completable {
         return historyRepository
                 .store(*movies.toTypedArray())
                 .subscribeOn(Schedulers.io())

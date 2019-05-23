@@ -1,12 +1,12 @@
 package com.hellmund.primetime.ui.suggestions.di
 
-import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
+import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import dagger.BindsInstance
 import dagger.Subcomponent
 
 @Subcomponent
-interface SuggestionComponent {
+interface MovieDetailsComponent {
 
     fun inject(movieDetailsFragment: MovieDetailsFragment)
 
@@ -16,7 +16,7 @@ interface SuggestionComponent {
         @BindsInstance
         fun movie(movie: MovieViewEntity): Builder
 
-        fun build(): SuggestionComponent
+        fun build(): MovieDetailsComponent
 
     }
 

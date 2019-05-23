@@ -10,8 +10,9 @@ import org.jetbrains.anko.defaultSharedPreferences
 import javax.inject.Singleton
 
 @Module
-class PersistenceModule {
+object PersistenceModule {
 
+    @JvmStatic
     @Singleton
     @Provides
     fun provideDatabase(
@@ -23,6 +24,7 @@ class PersistenceModule {
                 .build()
     }
 
+    @JvmStatic
     @Singleton
     @Provides
     fun provideSharedPrefs(

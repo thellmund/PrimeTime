@@ -64,7 +64,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        injector.suggestionComponent()
+        injector.movieDetailsComponent()
                 .movie(movie)
                 .build()
                 .inject(this)

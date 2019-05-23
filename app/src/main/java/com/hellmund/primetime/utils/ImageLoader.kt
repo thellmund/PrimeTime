@@ -35,7 +35,6 @@ class ImageLoader @Inject constructor(context: Context) {
             requestOptions.apply(when (it) {
                 is Transformation.Placeholder -> RequestOptions.placeholderOf(it.resId)
                 is Transformation.CenterCrop -> RequestOptions.centerCropTransform()
-                else -> RequestOptions.noTransformation()
             })
         }
 

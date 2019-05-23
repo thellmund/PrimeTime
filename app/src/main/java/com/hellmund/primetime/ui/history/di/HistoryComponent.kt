@@ -1,16 +1,14 @@
 package com.hellmund.primetime.ui.history.di
 
-import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.ui.history.HistoryRepository
+import com.hellmund.primetime.ui.history.RealHistoryRepository
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 
 @Module
-class HistoryModule {
+interface HistoryModule {
 
-    @Provides
-    fun provideHistoryRepository(
-            database: AppDatabase
-    ): HistoryRepository = HistoryRepository(database)
+    @Binds
+    fun bindHistoryRepository(impl: RealHistoryRepository): HistoryRepository
 
 }

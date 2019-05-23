@@ -12,7 +12,6 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.about.AboutActivity
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingServicesStore
 import com.hellmund.primetime.ui.settings.delegates.GenresDelegate
 import com.hellmund.primetime.ui.settings.delegates.GenresValidator
@@ -24,9 +23,6 @@ import com.hellmund.primetime.utils.showInfoDialog
 import javax.inject.Inject
 
 class SettingsFragment : PreferenceFragmentCompat() {
-
-    @Inject
-    lateinit var genresRepository: GenresRepository
 
     @Inject
     lateinit var streamingServicesStore: StreamingServicesStore

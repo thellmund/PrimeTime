@@ -18,16 +18,26 @@ import javax.inject.Inject
 
 data class MoviesResponse(val results: List<Movie>)
 
-class MoviesRepository @Inject constructor(
+interface MoviesRepository {
+    fun fetchRecommendations(type: RecommendationsType, page: Int): Observable<List<Movie>>
+    fun fetchRecommendations(movieId: Int, page: Int = 1): Observable<List<Movie>>
+    fun fetchVideo(movie: MovieViewEntity): Observable<String>
+    fun fetchMovie(movieId: Int): Observable<Movie>
+    fun searchMovies(query: String): Observable<List<Movie>>
+    fun fetchPopularMovies(): Observable<List<Movie>>
+    fun fetchReviews(movieId: Int): Observable<List<Review>>
+}
+
+class RealMoviesRepository @Inject constructor(
         private val apiService: ApiService,
         private val genresRepository: GenresRepository,
         private val historyRepository: HistoryRepository,
         private val onboardingHelper: OnboardingHelper
-) {
+) : MoviesRepository {
 
     private val resultsZipper = ResultsZipper()
 
-    fun fetchRecommendations(
+    override fun fetchRecommendations(
             type: RecommendationsType,
             page: Int
     ): Observable<List<Movie>> {
@@ -97,9 +107,9 @@ class MoviesRepository @Inject constructor(
                 .map { it.results }
     }
 
-    fun fetchRecommendations(
+    override fun fetchRecommendations(
             movieId: Int,
-            page: Int = 1
+            page: Int
     ): Observable<List<Movie>> {
         return apiService
                 .recommendations(movieId, page)
@@ -131,7 +141,7 @@ class MoviesRepository @Inject constructor(
                 .map { it.results }
     }
 
-    fun fetchVideo(movie: MovieViewEntity): Observable<String> {
+    override fun fetchVideo(movie: MovieViewEntity): Observable<String> {
         return apiService
                 .videos(movie.id)
                 .doOnError(ErrorHelper.logAndIgnore())
@@ -140,14 +150,14 @@ class MoviesRepository @Inject constructor(
                 .map { VideoResolver.findBest(movie.title, it) }
     }
 
-    fun fetchMovie(movieId: Int): Observable<Movie> {
+    override fun fetchMovie(movieId: Int): Observable<Movie> {
         return apiService
                 .movie(movieId)
                 .doOnError(ErrorHelper.logAndIgnore())
                 .subscribeOn(Schedulers.io())
     }
 
-    fun searchMovies(query: String): Observable<List<Movie>> {
+    override fun searchMovies(query: String): Observable<List<Movie>> {
         return apiService
                 .search(query)
                 .doOnError(ErrorHelper.logAndIgnore())
@@ -155,7 +165,7 @@ class MoviesRepository @Inject constructor(
                 .map { it.results }
     }
 
-    fun fetchPopularMovies(): Observable<List<Movie>> {
+    override fun fetchPopularMovies(): Observable<List<Movie>> {
         return apiService
                 .popular()
                 .doOnError(ErrorHelper.logAndIgnore())
@@ -163,7 +173,7 @@ class MoviesRepository @Inject constructor(
                 .map { it.results }
     }
 
-    fun fetchReviews(movieId: Int): Observable<List<Review>> {
+    override fun fetchReviews(movieId: Int): Observable<List<Review>> {
         return apiService
                 .reviews(movieId)
                 .doOnError(ErrorHelper.logAndIgnore())
