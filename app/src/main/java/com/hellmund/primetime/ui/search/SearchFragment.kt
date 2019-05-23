@@ -170,7 +170,6 @@ class SearchFragment : Fragment(), TextWatcher,
             }
 
             if (hasFocus) {
-                searchResultsAdapter.clear()
                 toggleSearchResults(true)
             }
         }
@@ -230,15 +229,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     override fun onReselected() {
-        val current = requireFragmentManager().findFragmentById(R.id.contentFrame)
-        if (current is SearchFragment) {
-            if (searchResultsContainer.isVisible) {
-                searchResultsContainer.isVisible = false
-                categoriesRecyclerView.isVisible = true
-            } else {
-                toggleKeyboard(true)
-            }
-        }
+        toggleKeyboard(true)
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {

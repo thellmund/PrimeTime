@@ -39,11 +39,11 @@ class MainActivity : AppCompatActivity() {
         get() = supportFragmentManager.findFragmentById(R.id.contentFrame)
 
     private val onNavigationItemSelected = { menuItem: MenuItem ->
+        val isInMainFragment = currentFragment is MainFragment
+        val isInSearchTab = bottomNavigation.selectedItemId == R.id.search
+
         when (menuItem.itemId) {
             R.id.home -> {
-                val isInMainFragment = currentFragment is MainFragment
-                val isInSearchTab = bottomNavigation.selectedItemId == R.id.search
-
                 if (isInMainFragment && isInSearchTab) {
                     supportFragmentManager.popBackStack()
                 }
@@ -55,6 +55,10 @@ class MainActivity : AppCompatActivity() {
                 showFragment(fragment)
             }
             R.id.watchlist -> {
+                if (isInMainFragment && isInSearchTab) {
+                    supportFragmentManager.popBackStack()
+                }
+
                 val fragment = WatchlistFragment.newInstance()
                 showFragment(fragment)
             }
