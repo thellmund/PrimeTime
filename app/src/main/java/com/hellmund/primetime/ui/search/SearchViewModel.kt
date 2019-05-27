@@ -5,11 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.HistoryMovie
+import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
+import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.utils.StringProvider
 import com.hellmund.primetime.utils.plusAssign
@@ -62,9 +64,13 @@ class SearchViewModel @Inject constructor(
 
     private val compositeDisposable = CompositeDisposable()
     private val actionsRelay = PublishRelay.create<Action>()
+    private val navigationRelay = PublishRelay.create<String>()
 
     private val _viewState = MutableLiveData<SearchViewState>()
     val viewState: LiveData<SearchViewState> = _viewState
+
+    private val _destinations = MutableLiveData<NavigationEvent>()
+    val destinations: LiveData<NavigationEvent> = _destinations
 
     init {
         val initialViewState = SearchViewState()
@@ -73,6 +79,10 @@ class SearchViewModel @Inject constructor(
                 .scan(initialViewState, this::reduceState)
                 .subscribe(this::render)
         actionsRelay.accept(Action.LoadGenres)
+
+        compositeDisposable += navigationRelay
+                .switchMap(this::processNavigation)
+                .subscribe(this::navigate)
     }
 
     private fun processAction(action: Action): Observable<Result> {
@@ -81,6 +91,20 @@ class SearchViewModel @Inject constructor(
             is Action.Typed -> onTyped(action.input)
             is Action.Search -> searchMovies(action.query)
             is Action.AddToHistory -> storeInHistory(action.historyMovie)
+        }
+    }
+
+    private fun processNavigation(category: String): Observable<RecommendationsType> {
+        return when (category) {
+            "Now playing" -> Observable.just(RecommendationsType.NowPlaying)
+            "Upcoming" -> Observable.just(RecommendationsType.Upcoming)
+            else -> {
+                genresRepository
+                        .getGenreByName(category)
+                        .map { ApiGenre(it.id, it.name) }
+                        .map { RecommendationsType.ByGenre(it) as RecommendationsType }
+                        .toObservable()
+            }
         }
     }
 
@@ -138,6 +162,10 @@ class SearchViewModel @Inject constructor(
         _viewState.postValue(viewState)
     }
 
+    private fun navigate(recommendationsType: RecommendationsType) {
+        _destinations.postValue(NavigationEvent(recommendationsType))
+    }
+
     fun search(query: String) {
         actionsRelay.accept(Action.Search(query))
     }
@@ -148,6 +176,10 @@ class SearchViewModel @Inject constructor(
 
     fun addToHistory(historyMovie: HistoryMovie) {
         actionsRelay.accept(Action.AddToHistory(historyMovie))
+    }
+
+    fun onCategorySelected(category: String) {
+        navigationRelay.accept(category)
     }
 
     override fun onCleared() {

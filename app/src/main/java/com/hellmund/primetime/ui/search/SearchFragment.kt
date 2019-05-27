@@ -19,11 +19,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.HistoryMovie
-import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.ui.suggestions.MainFragment
@@ -31,9 +29,10 @@ import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.ui.suggestions.details.Rating
-import com.hellmund.primetime.utils.*
-import io.reactivex.Maybe
-import io.reactivex.disposables.CompositeDisposable
+import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.showItemsDialog
+import com.hellmund.primetime.utils.supportActionBar
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.state_layout_search_results.*
 import kotlinx.android.synthetic.main.view_search_field.*
@@ -50,9 +49,6 @@ class SearchFragment : Fragment(), TextWatcher,
 
     @Inject
     lateinit var viewModelProvider: Provider<SearchViewModel>
-
-    @Inject
-    lateinit var genresRepository: GenresRepository
 
     private val categoriesAdapter: SearchCategoriesAdapter by lazy {
         SearchCategoriesAdapter(onItemClick = this::onCategorySelected)
@@ -71,9 +67,6 @@ class SearchFragment : Fragment(), TextWatcher,
     private val snackbar: Snackbar by lazy {
         Snackbar.make(resultsRecyclerView, "", Snackbar.LENGTH_LONG)
     }
-
-    // TODO Move to ViewModel
-    private val compositeDisposable = CompositeDisposable()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -99,6 +92,7 @@ class SearchFragment : Fragment(), TextWatcher,
         initSearchResultsRecyclerView()
 
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
+        viewModel.destinations.observe(viewLifecycleOwner, this::navigate)
 
         val type = arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE)
         type?.let {
@@ -195,21 +189,11 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun onCategorySelected(category: String) {
-        val recommendationsType = when (category) {
-            "Now playing" -> Maybe.just(RecommendationsType.NowPlaying)
-            "Upcoming" -> Maybe.just(RecommendationsType.Upcoming)
-            else -> {
-                genresRepository
-                        .getGenreByName(category)
-                        .map { ApiGenre(it.id, it.name) }
-                        .map { RecommendationsType.ByGenre(it) }
-            }
-        }
-
-        compositeDisposable += recommendationsType.subscribe { navigate(it) }
+        viewModel.onCategorySelected(category)
     }
 
-    private fun navigate(recommendationsType: RecommendationsType) {
+    private fun navigate(event: NavigationEvent) {
+        val recommendationsType = event.getIfNotHandled() ?: return
         val fragment = MainFragment.newInstance(recommendationsType)
         requireFragmentManager().transaction {
             replace(R.id.contentFrame, fragment)
@@ -299,11 +283,6 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onDestroyView() {
         searchBox.removeTextChangedListener(this)
         super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        compositeDisposable.dispose()
-        super.onDestroy()
     }
 
     companion object {
