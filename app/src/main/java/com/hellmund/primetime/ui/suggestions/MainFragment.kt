@@ -46,8 +46,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         checkNotNull(arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE))
     }
 
-    private var isLoadingMore: Boolean = false
-
     private val adapter: MoviesAdapter by lazy {
         MoviesAdapter(
                 imageLoader = imageLoader,
@@ -67,7 +65,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        viewModel.refresh() // TODO Move to ViewModel
     }
 
     override fun onCreateView(
@@ -111,12 +108,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.adapter = adapter
 
-        recyclerView.onBottomReached {
-            if (isLoadingMore.not()) {
-                viewModel.refresh()
-                isLoadingMore = true
-            }
-        }
+        recyclerView.onBottomReached { viewModel.refresh() }
 
         val spacing = round(resources.getDimension(R.dimen.default_space))
         recyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
@@ -128,9 +120,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun render(viewState: MainViewState) {
-        // TODO Move to ViewModel
-        isLoadingMore = false
-
         viewState.filtered?.let {
             adapter.update(it)
         } ?: adapter.update(viewState.data)

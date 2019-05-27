@@ -9,22 +9,12 @@ import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.suggestions.data.MovieRankingProcessor
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.suggestions.details.Rating
-import com.hellmund.primetime.utils.containsAny
 import com.hellmund.primetime.utils.plusAssign
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-
-data class MainViewState(
-        val recommendationsType: RecommendationsType = RecommendationsType.Personalized(),
-        val data: List<MovieViewEntity> = emptyList(),
-        val filtered: List<MovieViewEntity>? = null,
-        val pagesLoaded: Int = 0,
-        val isLoading: Boolean = false,
-        val error: Throwable? = null
-)
 
 sealed class Action {
     data class LoadMovies(
@@ -62,6 +52,7 @@ class MainViewModel @Inject constructor(
     val viewState: LiveData<MainViewState> = _viewState
 
     private var pagesLoaded: Int = 0
+    private var isLoadingMore: Boolean = false
 
     init {
         val initialViewState = MainViewState(isLoading = true)
@@ -69,6 +60,7 @@ class MainViewModel @Inject constructor(
                 .switchMap(this::processAction)
                 .scan(initialViewState, this::reduceState)
                 .subscribe(this::render)
+        refresh()
     }
 
     private fun processAction(action: Action): Observable<Result> {
@@ -104,28 +96,16 @@ class MainViewModel @Inject constructor(
             result: Result
     ): MainViewState {
         return when (result) {
-            is Result.Loading -> viewState.copy(isLoading = true, error = null)
-            is Result.Data -> {
-                pagesLoaded = result.page
-                val newData = if (result.page == 1) result.data else viewState.data + result.data
-                viewState.copy(recommendationsType = result.type, data = newData, filtered = null, pagesLoaded = result.page, isLoading = false, error = null)
-            }
-            is Result.Error -> viewState.copy(isLoading = false, error = result.error)
-            is Result.RatingStored -> {
-                val movies = viewState.data.minus(result.movie)
-                viewState.copy(data = movies)
-            }
-            is Result.Filter -> {
-                val genreIds = result.genres.map { it.id }.toSet()
-                val genreMovies = viewState.data
-                        .filter { genreIds.containsAny(it.raw.genreIds.orEmpty()) }
-                val type = RecommendationsType.Personalized(result.genres)
-                viewState.copy(recommendationsType = type, filtered = genreMovies)
-            }
+            is Result.Loading -> viewState.toLoading()
+            is Result.Data -> viewState.toData(result).also { pagesLoaded = it.pagesLoaded }
+            is Result.Error -> viewState.toError(result.error)
+            is Result.RatingStored -> viewState.toData(result)
+            is Result.Filter -> viewState.toFiltered(result)
         }
     }
 
     private fun render(viewState: MainViewState) {
+        isLoadingMore = false
         _viewState.postValue(viewState)
     }
 
@@ -135,7 +115,10 @@ class MainViewModel @Inject constructor(
     }
 
     fun refresh() {
-        refreshRelay.accept(Action.LoadMovies(recommendationsType, pagesLoaded + 1))
+        if (isLoadingMore.not()) {
+            isLoadingMore = true
+            refreshRelay.accept(Action.LoadMovies(recommendationsType, pagesLoaded + 1))
+        }
     }
 
     fun filter(genres: List<Genre>) {
