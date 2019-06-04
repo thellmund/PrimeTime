@@ -114,10 +114,12 @@ class MainViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun refresh() {
+    fun refresh(
+        page: Int = pagesLoaded + 1
+    ) {
         if (isLoadingMore.not()) {
             isLoadingMore = true
-            refreshRelay.accept(Action.LoadMovies(recommendationsType, pagesLoaded + 1))
+            refreshRelay.accept(Action.LoadMovies(recommendationsType, page))
         }
     }
 

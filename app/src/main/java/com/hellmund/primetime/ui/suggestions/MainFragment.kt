@@ -3,7 +3,12 @@ package com.hellmund.primetime.ui.suggestions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -20,8 +25,17 @@ import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.ui.suggestions.details.Rating
-import com.hellmund.primetime.utils.*
-import kotlinx.android.synthetic.main.fragment_main.*
+import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.OnboardingHelper
+import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.onBottomReached
+import com.hellmund.primetime.utils.showItemsDialog
+import com.hellmund.primetime.utils.showMultiSelectDialog
+import kotlinx.android.synthetic.main.fragment_main.banner
+import kotlinx.android.synthetic.main.fragment_main.filterFab
+import kotlinx.android.synthetic.main.fragment_main.recyclerView
+import kotlinx.android.synthetic.main.fragment_main.shimmerLayout
+import kotlinx.android.synthetic.main.fragment_main.swipeRefreshLayout
 import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
@@ -102,7 +116,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private fun setupRecyclerView() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
-        swipeRefreshLayout.setOnRefreshListener { viewModel.refresh() }
+        swipeRefreshLayout.setOnRefreshListener { viewModel.refresh(page = 1) }
 
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -120,6 +134,8 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun render(viewState: MainViewState) {
+        swipeRefreshLayout.isRefreshing = viewState.isLoading
+
         viewState.filtered?.let {
             adapter.update(it)
         } ?: adapter.update(viewState.data)
