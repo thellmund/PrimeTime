@@ -15,6 +15,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
@@ -22,6 +24,7 @@ import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.ui.settings.SettingsActivity
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
+import com.hellmund.primetime.ui.shared.ScrollAwareFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.ui.suggestions.details.Rating
@@ -40,6 +43,7 @@ import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
 
+@ScrollAwareFragment
 class MainFragment : Fragment(), MainActivity.Reselectable {
 
     @Inject
@@ -123,6 +127,25 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         recyclerView.adapter = adapter
 
         recyclerView.onBottomReached { viewModel.refresh() }
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            private val bottomNavigation =
+                requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigation)
+            private var didAnimateDown = false
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val isScrollingUp = dy > 0
+                val isScrollingDown = dy < 0
+
+                if (isScrollingUp && !didAnimateDown) {
+                    filterFab.animate().translationYBy(bottomNavigation.height.toFloat())
+                    didAnimateDown = true
+                } else if (isScrollingDown && didAnimateDown) {
+                    filterFab.animate().translationYBy(bottomNavigation.height.toFloat() * (-1))
+                    didAnimateDown = false
+                }
+            }
+        })
 
         val spacing = round(resources.getDimension(R.dimen.default_space))
         recyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
