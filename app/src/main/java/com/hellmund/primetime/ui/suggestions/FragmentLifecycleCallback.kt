@@ -47,6 +47,10 @@ class FragmentLifecycleCallback(
         activity.findViewById<FloatingActionButton?>(R.id.filterFab)
     }
 
+    private val fabMargin: Int by lazy {
+        activity.resources.getDimensionPixelSize(R.dimen.default_space)
+    }
+
     private val bottomNavHeight: Int by lazy {
         activity.resources.getDimensionPixelSize(R.dimen.bottom_nav_height)
     }
@@ -82,7 +86,7 @@ class FragmentLifecycleCallback(
 
         fab?.let {
             val fabLayoutParams = it.layoutParams as CoordinatorLayout.LayoutParams
-            fabLayoutParams.updateMargins(bottom = fabLayoutParams.bottomMargin + bottomNavHeight)
+            fabLayoutParams.updateMargins(bottom = fabMargin + bottomNavHeight)
             it.requestLayout()
         }
     }
@@ -99,8 +103,7 @@ class FragmentLifecycleCallback(
 
         fab?.let {
             val fabLayoutParams = it.layoutParams as CoordinatorLayout.LayoutParams
-            fabLayoutParams.behavior = null
-            it.translationY = 0f
+            fabLayoutParams.updateMargins(bottom = fabMargin + bottomNavHeight)
             it.requestLayout()
         }
     }
