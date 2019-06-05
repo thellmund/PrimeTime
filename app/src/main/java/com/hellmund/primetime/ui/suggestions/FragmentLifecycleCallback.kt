@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.hellmund.primetime.R
 import com.hellmund.primetime.ui.search.SearchFragment
@@ -59,10 +60,14 @@ class FragmentLifecycleCallback(
         super.onFragmentResumed(fm, f)
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(fm.backStackEntryCount > 1)
 
-        if (f.javaClass.isAnnotationPresent(ScrollAwareFragment::class.java)) {
-            scrollAwareNavigation()
-        } else {
-            fixedNavigation()
+        val isBottomSheet = f is BottomSheetDialogFragment
+
+        if (isBottomSheet.not()) {
+            if (f.javaClass.isAnnotationPresent(ScrollAwareFragment::class.java)) {
+                scrollAwareNavigation()
+            } else {
+                fixedNavigation()
+            }
         }
 
         if (f is SearchFragment) {
