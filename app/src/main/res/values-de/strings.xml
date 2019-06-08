@@ -16,7 +16,7 @@
     <string name="need_more_genres">Bitte wähle mindestens zwei Genres aus.</string>
     <string name="error_select_movie">Die Beispielfilme konnten nicht heruntergeladen werden. Versuche es erneut.</string>
     <string name="excluded_genres_summary">Wähle die Genres, aus denen du keine Empfehlungen erhalten möchtest.</string>
-    <string name="faq_header">Danke für den Download. Du bist super!</string>
+    <string name="faq_header">Danke fürs Herunterladen.</string>
     <string name="faq_tmdb_notice"><small>Dieses Produkt nutzt die TMDb-API, aber ist nicht zertifiziert von TMDb.</small></string>
     <string name="select_genres_header">Welche sind deine Lieblingsgenres?</string>
     <string name="like">Ich fand ihn super</string>
@@ -62,12 +62,12 @@
     <string name="about_the_app">Über PrimeTime</string>
     <string name="email_dev">Kontakt</string>
     <string name="excluded_genres">Ausgenommene Genres</string>
-    <string name="preferred_genres">Bevorzugte Genres</string>
+    <string name="preferred_genres">Lieblingsgenres</string>
     <string name="rate_on_play_store">Bewerte PrimeTime im Play Store</string>
     <string name="recommendation_settings">Empfehlungen</string>
     <string name="couldnt_add_rating">Bewertung konnte nicht hinzugefügt werden.</string>
     <string name="welcome_header">Willkommen bei PrimeTime</string>
-    <string name="welcome_text">Entdecke Filme, die du lieben wirst.</string>
+    <string name="welcome_text">Entdecke Filme, die du lieben wirst</string>
     <string name="go_to_recommendations">Zu den Empfehlungen</string>
     <string name="liked">Positiv bewertet</string>
     <string name="disliked">Negativ bewertet</string>
@@ -148,8 +148,8 @@
     <string name="upcoming">Kommend</string>
     <string name="now_playing">Im Kino</string>
     <string name="release_notifications">Benachrichtigungen</string>
-    <string name="release_notifications_title">Benachrichtige über Veröffentlichungen</string>
-    <string name="release_notifications_summary">Zeige eine Benachrichtigung, wenn ein Film von der Watchlist ins Kino kommt</string>
+    <string name="release_notifications_title">Erinnerungen über neue Filme</string>
+    <string name="release_notifications_summary">Erinnere mich, wenn ein Film aus meiner Watchlist ins Kino kommt</string>
     <string name="notification_off">Benachrichtigung aus</string>
     <string name="remove_from_watchlist">Aus Watchlist entfernen?</string>
     <string name="showing_notification_on">Zeige Benachrichtigung am %s</string>

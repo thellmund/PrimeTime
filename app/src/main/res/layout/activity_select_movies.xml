@@ -1,0 +1,81 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical"
+    tools:context=".ui.selectmovies.SelectMoviesActivity">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_margin"
+        android:layout_marginTop="@dimen/activity_margin"
+        android:layout_marginRight="@dimen/activity_margin"
+        android:layout_marginBottom="@dimen/tiny_space"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/select_movies_header"
+        android:textColor="@android:color/white"
+        android:textSize="28sp" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_margin"
+        android:layout_marginRight="@dimen/activity_margin"
+        android:layout_marginBottom="@dimen/default_space"
+        android:text="@string/select_movies_text"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:shimmer_auto_start="true">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/gridView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="80dp" />
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/large_button"
+            android:layout_gravity="bottom"
+            android:background="@drawable/background_bottom_button_gradient" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button"
+            style="@style/LargeButton"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/small_space"
+            android:clickable="false"
+            android:enabled="false"
+            android:text="@string/finish"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:backgroundTint="@color/selector_conditional_next_button"
+            app:cornerRadius="@dimen/small_space" />
+
+    </FrameLayout>
+
+    <include
+        android:id="@+id/error_container"
+        layout="@layout/view_samples_error"
+        android:visibility="gone" />
+
+</LinearLayout>

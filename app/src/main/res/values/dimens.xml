@@ -4,4 +4,16 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="multi_window_size">450dp</dimen>
+
+    <dimen name="tiny_space">4dp</dimen>
+    <dimen name="small_space">8dp</dimen>
+    <dimen name="default_space">16dp</dimen>
+    <dimen name="large_space">24dp</dimen>
+
+    <dimen name="large_button">64dp</dimen>
+
+    <dimen name="small_icon">24dp</dimen>
+    <dimen name="default_icon">48dp</dimen>
+
+    <dimen name="bottom_nav_height">56dp</dimen>
 </resources>

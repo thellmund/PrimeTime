@@ -1,32 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="app_color">#F44336</color>
+    <color name="app_color">#EF5350</color>
 
     <color name="colorPrimary">#212121</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#009688</color>
 
-    <color name="cover_overlay">#99000000</color>
+    <color name="toolbar">#292929</color>
+
+    <color name="colorAccentDisabled">#bdbdbd</color>
+    <color name="buttonDisabled">#00675b</color>
+
+    <color name="cover_overlay">#B3000000</color>
     <color name="background">#303030</color>
+    <color name="adapterBackground">#373737</color>
+    <color name="navigationBar">#4A4A4A</color>
 
-    <color name="bottom_bar_background">#E53935</color>
-    <color name="statusbar_background">#D32F2F</color>
     <color name="grey_background">#455A64</color>
-    <color name="darkgrey_background">#37474F</color>
-    <color name="card_view_background">#37474F</color>
-    <color name="divider_grey">#546E7A</color>
-    <color name="actionbar_text">#FFFFFF</color>
-
-    <color name="watchlist_button_not_watched">#009688</color>
-    <color name="watchlist_button_watched">#00796B</color>
-
-    <color name="on_watchlist">#009688</color>
-    <color name="watched">#00796B</color>
-
-    <color name="movie_detail_more_info">#607D8B</color>
-
-    <color name="tabbar_active">#FFFFFFFF</color>
-    <color name="tabbar_inactive">#B3FFFFFF</color>
 
     <color name="placeholder_grey">#E0E0E0</color>
     <color name="description_text">#B3FFFFFF</color>

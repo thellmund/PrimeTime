@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/adapterBackground"
+    tools:context=".ui.watchlist.WatchlistFragment">
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.hellmund.viewpager2indicator.ViewPager2Indicator
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small_space"
+            app:radius="@dimen/tiny_space"
+            app:selectedFillColor="@android:color/white"
+            app:spacing="@dimen/small_space"
+            app:unselectedFillColor="@android:color/darker_gray" />
+
+    </LinearLayout>
+
+    <!-- Placeholder container -->
+    <LinearLayout
+        android:id="@+id/placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- Error title -->
+        <TextView
+            android:id="@+id/placeholder_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/default_space"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:paddingLeft="@dimen/default_space"
+            android:paddingRight="@dimen/default_space"
+            android:singleLine="true"
+            android:text="@string/watchlist_error_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@android:color/white" />
+
+        <!-- Error text -->
+        <TextView
+            android:id="@+id/placeholder_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.1"
+            android:paddingLeft="@dimen/large_space"
+            android:paddingRight="@dimen/large_space"
+            android:text="@string/watchlist_error_text"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</FrameLayout>

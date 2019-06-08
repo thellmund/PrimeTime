@@ -1,57 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:background="?android:attr/selectableItemBackground"
     android:padding="@dimen/activity_margin">
 
-    <FrameLayout
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/posterImageView"
+        android:layout_width="80dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/access_movie_poster"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="H,2:3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:riv_corner_radius="@dimen/small_space"
+        tools:src="@drawable/poster_placeholder" />
+
+    <TextView
+        android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_marginStart="@dimen/default_space"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/posterImageView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Lorem ipsum" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:src="@drawable/poster_placeholder" />
-
-        <ImageView
-            android:id="@+id/poster"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/access_movie_poster"
-            android:scaleType="centerCrop" />
-
-    </FrameLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/genres"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_weight="3"
-        android:orientation="vertical">
+        android:layout_marginStart="@dimen/default_space"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/posterImageView"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        tools:text="Genres" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/small_space"
+        android:ellipsize="end"
+        android:lineSpacingMultiplier="1.05"
+        android:maxLines="3"
+        android:textColor="@color/description_text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/posterImageView"
+        app:layout_constraintTop_toBottomOf="@id/genres"
+        tools:text="Lorem ipsum" />
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:lineSpacingMultiplier="1.05"
-            android:maxLines="5"
-            android:textColor="@color/description_text"
-            android:textSize="15sp" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
