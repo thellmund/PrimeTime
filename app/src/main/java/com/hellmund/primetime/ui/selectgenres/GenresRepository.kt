@@ -3,22 +3,21 @@ package com.hellmund.primetime.ui.selectgenres
 import com.hellmund.primetime.data.api.ApiService
 import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.data.model.Genre
-import io.reactivex.Completable
 import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 interface GenresRepository {
+    suspend fun getAll(): List<Genre>
     val all: Single<List<Genre>>
-    val preferredGenres: Observable<List<Genre>>
-    val excludedGenres: Observable<List<Genre>>
-    fun fetchGenres(): Observable<List<Genre>>
+    suspend fun getPreferredGenres(): List<Genre>
+    suspend fun getExcludedGenres(): List<Genre>
+    suspend fun fetchGenres(): List<Genre>
     fun getGenre(genreId: String): Maybe<Genre>
     fun getGenreByName(name: String): Maybe<Genre>
     fun getGenres(genreIds: Set<String>): Single<List<Genre>>
-    fun storeGenres(genres: List<Genre>): Completable
+    suspend fun storeGenres(genres: List<Genre>)
 }
 
 class RealGenresRepository @Inject constructor(
@@ -26,28 +25,22 @@ class RealGenresRepository @Inject constructor(
         private val database: AppDatabase
 ) : GenresRepository {
 
+    override suspend fun getAll(): List<Genre> {
+        return database.genreDao().getAll()
+    }
+
     override val all: Single<List<Genre>>
         get() = database.genreDao()
-                .getAll()
+                .getAllRx()
                 .subscribeOn(Schedulers.io())
 
-    override val preferredGenres: Observable<List<Genre>>
-        get() = database.genreDao()
-                .getPreferredGenres()
-                .subscribeOn(Schedulers.io())
-                .toObservable()
+    override suspend fun getPreferredGenres() = database.genreDao().getPreferredGenres()
 
-    override val excludedGenres: Observable<List<Genre>>
-        get() = database.genreDao()
-                .getExcludedGenres()
-                .subscribeOn(Schedulers.io())
-                .toObservable()
+    override suspend fun getExcludedGenres() = database.genreDao().getExcludedGenres()
 
-    override fun fetchGenres(): Observable<List<Genre>> {
-        return apiService.genres()
-                .subscribeOn(Schedulers.io())
-                .map { it.genres }
-                .map { it.map { genre -> Genre(genre.id, genre.name) } }
+    override suspend fun fetchGenres(): List<Genre> {
+        val genres = apiService.genres()
+        return genres.genres.map { Genre(it.id, it.name) }
     }
 
     override fun getGenre(genreId: String): Maybe<Genre> = database.genreDao()
@@ -66,10 +59,8 @@ class RealGenresRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    override fun storeGenres(genres: List<Genre>): Completable {
-        return database.genreDao()
-                .store(*genres.toTypedArray())
-                .subscribeOn(Schedulers.io())
+    override suspend fun storeGenres(genres: List<Genre>) {
+        database.genreDao().store(*genres.toTypedArray())
     }
 
 }

@@ -18,9 +18,9 @@ class GenresDelegate @Inject constructor(
         val isIncludedGenres = pref.key == Constants.KEY_INCLUDED
 
         val preferenceGenres = if (isIncludedGenres) {
-            genresRepository.preferredGenres.blockingFirst()
+            emptyList<Genre>() // TODO genresRepository.preferredGenres.blockingFirst()
         } else {
-            genresRepository.excludedGenres.blockingFirst()
+            emptyList<Genre>() // TODO genresRepository.excludedGenres.blockingFirst()
         }
 
         val values = preferenceGenres

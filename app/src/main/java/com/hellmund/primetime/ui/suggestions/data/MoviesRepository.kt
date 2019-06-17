@@ -9,23 +9,19 @@ import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.VideoResolver
 import com.hellmund.primetime.ui.suggestions.details.Review
-import com.hellmund.primetime.utils.ErrorHelper
 import com.hellmund.primetime.utils.OnboardingHelper
-import io.reactivex.Observable
-import io.reactivex.functions.Function3
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 data class MoviesResponse(val results: List<Movie>)
 
 interface MoviesRepository {
-    fun fetchRecommendations(type: RecommendationsType, page: Int): Observable<List<Movie>>
-    fun fetchRecommendations(movieId: Int, page: Int = 1): Observable<List<Movie>>
-    fun fetchVideo(movie: MovieViewEntity): Observable<String>
-    fun fetchMovie(movieId: Int): Observable<Movie>
-    fun searchMovies(query: String): Observable<List<Movie>>
-    fun fetchPopularMovies(): Observable<List<Movie>>
-    fun fetchReviews(movieId: Int): Observable<List<Review>>
+    suspend fun fetchRecommendations(type: RecommendationsType, page: Int): List<Movie>
+    suspend fun fetchRecommendations(movieId: Int, page: Int = 1): List<Movie>
+    suspend fun fetchVideo(movie: MovieViewEntity): String
+    suspend fun fetchMovie(movieId: Int): Movie
+    suspend fun searchMovies(query: String): List<Movie>
+    suspend fun fetchPopularMovies(): List<Movie>
+    suspend fun fetchReviews(movieId: Int): List<Review>
 }
 
 class RealMoviesRepository @Inject constructor(
@@ -35,12 +31,10 @@ class RealMoviesRepository @Inject constructor(
         private val onboardingHelper: OnboardingHelper
 ) : MoviesRepository {
 
-    private val resultsZipper = ResultsZipper()
-
-    override fun fetchRecommendations(
-            type: RecommendationsType,
-            page: Int
-    ): Observable<List<Movie>> {
+    override suspend fun fetchRecommendations(
+        type: RecommendationsType,
+        page: Int
+    ): List<Movie> {
         return when (type) {
             is RecommendationsType.Personalized -> fetchPersonalizedRecommendations(type.genres, page)
             is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id, page)
@@ -50,143 +44,80 @@ class RealMoviesRepository @Inject constructor(
         }
     }
 
-    private fun fetchPersonalizedRecommendations(
-            filterGenres: List<Genre>? = null,
-            page: Int
-    ): Observable<List<Movie>> {
+    private suspend fun fetchPersonalizedRecommendations(
+        filterGenres: List<Genre>? = null,
+        page: Int
+    ): List<Movie> {
         // TODO: Fix this workaround
         // TODO: Add new movies to results
         if (onboardingHelper.isFirstLaunch) {
             return fetchTopRatedMovies(page)
         }
 
-        val personalized = historyRepository
-                .getLiked()
-                .flattenAsObservable { it }
-                .sorted()
-                .take(10)
-                .flatMap { fetchRecommendations(it.id, page) }
-                .toList()
-                .map { it.flatten() }
-                .toObservable()
+        val history = historyRepository.getLiked()
+            .sorted()
+            .take(10)
 
-        val genres = filterGenres?.let { Observable.just(it) } ?: genresRepository.preferredGenres
-        val byGenre = genres
-                .flatMapIterable { it }
-                .flatMap { fetchGenreRecommendations(it.id, page) }
-
+        val personalized = history.map { fetchRecommendations(it.id, page) }.flatten()
+        val genres = filterGenres ?: genresRepository.getPreferredGenres()
+        val byGenre = genres.map { fetchGenreRecommendations(it.id, page) }.flatten()
         val topRated = fetchTopRatedMovies(page)
 
-        return Observable.zip(personalized, byGenre, topRated, resultsZipper)
+        return personalized + byGenre + topRated
     }
 
-    private fun fetchMovieBasedRecommendations(
+    private suspend fun fetchMovieBasedRecommendations(
+        movieId: Int,
+        page: Int
+    ) = fetchRecommendations(movieId, page)
+
+    private suspend fun fetchNowPlayingRecommendations(
+            page: Int
+    ) = apiService.nowPlaying(page).results
+
+    private suspend fun fetchUpcomingRecommendations(
+            page: Int
+    ): List<Movie> {
+        return apiService.upcoming(page).results
+    }
+
+    override suspend fun fetchRecommendations(
             movieId: Int,
             page: Int
-    ): Observable<List<Movie>> {
-        return fetchRecommendations(movieId, page).subscribeOn(Schedulers.io())
+    ): List<Movie> {
+        return apiService.recommendations(movieId, page).results
     }
 
-    private fun fetchNowPlayingRecommendations(
-            page: Int
-    ): Observable<List<Movie>> {
-        return apiService
-                .nowPlaying(page)
-                .doOnError(ErrorHelper.logAndIgnore())
-                .subscribeOn(Schedulers.io())
-                .map { it.results }
-    }
-
-    private fun fetchUpcomingRecommendations(
-            page: Int
-    ): Observable<List<Movie>> {
-        return apiService
-                .upcoming(page)
-                .doOnError(ErrorHelper.logAndIgnore())
-                .subscribeOn(Schedulers.io())
-                .map { it.results }
-    }
-
-    override fun fetchRecommendations(
-            movieId: Int,
-            page: Int
-    ): Observable<List<Movie>> {
-        return apiService
-                .recommendations(movieId, page)
-                .doOnError(ErrorHelper.logAndIgnore())
-                .subscribeOn(Schedulers.io())
-                .map { it.results }
-    }
-
-    private fun fetchGenreRecommendations(
+    private suspend fun fetchGenreRecommendations(
             genreId: Int,
             page: Int = 1
-    ): Observable<List<Movie>> {
-        return apiService
-                .genreRecommendations(genreId, page)
-                .doOnError(ErrorHelper.logAndIgnore())
-                .subscribeOn(Schedulers.io())
-                .map {
-                    it.results
-                }
+    ): List<Movie> {
+        return apiService.genreRecommendations(genreId, page).results
     }
 
-    private fun fetchTopRatedMovies(
+    private suspend fun fetchTopRatedMovies(
             page: Int = 1
-    ): Observable<List<Movie>> {
-        return apiService
-                .topRatedMovies(page)
-                .doOnError(ErrorHelper.logAndIgnore())
-                .subscribeOn(Schedulers.io())
-                .map { it.results }
+    ): List<Movie> {
+        return apiService.topRatedMovies(page).results
     }
 
-    override fun fetchVideo(movie: MovieViewEntity): Observable<String> {
-        return apiService
-                .videos(movie.id)
-                .doOnError(ErrorHelper.logAndIgnore())
-                .subscribeOn(Schedulers.io())
-                .map { it.results }
-                .map { VideoResolver.findBest(movie.title, it) }
+    override suspend fun fetchVideo(movie: MovieViewEntity): String {
+        val results = apiService.videos(movie.id).results
+        return VideoResolver.findBest(movie.title, results)
     }
 
-    override fun fetchMovie(movieId: Int): Observable<Movie> {
-        return apiService
-                .movie(movieId)
-                .doOnError(ErrorHelper.logAndIgnore())
-                .subscribeOn(Schedulers.io())
+    override suspend fun fetchMovie(movieId: Int) = apiService.movie(movieId)
+
+    override suspend fun searchMovies(query: String): List<Movie> {
+        return apiService.search(query).results
     }
 
-    override fun searchMovies(query: String): Observable<List<Movie>> {
-        return apiService
-                .search(query)
-                .doOnError(ErrorHelper.logAndIgnore())
-                .subscribeOn(Schedulers.io())
-                .map { it.results }
+    override suspend fun fetchPopularMovies(): List<Movie> {
+        return apiService.popular().results
     }
 
-    override fun fetchPopularMovies(): Observable<List<Movie>> {
-        return apiService
-                .popular()
-                .doOnError(ErrorHelper.logAndIgnore())
-                .subscribeOn(Schedulers.io())
-                .map { it.results }
-    }
-
-    override fun fetchReviews(movieId: Int): Observable<List<Review>> {
-        return apiService
-                .reviews(movieId)
-                .doOnError(ErrorHelper.logAndIgnore())
-                .subscribeOn(Schedulers.io())
-                .map { it.results }
-    }
-
-    class ResultsZipper : Function3<List<Movie>, List<Movie>, List<Movie>, List<Movie>> {
-
-        override fun apply(t1: List<Movie>, t2: List<Movie>, t3: List<Movie>): List<Movie> {
-            return t1 + t2 + t3
-        }
-
+    override suspend fun fetchReviews(movieId: Int): List<Review> {
+        return apiService.reviews(movieId).results
     }
 
 }

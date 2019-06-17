@@ -9,10 +9,12 @@ import javax.inject.Inject
 
 interface HistoryRepository {
     fun getAll(): Maybe<List<HistoryMovie>>
-    fun getLiked(): Maybe<List<HistoryMovie>>
-    fun count(movieId: Int): Maybe<Int>
-    fun store(vararg historyMovie: HistoryMovie): Completable
-    fun remove(movieId: Int): Completable
+    suspend fun getLiked(): List<HistoryMovie>
+    fun getLikedRx(): Maybe<List<HistoryMovie>>
+    suspend fun count(movieId: Int): Int
+    fun storeRx(vararg historyMovie: HistoryMovie): Completable
+    suspend fun store(vararg historyMovie: HistoryMovie)
+    suspend fun remove(movieId: Int)
 }
 
 class RealHistoryRepository @Inject constructor(
@@ -23,24 +25,26 @@ class RealHistoryRepository @Inject constructor(
             .getAll()
             .subscribeOn(Schedulers.io())
 
-    override fun getLiked(): Maybe<List<HistoryMovie>> = database.historyDao()
-            .getLiked()
-            .subscribeOn(Schedulers.io())
+    override suspend fun getLiked(): List<HistoryMovie> = database.historyDao().getLiked()
 
-    override fun count(movieId: Int): Maybe<Int> = database.historyDao()
-            .count(movieId)
-            .subscribeOn(Schedulers.io())
+    override fun getLikedRx(): Maybe<List<HistoryMovie>> = database.historyDao()
+        .getLikedRx()
+        .subscribeOn(Schedulers.io())
 
-    override fun store(vararg historyMovie: HistoryMovie): Completable {
+    override suspend fun count(movieId: Int) = database.historyDao().count(movieId)
+
+    override fun storeRx(vararg historyMovie: HistoryMovie): Completable {
         return database.historyDao()
-                .store(*historyMovie)
-                .subscribeOn(Schedulers.io())
+            .storeRx(*historyMovie)
+            .subscribeOn(Schedulers.io())
     }
 
-    override fun remove(movieId: Int): Completable {
-        return database.historyDao()
-                .delete(movieId)
-                .subscribeOn(Schedulers.io())
+    override suspend fun store(vararg historyMovie: HistoryMovie) {
+        return database.historyDao().store(*historyMovie)
+    }
+
+    override suspend fun remove(movieId: Int) {
+        database.historyDao().delete(movieId)
     }
 
 }

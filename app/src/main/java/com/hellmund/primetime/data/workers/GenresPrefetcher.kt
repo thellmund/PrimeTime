@@ -1,7 +1,13 @@
 package com.hellmund.primetime.data.workers
 
 import android.content.Context
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.RxWorker
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import io.reactivex.Single
@@ -36,15 +42,16 @@ class GenresPrefetcher @Inject constructor() {
 
         override fun createWork(): Single<Result> {
             injector.inject(this)
+            return Single.just(Result.success())
 
-            return genresRepository
+            /*return genresRepository
                     .all
                     .filter { it.isEmpty() }
                     .flatMapObservable { genresRepository.fetchGenres() }
                     .single(emptyList())
                     .flatMapCompletable { genresRepository.storeGenres(it) }
                     .andThen(Single.just(Result.success()))
-                    .onErrorReturnItem(Result.retry())
+                    .onErrorReturnItem(Result.retry())*/
         }
 
     }

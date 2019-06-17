@@ -1,15 +1,13 @@
 package com.hellmund.primetime.ui.selectmovies
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import com.hellmund.primetime.utils.plusAssign
-import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import com.hellmund.primetime.ui.shared.ViewStateStore
+import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 data class SelectMoviesViewState(
@@ -24,10 +22,33 @@ data class SelectMoviesViewState(
         get() = error != null
 }
 
-sealed class Action {
-    data class Refresh(val page: Int = 1) : Action()
-    data class Selected(val sample: Sample) : Action()
-    data class Store(val samples: List<Sample>) : Action()
+class SamplesViewStateStore(
+    initialState: SelectMoviesViewState
+) : ViewStateStore<SelectMoviesViewState, Result>(initialState) {
+
+    override fun reduceState(
+        state: SelectMoviesViewState,
+        result: Result
+    ): SelectMoviesViewState {
+        return when (result) {
+            is Result.Loading -> state.copy(isLoading = true, error = null)
+            is Result.Data -> {
+                val data = if (result.page == 1) result.data else state.data + result.data
+                state.copy(pages = result.page, data = data, isLoading = false, error = null)
+            }
+            is Result.Error -> state.copy(isLoading = false, error = result.error)
+            is Result.SelectionChanged -> {
+                val items = state.data
+                val index = items.indexOfFirst { it.id == result.sample.id }
+                val newItems = items.toMutableList()
+                newItems[index] = result.sample
+                state.copy(data = newItems)
+            }
+            is Result.Finished -> state.copy(isFinished = true)
+            is Result.None -> state
+        }
+    }
+
 }
 
 sealed class Result {
@@ -44,97 +65,55 @@ class SelectMoviesViewModel @Inject constructor(
         private val genresRepository: GenresRepository
 ) : ViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
-    private val refreshRelay = PublishRelay.create<Action>()
-
-    private val _viewState = MutableLiveData<SelectMoviesViewState>()
-    val viewState: LiveData<SelectMoviesViewState> = _viewState
+    private val store = SamplesViewStateStore(SelectMoviesViewState())
+    val viewState: LiveData<SelectMoviesViewState> = store.viewState
 
     private var page: Int = 1
 
     init {
-        val initialViewState = SelectMoviesViewState(isLoading = true)
-        compositeDisposable += refreshRelay
-                .switchMap(this::processAction)
-                .scan(initialViewState, this::reduceState)
-                .subscribe(this::render)
-        refreshRelay.accept(Action.Refresh())
-    }
-
-    private fun processAction(action: Action): Observable<Result> {
-        return when (action) {
-            is Action.Refresh -> fetchMovies(action.page)
-            is Action.Selected -> toggleSelection(action.sample)
-            is Action.Store -> storeSelection(action.samples)
+        viewModelScope.launch {
+            store.dispatch(Result.Loading)
+            store.dispatch(fetchMovies(page))
         }
     }
 
-    private fun fetchMovies(
+    private suspend fun fetchMovies(
             page: Int
-    ): Observable<Result> {
-        return genresRepository.preferredGenres
-                .flatMap { repository.fetch(it, page) }
-                .subscribeOn(Schedulers.io())
-                .doOnNext { this.page++ }
-                .map { Result.Data(it, page) as Result }
-                .onErrorReturn { Result.Error(it) }
-                .startWith(if (page == 1) Result.Loading else Result.None)
-    }
-
-    private fun toggleSelection(sample: Sample): Observable<Result> {
-        val newSample = sample.copy(selected = sample.selected.not())
-        return Observable.just(Result.SelectionChanged(newSample))
-    }
-
-    private fun storeSelection(samples: List<Sample>): Observable<Result> {
-        return Observable
-                .fromCallable { samples.map { it.toHistoryMovie() } }
-                .flatMapCompletable { repository.store(it) }
-                .andThen(Observable.just(Result.Finished as Result))
-    }
-
-    private fun reduceState(
-            viewState: SelectMoviesViewState,
-            result: Result
-    ): SelectMoviesViewState {
-        return when (result) {
-            is Result.Loading -> viewState.copy(isLoading = true, error = null)
-            is Result.Data -> {
-                val data = if (result.page == 1) result.data else viewState.data + result.data
-                viewState.copy(pages = result.page, data = data, isLoading = false, error = null)
-            }
-            is Result.Error -> viewState.copy(isLoading = false, error = result.error)
-            is Result.SelectionChanged -> {
-                val items = viewState.data
-                val index = items.indexOfFirst { it.id == result.sample.id }
-                val newItems = items.toMutableList()
-                newItems[index] = result.sample
-                viewState.copy(data = newItems)
-            }
-            is Result.Finished -> viewState.copy(isFinished = true)
-            is Result.None -> viewState
+    ): Result {
+        return try {
+            val genres = genresRepository.getPreferredGenres()
+            val recommendations = repository.fetch(genres, page)
+            Result.Data(recommendations, page)
+        } catch (e: IOException) {
+            Result.Error(e)
         }
     }
 
-    private fun render(viewState: SelectMoviesViewState) {
-        _viewState.postValue(viewState)
+    private fun toggleSelection(sample: Sample) {
+        val newSample = sample.copy(selected = sample.selected.not())
+        store.dispatch(Result.SelectionChanged(newSample))
+    }
+
+    private suspend fun storeSelection(samples: List<Sample>) {
+        val historyMovies = samples.map { it.toHistoryMovie() }
+        repository.store(historyMovies)
+        store.dispatch(Result.Finished)
     }
 
     fun refresh() {
-        refreshRelay.accept(Action.Refresh(page))
+        viewModelScope.launch {
+            fetchMovies(page)
+        }
     }
 
     fun onItemClick(sample: Sample) {
-        refreshRelay.accept(Action.Selected(sample))
+        toggleSelection(sample)
     }
 
     fun store(movies: List<Sample>) {
-        refreshRelay.accept(Action.Store(movies))
-    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
+        viewModelScope.launch {
+            storeSelection(movies)
+        }
     }
 
     class Factory(

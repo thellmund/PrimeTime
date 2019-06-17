@@ -1,29 +1,18 @@
 package com.hellmund.primetime.ui.suggestions
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
+import com.hellmund.primetime.ui.shared.ViewStateStore
 import com.hellmund.primetime.ui.suggestions.data.MovieRankingProcessor
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.suggestions.details.Rating
-import com.hellmund.primetime.utils.plusAssign
-import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
-
-sealed class Action {
-    data class LoadMovies(
-            val type: RecommendationsType = RecommendationsType.Personalized(),
-            val page: Int
-    ) : Action()
-    data class StoreRating(val rating: Rating) : Action()
-    data class Filter(val genres: List<Genre>) : Action()
-}
 
 sealed class Result {
     object Loading : Result()
@@ -37,6 +26,25 @@ sealed class Result {
     data class Filter(val genres: List<Genre>) : Result()
 }
 
+class MainViewStateStore(
+    initialState: MainViewState
+): ViewStateStore<MainViewState, Result>(initialState) {
+
+    override fun reduceState(
+        state: MainViewState,
+        result: Result
+    ): MainViewState {
+        return when (result) {
+            is Result.Loading -> state.toLoading()
+            is Result.Data -> state.toData(result) // TODO .also { pagesLoaded = it.pagesLoaded }
+            is Result.Error -> state.toError(result.error)
+            is Result.RatingStored -> state.toData(result)
+            is Result.Filter -> state.toFiltered(result)
+        }
+    }
+
+}
+
 class MainViewModel @Inject constructor(
         private val repository: MoviesRepository,
         private val historyRepository: HistoryRepository,
@@ -45,73 +53,37 @@ class MainViewModel @Inject constructor(
         private val recommendationsType: RecommendationsType
 ) : ViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
-    private val refreshRelay = PublishRelay.create<Action>()
-
-    private val _viewState = MutableLiveData<MainViewState>()
-    val viewState: LiveData<MainViewState> = _viewState
+    private val store = MainViewStateStore(MainViewState())
+    val viewState: LiveData<MainViewState> = store.viewState
 
     private var pagesLoaded: Int = 0
     private var isLoadingMore: Boolean = false
 
     init {
-        val initialViewState = MainViewState(isLoading = true)
-        compositeDisposable += refreshRelay
-                .switchMap(this::processAction)
-                .scan(initialViewState, this::reduceState)
-                .subscribe(this::render)
-        refresh()
-    }
-
-    private fun processAction(action: Action): Observable<Result> {
-        return when (action) {
-            is Action.LoadMovies -> fetchRecommendations(action.type, action.page)
-            is Action.StoreRating -> storeRating(action.rating)
-            is Action.Filter -> Observable.just(Result.Filter(action.genres))
+        viewModelScope.launch {
+            store.dispatch(Result.Loading)
+            store.dispatch(fetchRecommendations(recommendationsType, pagesLoaded + 1))
         }
     }
 
-    private fun fetchRecommendations(
+    private suspend fun fetchRecommendations(
             type: RecommendationsType,
             page: Int
-    ): Observable<Result> {
-        return repository.fetchRecommendations(type, page)
-                .subscribeOn(Schedulers.io())
-                .map { rankingProcessor.rank(it, type) }
-                .map(viewEntityMapper)
-                .map { Result.Data(type, it, page) as Result }
-                .onErrorReturn { Result.Error(it) }
-                .startWith(Result.Loading)
-    }
-
-    private fun storeRating(rating: Rating): Observable<Result> {
-        val historyMovie = HistoryMovie.fromRating(rating)
-        return historyRepository
-                .store(historyMovie)
-                .andThen(Observable.just(Result.RatingStored(rating.movie) as Result))
-    }
-
-    private fun reduceState(
-            viewState: MainViewState,
-            result: Result
-    ): MainViewState {
-        return when (result) {
-            is Result.Loading -> viewState.toLoading()
-            is Result.Data -> viewState.toData(result).also { pagesLoaded = it.pagesLoaded }
-            is Result.Error -> viewState.toError(result.error)
-            is Result.RatingStored -> viewState.toData(result)
-            is Result.Filter -> viewState.toFiltered(result)
+    ): Result {
+        return try {
+            val recommendations = repository.fetchRecommendations(type, page)
+            val ranked = rankingProcessor.rank(recommendations, type)
+            val viewEntities = viewEntityMapper.apply(ranked)
+            Result.Data(type, viewEntities, page)
+        } catch (e: IOException) {
+            Result.Error(e)
         }
     }
 
-    private fun render(viewState: MainViewState) {
-        isLoadingMore = false
-        _viewState.postValue(viewState)
-    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
+    private suspend fun storeRating(rating: Rating) {
+        val historyMovie = HistoryMovie.fromRating(rating)
+        historyRepository.store(historyMovie)
+        store.dispatch(Result.RatingStored(rating.movie))
     }
 
     fun refresh(
@@ -119,16 +91,21 @@ class MainViewModel @Inject constructor(
     ) {
         if (isLoadingMore.not()) {
             isLoadingMore = true
-            refreshRelay.accept(Action.LoadMovies(recommendationsType, page))
+
+            viewModelScope.launch {
+                fetchRecommendations(recommendationsType, page)
+            }
         }
     }
 
     fun filter(genres: List<Genre>) {
-        refreshRelay.accept(Action.Filter(genres))
+        store.dispatch(Result.Filter(genres))
     }
 
     fun handleRating(rating: Rating) {
-        refreshRelay.accept(Action.StoreRating(rating))
+        viewModelScope.launch {
+            storeRating(rating)
+        }
     }
 
 }

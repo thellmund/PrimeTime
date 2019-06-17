@@ -14,57 +14,85 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET("genre/movie/list")
-    fun genres(): Observable<GenresResponse>
+    suspend fun genres(): GenresResponse
 
     @GET("discover/movie")
-    fun discoverMovies(
-            @Query("with_genres") genre: Int? = null,
-            @Query("sort_by") sortBy: String = "popularity.desc",
-            @Query("primary_release_year") releaseYear: Int? = null,
-            @Query("page") page: Int = 1
-    ): Observable<SamplesResponse>
+    suspend fun discoverMovies(
+        @Query("with_genres") genre: Int? = null,
+        @Query("sort_by") sortBy: String = "popularity.desc",
+        @Query("primary_release_year") releaseYear: Int? = null,
+        @Query("page") page: Int = 1
+    ): SamplesResponse
 
     @GET("movie/upcoming")
-    fun upcoming(
-            @Query("page") page: Int
+    suspend fun upcoming(
+        @Query("page") page: Int
+    ): MoviesResponse
+
+    @GET("movie/upcoming")
+    fun upcomingRx(
+        @Query("page") page: Int
     ): Observable<MoviesResponse>
 
     @GET("movie/now_playing")
-    fun nowPlaying(
-            @Query("page") page: Int
+    suspend fun nowPlaying(
+        @Query("page") page: Int
+    ): MoviesResponse
+
+    @GET("movie/now_playing")
+    fun nowPlayingRx(
+        @Query("page") page: Int
     ): Observable<MoviesResponse>
 
     @GET("movie/top_rated")
-    fun topRatedMovies(
-            @Query("page") page: Int
+    suspend fun topRatedMovies(
+        @Query("page") page: Int
+    ): MoviesResponse
+
+    @GET("movie/top_rated")
+    fun topRatedMoviesRx(
+        @Query("page") page: Int
     ): Observable<MoviesResponse>
 
     @GET("movie/{movieId}/recommendations")
-    fun recommendations(
-            @Path("movieId") movieId: Int,
-            @Query("page") page: Int,
-            @Query("sort_by") sortBy: String = "popularity.desc"
+    suspend fun recommendations(
+        @Path("movieId") movieId: Int,
+        @Query("page") page: Int,
+        @Query("sort_by") sortBy: String = "popularity.desc"
+    ): MoviesResponse
+
+    @GET("movie/{movieId}/recommendations")
+    fun recommendationsRx(
+        @Path("movieId") movieId: Int,
+        @Query("page") page: Int,
+        @Query("sort_by") sortBy: String = "popularity.desc"
     ): Observable<MoviesResponse>
 
     @GET("genre/{genreId}/movies")
-    fun genreRecommendations(
-            @Path("genreId") genreId: Int,
-            @Query("page") page: Int
+    suspend fun genreRecommendations(
+        @Path("genreId") genreId: Int,
+        @Query("page") page: Int
+    ): MoviesResponse
+
+    @GET("genre/{genreId}/movies")
+    fun genreRecommendationsRx(
+        @Path("genreId") genreId: Int,
+        @Query("page") page: Int
     ): Observable<MoviesResponse>
 
     @GET("movie/{movieId}/videos")
-    fun videos(@Path("movieId") movieId: Int): Observable<VideosResponse>
+    suspend fun videos(@Path("movieId") movieId: Int): VideosResponse
 
     @GET("movie/{movieId}")
-    fun movie(@Path("movieId") movieId: Int): Observable<Movie>
+    suspend fun movie(@Path("movieId") movieId: Int): Movie
 
     @GET("search/movie")
-    fun search(@Query("query") query: String): Observable<MoviesResponse>
+    suspend fun search(@Query("query") query: String): MoviesResponse
 
     @GET("movie/popular")
-    fun popular(): Observable<MoviesResponse>
+    suspend fun popular(): MoviesResponse
 
     @GET("movie/{movieId}/reviews")
-    fun reviews(@Path("movieId") movieId: Int): Observable<ReviewsResponse>
+    suspend fun reviews(@Path("movieId") movieId: Int): ReviewsResponse
 
 }

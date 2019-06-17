@@ -14,15 +14,21 @@ interface HistoryDao {
     fun getAll(): Maybe<List<HistoryMovie>>
 
     @Query("SELECT * FROM history_movies WHERE rating = 1 ORDER BY timestamp DESC")
-    fun getLiked(): Maybe<List<HistoryMovie>>
+    suspend fun getLiked(): List<HistoryMovie>
+
+    @Query("SELECT * FROM history_movies WHERE rating = 1 ORDER BY timestamp DESC")
+    fun getLikedRx(): Maybe<List<HistoryMovie>>
 
     @Query("SELECT COUNT(*) FROM history_movies WHERE id = :movieId")
-    fun count(movieId: Int): Maybe<Int>
+    suspend fun count(movieId: Int): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun store(vararg movie: HistoryMovie): Completable
+    suspend fun store(vararg movie: HistoryMovie)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun storeRx(vararg movie: HistoryMovie): Completable
 
     @Query("DELETE FROM history_movies WHERE id = :id")
-    fun delete(id: Int): Completable
+    suspend fun delete(id: Int)
 
 }

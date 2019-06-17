@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
+import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
@@ -228,7 +229,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun showFilterDialog() {
-        val genres = genresRepository.preferredGenres.blockingFirst()
+        val genres = emptyList<Genre>() // TODO genresRepository.preferredGenres.blockingFirst()
         val genreNames = genres
                 .map { it.name }
                 .toTypedArray()

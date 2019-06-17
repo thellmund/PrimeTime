@@ -23,7 +23,7 @@ class MovieRankingProcessor @Inject constructor(
         get() = historyRepo.getAll().blockingGet()
 
     private val watchlist: List<WatchlistMovie>
-        get() = watchlistRepo.getAll().blockingGet()
+        get() = watchlistRepo.getAllRx().blockingFirst()
 
     private val watchedMovies: Set<Int>
         get() = history.map { it.id }.toSet()

@@ -4,9 +4,8 @@ import androidx.preference.Preference
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.plusAssign
 import io.reactivex.disposables.CompositeDisposable
-import java.util.*
+import java.util.Collections
 import javax.inject.Inject
 
 private const val MIN_GENRES = 2
@@ -39,7 +38,7 @@ class GenresValidator @Inject constructor(
                 genre.isExcluded = isExcludedGenres
             }
 
-            compositeDisposable += genresRepository.storeGenres(genres).subscribe()
+            // compositeDisposable += genresRepository.storeGenres(genres).subscribe()
 
             val results = genres.filter { if (isIncludedGenres) it.isPreferred else it.isExcluded }
             ValidationResult.Success(results)
@@ -55,13 +54,13 @@ class GenresValidator @Inject constructor(
         val isIncludedGenres = pref.key == Constants.KEY_INCLUDED
 
         val includedGenres = if (isIncludedGenres) {
-            genresRepository.preferredGenres.blockingFirst().toMutableSet()
+            mutableSetOf<Genre>() // TODO genresRepository.preferredGenres.blockingFirst().toMutableSet()
         } else {
             genresRepository.getGenres(newValues).blockingGet().toMutableSet()
         }
 
         val excludedGenres = if (isIncludedGenres.not()) {
-            genresRepository.excludedGenres.blockingFirst().toMutableSet()
+            mutableSetOf<Genre>() // TODO genresRepository.excludedGenres.blockingFirst().toMutableSet()
         } else {
             genresRepository.getGenres(newValues).blockingGet().toMutableSet()
         }
@@ -81,8 +80,8 @@ class GenresValidator @Inject constructor(
     }
 
     private fun genresAreDisjoint(preference: Preference, newGenres: Set<String>): Boolean {
-        val includedGenres = genresRepository.preferredGenres.blockingFirst()
-        val excludedGenres = genresRepository.excludedGenres.blockingFirst()
+        val includedGenres = listOf<Genre>() // genresRepository.preferredGenres.blockingFirst()
+        val excludedGenres = listOf<Genre>() // genresRepository.excludedGenres.blockingFirst()
 
         val includedIds = includedGenres.map { it.id.toString() }.toMutableSet()
         val excludedIds = excludedGenres.map { it.id.toString() }.toMutableSet()

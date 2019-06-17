@@ -1,9 +1,10 @@
 package com.hellmund.primetime.ui.suggestions.details
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hellmund.primetime.data.database.HistoryMovie
+import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
@@ -12,25 +13,10 @@ import com.hellmund.primetime.ui.suggestions.MovieViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
-import com.hellmund.primetime.utils.plusAssign
-import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import com.hellmund.primetime.utils.observe
+import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
-
-sealed class ViewModelAction {
-    object LoadStreamingServices : ViewModelAction()
-    object LoadRecommendations : ViewModelAction()
-    object LoadReviews : ViewModelAction()
-    object LoadAdditionalInformation : ViewModelAction()
-    object LoadTrailer : ViewModelAction()
-    object OpenImdb : ViewModelAction()
-    object LoadWatchStatus : ViewModelAction()
-    data class StoreRating(val rating: Rating) : ViewModelAction()
-    object AddToWatchlist : ViewModelAction()
-    object RemoveFromWatchlist : ViewModelAction()
-}
 
 sealed class ViewModelEvent {
     data class StreamingServicesLoaded(val services: List<StreamingService>) : ViewModelEvent()
@@ -47,6 +33,23 @@ sealed class ViewModelEvent {
     object None : ViewModelEvent()
 }
 
+class ViewModelEventStore {
+
+    val viewState = MutableLiveData<ViewModelEvent>()
+
+    fun observe(
+        owner: LifecycleOwner,
+        observer: (ViewModelEvent) -> Unit
+    ) = viewState.observe(owner) { observer(it) }
+
+    fun dispatch(
+        result: ViewModelEvent
+    ) {
+        viewState.value = result
+    }
+
+}
+
 sealed class Rating(val movie: MovieViewEntity) {
     class Like(movie: MovieViewEntity) : Rating(movie)
     class Dislike(movie: MovieViewEntity) : Rating(movie)
@@ -61,177 +64,140 @@ class MovieDetailsViewModel @Inject constructor(
         private var movie: MovieViewEntity
 ) : ViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
-    private val actionsRelay = PublishRelay.create<ViewModelAction>()
-
-    private val _viewModelEvents = MutableLiveData<ViewModelEvent>()
-    val viewModelEvents: LiveData<ViewModelEvent> = _viewModelEvents
+    private val store = ViewModelEventStore()
+    val viewModelEvents: LiveData<ViewModelEvent> = store.viewState
 
     init {
-        compositeDisposable += actionsRelay
-                .flatMap(this::processAction)
-                .subscribe(this::render)
-        actionsRelay.accept(ViewModelAction.LoadStreamingServices)
-    }
-
-    private fun processAction(action: ViewModelAction): Observable<ViewModelEvent> {
-        return when (action) {
-            is ViewModelAction.LoadStreamingServices -> fetchStreamingServices()
-            is ViewModelAction.LoadRecommendations -> fetchRecommendations()
-            is ViewModelAction.LoadReviews -> fetchReviews()
-            is ViewModelAction.LoadWatchStatus -> fetchWatchStatus()
-            is ViewModelAction.LoadAdditionalInformation -> fetchInformation()
-            is ViewModelAction.LoadTrailer -> fetchTrailer()
-            is ViewModelAction.OpenImdb -> fetchImdbLink()
-            is ViewModelAction.StoreRating -> storeRating(action.rating)
-            is ViewModelAction.AddToWatchlist -> onAddToWatchlist()
-            is ViewModelAction.RemoveFromWatchlist -> onRemoveFromWatchlist()
+        viewModelScope.launch {
+            store.dispatch(fetchWatchStatus())
         }
     }
 
-    private fun fetchStreamingServices(): Observable<ViewModelEvent> {
-        return Observable
-                .just(listOf(StreamingService("iTunes", true), StreamingService("Netflix", true)))
-                .map { ViewModelEvent.StreamingServicesLoaded(it) }
+    private suspend fun fetchRecommendations(): ViewModelEvent {
+        return try {
+            val movies = repository.fetchRecommendations(movie.id)
+            val mapped = viewEntitiesMapper.apply(movies)
+            ViewModelEvent.RecommendationsLoaded(mapped)
+        } catch (e: IOException) {
+            ViewModelEvent.None
+        }
     }
 
-    private fun fetchRecommendations(): Observable<ViewModelEvent> {
-        return repository
-                .fetchRecommendations(movie.id)
-                .map(viewEntitiesMapper)
-                .map { ViewModelEvent.RecommendationsLoaded(it) as ViewModelEvent }
-                .onErrorReturnItem(ViewModelEvent.None)
+    private suspend fun fetchReviews(): ViewModelEvent {
+        return try {
+            val reviews = repository.fetchReviews(movie.id)
+            ViewModelEvent.ReviewsLoaded(reviews)
+        } catch (e: IOException) {
+            ViewModelEvent.None
+        }
     }
 
-    private fun fetchReviews(): Observable<ViewModelEvent> {
-        return repository
-                .fetchReviews(movie.id)
-                .map {
-                    ViewModelEvent.ReviewsLoaded(it) as ViewModelEvent
-                }
-                .onErrorReturnItem(ViewModelEvent.None)
+    private suspend fun fetchWatchStatus(): ViewModelEvent {
+        val count = historyRepository.count(movie.id)
+        return if (count > 0) {
+            ViewModelEvent.WatchStatus(Movie.WatchStatus.WATCHED)
+        } else {
+            fetchWatchlistStatus()
+        }
     }
 
-    private fun fetchWatchStatus(): Observable<ViewModelEvent> {
-        return historyRepository.count(movie.id)
-                .subscribeOn(Schedulers.io())
-                .flatMapObservable {
-                    if (it > 0) {
-                        Observable.just(ViewModelEvent.WatchStatus(Movie.WatchStatus.WATCHED))
-                    } else {
-                        fetchWatchlistStatus()
-                    }
-                }
+    private suspend fun fetchWatchlistStatus(): ViewModelEvent {
+        val count = watchlistRepository.count(movie.id)
+        return if (count > 0) {
+            ViewModelEvent.WatchStatus(Movie.WatchStatus.ON_WATCHLIST)
+        } else {
+            ViewModelEvent.WatchStatus(Movie.WatchStatus.NOT_WATCHED)
+        }
     }
 
-    private fun fetchWatchlistStatus(): Observable<ViewModelEvent> {
-        return watchlistRepository
-                .count(movie.id)
-                .subscribeOn(Schedulers.io())
-                .flatMapObservable {
-                    if (it > 0) {
-                        Observable.just(ViewModelEvent.WatchStatus(Movie.WatchStatus.ON_WATCHLIST))
-                    } else {
-                        Observable.just(ViewModelEvent.WatchStatus(Movie.WatchStatus.NOT_WATCHED))
-                    }
-                }
+    private suspend fun fetchInformation(): ViewModelEvent {
+        val movie = repository.fetchMovie(movie.id)
+        val viewEntity = viewEntityMapper.apply(movie)
+        return ViewModelEvent.AdditionalInformationLoaded(viewEntity)
     }
 
-    private fun fetchInformation(): Observable<ViewModelEvent> {
-        return repository
-                .fetchMovie(movie.id)
-                .map(viewEntityMapper)
-                .doOnNext { movie = it }
-                .map { ViewModelEvent.AdditionalInformationLoaded(it) }
+    private suspend fun fetchTrailer(): ViewModelEvent {
+        val video = repository.fetchVideo(movie)
+        return ViewModelEvent.TrailerLoaded(video)
     }
 
-    private fun fetchTrailer(): Observable<ViewModelEvent> {
-        return repository
-                .fetchVideo(movie)
-                .map { ViewModelEvent.TrailerLoaded(it) as ViewModelEvent }
-                .startWith(ViewModelEvent.TrailerLoading)
-    }
-
-    private fun fetchImdbLink(): Observable<ViewModelEvent> {
+    private fun fetchImdbLink(): ViewModelEvent {
         val url = "http://www.imdb.com/title/${movie.imdbId}"
-        return Observable.just(ViewModelEvent.ImdbLinkLoaded(url))
+        return ViewModelEvent.ImdbLinkLoaded(url)
     }
 
-    private fun storeRating(rating: Rating): Observable<ViewModelEvent> {
+    /*private suspend fun storeRating(rating: Rating): ViewModelEvent {
         val historyMovie = HistoryMovie.fromRating(rating)
-        return historyRepository
-                .store(historyMovie)
-                .subscribeOn(Schedulers.io())
-                .andThen(Observable.just(ViewModelEvent.RatingStored(rating) as ViewModelEvent))
+        historyRepository.store(historyMovie)
+        return ViewModelEvent.RatingStored(rating)
+    }*/
+
+    private suspend fun onAddToWatchlist(): ViewModelEvent {
+        val count = watchlistRepository.count(movie.id)
+        return if (count > 0) {
+            ViewModelEvent.RemovedFromWatchlist
+        } else {
+            storeInWatchlist(movie)
+        }
     }
 
-    private fun onAddToWatchlist(): Observable<ViewModelEvent> {
-        return watchlistRepository
-                .count(movie.id)
-                .flatMapObservable {
-                    if (it > 0) {
-                        // Already on watchlist
-                        Observable.just(ViewModelEvent.RemovedFromWatchlist)
-                    } else {
-                        storeInWatchlist(movie)
-                    }
-                }
+    private suspend fun storeInWatchlist(movie: MovieViewEntity): ViewModelEvent {
+        val fetchedMovie = repository.fetchMovie(movie.id)
+        watchlistRepository.store(fetchedMovie)
+        return ViewModelEvent.AddedToWatchlist
     }
 
-    private fun storeInWatchlist(movie: MovieViewEntity): Observable<ViewModelEvent> {
-        return repository
-                .fetchMovie(movie.id)
-                .flatMapCompletable { watchlistRepository.store(it) }
-                .subscribeOn(Schedulers.io())
-                .andThen(Observable.just(ViewModelEvent.AddedToWatchlist as ViewModelEvent))
-    }
-
-    private fun onRemoveFromWatchlist(): Observable<ViewModelEvent> {
-        return watchlistRepository
-                .remove(movie.id)
-                .andThen(Observable.just(ViewModelEvent.RemovedFromWatchlist as ViewModelEvent))
+    private suspend fun onRemoveFromWatchlist(): ViewModelEvent {
+        watchlistRepository.remove(movie.id)
+        return ViewModelEvent.RemovedFromWatchlist
     }
 
     fun loadTrailer() {
-        actionsRelay.accept(ViewModelAction.LoadTrailer)
+        viewModelScope.launch {
+            store.dispatch(ViewModelEvent.TrailerLoading)
+            store.dispatch(fetchTrailer())
+        }
     }
 
     fun loadAdditionalInformation() {
-        actionsRelay.accept(ViewModelAction.LoadAdditionalInformation)
+        viewModelScope.launch {
+            store.dispatch(fetchInformation())
+        }
     }
 
     fun loadRecommendations() {
-        actionsRelay.accept(ViewModelAction.LoadRecommendations)
+        viewModelScope.launch {
+            store.dispatch(fetchRecommendations())
+        }
     }
 
     fun loadReviews() {
-        actionsRelay.accept(ViewModelAction.LoadReviews)
+        viewModelScope.launch {
+            store.dispatch(fetchReviews())
+        }
     }
 
     fun openImdb() {
-        actionsRelay.accept(ViewModelAction.OpenImdb)
+        store.dispatch(fetchImdbLink())
     }
 
-    fun handleRating(which: Int) {
-        val rating = if (which == 0) Rating.Like(movie) else Rating.Dislike(movie)
-        actionsRelay.accept(ViewModelAction.StoreRating(rating))
-    }
+    /*fun handleRating(which: Int) {
+        viewModelScope.launch {
+            val rating = if (which == 0) Rating.Like(movie) else Rating.Dislike(movie)
+            store.dispatch(storeRating(rating))
+        }
+    }*/
 
     fun addToWatchlist() {
-        actionsRelay.accept(ViewModelAction.AddToWatchlist)
+        viewModelScope.launch {
+            store.dispatch(onAddToWatchlist())
+        }
     }
 
     fun removeFromWatchlist() {
-        actionsRelay.accept(ViewModelAction.RemoveFromWatchlist)
-    }
-
-    private fun render(event: ViewModelEvent) {
-        _viewModelEvents.postValue(event)
-    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
+        viewModelScope.launch {
+            store.dispatch(onRemoveFromWatchlist())
+        }
     }
 
 }

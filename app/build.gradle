@@ -4,13 +4,13 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 'android-Q'
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.hellmund.primetime"
         minSdkVersion 21
-        targetSdkVersion 'Q'
+        targetSdkVersion 29
         versionCode 300
         versionName "3.0.0"
 
@@ -61,22 +61,28 @@ dependencies {
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.preference:preference:1.1.0-alpha05'
+    implementation 'androidx.preference:preference:1.1.0-beta01'
     implementation 'androidx.core:core-ktx:1.0.2'
     implementation 'androidx.fragment:fragment-ktx:1.0.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.viewpager2:viewpager2:1.0.0-alpha04'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0-alpha05'
 
-    implementation 'com.google.android.material:material:1.1.0-alpha06'
+    implementation 'com.google.android.material:material:1.1.0-alpha07'
 
     // Lifecycle & ViewModel
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha01'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha01'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha01'
     kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 
     // RxJava
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.0'
+
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1'
 
     // WorkManager
     implementation "androidx.work:work-runtime:2.0.1"
@@ -88,20 +94,21 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.21'
 
     // Room
-    implementation 'androidx.room:room-runtime:2.1.0-beta01'
-    implementation 'androidx.room:room-rxjava2:2.1.0-beta01'
-    kapt 'androidx.room:room-compiler:2.1.0-beta01'
+    implementation 'androidx.room:room-runtime:2.1.0-rc01'
+    implementation 'androidx.room:room-rxjava2:2.1.0-rc01'
+    implementation 'androidx.room:room-ktx:2.1.0-rc01'
+    kapt 'androidx.room:room-compiler:2.1.0-rc01'
 
     // Networking
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.13.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
 
     // Helpers
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'me.relex:circleindicator:2.1.0'
