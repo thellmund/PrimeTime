@@ -1,7 +1,6 @@
 package com.hellmund.primetime.ui.search
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.R
@@ -10,16 +9,13 @@ import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.ui.shared.ViewEventsStore
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.utils.StringProvider
-import com.hellmund.primetime.utils.plusAssign
-import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -51,7 +47,6 @@ sealed class Result {
 }
 
 class SearchViewStateStore : ViewStateStore<SearchViewState, Result>(SearchViewState()) {
-
     override fun reduceState(
         state: SearchViewState,
         result: Result
@@ -66,8 +61,9 @@ class SearchViewStateStore : ViewStateStore<SearchViewState, Result>(SearchViewS
             is Result.DismissSnackbar -> state.copy(snackbarText = null)
         }
     }
-
 }
+
+class NavigationEventsStore : ViewEventsStore<NavigationEvent>()
 
 class SearchViewModel @Inject constructor(
         private val repository: MoviesRepository,
@@ -77,37 +73,30 @@ class SearchViewModel @Inject constructor(
         private val stringProvider: StringProvider
 ) : ViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
-    private val navigationRelay = PublishRelay.create<String>()
-
     private val store = SearchViewStateStore()
     val viewState: LiveData<SearchViewState> = store.viewState
 
-    private val _destinations = MutableLiveData<NavigationEvent>()
-    val destinations: LiveData<NavigationEvent> = _destinations
+    private val events = NavigationEventsStore()
+    val destinations: LiveData<NavigationEvent> = events.viewEvents
 
     init {
         viewModelScope.launch {
             store.dispatch(fetchGenres())
         }
-
-        compositeDisposable += navigationRelay
-                .switchMap(this::processNavigation)
-                .subscribe(this::navigate)
     }
 
-    private fun processNavigation(category: String): Observable<RecommendationsType> {
-        return when (category) {
-            "Now playing" -> Observable.just(RecommendationsType.NowPlaying)
-            "Upcoming" -> Observable.just(RecommendationsType.Upcoming)
+    private suspend fun processNavigation(category: String) {
+        val recommendationsType = when (category) {
+            "Now playing" -> RecommendationsType.NowPlaying
+            "Upcoming" -> RecommendationsType.Upcoming
             else -> {
-                genresRepository
-                        .getGenreByName(category)
-                        .map { ApiGenre(it.id, it.name) }
-                        .map { RecommendationsType.ByGenre(it) as RecommendationsType }
-                        .toObservable()
+                val genre = genresRepository.getGenreByName(category)
+                val apiGenre = ApiGenre(genre.id, genre.name)
+                RecommendationsType.ByGenre(apiGenre)
             }
         }
+
+        events.dispatch(NavigationEvent(recommendationsType))
     }
 
     private suspend fun fetchGenres(): Result {
@@ -136,10 +125,6 @@ class SearchViewModel @Inject constructor(
         return Result.ShowSnackbar(message)
     }
 
-    private fun navigate(recommendationsType: RecommendationsType) {
-        _destinations.postValue(NavigationEvent(recommendationsType))
-    }
-
     fun search(query: String) {
         viewModelScope.launch {
             store.dispatch(searchMovies(query))
@@ -161,12 +146,9 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onCategorySelected(category: String) {
-        navigationRelay.accept(category)
-    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
+        viewModelScope.launch {
+            processNavigation(category)
+        }
     }
 
 }

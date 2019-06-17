@@ -27,7 +27,7 @@ interface GenreDao {
     fun getGenre(id: Int): Maybe<Genre>
 
     @Query("SELECT * FROM genres WHERE name = :name")
-    fun getGenre(name: String): Maybe<Genre>
+    suspend fun getGenre(name: String): Genre
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun store(vararg genre: Genre)

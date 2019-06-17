@@ -15,7 +15,7 @@ interface GenresRepository {
     suspend fun getExcludedGenres(): List<Genre>
     suspend fun fetchGenres(): List<Genre>
     fun getGenre(genreId: String): Maybe<Genre>
-    fun getGenreByName(name: String): Maybe<Genre>
+    suspend fun getGenreByName(name: String): Genre
     fun getGenres(genreIds: Set<String>): Single<List<Genre>>
     suspend fun storeGenres(genres: List<Genre>)
 }
@@ -47,9 +47,7 @@ class RealGenresRepository @Inject constructor(
             .getGenre(genreId.toInt())
             .subscribeOn(Schedulers.io())
 
-    override fun getGenreByName(name: String): Maybe<Genre> = database.genreDao()
-            .getGenre(name)
-            .subscribeOn(Schedulers.io())
+    override suspend fun getGenreByName(name: String) = database.genreDao().getGenre(name)
 
     override fun getGenres(genreIds: Set<String>): Single<List<Genre>> {
         return Single
