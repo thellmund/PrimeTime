@@ -14,14 +14,11 @@ interface WatchlistMovieComponent {
 
     fun inject(watchlistMovieFragment: WatchlistMovieFragment)
 
-    @Subcomponent.Builder
-    interface Builder {
-
-        @BindsInstance
-        fun movie(watchlistMovieViewEntity: WatchlistMovieViewEntity): Builder
-
-        fun build(): WatchlistMovieComponent
-
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(
+            @BindsInstance watchlistMovie: WatchlistMovieViewEntity
+        ): WatchlistMovieComponent
     }
 
 }

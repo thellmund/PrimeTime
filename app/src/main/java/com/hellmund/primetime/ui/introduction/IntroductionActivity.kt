@@ -1,7 +1,7 @@
 package com.hellmund.primetime.ui.introduction
 
 import android.content.Context
-import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,10 +14,10 @@ import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.utils.ImageLoader
-import com.hellmund.primetime.utils.isLandscapeMode
 import com.hellmund.primetime.utils.observe
-import kotlinx.android.synthetic.main.activity_introduction.*
-import java.util.*
+import kotlinx.android.synthetic.main.activity_introduction.gridView
+import kotlinx.android.synthetic.main.activity_introduction.introductionButton
+import java.util.Timer
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.concurrent.schedule
@@ -95,8 +95,7 @@ class IntroductionActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    companion object {
-        fun newIntent(context: Context) = Intent(context, IntroductionActivity::class.java)
-    }
+    private val Context.isLandscapeMode: Boolean
+        get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
 }

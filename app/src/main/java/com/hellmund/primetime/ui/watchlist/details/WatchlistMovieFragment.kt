@@ -13,8 +13,19 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.watchlist.WatchlistMovieViewEntity
-import com.hellmund.primetime.utils.*
-import kotlinx.android.synthetic.main.fragment_watchlist_item.*
+import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.NotificationUtils
+import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.showCancelableDialog
+import com.hellmund.primetime.utils.showToast
+import kotlinx.android.synthetic.main.fragment_watchlist_item.notificationIcon
+import kotlinx.android.synthetic.main.fragment_watchlist_item.posterImageView
+import kotlinx.android.synthetic.main.fragment_watchlist_item.release
+import kotlinx.android.synthetic.main.fragment_watchlist_item.removeButton
+import kotlinx.android.synthetic.main.fragment_watchlist_item.runtime
+import kotlinx.android.synthetic.main.fragment_watchlist_item.runtimeIcon
+import kotlinx.android.synthetic.main.fragment_watchlist_item.title
+import kotlinx.android.synthetic.main.fragment_watchlist_item.watchedButton
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -40,9 +51,8 @@ class WatchlistMovieFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         injector.watchlistMovieComponent()
-                .movie(movie)
-                .build()
-                .inject(this)
+            .create(movie)
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +64,9 @@ class WatchlistMovieFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_watchlist_item, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,9 +104,9 @@ class WatchlistMovieFragment : Fragment() {
 
         if (viewState.showRemoveDialog) {
             removeDialog = requireContext().showCancelableDialog(
-                    messageResId = R.string.remove_from_watchlist_header,
-                    positiveResId = R.string.remove,
-                    onPositive = { viewModel.onConfirmRemove() })
+                messageResId = R.string.remove_from_watchlist_header,
+                positiveResId = R.string.remove,
+                onPositive = { viewModel.onConfirmRemove() })
         } else {
             removeDialog?.dismiss()
         }
@@ -144,7 +154,7 @@ class WatchlistMovieFragment : Fragment() {
     companion object {
 
         fun newInstance(
-                movie: WatchlistMovieViewEntity
+            movie: WatchlistMovieViewEntity
         ): WatchlistMovieFragment {
             return WatchlistMovieFragment().apply {
                 arguments = bundleOf(KEY_WATCHLIST_MOVIE to movie)

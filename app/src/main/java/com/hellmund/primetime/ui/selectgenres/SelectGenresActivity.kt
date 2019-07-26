@@ -6,15 +6,18 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.selectmovies.SelectMoviesActivity
-import com.hellmund.primetime.utils.isVisible
 import com.hellmund.primetime.utils.observe
-import kotlinx.android.synthetic.main.activity_select_genres.*
+import kotlinx.android.synthetic.main.activity_select_genres.button
+import kotlinx.android.synthetic.main.activity_select_genres.chipGroup
+import kotlinx.android.synthetic.main.activity_select_genres.container
+import kotlinx.android.synthetic.main.activity_select_genres.recommendationsProgressBar
 import javax.inject.Inject
 import javax.inject.Provider
 

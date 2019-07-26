@@ -10,14 +10,9 @@ interface MovieDetailsComponent {
 
     fun inject(movieDetailsFragment: MovieDetailsFragment)
 
-    @Subcomponent.Builder
-    interface Builder {
-
-        @BindsInstance
-        fun movie(movie: MovieViewEntity): Builder
-
-        fun build(): MovieDetailsComponent
-
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(@BindsInstance movie: MovieViewEntity): MovieDetailsComponent
     }
 
 }

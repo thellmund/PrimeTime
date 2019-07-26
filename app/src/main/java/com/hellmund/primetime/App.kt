@@ -12,24 +12,18 @@ import timber.log.Timber
 
 class App : Application() {
 
-    lateinit var appComponent: AppComponent
+    val appComponent: AppComponent by lazy {
+        DaggerAppComponent.factory().create(this)
+    }
 
     override fun onCreate() {
         super.onCreate()
-        buildComponent()
         initThreeTen()
         initTimber()
 
         createChannel(this)
         scheduleNotifications(this)
         initRxJavaErrorHandler()
-    }
-
-    private fun buildComponent() {
-        appComponent = DaggerAppComponent
-                .builder()
-                .context(this)
-                .build()
     }
 
     private fun initThreeTen() {
