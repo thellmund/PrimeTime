@@ -218,10 +218,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
                 openSettings()
                 true
             }
-            android.R.id.home -> {
-                requireActivity().onBackPressed()
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
