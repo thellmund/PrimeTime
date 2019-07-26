@@ -1,8 +1,10 @@
 package com.hellmund.primetime.ui.suggestions.details
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.palette.graphics.Palette
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
@@ -30,6 +32,7 @@ sealed class ViewModelAction {
     data class StoreRating(val rating: Rating) : ViewModelAction()
     object AddToWatchlist : ViewModelAction()
     object RemoveFromWatchlist : ViewModelAction()
+    data class LoadColorPalette(val bitmap: Bitmap) : ViewModelAction()
 }
 
 sealed class ViewModelEvent {
@@ -44,6 +47,7 @@ sealed class ViewModelEvent {
     object AddedToWatchlist : ViewModelEvent()
     object RemovedFromWatchlist : ViewModelEvent()
     data class WatchStatus(val watchStatus: Movie.WatchStatus) : ViewModelEvent()
+    data class ColorPaletteLoaded(val palette: Palette) : ViewModelEvent()
     object None : ViewModelEvent()
 }
 
@@ -86,6 +90,7 @@ class MovieDetailsViewModel @Inject constructor(
             is ViewModelAction.StoreRating -> storeRating(action.rating)
             is ViewModelAction.AddToWatchlist -> onAddToWatchlist()
             is ViewModelAction.RemoveFromWatchlist -> onRemoveFromWatchlist()
+            is ViewModelAction.LoadColorPalette -> onLoadColorPalette(action.bitmap)
         }
     }
 
@@ -192,6 +197,14 @@ class MovieDetailsViewModel @Inject constructor(
                 .andThen(Observable.just(ViewModelEvent.RemovedFromWatchlist as ViewModelEvent))
     }
 
+    private fun onLoadColorPalette(bitmap: Bitmap): Observable<ViewModelEvent> {
+        return Observable
+            .fromCallable { Palette.from(bitmap).generate() }
+            .subscribeOn(Schedulers.io())
+            .map { ViewModelEvent.ColorPaletteLoaded(it) as ViewModelEvent }
+            .onErrorReturnItem(ViewModelEvent.None)
+    }
+
     fun loadTrailer() {
         actionsRelay.accept(ViewModelAction.LoadTrailer)
     }
@@ -223,6 +236,10 @@ class MovieDetailsViewModel @Inject constructor(
 
     fun removeFromWatchlist() {
         actionsRelay.accept(ViewModelAction.RemoveFromWatchlist)
+    }
+
+    fun loadColorPalette(bitmap: Bitmap) {
+        actionsRelay.accept(ViewModelAction.LoadColorPalette(bitmap))
     }
 
     private fun render(event: ViewModelEvent) {

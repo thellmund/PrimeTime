@@ -161,6 +161,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
             is ViewModelEvent.StreamingServicesLoaded -> showStreamingServices(event.services)
             is ViewModelEvent.RecommendationsLoaded -> showRecommendations(event.movies)
             is ViewModelEvent.ReviewsLoaded -> showReviews(event.reviews)
+            is ViewModelEvent.ColorPaletteLoaded -> onCoverPaletteLoaded(event.palette)
         }
     }
 
@@ -222,14 +223,14 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     private fun onImageLoaded(drawable: Drawable) {
         val cover = (drawable as BitmapDrawable).bitmap
-        Palette.from(cover).generate { palette ->
-            palette?.let {
-                val color = it.mutedSwatch?.rgb ?: return@let
-                val colorStateList = ColorStateList.valueOf(color)
-                addToWatchlistButton.backgroundTintList = colorStateList
-                removeFromWatchlistButton.strokeColor = colorStateList
-            }
-        }
+        viewModel.loadColorPalette(cover)
+    }
+
+    private fun onCoverPaletteLoaded(palette: Palette) {
+        val color = palette.mutedSwatch?.rgb ?: return
+        val colorStateList = ColorStateList.valueOf(color)
+        addToWatchlistButton.backgroundTintList = colorStateList
+        removeFromWatchlistButton.strokeColor = colorStateList
     }
 
     companion object {
