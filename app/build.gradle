@@ -108,6 +108,11 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.4.0'
     implementation 'com.github.thellmund:ViewPagerTwoIndicator:0.8.1'
 
+    // AdapterDelegates
+    implementation 'com.hannesdorfmann:adapterdelegates4:4.1.1'
+    implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.1.1'
+    implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-layoutcontainer:4.1.1'
+
     // Testing
     androidTestImplementation 'androidx.annotation:annotation:1.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
