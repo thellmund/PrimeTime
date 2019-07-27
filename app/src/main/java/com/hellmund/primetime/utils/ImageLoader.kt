@@ -3,13 +3,9 @@ package com.hellmund.primetime.utils
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
+import com.squareup.picasso.Callback
+import com.squareup.picasso.OkHttp3Downloader
+import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
 sealed class Transformation {
@@ -19,60 +15,46 @@ sealed class Transformation {
 
 interface ImageLoader {
     fun load(
-            url: String,
-            into: ImageView,
-            transformations: Array<Transformation> = arrayOf(Transformation.CenterCrop),
-            onComplete: ((Drawable) -> Unit)? = null,
-            onError: (() -> Unit)? = null
+        url: String,
+        into: ImageView,
+        transformations: Array<Transformation> = arrayOf(Transformation.CenterCrop),
+        onComplete: ((Drawable) -> Unit)? = null,
+        onError: (() -> Unit)? = null
     )
 }
 
-class GlideImageLoader @Inject constructor(context: Context) : ImageLoader {
+class PicassoImageLoader @Inject constructor(context: Context): ImageLoader {
 
-    private val requestManager: RequestManager = Glide.with(context)
+    private val instance: Picasso
+        get() = Picasso.get()
+
+    init {
+        val instance = Picasso.Builder(context)
+            .downloader(OkHttp3Downloader(context, Long.MAX_VALUE))
+            .build()
+        Picasso.setSingletonInstance(instance)
+    }
 
     override fun load(
-            url: String,
-            into: ImageView,
-            transformations: Array<Transformation>,
-            onComplete: ((Drawable) -> Unit)?,
-            onError: (() -> Unit)?
+        url: String,
+        into: ImageView,
+        transformations: Array<Transformation>,
+        onComplete: ((Drawable) -> Unit)?,
+        onError: (() -> Unit)?
     ) {
-        val requestOptions = RequestOptions()
+        val requestCreator = instance.load(url)
 
-        transformations.forEach {
-            requestOptions.apply(when (it) {
-                is Transformation.Placeholder -> RequestOptions.placeholderOf(it.resId)
-                is Transformation.CenterCrop -> RequestOptions.centerCropTransform()
-            })
+        for (transformation in transformations) {
+            when (transformation) {
+                is Transformation.CenterCrop -> requestCreator.centerCrop()
+                is Transformation.Placeholder -> requestCreator.placeholder(transformation.resId)
+            }
         }
 
-        requestManager
-                .load(url)
-                .apply(requestOptions)
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean
-                    ): Boolean {
-                        onError?.invoke()
-                        return true
-                    }
-
-                    override fun onResourceReady(
-                            resource: Drawable,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                    ): Boolean {
-                        onComplete?.invoke(resource)
-                        return false
-                    }
-                })
-                .into(into)
+        requestCreator.into(into, object : Callback {
+            override fun onSuccess() { onComplete?.invoke(into.drawable) }
+            override fun onError(e: Exception?) { onError?.invoke() }
+        })
     }
 
 }

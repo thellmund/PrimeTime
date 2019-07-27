@@ -18,11 +18,13 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
         initThreeTen()
         initTimber()
 
         createChannel(this)
         scheduleNotifications(this)
+
         initRxJavaErrorHandler()
     }
 

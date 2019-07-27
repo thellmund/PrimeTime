@@ -1,6 +1,7 @@
 package com.hellmund.primetime.di
 
 import android.content.Context
+import com.hellmund.primetime.App
 import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.ui.history.HistoryFragment
 import com.hellmund.primetime.ui.history.di.HistoryModule
@@ -19,9 +20,9 @@ import com.hellmund.primetime.ui.suggestions.di.MoviesModule
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.ui.watchlist.di.WatchlistModule
 import com.hellmund.primetime.ui.watchlist.di.WatchlistMovieComponent
-import com.hellmund.primetime.utils.GlideImageLoader
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.NotificationPublisher
+import com.hellmund.primetime.utils.PicassoImageLoader
 import com.hellmund.primetime.utils.RealStringProvider
 import com.hellmund.primetime.utils.RealValueFormatter
 import com.hellmund.primetime.utils.StringProvider
@@ -73,7 +74,7 @@ interface AppModule {
 
     @Singleton
     @Binds
-    fun bindImageLoader(impl: GlideImageLoader): ImageLoader
+    fun bindImageLoader(impl: PicassoImageLoader): ImageLoader
 
     @Singleton
     @Binds
