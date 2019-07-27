@@ -46,7 +46,7 @@ class PicassoImageLoader @Inject constructor(context: Context) : ImageLoader {
 
         for (transformation in transformations) {
             when (transformation) {
-                is Transformation.CenterCrop -> requestCreator.centerCrop()
+                is Transformation.CenterCrop -> requestCreator.fit().centerCrop()
                 is Transformation.Placeholder -> requestCreator.placeholder(transformation.resId)
             }
         }
