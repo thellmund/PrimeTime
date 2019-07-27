@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.hellmund.primetime.R
-import com.hellmund.primetime.utils.isVisible
-import kotlinx.android.synthetic.main.activity_about.*
-import kotlinx.android.synthetic.main.view_toolbar.*
+import kotlinx.android.synthetic.main.activity_about.headerTextView
+import kotlinx.android.synthetic.main.view_toolbar.toolbar
 
 class AboutActivity : AppCompatActivity() {
 
@@ -34,17 +33,6 @@ class AboutActivity : AppCompatActivity() {
         } catch (e: PackageManager.NameNotFoundException) {
             headerTextView.isVisible = false
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {

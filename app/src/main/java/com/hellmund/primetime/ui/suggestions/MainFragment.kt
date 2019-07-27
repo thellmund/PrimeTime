@@ -67,18 +67,17 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private val adapter: MoviesAdapter by lazy {
         MoviesAdapter(
-                imageLoader = imageLoader,
-                onClick = this::openMovieDetails,
-                onMenuClick = this::openRatingDialog
+            imageLoader = imageLoader,
+            onClick = this::openMovieDetails,
+            onMenuClick = this::openRatingDialog
         )
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         injector.mainComponent()
-                .type(type)
-                .build()
-                .inject(this)
+            .create(type)
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,9 +86,9 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_main, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -179,17 +178,17 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private fun openRatingDialog(movie: MovieViewEntity) {
         val options = arrayOf(
-                getString(R.string.show_more_like_this),
-                getString(R.string.show_less_like_this)
+            getString(R.string.show_more_like_this),
+            getString(R.string.show_less_like_this)
         )
 
         requireContext().showItemsDialog(
-                titleResId = R.string.adjust_recommendations,
-                items = options,
-                onSelected = { index ->
-                    val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
-                    viewModel.handleRating(rating)
-                }
+            titleResId = R.string.adjust_recommendations,
+            items = options,
+            onSelected = { index ->
+                val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
+                viewModel.handleRating(rating)
+            }
         )
     }
 
@@ -231,8 +230,8 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     private fun showFilterDialog() {
         val genres = emptyList<Genre>() // TODO genresRepository.preferredGenres.blockingFirst()
         val genreNames = genres
-                .map { it.name }
-                .toTypedArray()
+            .map { it.name }
+            .toTypedArray()
 
         val checkedItems = when (val type = type) {
             is Personalized -> {
@@ -243,14 +242,14 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         }
 
         requireContext().showMultiSelectDialog(
-                titleResId = R.string.filter_recommendations,
-                items = genreNames,
-                checkedItems = checkedItems,
-                positiveResId = R.string.filter,
-                onConfirmed = { selected ->
-                    val selectedGenres = genres.filterIndexed { i, _ -> selected.contains(i) }
-                    viewModel.filter(selectedGenres)
-                }
+            titleResId = R.string.filter_recommendations,
+            items = genreNames,
+            checkedItems = checkedItems,
+            positiveResId = R.string.filter,
+            onConfirmed = { selected ->
+                val selectedGenres = genres.filterIndexed { i, _ -> selected.contains(i) }
+                viewModel.filter(selectedGenres)
+            }
         )
     }
 
@@ -264,7 +263,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
         @JvmStatic
         fun newInstance(
-                type: RecommendationsType = Personalized()
+            type: RecommendationsType = Personalized()
         ) = MainFragment().apply {
             arguments = bundleOf(KEY_RECOMMENDATIONS_TYPE to type)
         }

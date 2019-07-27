@@ -29,7 +29,24 @@ import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.openUrl
 import com.hellmund.primetime.utils.showLoading
-import kotlinx.android.synthetic.main.fragment_movie_details.*
+import kotlinx.android.synthetic.main.fragment_movie_details.addToWatchlistButton
+import kotlinx.android.synthetic.main.fragment_movie_details.backdropImageView
+import kotlinx.android.synthetic.main.fragment_movie_details.descriptionTextView
+import kotlinx.android.synthetic.main.fragment_movie_details.durationTextView
+import kotlinx.android.synthetic.main.fragment_movie_details.genresTextView
+import kotlinx.android.synthetic.main.fragment_movie_details.moreInfoButton
+import kotlinx.android.synthetic.main.fragment_movie_details.noRecommendationsPlaceholder
+import kotlinx.android.synthetic.main.fragment_movie_details.noReviewsPlaceholder
+import kotlinx.android.synthetic.main.fragment_movie_details.posterImageView
+import kotlinx.android.synthetic.main.fragment_movie_details.ratingTextView
+import kotlinx.android.synthetic.main.fragment_movie_details.recommendationsProgressBar
+import kotlinx.android.synthetic.main.fragment_movie_details.recommendationsRecyclerView
+import kotlinx.android.synthetic.main.fragment_movie_details.releaseTextView
+import kotlinx.android.synthetic.main.fragment_movie_details.removeFromWatchlistButton
+import kotlinx.android.synthetic.main.fragment_movie_details.reviewsProgressBar
+import kotlinx.android.synthetic.main.fragment_movie_details.reviewsRecyclerView
+import kotlinx.android.synthetic.main.fragment_movie_details.titleTextView
+import kotlinx.android.synthetic.main.fragment_movie_details.votesTextView
 import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
@@ -50,8 +67,8 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     private val recommendationsAdapter: RecommendationsAdapter by lazy {
         RecommendationsAdapter(
-                imageLoader = imageLoader,
-                onClick = this::onRecommendationClicked
+            imageLoader = imageLoader,
+            onClick = this::onRecommendationClicked
         )
     }
 
@@ -68,9 +85,8 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         injector.movieDetailsComponent()
-                .movie(movie)
-                .build()
-                .inject(this)
+            .create(movie)
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,9 +96,9 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_movie_details, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,7 +127,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         val spacing = round(resources.getDimension(R.dimen.small_space))
 
         recommendationsRecyclerView.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         recommendationsRecyclerView.adapter = recommendationsAdapter
         recommendationsRecyclerView.addItemDecoration(EqualHorizontalSpacingItemDecoration(spacing))
 
@@ -138,13 +154,14 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
             is ViewModelEvent.TrailerLoaded -> openUrl(event.url)
             is ViewModelEvent.AdditionalInformationLoaded -> showMovieDetails(event.movie)
             is ViewModelEvent.ImdbLinkLoaded -> openUrl(event.url)
-            is ViewModelEvent.RatingStored ->  onRatingStored()
+            is ViewModelEvent.RatingStored -> onRatingStored()
             is ViewModelEvent.AddedToWatchlist -> onAddedToWatchlist()
             is ViewModelEvent.RemovedFromWatchlist -> onRemovedFromWatchlist()
             is ViewModelEvent.WatchStatus -> updateWatchlistButton(event.watchStatus)
             is ViewModelEvent.StreamingServicesLoaded -> showStreamingServices(event.services)
             is ViewModelEvent.RecommendationsLoaded -> showRecommendations(event.movies)
             is ViewModelEvent.ReviewsLoaded -> showReviews(event.reviews)
+            is ViewModelEvent.ColorPaletteLoaded -> onCoverPaletteLoaded(event.palette)
         }
     }
 
@@ -206,14 +223,14 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     private fun onImageLoaded(drawable: Drawable) {
         val cover = (drawable as BitmapDrawable).bitmap
-        Palette.from(cover).generate { palette ->
-            palette?.let {
-                val color = it.mutedSwatch?.rgb ?: return@let
-                val colorStateList = ColorStateList.valueOf(color)
-                addToWatchlistButton.backgroundTintList = colorStateList
-                removeFromWatchlistButton.strokeColor = colorStateList
-            }
-        }
+        viewModel.loadColorPalette(cover)
+    }
+
+    private fun onCoverPaletteLoaded(palette: Palette) {
+        val color = palette.mutedSwatch?.rgb ?: return
+        val colorStateList = ColorStateList.valueOf(color)
+        addToWatchlistButton.backgroundTintList = colorStateList
+        removeFromWatchlistButton.strokeColor = colorStateList
     }
 
     companion object {

@@ -1,7 +1,10 @@
 package com.hellmund.primetime.utils
 
 import android.app.ProgressDialog
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -21,12 +24,6 @@ fun <T> LiveData<T>.observe(owner: LifecycleOwner, block: (T) -> Unit) {
 operator fun CompositeDisposable.plusAssign(disposable: Disposable) {
     add(disposable)
 }
-
-var View.isVisible: Boolean
-    get() = visibility == View.VISIBLE
-    set(value) {
-        visibility = if (value) View.VISIBLE else View.GONE
-    }
 
 val LocalDate.isAfterNow: Boolean
     get() = isAfter(LocalDate.now())
@@ -59,3 +56,7 @@ val FragmentManager.backStack: List<FragmentManager.BackStackEntry>
     get() = (0 until backStackEntryCount).map {
         getBackStackEntryAt(it)
     }
+
+fun ViewGroup.inflate(@LayoutRes resource: Int, attach: Boolean = true): View {
+    return LayoutInflater.from(context).inflate(resource, this, attach)
+}

@@ -14,14 +14,9 @@ interface MoviesComponent {
 
     fun inject(mainFragment: MainFragment)
 
-    @Subcomponent.Builder
-    interface Builder {
-
-        @BindsInstance
-        fun type(recommendationsType: RecommendationsType): Builder
-
-        fun build(): MoviesComponent
-
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(@BindsInstance recommendationsType: RecommendationsType): MoviesComponent
     }
 
 }

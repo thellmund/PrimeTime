@@ -9,6 +9,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import com.hellmund.primetime.R
 
+@Suppress("DEPRECATION")
 fun Context.showLoading(messageResId: Int): ProgressDialog {
     return ProgressDialog(this).apply {
         setProgressStyle(ProgressDialog.STYLE_SPINNER)

@@ -1,10 +1,12 @@
 package com.hellmund.primetime.ui.suggestions.details
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.palette.graphics.Palette
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
@@ -30,6 +32,7 @@ sealed class ViewModelEvent {
     object AddedToWatchlist : ViewModelEvent()
     object RemovedFromWatchlist : ViewModelEvent()
     data class WatchStatus(val watchStatus: Movie.WatchStatus) : ViewModelEvent()
+    data class ColorPaletteLoaded(val palette: Palette) : ViewModelEvent()
     object None : ViewModelEvent()
 }
 
@@ -152,6 +155,15 @@ class MovieDetailsViewModel @Inject constructor(
         return ViewModelEvent.RemovedFromWatchlist
     }
 
+    private suspend fun onLoadColorPalette(bitmap: Bitmap): ViewModelEvent {
+        return try {
+            val palette = Palette.from(bitmap).generate()
+            ViewModelEvent.ColorPaletteLoaded(palette)
+        } catch (e: Exception) {
+            ViewModelEvent.None
+        }
+    }
+
     fun loadTrailer() {
         viewModelScope.launch {
             store.dispatch(ViewModelEvent.TrailerLoading)
@@ -197,6 +209,12 @@ class MovieDetailsViewModel @Inject constructor(
     fun removeFromWatchlist() {
         viewModelScope.launch {
             store.dispatch(onRemoveFromWatchlist())
+        }
+    }
+
+    fun loadColorPalette(bitmap: Bitmap) {
+        viewModelScope.launch {
+            store.dispatch(onLoadColorPalette(bitmap))
         }
     }
 

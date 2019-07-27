@@ -3,7 +3,12 @@ package com.hellmund.primetime.ui.watchlist
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -12,8 +17,15 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.history.HistoryActivity
-import com.hellmund.primetime.utils.*
-import kotlinx.android.synthetic.main.fragment_watchlist.*
+import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.showCancelableDialog
+import com.hellmund.primetime.utils.showItemsDialog
+import kotlinx.android.synthetic.main.fragment_watchlist.content
+import kotlinx.android.synthetic.main.fragment_watchlist.indicator
+import kotlinx.android.synthetic.main.fragment_watchlist.placeholder
+import kotlinx.android.synthetic.main.fragment_watchlist.viewPager
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -108,12 +120,13 @@ class WatchlistFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> requireActivity().onBackPressed()
-            R.id.action_history -> openHistory()
+        return when (item.itemId) {
+            R.id.action_history -> {
+                openHistory()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-
-        return super.onOptionsItemSelected(item)
     }
 
     private fun openHistory() {

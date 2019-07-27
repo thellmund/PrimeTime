@@ -18,6 +18,7 @@
             android:name=".ui.suggestions.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.Launcher"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
@@ -32,16 +33,17 @@
         </activity>
         <activity
             android:name=".ui.about.AboutActivity"
-            android:label="@string/title_activity_about">
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".ui.settings.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.hellmund.primetime.ui.suggestions.MainActivity" />
+                android:value="com.hellmund.primetime.ui.settings.SettingsActivity" />
         </activity>
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".ui.suggestions.MainActivity"
-            android:theme="@style/AppTheme">
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.suggestions.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hellmund.primetime.ui.suggestions.MainActivity" />
