@@ -33,9 +33,15 @@ import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showItemsDialog
 import com.hellmund.primetime.utils.supportActionBar
-import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.state_layout_search_results.*
-import kotlinx.android.synthetic.main.view_search_field.*
+import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView
+import kotlinx.android.synthetic.main.state_layout_search_results.loading
+import kotlinx.android.synthetic.main.state_layout_search_results.placeholder
+import kotlinx.android.synthetic.main.state_layout_search_results.resultsRecyclerView
+import kotlinx.android.synthetic.main.state_layout_search_results.searchResultsContainer
+import kotlinx.android.synthetic.main.view_search_field.backButton
+import kotlinx.android.synthetic.main.view_search_field.clearSearchButton
+import kotlinx.android.synthetic.main.view_search_field.searchBox
+import kotlinx.android.synthetic.main.view_toolbar_search.toolbar
 import org.jetbrains.anko.inputMethodManager
 import java.lang.Math.round
 import javax.inject.Inject
@@ -71,11 +77,6 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onAttach(context: Context) {
         super.onAttach(context)
         injector.inject(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -149,19 +150,12 @@ class SearchFragment : Fragment(), TextWatcher,
             toggleKeyboard(false)
 
             it.isVisible = searchBox.hasFocus() || searchResultsContainer.isVisible
-            if (searchResultsContainer.isVisible.not()) {
-                supportActionBar?.show()
-            }
+            toolbar.isVisible = !searchResultsContainer.isVisible
         }
 
         searchBox.setOnFocusChangeListener { _, hasFocus ->
             backButton.isVisible = hasFocus || searchResultsContainer.isVisible
-
-            if (hasFocus || searchResultsContainer.isVisible) {
-                supportActionBar?.hide()
-            } else {
-                supportActionBar?.show()
-            }
+            toolbar.isVisible = !backButton.isVisible
 
             if (hasFocus) {
                 toggleSearchResults(true)

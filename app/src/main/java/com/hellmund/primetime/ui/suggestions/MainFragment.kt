@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -39,6 +37,7 @@ import kotlinx.android.synthetic.main.fragment_main.filterFab
 import kotlinx.android.synthetic.main.fragment_main.recyclerView
 import kotlinx.android.synthetic.main.fragment_main.shimmerLayout
 import kotlinx.android.synthetic.main.fragment_main.swipeRefreshLayout
+import kotlinx.android.synthetic.main.view_toolbar.toolbar
 import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
@@ -79,11 +78,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
             .inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -92,11 +86,10 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
         setupPersonalizationBanner()
-
         setupRecyclerView()
         setupFab()
-
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
     }
 
@@ -191,6 +184,24 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         )
     }
 
+    private fun initToolbar() {
+        toolbar.setTitle(R.string.app_name)
+        toolbar.inflateMenu(R.menu.menu_main)
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_settings -> {
+                    openSettings()
+                    true
+                }
+                android.R.id.home -> {
+                    requireActivity().onBackPressed()
+                    true
+                }
+                else -> super.onOptionsItemSelected(menuItem)
+            }
+        }
+    }
+
     private fun setToolbarSubtitle() {
         val title = when (val type = type) {
             is Personalized -> getString(R.string.app_name)
@@ -199,7 +210,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
             is RecommendationsType.Upcoming -> getString(R.string.upcoming)
             is RecommendationsType.ByGenre -> type.genre.name
         }
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = title
+        toolbar.title = title
     }
 
     private fun openSettings() {
@@ -210,20 +221,6 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_main, menu)
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> {
-                openSettings()
-                true
-            }
-            android.R.id.home -> {
-                requireActivity().onBackPressed()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     private fun showFilterDialog() {

@@ -4,12 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -26,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_watchlist.content
 import kotlinx.android.synthetic.main.fragment_watchlist.indicator
 import kotlinx.android.synthetic.main.fragment_watchlist.placeholder
 import kotlinx.android.synthetic.main.fragment_watchlist.viewPager
+import kotlinx.android.synthetic.main.view_toolbar.toolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -48,11 +45,6 @@ class WatchlistFragment : Fragment() {
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         injector.inject(this)
@@ -72,7 +64,17 @@ class WatchlistFragment : Fragment() {
     }
 
     private fun initToolbar() {
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.watchlist)
+        toolbar.setTitle(R.string.watchlist)
+        toolbar.inflateMenu(R.menu.menu_watchlist)
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_history -> {
+                    openHistory()
+                    true
+                }
+                else -> super.onOptionsItemSelected(menuItem)
+            }
+        }
     }
 
     private fun setupViewPager() {
@@ -112,21 +114,6 @@ class WatchlistFragment : Fragment() {
                 viewModel.onMovieRated(movie, rating)
             }
         )
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_watchlist, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_history -> {
-                openHistory()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     private fun openHistory() {

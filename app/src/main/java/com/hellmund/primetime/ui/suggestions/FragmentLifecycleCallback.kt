@@ -2,39 +2,19 @@ package com.hellmund.primetime.ui.suggestions
 
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.hellmund.primetime.R
-import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.shared.BottomNavigationBehavior
 import com.hellmund.primetime.ui.shared.ScrollAwareFragment
 
 class FragmentLifecycleCallback(
     private val activity: AppCompatActivity
 ) : FragmentManager.FragmentLifecycleCallbacks() {
-
-    private val searchToolbarColor: Int by lazy {
-        ContextCompat.getColor(activity, R.color.adapterBackground)
-    }
-
-    private val defaultToolbarColor: Int by lazy {
-        ContextCompat.getColor(activity, R.color.toolbar)
-    }
-
-    private val toolbar: Toolbar by lazy {
-        activity.findViewById<Toolbar>(R.id.toolbar)
-    }
-
-    private val appBarLayout: AppBarLayout by lazy {
-        activity.findViewById<AppBarLayout>(R.id.appBarLayout)
-    }
 
     private val contentFrame: FrameLayout by lazy {
         activity.findViewById<FrameLayout>(R.id.contentFrame)
@@ -68,15 +48,6 @@ class FragmentLifecycleCallback(
             } else {
                 fixedNavigation()
             }
-        }
-
-        if (f is SearchFragment) {
-            toolbar.setBackgroundColor(searchToolbarColor)
-            appBarLayout.elevation = 0f
-        } else {
-            toolbar.setBackgroundColor(defaultToolbarColor)
-            appBarLayout.elevation = 11f
-            activity.supportActionBar?.show()
         }
     }
 
