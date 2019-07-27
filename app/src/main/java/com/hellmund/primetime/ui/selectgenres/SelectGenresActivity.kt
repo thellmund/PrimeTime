@@ -89,8 +89,8 @@ class SelectGenresActivity : AppCompatActivity() {
 
     private fun saveGenres() {
         val checkedItems = chipGroup.children.toList().map { it as Chip }
-        val includedGenres = genres.mapIndexed {
-            index, genre -> genre.copy(isPreferred = checkedItems[index].isChecked)
+        val includedGenres = genres.mapIndexed { index, genre ->
+            genre.copy(isPreferred = checkedItems[index].isChecked)
         }
         viewModel.store(includedGenres)
     }

@@ -58,10 +58,10 @@ class IntroductionActivity : AppCompatActivity() {
         val handler = Handler(Looper.getMainLooper())
         handler.post {
             introductionButton.animate()
-                    .setDuration(400L)
-                    .translationYBy(verticalButtonTranslation)
-                    .setInterpolator(OvershootInterpolator(1f))
-                    .start()
+                .setDuration(400L)
+                .translationYBy(verticalButtonTranslation)
+                .setInterpolator(OvershootInterpolator(1f))
+                .start()
         }
     }
 
@@ -73,10 +73,10 @@ class IntroductionActivity : AppCompatActivity() {
         val handler = Handler(Looper.getMainLooper())
         handler.post {
             introductionButton.animate()
-                    .alphaBy(1f)
-                    .translationYBy(verticalButtonTranslation * (-1))
-                    .setInterpolator(OvershootInterpolator(1f))
-                    .start()
+                .alphaBy(1f)
+                .translationYBy(verticalButtonTranslation * (-1))
+                .setInterpolator(OvershootInterpolator(1f))
+                .start()
         }
     }
 

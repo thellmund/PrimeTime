@@ -8,8 +8,8 @@ import io.reactivex.functions.Function
 import javax.inject.Inject
 
 class HistoryMoviesViewEntityMapper @Inject constructor(
-        context: Context,
-        valueFormatter: ValueFormatter
+    context: Context,
+    valueFormatter: ValueFormatter
 ) : Function<List<HistoryMovie>, List<HistoryMovieViewEntity>> {
 
     private val internalMapper = HistoryMovieViewEntityMapper(context, valueFormatter)
@@ -21,8 +21,8 @@ class HistoryMoviesViewEntityMapper @Inject constructor(
 }
 
 class HistoryMovieViewEntityMapper @Inject constructor(
-        private val context: Context,
-        private val valueFormatter: ValueFormatter
+    private val context: Context,
+    private val valueFormatter: ValueFormatter
 ) : Function<HistoryMovie, HistoryMovieViewEntity> {
 
     override fun apply(movie: HistoryMovie): HistoryMovieViewEntity {
@@ -35,12 +35,12 @@ class HistoryMovieViewEntityMapper @Inject constructor(
         val formattedDetailsText = context.getString(R.string.added_on, formattedRating, formattedDate)
 
         return HistoryMovieViewEntity(
-                movie.id,
-                movie.title,
-                movie.rating,
-                formattedDate,
-                formattedDetailsText,
-                movie
+            movie.id,
+            movie.title,
+            movie.rating,
+            formattedDate,
+            formattedDetailsText,
+            movie
         )
     }
 

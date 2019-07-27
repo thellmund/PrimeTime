@@ -3,7 +3,7 @@ package com.hellmund.primetime.ui.search
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 
 class NavigationEvent(
-        private val recommendationsType: RecommendationsType
+    private val recommendationsType: RecommendationsType
 ) {
 
     var hasBeenHandled = false

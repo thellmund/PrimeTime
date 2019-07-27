@@ -9,12 +9,12 @@ import java.util.*
 data class SamplesResponse(val results: List<Sample>)
 
 data class Sample(
-        val id: Int,
-        val title: String,
-        @SerializedName("poster_path") val posterPath: String,
-        val popularity: Double,
-        val releaseDate: Date?,
-        val selected: Boolean = false
+    val id: Int,
+    val title: String,
+    @SerializedName("poster_path") val posterPath: String,
+    val popularity: Double,
+    val releaseDate: Date?,
+    val selected: Boolean = false
 ) {
 
     val fullPosterUrl: String

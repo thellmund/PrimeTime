@@ -23,13 +23,13 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 data class SearchViewState(
-        val genres: List<Genre> = emptyList(),
-        val data: List<MovieViewEntity> = emptyList(),
-        val showClearButton: Boolean = false,
-        val didPerformSearch: Boolean = false,
-        val isLoading: Boolean = false,
-        val error: Throwable? = null,
-        val snackbarText: String? = null
+    val genres: List<Genre> = emptyList(),
+    val data: List<MovieViewEntity> = emptyList(),
+    val showClearButton: Boolean = false,
+    val didPerformSearch: Boolean = false,
+    val isLoading: Boolean = false,
+    val error: Throwable? = null,
+    val snackbarText: String? = null
 ) {
 
     val showPlaceholder: Boolean
@@ -55,11 +55,11 @@ sealed class Result {
 }
 
 class SearchViewModel @Inject constructor(
-        private val repository: MoviesRepository,
-        private val historyRepository: HistoryRepository,
-        private val genresRepository: GenresRepository,
-        private val viewEntityMapper: MoviesViewEntityMapper,
-        private val stringProvider: StringProvider
+    private val repository: MoviesRepository,
+    private val historyRepository: HistoryRepository,
+    private val genresRepository: GenresRepository,
+    private val viewEntityMapper: MoviesViewEntityMapper,
+    private val stringProvider: StringProvider
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -75,14 +75,14 @@ class SearchViewModel @Inject constructor(
     init {
         val initialViewState = SearchViewState()
         compositeDisposable += actionsRelay
-                .switchMap(this::processAction)
-                .scan(initialViewState, this::reduceState)
-                .subscribe(this::render)
+            .switchMap(this::processAction)
+            .scan(initialViewState, this::reduceState)
+            .subscribe(this::render)
         actionsRelay.accept(Action.LoadGenres)
 
         compositeDisposable += navigationRelay
-                .switchMap(this::processNavigation)
-                .subscribe(this::navigate)
+            .switchMap(this::processNavigation)
+            .subscribe(this::navigate)
     }
 
     private fun processAction(action: Action): Observable<Result> {
@@ -100,18 +100,18 @@ class SearchViewModel @Inject constructor(
             "Upcoming" -> Observable.just(RecommendationsType.Upcoming)
             else -> {
                 genresRepository
-                        .getGenreByName(category)
-                        .map { ApiGenre(it.id, it.name) }
-                        .map { RecommendationsType.ByGenre(it) as RecommendationsType }
-                        .toObservable()
+                    .getGenreByName(category)
+                    .map { ApiGenre(it.id, it.name) }
+                    .map { RecommendationsType.ByGenre(it) as RecommendationsType }
+                    .toObservable()
             }
         }
     }
 
     private fun fetchGenres(): Observable<Result> {
         return genresRepository.all
-                .map { Result.GenresLoaded(it) as Result }
-                .toObservable()
+            .map { Result.GenresLoaded(it) as Result }
+            .toObservable()
     }
 
     private fun onTyped(input: String): Observable<Result> {
@@ -120,9 +120,9 @@ class SearchViewModel @Inject constructor(
 
     private fun searchMovies(query: String): Observable<Result> {
         return repository.searchMovies(query)
-                .map(viewEntityMapper)
-                .map { Result.Data(it) as Result }
-                .onErrorReturn { Result.Error(it) }
+            .map(viewEntityMapper)
+            .map { Result.Data(it) as Result }
+            .onErrorReturn { Result.Error(it) }
     }
 
     private fun storeInHistory(historyMovie: HistoryMovie): Observable<Result> {
@@ -131,21 +131,21 @@ class SearchViewModel @Inject constructor(
             else -> R.string.will_more_like_this
         }
         return historyRepository
-                .store(historyMovie)
-                .subscribeOn(Schedulers.io())
-                .andThen(createSelfDismissingSnackbar(messageResId))
+            .store(historyMovie)
+            .subscribeOn(Schedulers.io())
+            .andThen(createSelfDismissingSnackbar(messageResId))
     }
 
     private fun createSelfDismissingSnackbar(resId: Int): Observable<Result> {
         val message = stringProvider.getString(resId)
         return Observable.timer(4, TimeUnit.SECONDS)
-                .map { Result.DismissSnackbar as Result }
-                .startWith(Result.ShowSnackbar(message))
+            .map { Result.DismissSnackbar as Result }
+            .startWith(Result.ShowSnackbar(message))
     }
 
     private fun reduceState(
-            viewState: SearchViewState,
-            result: Result
+        viewState: SearchViewState,
+        result: Result
     ): SearchViewState {
         return when (result) {
             is Result.GenresLoaded -> viewState.copy(genres = result.genres)

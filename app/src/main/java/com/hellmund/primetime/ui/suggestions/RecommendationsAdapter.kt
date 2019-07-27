@@ -10,15 +10,15 @@ import com.hellmund.primetime.utils.Transformation
 import kotlinx.android.synthetic.main.list_item_samples_list.view.*
 
 class RecommendationsAdapter(
-        private val imageLoader: ImageLoader,
-        private val onClick: (MovieViewEntity) -> Unit
+    private val imageLoader: ImageLoader,
+    private val onClick: (MovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<RecommendationsAdapter.ViewHolder>() {
 
     private val movies = mutableListOf<MovieViewEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_recommendations, parent, false)
+            .inflate(R.layout.list_item_recommendations, parent, false)
         return ViewHolder(view)
     }
 
@@ -37,17 +37,17 @@ class RecommendationsAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(
-                movie: MovieViewEntity,
-                imageLoader: ImageLoader,
-                onClick: (MovieViewEntity) -> Unit
+            movie: MovieViewEntity,
+            imageLoader: ImageLoader,
+            onClick: (MovieViewEntity) -> Unit
         ) = with(itemView) {
             val transformations: Array<Transformation> =
-                    arrayOf(Transformation.Placeholder(R.drawable.poster_placeholder))
+                arrayOf(Transformation.Placeholder(R.drawable.poster_placeholder))
 
             imageLoader.load(
-                    url = movie.posterUrl,
-                    transformations = transformations,
-                    into = posterImageView
+                url = movie.posterUrl,
+                transformations = transformations,
+                into = posterImageView
             )
 
             setOnClickListener { onClick(movie) }

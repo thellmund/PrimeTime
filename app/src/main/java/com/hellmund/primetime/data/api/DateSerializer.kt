@@ -10,9 +10,9 @@ import java.lang.reflect.Type
 class DateSerializer : JsonDeserializer<LocalDate?> {
 
     override fun deserialize(
-            json: JsonElement?,
-            typeOfT: Type?,
-            context: JsonDeserializationContext?
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
     ): LocalDate? {
         return try {
             LocalDate.parse(json?.asString)

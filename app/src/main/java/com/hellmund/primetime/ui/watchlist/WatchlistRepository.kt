@@ -20,7 +20,7 @@ interface WatchlistRepository {
 }
 
 class RealWatchlistRepository @Inject constructor(
-        private val database: AppDatabase
+    private val database: AppDatabase
 ) : WatchlistRepository {
 
     override fun getAll(): Single<List<WatchlistMovie>> {

@@ -13,12 +13,12 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 data class SelectMoviesViewState(
-        val pages: Int = 1,
-        val data: List<Sample> = emptyList(),
-        val isLoading: Boolean = false,
-        val isLoadingMore: Boolean = false,
-        val error: Throwable? = null,
-        val isFinished: Boolean = false
+    val pages: Int = 1,
+    val data: List<Sample> = emptyList(),
+    val isLoading: Boolean = false,
+    val isLoadingMore: Boolean = false,
+    val error: Throwable? = null,
+    val isFinished: Boolean = false
 ) {
     val isError: Boolean
         get() = error != null
@@ -40,8 +40,8 @@ sealed class Result {
 }
 
 class SelectMoviesViewModel @Inject constructor(
-        private val repository: SamplesRepository,
-        private val genresRepository: GenresRepository
+    private val repository: SamplesRepository,
+    private val genresRepository: GenresRepository
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -55,9 +55,9 @@ class SelectMoviesViewModel @Inject constructor(
     init {
         val initialViewState = SelectMoviesViewState(isLoading = true)
         compositeDisposable += refreshRelay
-                .switchMap(this::processAction)
-                .scan(initialViewState, this::reduceState)
-                .subscribe(this::render)
+            .switchMap(this::processAction)
+            .scan(initialViewState, this::reduceState)
+            .subscribe(this::render)
         refreshRelay.accept(Action.Refresh())
     }
 
@@ -70,15 +70,15 @@ class SelectMoviesViewModel @Inject constructor(
     }
 
     private fun fetchMovies(
-            page: Int
+        page: Int
     ): Observable<Result> {
         return genresRepository.preferredGenres
-                .flatMap { repository.fetch(it, page) }
-                .subscribeOn(Schedulers.io())
-                .doOnNext { this.page++ }
-                .map { Result.Data(it, page) as Result }
-                .onErrorReturn { Result.Error(it) }
-                .startWith(if (page == 1) Result.Loading else Result.None)
+            .flatMap { repository.fetch(it, page) }
+            .subscribeOn(Schedulers.io())
+            .doOnNext { this.page++ }
+            .map { Result.Data(it, page) as Result }
+            .onErrorReturn { Result.Error(it) }
+            .startWith(if (page == 1) Result.Loading else Result.None)
     }
 
     private fun toggleSelection(sample: Sample): Observable<Result> {
@@ -88,14 +88,14 @@ class SelectMoviesViewModel @Inject constructor(
 
     private fun storeSelection(samples: List<Sample>): Observable<Result> {
         return Observable
-                .fromCallable { samples.map { it.toHistoryMovie() } }
-                .flatMapCompletable { repository.store(it) }
-                .andThen(Observable.just(Result.Finished as Result))
+            .fromCallable { samples.map { it.toHistoryMovie() } }
+            .flatMapCompletable { repository.store(it) }
+            .andThen(Observable.just(Result.Finished as Result))
     }
 
     private fun reduceState(
-            viewState: SelectMoviesViewState,
-            result: Result
+        viewState: SelectMoviesViewState,
+        result: Result
     ): SelectMoviesViewState {
         return when (result) {
             is Result.Loading -> viewState.copy(isLoading = true, error = null)
@@ -138,8 +138,8 @@ class SelectMoviesViewModel @Inject constructor(
     }
 
     class Factory(
-            private val repository: SamplesRepository,
-            private val genresRepository: GenresRepository
+        private val repository: SamplesRepository,
+        private val genresRepository: GenresRepository
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")

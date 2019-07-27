@@ -13,10 +13,10 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 data class WatchlistViewState(
-        val data: List<WatchlistMovieViewEntity> = emptyList(),
-        val isLoading: Boolean = false,
-        val error: Throwable? = null,
-        val deletedIndex: Int? = null
+    val data: List<WatchlistMovieViewEntity> = emptyList(),
+    val isLoading: Boolean = false,
+    val error: Throwable? = null,
+    val deletedIndex: Int? = null
 )
 
 sealed class Action {
@@ -35,9 +35,9 @@ sealed class Result {
 }
 
 class WatchlistViewModel @Inject constructor(
-        private val repository: WatchlistRepository,
-        private val historyRepository: HistoryRepository,
-        private val viewEntityMapper: WatchlistMovieViewEntityMapper
+    private val repository: WatchlistRepository,
+    private val historyRepository: HistoryRepository,
+    private val viewEntityMapper: WatchlistMovieViewEntityMapper
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -50,17 +50,23 @@ class WatchlistViewModel @Inject constructor(
         val initialViewState = WatchlistViewState(isLoading = true)
 
         val databaseChanges = repository.getAll()
-                .onErrorReturn { emptyList() }
-                .map(viewEntityMapper)
-                .toObservable()
-                .map { if (it.isNotEmpty()) { Action.DatabaseLoaded(it) } else { Action.Load } }
+            .onErrorReturn { emptyList() }
+            .map(viewEntityMapper)
+            .toObservable()
+            .map {
+                if (it.isNotEmpty()) {
+                    Action.DatabaseLoaded(it)
+                } else {
+                    Action.Load
+                }
+            }
 
         val sources = Observable.merge(refreshRelay, databaseChanges)
 
         compositeDisposable += sources
-                .switchMap(this::processAction)
-                .scan(initialViewState, this::reduceState)
-                .subscribe(this::render)
+            .switchMap(this::processAction)
+            .scan(initialViewState, this::reduceState)
+            .subscribe(this::render)
     }
 
     private fun processAction(action: Action): Observable<Result> {
@@ -77,34 +83,34 @@ class WatchlistViewModel @Inject constructor(
         val newMovie = movie.raw.copy(notificationsActivated = movie.raw.notificationsActivated.not())
         val newViewEntity = movie.copy(notificationsActivated = movie.notificationsActivated.not())
         return repository
-                .store(newMovie)
-                .andThen(Observable.just(Result.NotificationToggled(newViewEntity) as Result))
+            .store(newMovie)
+            .andThen(Observable.just(Result.NotificationToggled(newViewEntity) as Result))
     }
 
     private fun fetchMovies(): Observable<Result> {
         return repository.getAll()
-                .subscribeOn(Schedulers.io())
-                .map(viewEntityMapper)
-                .map { Result.Data(it) as Result }
-                .onErrorReturn { Result.Error(it) }
-                .toObservable()
+            .subscribeOn(Schedulers.io())
+            .map(viewEntityMapper)
+            .map { Result.Data(it) as Result }
+            .onErrorReturn { Result.Error(it) }
+            .toObservable()
     }
 
     private fun removeMovie(movie: WatchlistMovieViewEntity): Observable<Result> {
         return repository.remove(movie.id)
-                .andThen(Observable.just(Result.Removed(movie) as Result))
+            .andThen(Observable.just(Result.Removed(movie) as Result))
     }
 
     private fun rateMovie(movie: WatchlistMovieViewEntity, rating: Int): Observable<Result> {
         val historyMovie = HistoryMovie.fromWatchlistMovie(movie, rating)
         return repository.remove(movie.id)
-                .andThen(historyRepository.store(historyMovie))
-                .andThen(Observable.just(Result.Removed(movie) as Result))
+            .andThen(historyRepository.store(historyMovie))
+            .andThen(Observable.just(Result.Removed(movie) as Result))
     }
 
     private fun reduceState(
-            viewState: WatchlistViewState,
-            result: Result
+        viewState: WatchlistViewState,
+        result: Result
     ): WatchlistViewState {
         return when (result) {
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null, deletedIndex = null)

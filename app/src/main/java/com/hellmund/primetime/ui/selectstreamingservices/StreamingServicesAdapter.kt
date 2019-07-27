@@ -9,14 +9,14 @@ import com.hellmund.primetime.R
 import kotlinx.android.synthetic.main.list_item_streaming_service.view.*
 
 class StreamingServicesAdapter(
-        private val onItemSelected: (streamingService: StreamingService) -> Unit
+    private val onItemSelected: (streamingService: StreamingService) -> Unit
 ) : RecyclerView.Adapter<StreamingServicesAdapter.ViewHolder>() {
 
     private val items = mutableListOf<StreamingService>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_streaming_service, parent, false)
+            .inflate(R.layout.list_item_streaming_service, parent, false)
         return ViewHolder(view)
     }
 
@@ -35,8 +35,8 @@ class StreamingServicesAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(
-                streamingService: StreamingService,
-                onItemSelected: (streamingService: StreamingService) -> Unit
+            streamingService: StreamingService,
+            onItemSelected: (streamingService: StreamingService) -> Unit
         ) = with(itemView) {
             container.isSelected = streamingService.isSelected
             checkBox.isChecked = streamingService.isSelected

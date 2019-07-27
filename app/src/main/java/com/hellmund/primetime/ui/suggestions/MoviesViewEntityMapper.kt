@@ -6,7 +6,7 @@ import io.reactivex.functions.Function
 import javax.inject.Inject
 
 class MoviesViewEntityMapper @Inject constructor(
-        valueFormatter: ValueFormatter
+    valueFormatter: ValueFormatter
 ) : Function<List<Movie>, List<MovieViewEntity>> {
 
     private val internalMapper = MovieViewEntityMapper(valueFormatter)
@@ -18,24 +18,24 @@ class MoviesViewEntityMapper @Inject constructor(
 }
 
 class MovieViewEntityMapper @Inject constructor(
-        private val valueFormatter: ValueFormatter
+    private val valueFormatter: ValueFormatter
 ) : Function<Movie, MovieViewEntity> {
 
     override fun apply(movie: Movie): MovieViewEntity {
         return MovieViewEntity(
-                id = movie.id,
-                posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
-                backdropUrl = "https://image.tmdb.org/t/p/w500${movie.backdropPath}",
-                title = movie.title,
-                formattedGenres = valueFormatter.formatGenres(movie),
-                description = movie.description,
-                releaseYear = valueFormatter.formatReleaseYear(movie.releaseDate),
-                popularity = movie.popularity,
-                formattedVoteAverage = "${movie.voteAverage} / 10",
-                formattedVoteCount = valueFormatter.formatCount(movie.voteCount),
-                formattedRuntime = valueFormatter.formatRuntime(movie.runtime),
-                imdbId = movie.imdbId,
-                raw = movie
+            id = movie.id,
+            posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
+            backdropUrl = "https://image.tmdb.org/t/p/w500${movie.backdropPath}",
+            title = movie.title,
+            formattedGenres = valueFormatter.formatGenres(movie),
+            description = movie.description,
+            releaseYear = valueFormatter.formatReleaseYear(movie.releaseDate),
+            popularity = movie.popularity,
+            formattedVoteAverage = "${movie.voteAverage} / 10",
+            formattedVoteCount = valueFormatter.formatCount(movie.voteCount),
+            formattedRuntime = valueFormatter.formatRuntime(movie.runtime),
+            imdbId = movie.imdbId,
+            raw = movie
         )
     }
 

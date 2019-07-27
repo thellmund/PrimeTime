@@ -41,9 +41,9 @@ class HistoryFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_history, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,23 +69,23 @@ class HistoryFragment : Fragment() {
         val options = getDialogOptions()
 
         requireContext().showItemsDialog(
-                title = movie.title,
-                items = options,
-                onSelected = { index ->
-                    when (index) {
-                        0 -> showSimilarMovies(movie)
-                        1 -> openEditRatingDialog(movie)
-                        2 -> removeFromHistory(movie)
-                    }
+            title = movie.title,
+            items = options,
+            onSelected = { index ->
+                when (index) {
+                    0 -> showSimilarMovies(movie)
+                    1 -> openEditRatingDialog(movie)
+                    2 -> removeFromHistory(movie)
                 }
+            }
         )
     }
 
     private fun getDialogOptions(): Array<String> {
         return arrayOf(
-                getString(R.string.show_similar_movies),
-                getString(R.string.edit_rating),
-                getString(R.string.remove_from_history)
+            getString(R.string.show_similar_movies),
+            getString(R.string.edit_rating),
+            getString(R.string.remove_from_history)
         )
     }
 
@@ -111,16 +111,16 @@ class HistoryFragment : Fragment() {
         val checked = if (movie.rating == Constants.LIKE) 0 else 1
 
         requireContext().showSingleSelectDialog(
-                titleResId = R.string.edit,
-                choices = options,
-                checked = checked,
-                positiveResId = R.string.save,
-                onSelected = {
-                    if (it != checked) {
-                        val newRating = if (it == 0) Constants.LIKE else Constants.DISLIKE
-                        updateRating(movie, newRating)
-                    }
+            titleResId = R.string.edit,
+            choices = options,
+            checked = checked,
+            positiveResId = R.string.save,
+            onSelected = {
+                if (it != checked) {
+                    val newRating = if (it == 0) Constants.LIKE else Constants.DISLIKE
+                    updateRating(movie, newRating)
                 }
+            }
         )
     }
 

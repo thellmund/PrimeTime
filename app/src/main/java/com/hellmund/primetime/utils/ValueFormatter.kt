@@ -20,8 +20,8 @@ interface ValueFormatter {
 }
 
 class RealValueFormatter @Inject constructor(
-        private val context: Context,
-        private val genresRepository: GenresRepository
+    private val context: Context,
+    private val genresRepository: GenresRepository
 ) : ValueFormatter {
 
     private val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)

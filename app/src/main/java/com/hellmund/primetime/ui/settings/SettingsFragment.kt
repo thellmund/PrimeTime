@@ -44,7 +44,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        
+
         initIncludedGenresPref()
         initExcludedGenresPref()
         initStreamingServicesPref()
@@ -157,9 +157,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun getVersionName(): String? {
         return try {
             requireActivity()
-                    .packageManager
-                    .getPackageInfo(requireActivity().packageName, 0)
-                    .versionName
+                .packageManager
+                .getPackageInfo(requireActivity().packageName, 0)
+                .versionName
         } catch (e: PackageManager.NameNotFoundException) {
             null
         }

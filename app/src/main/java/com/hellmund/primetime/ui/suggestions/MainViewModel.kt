@@ -18,9 +18,10 @@ import javax.inject.Inject
 
 sealed class Action {
     data class LoadMovies(
-            val type: RecommendationsType = RecommendationsType.Personalized(),
-            val page: Int
+        val type: RecommendationsType = RecommendationsType.Personalized(),
+        val page: Int
     ) : Action()
+
     data class StoreRating(val rating: Rating) : Action()
     data class Filter(val genres: List<Genre>) : Action()
 }
@@ -28,21 +29,22 @@ sealed class Action {
 sealed class Result {
     object Loading : Result()
     data class Data(
-            val type: RecommendationsType,
-            val data: List<MovieViewEntity>,
-            val page: Int
+        val type: RecommendationsType,
+        val data: List<MovieViewEntity>,
+        val page: Int
     ) : Result()
+
     data class Error(val error: Throwable) : Result()
     data class RatingStored(val movie: MovieViewEntity) : Result()
     data class Filter(val genres: List<Genre>) : Result()
 }
 
 class MainViewModel @Inject constructor(
-        private val repository: MoviesRepository,
-        private val historyRepository: HistoryRepository,
-        private val rankingProcessor: MovieRankingProcessor,
-        private val viewEntityMapper: MoviesViewEntityMapper,
-        private val recommendationsType: RecommendationsType
+    private val repository: MoviesRepository,
+    private val historyRepository: HistoryRepository,
+    private val rankingProcessor: MovieRankingProcessor,
+    private val viewEntityMapper: MoviesViewEntityMapper,
+    private val recommendationsType: RecommendationsType
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -57,9 +59,9 @@ class MainViewModel @Inject constructor(
     init {
         val initialViewState = MainViewState(isLoading = true)
         compositeDisposable += refreshRelay
-                .switchMap(this::processAction)
-                .scan(initialViewState, this::reduceState)
-                .subscribe(this::render)
+            .switchMap(this::processAction)
+            .scan(initialViewState, this::reduceState)
+            .subscribe(this::render)
         refresh()
     }
 
@@ -72,28 +74,28 @@ class MainViewModel @Inject constructor(
     }
 
     private fun fetchRecommendations(
-            type: RecommendationsType,
-            page: Int
+        type: RecommendationsType,
+        page: Int
     ): Observable<Result> {
         return repository.fetchRecommendations(type, page)
-                .subscribeOn(Schedulers.io())
-                .map { rankingProcessor.rank(it, type) }
-                .map(viewEntityMapper)
-                .map { Result.Data(type, it, page) as Result }
-                .onErrorReturn { Result.Error(it) }
-                .startWith(Result.Loading)
+            .subscribeOn(Schedulers.io())
+            .map { rankingProcessor.rank(it, type) }
+            .map(viewEntityMapper)
+            .map { Result.Data(type, it, page) as Result }
+            .onErrorReturn { Result.Error(it) }
+            .startWith(Result.Loading)
     }
 
     private fun storeRating(rating: Rating): Observable<Result> {
         val historyMovie = HistoryMovie.fromRating(rating)
         return historyRepository
-                .store(historyMovie)
-                .andThen(Observable.just(Result.RatingStored(rating.movie) as Result))
+            .store(historyMovie)
+            .andThen(Observable.just(Result.RatingStored(rating.movie) as Result))
     }
 
     private fun reduceState(
-            viewState: MainViewState,
-            result: Result
+        viewState: MainViewState,
+        result: Result
     ): MainViewState {
         return when (result) {
             is Result.Loading -> viewState.toLoading()

@@ -17,7 +17,7 @@ import com.hellmund.primetime.ui.shared.BottomNavigationBehavior
 import com.hellmund.primetime.ui.shared.ScrollAwareFragment
 
 class FragmentLifecycleCallback(
-        private val activity: AppCompatActivity
+    private val activity: AppCompatActivity
 ) : FragmentManager.FragmentLifecycleCallbacks() {
 
     private val searchToolbarColor: Int by lazy {

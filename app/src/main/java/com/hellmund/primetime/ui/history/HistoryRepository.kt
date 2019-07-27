@@ -16,31 +16,31 @@ interface HistoryRepository {
 }
 
 class RealHistoryRepository @Inject constructor(
-        private val database: AppDatabase
+    private val database: AppDatabase
 ) : HistoryRepository {
 
     override fun getAll(): Maybe<List<HistoryMovie>> = database.historyDao()
-            .getAll()
-            .subscribeOn(Schedulers.io())
+        .getAll()
+        .subscribeOn(Schedulers.io())
 
     override fun getLiked(): Maybe<List<HistoryMovie>> = database.historyDao()
-            .getLiked()
-            .subscribeOn(Schedulers.io())
+        .getLiked()
+        .subscribeOn(Schedulers.io())
 
     override fun count(movieId: Int): Maybe<Int> = database.historyDao()
-            .count(movieId)
-            .subscribeOn(Schedulers.io())
+        .count(movieId)
+        .subscribeOn(Schedulers.io())
 
     override fun store(vararg historyMovie: HistoryMovie): Completable {
         return database.historyDao()
-                .store(*historyMovie)
-                .subscribeOn(Schedulers.io())
+            .store(*historyMovie)
+            .subscribeOn(Schedulers.io())
     }
 
     override fun remove(movieId: Int): Completable {
         return database.historyDao()
-                .delete(movieId)
-                .subscribeOn(Schedulers.io())
+            .delete(movieId)
+            .subscribeOn(Schedulers.io())
     }
 
 }

@@ -23,10 +23,10 @@ class NotificationPublisher : BroadcastReceiver() {
         }
 
         watchlistRepository
-                .getReleases()
-                .filter { it.isNotEmpty() }
-                .map { NotificationUtils.buildNotification(context, it) }
-                .subscribe { context.notificationManager.notify(0, it) }
+            .getReleases()
+            .filter { it.isNotEmpty() }
+            .map { NotificationUtils.buildNotification(context, it) }
+            .subscribe { context.notificationManager.notify(0, it) }
     }
 
 }

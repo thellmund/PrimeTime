@@ -34,15 +34,15 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(
-            tmdbInterceptor: TmdbInterceptor,
-            retryInterceptor: RetryInterceptor,
-            loggingInterceptor: HttpLoggingInterceptor
+        tmdbInterceptor: TmdbInterceptor,
+        retryInterceptor: RetryInterceptor,
+        loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
-                .addInterceptor(tmdbInterceptor)
-                .addInterceptor(retryInterceptor)
-                .addNetworkInterceptor(loggingInterceptor)
-                .build()
+            .addInterceptor(tmdbInterceptor)
+            .addInterceptor(retryInterceptor)
+            .addNetworkInterceptor(loggingInterceptor)
+            .build()
     }
 
     @JvmStatic
@@ -50,24 +50,24 @@ object NetworkModule {
     @Provides
     fun provideGson(): Gson {
         return GsonBuilder()
-                .registerTypeAdapter(LocalDate::class.java, DateSerializer())
-                .create()
+            .registerTypeAdapter(LocalDate::class.java, DateSerializer())
+            .create()
     }
 
     @JvmStatic
     @Singleton
     @Provides
     fun provideApiService(
-            okHttpClient: OkHttpClient,
-            gson: Gson
+        okHttpClient: OkHttpClient,
+        gson: Gson
     ): ApiService {
         return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(okHttpClient)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
-                .create(ApiService::class.java)
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+            .create(ApiService::class.java)
     }
 
 }

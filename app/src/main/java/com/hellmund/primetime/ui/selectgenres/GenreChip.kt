@@ -8,10 +8,10 @@ import com.hellmund.primetime.R
 import org.jetbrains.anko.textColor
 
 class GenreChip @JvmOverloads constructor(
-        context: Context,
-        title: String = "",
-        attrs: AttributeSet? = null,
-        defStyle: Int = 0
+    context: Context,
+    title: String = "",
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
 ) : Chip(context, attrs, defStyle) {
 
     init {

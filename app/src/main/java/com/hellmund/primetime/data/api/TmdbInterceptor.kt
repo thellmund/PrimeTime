@@ -15,9 +15,9 @@ class TmdbInterceptor @Inject constructor() : Interceptor {
         val url = request.url()
 
         val modifiedUrl = url.newBuilder()
-                .addQueryParameter("api_key", BuildConfig.API_KEY)
-                .addQueryParameter("language", Locale.getDefault().language)
-                .build()
+            .addQueryParameter("api_key", BuildConfig.API_KEY)
+            .addQueryParameter("language", Locale.getDefault().language)
+            .build()
 
         val modifiedRequest = request.newBuilder().url(modifiedUrl).build()
         return chain.proceed(modifiedRequest)

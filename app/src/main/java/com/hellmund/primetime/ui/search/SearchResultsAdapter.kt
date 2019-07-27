@@ -12,16 +12,16 @@ import com.hellmund.primetime.utils.Transformation
 import kotlinx.android.synthetic.main.list_item_search_results.view.*
 
 class SearchResultsAdapter(
-        private val imageLoader: ImageLoader,
-        private val onItemClick: (MovieViewEntity) -> Unit,
-        private val onWatched: (MovieViewEntity) -> Unit
+    private val imageLoader: ImageLoader,
+    private val onItemClick: (MovieViewEntity) -> Unit,
+    private val onWatched: (MovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<SearchResultsAdapter.ViewHolder>() {
 
     private val items = mutableListOf<MovieViewEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_search_results, parent, false)
+            .inflate(R.layout.list_item_search_results, parent, false)
         return ViewHolder(view)
     }
 
@@ -45,10 +45,10 @@ class SearchResultsAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(
-                imageLoader: ImageLoader,
-                searchResult: MovieViewEntity,
-                onItemClick: (MovieViewEntity) -> Unit,
-                onWatchedIt: (MovieViewEntity) -> Unit
+            imageLoader: ImageLoader,
+            searchResult: MovieViewEntity,
+            onItemClick: (MovieViewEntity) -> Unit,
+            onWatchedIt: (MovieViewEntity) -> Unit
         ) = with(itemView) {
             loadImage(imageLoader, searchResult.posterUrl)
 
@@ -66,7 +66,7 @@ class SearchResultsAdapter(
 
         private fun loadImage(imageLoader: ImageLoader, url: String) = with(itemView) {
             val transformations = arrayOf<Transformation>(
-                    Transformation.Placeholder(R.drawable.poster_placeholder))
+                Transformation.Placeholder(R.drawable.poster_placeholder))
             imageLoader.load(url = url, transformations = transformations, into = posterImageView)
         }
 

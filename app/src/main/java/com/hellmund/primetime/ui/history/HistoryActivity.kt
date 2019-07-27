@@ -14,9 +14,9 @@ class HistoryActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.contentFrame, HistoryFragment.newInstance())
-                    .commit()
+                .beginTransaction()
+                .replace(R.id.contentFrame, HistoryFragment.newInstance())
+                .commit()
         }
     }
 

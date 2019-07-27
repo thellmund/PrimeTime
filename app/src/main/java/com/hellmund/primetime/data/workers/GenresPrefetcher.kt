@@ -15,19 +15,19 @@ class GenresPrefetcher @Inject constructor() {
 
     fun run() {
         val constraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
 
         val request = OneTimeWorkRequestBuilder<RefreshGenresWorker>()
-                .setConstraints(constraints)
-                .build()
+            .setConstraints(constraints)
+            .build()
 
         workManager.enqueueUniqueWork(GENRES_WORKER_ID, ExistingWorkPolicy.REPLACE, request)
     }
 
     class RefreshGenresWorker(
-            context: Context,
-            workerParams: WorkerParameters
+        context: Context,
+        workerParams: WorkerParameters
     ) : RxWorker(context, workerParams) {
 
         // TODO Constructor injection
@@ -38,13 +38,13 @@ class GenresPrefetcher @Inject constructor() {
             injector.inject(this)
 
             return genresRepository
-                    .all
-                    .filter { it.isEmpty() }
-                    .flatMapObservable { genresRepository.fetchGenres() }
-                    .single(emptyList())
-                    .flatMapCompletable { genresRepository.storeGenres(it) }
-                    .andThen(Single.just(Result.success()))
-                    .onErrorReturnItem(Result.retry())
+                .all
+                .filter { it.isEmpty() }
+                .flatMapObservable { genresRepository.fetchGenres() }
+                .single(emptyList())
+                .flatMapCompletable { genresRepository.storeGenres(it) }
+                .andThen(Single.just(Result.success()))
+                .onErrorReturnItem(Result.retry())
         }
 
     }

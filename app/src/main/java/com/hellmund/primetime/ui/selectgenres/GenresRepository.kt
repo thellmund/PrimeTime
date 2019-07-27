@@ -22,54 +22,54 @@ interface GenresRepository {
 }
 
 class RealGenresRepository @Inject constructor(
-        private val apiService: ApiService,
-        private val database: AppDatabase
+    private val apiService: ApiService,
+    private val database: AppDatabase
 ) : GenresRepository {
 
     override val all: Single<List<Genre>>
         get() = database.genreDao()
-                .getAll()
-                .subscribeOn(Schedulers.io())
+            .getAll()
+            .subscribeOn(Schedulers.io())
 
     override val preferredGenres: Observable<List<Genre>>
         get() = database.genreDao()
-                .getPreferredGenres()
-                .subscribeOn(Schedulers.io())
-                .toObservable()
+            .getPreferredGenres()
+            .subscribeOn(Schedulers.io())
+            .toObservable()
 
     override val excludedGenres: Observable<List<Genre>>
         get() = database.genreDao()
-                .getExcludedGenres()
-                .subscribeOn(Schedulers.io())
-                .toObservable()
+            .getExcludedGenres()
+            .subscribeOn(Schedulers.io())
+            .toObservable()
 
     override fun fetchGenres(): Observable<List<Genre>> {
         return apiService.genres()
-                .subscribeOn(Schedulers.io())
-                .map { it.genres }
-                .map { it.map { genre -> Genre(genre.id, genre.name) } }
+            .subscribeOn(Schedulers.io())
+            .map { it.genres }
+            .map { it.map { genre -> Genre(genre.id, genre.name) } }
     }
 
     override fun getGenre(genreId: String): Maybe<Genre> = database.genreDao()
-            .getGenre(genreId.toInt())
-            .subscribeOn(Schedulers.io())
+        .getGenre(genreId.toInt())
+        .subscribeOn(Schedulers.io())
 
     override fun getGenreByName(name: String): Maybe<Genre> = database.genreDao()
-            .getGenre(name)
-            .subscribeOn(Schedulers.io())
+        .getGenre(name)
+        .subscribeOn(Schedulers.io())
 
     override fun getGenres(genreIds: Set<String>): Single<List<Genre>> {
         return Single
-                .fromCallable {
-                    genreIds.map { database.genreDao().getGenre(it.toInt()).blockingGet() }
-                }
-                .subscribeOn(Schedulers.io())
+            .fromCallable {
+                genreIds.map { database.genreDao().getGenre(it.toInt()).blockingGet() }
+            }
+            .subscribeOn(Schedulers.io())
     }
 
     override fun storeGenres(genres: List<Genre>): Completable {
         return database.genreDao()
-                .store(*genres.toTypedArray())
-                .subscribeOn(Schedulers.io())
+            .store(*genres.toTypedArray())
+            .subscribeOn(Schedulers.io())
     }
 
 }

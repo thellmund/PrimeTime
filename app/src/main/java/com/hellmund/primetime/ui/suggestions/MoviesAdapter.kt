@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.utils.ImageLoader
 
 class MoviesAdapter(
-        private val imageLoader: ImageLoader,
-        private val onClick: (MovieViewEntity) -> Unit,
-        private val onMenuClick: (MovieViewEntity) -> Unit
+    private val imageLoader: ImageLoader,
+    private val onClick: (MovieViewEntity) -> Unit,
+    private val onMenuClick: (MovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     private val items = mutableListOf<AdapterItem>()
@@ -46,8 +46,8 @@ class MoviesAdapter(
     }
 
     class DiffUtilCallback(
-            private val oldItems: List<AdapterItem>,
-            private val newItems: List<AdapterItem>
+        private val oldItems: List<AdapterItem>,
+        private val newItems: List<AdapterItem>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldItems.size

@@ -23,7 +23,7 @@ interface ImageLoader {
     )
 }
 
-class PicassoImageLoader @Inject constructor(context: Context): ImageLoader {
+class PicassoImageLoader @Inject constructor(context: Context) : ImageLoader {
 
     private val instance: Picasso
         get() = Picasso.get()
@@ -52,8 +52,13 @@ class PicassoImageLoader @Inject constructor(context: Context): ImageLoader {
         }
 
         requestCreator.into(into, object : Callback {
-            override fun onSuccess() { onComplete?.invoke(into.drawable) }
-            override fun onError(e: Exception?) { onError?.invoke() }
+            override fun onSuccess() {
+                onComplete?.invoke(into.drawable)
+            }
+
+            override fun onError(e: Exception?) {
+                onError?.invoke()
+            }
         })
     }
 

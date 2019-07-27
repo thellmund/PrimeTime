@@ -41,10 +41,10 @@ class WatchlistFragment : Fragment() {
 
     private val adapter: WatchlistAdapter by lazy {
         WatchlistAdapter(
-                imageLoader = imageLoader,
-                onWatchedIt = this::onWatchedIt,
-                onRemove = this::onRemove,
-                onNotificationToggle = this::onNotificationToggle
+            imageLoader = imageLoader,
+            onWatchedIt = this::onWatchedIt,
+            onRemove = this::onRemove,
+            onNotificationToggle = this::onNotificationToggle
         )
     }
 
@@ -59,9 +59,9 @@ class WatchlistFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.fragment_watchlist, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -95,9 +95,9 @@ class WatchlistFragment : Fragment() {
 
     private fun onRemove(movie: WatchlistMovieViewEntity) {
         requireContext().showCancelableDialog(
-                messageResId = R.string.remove_from_watchlist_header,
-                positiveResId = R.string.remove,
-                onPositive = { viewModel.remove(movie) })
+            messageResId = R.string.remove_from_watchlist_header,
+            positiveResId = R.string.remove,
+            onPositive = { viewModel.remove(movie) })
     }
 
     private fun onWatchedIt(movie: WatchlistMovieViewEntity) {
@@ -105,12 +105,12 @@ class WatchlistFragment : Fragment() {
         val options = arrayOf(getString(R.string.like), getString(R.string.dislike))
 
         requireContext().showItemsDialog(
-                title = header,
-                items = options,
-                onSelected = { index ->
-                    val rating = if (index == 0) Constants.LIKE else Constants.DISLIKE
-                    viewModel.onMovieRated(movie, rating)
-                }
+            title = header,
+            items = options,
+            onSelected = { index ->
+                val rating = if (index == 0) Constants.LIKE else Constants.DISLIKE
+                viewModel.onMovieRated(movie, rating)
+            }
         )
     }
 

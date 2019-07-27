@@ -21,8 +21,8 @@ interface WatchlistDao {
 
     @Query("SELECT * FROM watchlist_movies WHERE releaseDate BETWEEN :start AND :end")
     fun releases(
-            start: Long = startOfDay,
-            end: Long = endOfDay
+        start: Long = startOfDay,
+        end: Long = endOfDay
     ): Single<List<WatchlistMovie>>
 
     @Query("SELECT COUNT(*) FROM watchlist_movies WHERE id = :movieId")

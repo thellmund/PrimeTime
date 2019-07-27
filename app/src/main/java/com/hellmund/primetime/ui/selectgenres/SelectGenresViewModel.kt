@@ -13,10 +13,10 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 data class SelectGenresViewState(
-        val data: List<Genre> = emptyList(),
-        val isLoading: Boolean = false,
-        val error: Throwable? = null,
-        val isFinished: Boolean = false
+    val data: List<Genre> = emptyList(),
+    val isLoading: Boolean = false,
+    val error: Throwable? = null,
+    val isFinished: Boolean = false
 )
 
 sealed class Action {
@@ -32,7 +32,7 @@ sealed class Result {
 }
 
 class SelectGenresViewModel @Inject constructor(
-        private val repository: GenresRepository
+    private val repository: GenresRepository
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -44,9 +44,9 @@ class SelectGenresViewModel @Inject constructor(
     init {
         val initialViewState = SelectGenresViewState(isLoading = true)
         compositeDisposable += refreshRelay
-                .switchMap(this::processAction)
-                .scan(initialViewState, this::reduceState)
-                .subscribe(this::render)
+            .switchMap(this::processAction)
+            .scan(initialViewState, this::reduceState)
+            .subscribe(this::render)
         refreshRelay.accept(Action.Refresh)
     }
 
@@ -59,21 +59,21 @@ class SelectGenresViewModel @Inject constructor(
 
     private fun fetchMovies(): Observable<Result> {
         return repository.fetchGenres()
-                .subscribeOn(Schedulers.io())
-                .map { Result.Data(it) as Result }
-                .onErrorReturn { Result.Error(it) }
-                .startWith(Result.Loading)
+            .subscribeOn(Schedulers.io())
+            .map { Result.Data(it) as Result }
+            .onErrorReturn { Result.Error(it) }
+            .startWith(Result.Loading)
     }
 
     private fun storeGenres(genres: List<Genre>): Observable<Result> {
         return repository
-                .storeGenres(genres)
-                .andThen(Observable.just(Result.Finish as Result))
+            .storeGenres(genres)
+            .andThen(Observable.just(Result.Finish as Result))
     }
 
     private fun reduceState(
-            viewState: SelectGenresViewState,
-            result: Result
+        viewState: SelectGenresViewState,
+        result: Result
     ): SelectGenresViewState {
         return when (result) {
             is Result.Loading -> viewState.copy(isLoading = true, error = null)
@@ -97,7 +97,7 @@ class SelectGenresViewModel @Inject constructor(
     }
 
     class Factory(
-            private val repository: GenresRepository
+        private val repository: GenresRepository
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")

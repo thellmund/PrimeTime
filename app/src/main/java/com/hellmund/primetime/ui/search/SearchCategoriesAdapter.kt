@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_item_category.view.*
 
 class SearchCategoriesAdapter(
-        private val onItemClick: (String) -> Unit
+    private val onItemClick: (String) -> Unit
 ) : RecyclerView.Adapter<SearchCategoriesAdapter.ViewHolder>() {
 
     private val items = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(com.hellmund.primetime.R.layout.list_item_category, parent, false)
+            .inflate(com.hellmund.primetime.R.layout.list_item_category, parent, false)
         return ViewHolder(view)
     }
 

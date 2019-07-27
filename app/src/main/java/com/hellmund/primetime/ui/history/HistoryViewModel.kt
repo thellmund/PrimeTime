@@ -12,9 +12,9 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 data class HistoryViewState(
-        val data: List<HistoryMovieViewEntity> = emptyList(),
-        val isLoading: Boolean = false,
-        val error: Throwable? = null
+    val data: List<HistoryMovieViewEntity> = emptyList(),
+    val isLoading: Boolean = false,
+    val error: Throwable? = null
 )
 
 sealed class Action {
@@ -32,9 +32,9 @@ sealed class Result {
 }
 
 class HistoryViewModel @Inject constructor(
-        private val repository: HistoryRepository,
-        private val viewEntitiesMapper: HistoryMoviesViewEntityMapper,
-        private val viewEntityMapper: HistoryMovieViewEntityMapper
+    private val repository: HistoryRepository,
+    private val viewEntitiesMapper: HistoryMoviesViewEntityMapper,
+    private val viewEntityMapper: HistoryMovieViewEntityMapper
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -47,17 +47,23 @@ class HistoryViewModel @Inject constructor(
         val initialViewState = HistoryViewState(isLoading = true)
 
         val databaseChanges = repository.getAll()
-                .map(viewEntitiesMapper)
-                .onErrorReturn { emptyList() }
-                .toObservable()
-                .map { if (it.isNotEmpty()) { Action.DatabaseLoaded(it) } else { Action.Load } }
+            .map(viewEntitiesMapper)
+            .onErrorReturn { emptyList() }
+            .toObservable()
+            .map {
+                if (it.isNotEmpty()) {
+                    Action.DatabaseLoaded(it)
+                } else {
+                    Action.Load
+                }
+            }
 
         val sources = Observable.merge(refreshRelay, databaseChanges)
 
         compositeDisposable += sources
-                .switchMap(this::processAction)
-                .scan(initialViewState, this::reduceState)
-                .subscribe(this::render)
+            .switchMap(this::processAction)
+            .scan(initialViewState, this::reduceState)
+            .subscribe(this::render)
     }
 
     private fun processAction(action: Action): Observable<Result> {
@@ -71,29 +77,29 @@ class HistoryViewModel @Inject constructor(
 
     private fun fetchMovies(): Observable<Result> {
         return repository.getAll()
-                .subscribeOn(Schedulers.io())
-                .map(viewEntitiesMapper)
-                .map { Result.Data(it) as Result }
-                .onErrorReturn { Result.Error(it) }
-                .toObservable()
+            .subscribeOn(Schedulers.io())
+            .map(viewEntitiesMapper)
+            .map { Result.Data(it) as Result }
+            .onErrorReturn { Result.Error(it) }
+            .toObservable()
     }
 
     private fun removeMovie(movie: HistoryMovieViewEntity): Observable<Result> {
         return repository.remove(movie.id)
-                .andThen(Observable.just(Result.Removed(movie) as Result))
+            .andThen(Observable.just(Result.Removed(movie) as Result))
     }
 
     private fun updateMovie(movie: HistoryMovie): Observable<Result> {
         return repository
-                .store(movie)
-                .andThen(Observable.just(movie))
-                .map(viewEntityMapper)
-                .map { Result.Updated(it) }
+            .store(movie)
+            .andThen(Observable.just(movie))
+            .map(viewEntityMapper)
+            .map { Result.Updated(it) }
     }
 
     private fun reduceState(
-            viewState: HistoryViewState,
-            result: Result
+        viewState: HistoryViewState,
+        result: Result
     ): HistoryViewState {
         return when (result) {
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
@@ -102,9 +108,9 @@ class HistoryViewModel @Inject constructor(
             is Result.Updated -> {
                 val index = viewState.data.indexOfFirst { it.id == result.movie.id }
                 val newData = viewState.data
-                        .toMutableList()
-                        .apply { set(index, result.movie) }
-                        .toList()
+                    .toMutableList()
+                    .apply { set(index, result.movie) }
+                    .toList()
                 viewState.copy(data = newData)
             }
         }

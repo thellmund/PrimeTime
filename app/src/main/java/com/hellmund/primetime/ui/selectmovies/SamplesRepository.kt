@@ -16,22 +16,22 @@ interface SamplesRepository {
 }
 
 class RealSamplesRepository @Inject constructor(
-        private val apiService: ApiService,
-        private val historyRepository: HistoryRepository
+    private val apiService: ApiService,
+    private val historyRepository: HistoryRepository
 ) : SamplesRepository {
 
     override fun fetch(
-            genres: List<Genre>,
-            page: Int
+        genres: List<Genre>,
+        page: Int
     ): Observable<List<Sample>> {
         return Observable
-                .fromCallable { fetchSync(genres, page) }
-                .subscribeOn(Schedulers.io())
+            .fromCallable { fetchSync(genres, page) }
+            .subscribeOn(Schedulers.io())
     }
 
     private fun fetchSync(
-            genres: List<Genre>,
-            page: Int
+        genres: List<Genre>,
+        page: Int
     ): List<Sample> {
         val moviesPerGenre = 30 / genres.size
         val endYear = LocalDate.now().minusYears(1).year
@@ -44,23 +44,23 @@ class RealSamplesRepository @Inject constructor(
             val movieResults = mutableListOf<Sample>()
             for (year in years) {
                 movieResults += apiService
-                        .discoverMovies(genre = genre.id, releaseYear = year, page = page)
-                        .map { it.results }
-                        .blockingFirst()
+                    .discoverMovies(genre = genre.id, releaseYear = year, page = page)
+                    .map { it.results }
+                    .blockingFirst()
             }
             results += movieResults.subList(0, moviesPerGenre)
         }
 
         return results
-                .flatten()
-                .toSet()
-                .toList()
+            .flatten()
+            .toSet()
+            .toList()
     }
 
     override fun store(movies: List<HistoryMovie>): Completable {
         return historyRepository
-                .store(*movies.toTypedArray())
-                .subscribeOn(Schedulers.io())
+            .store(*movies.toTypedArray())
+            .subscribeOn(Schedulers.io())
     }
 
 }

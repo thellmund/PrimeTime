@@ -42,7 +42,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class SearchFragment : Fragment(), TextWatcher,
-        TextView.OnEditorActionListener, MainActivity.Reselectable {
+    TextView.OnEditorActionListener, MainActivity.Reselectable {
 
     @Inject
     lateinit var imageLoader: ImageLoader
@@ -56,9 +56,9 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private val searchResultsAdapter: SearchResultsAdapter by lazy {
         SearchResultsAdapter(
-                imageLoader,
-                onItemClick = this::onItemClick,
-                onWatched = this::onWatched
+            imageLoader,
+            onItemClick = this::onItemClick,
+            onWatched = this::onWatched
         )
     }
 
@@ -79,9 +79,9 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -123,7 +123,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
         viewState.snackbarText?.let {
             snackbar.setText(it)
-                    .show()
+                .show()
         } ?: snackbar.dismiss()
     }
 
@@ -254,17 +254,17 @@ class SearchFragment : Fragment(), TextWatcher,
         val title = movie.title
 
         val options = arrayOf(
-                getString(R.string.show_more_like_this),
-                getString(R.string.show_less_like_this)
+            getString(R.string.show_more_like_this),
+            getString(R.string.show_less_like_this)
         )
 
         requireContext().showItemsDialog(
-                title = title,
-                items = options,
-                onSelected = { index ->
-                    val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
-                    addRating(rating)
-                }
+            title = title,
+            items = options,
+            onSelected = { index ->
+                val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
+                addRating(rating)
+            }
         )
     }
 

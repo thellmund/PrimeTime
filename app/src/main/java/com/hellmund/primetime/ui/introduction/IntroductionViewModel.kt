@@ -10,7 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class IntroductionViewModel @Inject constructor(
-        private val repository: MoviesRepository
+    private val repository: MoviesRepository
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -24,9 +24,9 @@ class IntroductionViewModel @Inject constructor(
 
     private fun loadPosters() {
         compositeDisposable += repository
-                .fetchPopularMovies()
-                .map { movies -> movies.map { it.fullPosterUrl } }
-                .subscribe(_posterUrls::postValue)
+            .fetchPopularMovies()
+            .map { movies -> movies.map { it.fullPosterUrl } }
+            .subscribe(_posterUrls::postValue)
     }
 
     override fun onCleared() {
@@ -35,7 +35,7 @@ class IntroductionViewModel @Inject constructor(
     }
 
     class Factory(
-            private val repository: MoviesRepository
+        private val repository: MoviesRepository
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
