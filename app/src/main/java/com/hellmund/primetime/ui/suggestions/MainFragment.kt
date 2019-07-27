@@ -18,8 +18,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui.onboarding.OnboardingActivity
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.ui.settings.SettingsActivity
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.shared.ScrollAwareFragment
@@ -99,9 +99,9 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun setupPersonalizationBanner() {
-        if (onboardingHelper.isFirstLaunch && type is Personalized) {
+        if (true /* TODO onboardingHelper.isFirstLaunch && type is Personalized*/) {
             banner.setOnClickListener {
-                val intent = SelectGenresActivity.newIntent(requireContext())
+                val intent = OnboardingActivity.newIntent(requireContext())
                 requireContext().startActivity(intent)
             }
             banner.show()

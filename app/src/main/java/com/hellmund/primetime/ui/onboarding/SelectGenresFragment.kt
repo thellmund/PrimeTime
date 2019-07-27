@@ -1,28 +1,35 @@
-package com.hellmund.primetime.ui.selectgenres
+package com.hellmund.primetime.ui.onboarding
 
 import android.animation.LayoutTransition
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.google.android.material.chip.Chip
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.selectmovies.SelectMoviesActivity
+import com.hellmund.primetime.ui.selectgenres.GenreChip
+import com.hellmund.primetime.ui.selectgenres.SelectGenresViewModel
+import com.hellmund.primetime.ui.selectgenres.SelectGenresViewState
+import com.hellmund.primetime.ui.shared.SingleLiveDataEvent
 import com.hellmund.primetime.utils.observe
-import kotlinx.android.synthetic.main.activity_select_genres.button
-import kotlinx.android.synthetic.main.activity_select_genres.chipGroup
-import kotlinx.android.synthetic.main.activity_select_genres.container
-import kotlinx.android.synthetic.main.activity_select_genres.recommendationsProgressBar
+import com.hellmund.primetime.utils.observeNonNull
+import kotlinx.android.synthetic.main.fragment_select_genres.button
+import kotlinx.android.synthetic.main.fragment_select_genres.chipGroup
+import kotlinx.android.synthetic.main.fragment_select_genres.container
+import kotlinx.android.synthetic.main.fragment_select_genres.recommendationsProgressBar
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SelectGenresActivity : AppCompatActivity() {
+class SelectGenresFragment : Fragment() {
 
+    private var onFinishedAction: () -> Unit = {}
     private val genres = mutableListOf<Genre>()
 
     @Inject
@@ -30,16 +37,23 @@ class SelectGenresActivity : AppCompatActivity() {
 
     private val viewModel: SelectGenresViewModel by lazyViewModel { viewModelProvider }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_select_genres)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         injector.inject(this)
+    }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_select_genres, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         updateNextButton()
         button.setOnClickListener { saveGenres() }
-
-        viewModel.viewState.observe(this, this::render)
+        viewModel.viewState.observe(viewLifecycleOwner, this::render)
+        viewModel.navigation.observeNonNull(viewLifecycleOwner, this::navigate)
     }
 
     private fun updateNextButton(count: Int = 0) {
@@ -57,11 +71,6 @@ class SelectGenresActivity : AppCompatActivity() {
     }
 
     private fun render(viewState: SelectGenresViewState) {
-        if (viewState.isFinished) {
-            openMoviesSelection()
-            return
-        }
-
         genres.clear()
         genres += viewState.data
 
@@ -73,8 +82,14 @@ class SelectGenresActivity : AppCompatActivity() {
         // TODO: Error and loading handling (SwipeRefreshLayout)
     }
 
+    private fun navigate(event: SingleLiveDataEvent<Unit>) {
+        event.getIfNotHandled()?.let {
+            onFinishedAction()
+        }
+    }
+
     private fun showGenres(genres: List<Genre>) {
-        genres.map { GenreChip(this, it.name) }.forEach {
+        genres.map { GenreChip(requireContext(), it.name) }.forEach {
             it.setOnCheckedChangeListener { _, _ -> onCheckedChange() }
             chipGroup.addView(it)
         }
@@ -95,17 +110,11 @@ class SelectGenresActivity : AppCompatActivity() {
         viewModel.store(includedGenres)
     }
 
-    private fun openMoviesSelection() {
-        val intent = Intent(this, SelectMoviesActivity::class.java)
-        startActivity(intent)
-    }
-
     companion object {
-
         private const val MIN_COUNT = 2
-
-        fun newIntent(context: Context): Intent = Intent(context, SelectGenresActivity::class.java)
-
+        fun newInstance(onFinished: () -> Unit) = SelectGenresFragment().apply {
+            onFinishedAction = onFinished
+        }
     }
 
 }

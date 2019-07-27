@@ -53,12 +53,6 @@
             android:label="@string/title_activity_introduction"
             android:theme="@style/AppTheme.Introduction" />
         <activity
-            android:name=".ui.selectgenres.SelectGenresActivity"
-            android:label="@string/select_genres_header" />
-        <activity
-            android:name=".ui.selectmovies.SelectMoviesActivity"
-            android:label="@string/title_activity_select_movie" />
-        <activity
             android:name=".ui.history.HistoryActivity"
             android:label="@string/title_activity_history">
             <meta-data
@@ -66,6 +60,7 @@
                 android:value="com.hellmund.primetime.ui.suggestions.MainActivity" />
         </activity>
         <activity android:name=".ui.selectstreamingservices.SelectStreamingServicesActivity" />
+        <activity android:name=".ui.onboarding.OnboardingActivity" />
 
         <receiver android:name=".utils.NotificationPublisher" />
     </application>

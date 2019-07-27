@@ -9,6 +9,7 @@ import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.ui.shared.SingleLiveDataEvent
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
@@ -53,6 +54,8 @@ sealed class Result {
     data class ShowSnackbar(val message: String) : Result()
     object DismissSnackbar : Result()
 }
+
+class NavigationEvent(value: RecommendationsType) : SingleLiveDataEvent<RecommendationsType>(value)
 
 class SearchViewModel @Inject constructor(
     private val repository: MoviesRepository,

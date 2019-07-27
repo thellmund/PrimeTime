@@ -18,6 +18,10 @@ import io.reactivex.disposables.Disposable
 import org.threeten.bp.LocalDate
 
 fun <T> LiveData<T>.observe(owner: LifecycleOwner, block: (T) -> Unit) {
+    observe(owner, Observer { block(it) })
+}
+
+fun <T> LiveData<T>.observeNonNull(owner: LifecycleOwner, block: (T) -> Unit) {
     observe(owner, Observer { it?.let(block) })
 }
 

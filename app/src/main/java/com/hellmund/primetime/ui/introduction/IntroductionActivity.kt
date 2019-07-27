@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import kotlinx.android.synthetic.main.activity_introduction.gridView
@@ -40,7 +39,7 @@ class IntroductionActivity : AppCompatActivity() {
 
         startButtonAnimation()
 
-        introductionButton.setOnClickListener { openGenresSelection() }
+        introductionButton.setOnClickListener { TODO() }
         viewModel.posterUrls.observe(this, this::displayResults)
     }
 
@@ -88,11 +87,6 @@ class IntroductionActivity : AppCompatActivity() {
 
         val columns = if (isLandscapeMode) 4 else 3
         gridView.layoutManager = GridLayoutManager(this, columns)
-    }
-
-    private fun openGenresSelection() {
-        val intent = SelectGenresActivity.newIntent(this)
-        startActivity(intent)
     }
 
     private val Context.isLandscapeMode: Boolean

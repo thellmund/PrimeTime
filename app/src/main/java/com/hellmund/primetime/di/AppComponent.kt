@@ -1,13 +1,12 @@
 package com.hellmund.primetime.di
 
 import android.content.Context
-import com.hellmund.primetime.App
 import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.ui.history.HistoryFragment
 import com.hellmund.primetime.ui.history.di.HistoryModule
 import com.hellmund.primetime.ui.introduction.IntroductionActivity
+import com.hellmund.primetime.ui.onboarding.SelectGenresFragment
 import com.hellmund.primetime.ui.search.SearchFragment
-import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.ui.selectgenres.di.GenresModule
 import com.hellmund.primetime.ui.selectmovies.di.SelectMoviesComponent
 import com.hellmund.primetime.ui.selectstreamingservices.SelectStreamingServicesActivity
@@ -57,7 +56,7 @@ interface AppComponent {
     fun inject(notificationPublisher: NotificationPublisher)
     fun inject(mainActivity: MainActivity)
     fun inject(searchFragment: SearchFragment)
-    fun inject(selectGenresActivity: SelectGenresActivity)
+    fun inject(selectGenresFragment: SelectGenresFragment)
     fun inject(selectStreamingServicesActivity: SelectStreamingServicesActivity)
     fun inject(settingsFragment: SettingsFragment)
     fun inject(watchlistFragment: WatchlistFragment)
