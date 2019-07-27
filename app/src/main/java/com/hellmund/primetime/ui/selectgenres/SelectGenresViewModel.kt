@@ -21,6 +21,7 @@ data class SelectGenresViewState(
 
 sealed class Action {
     object Refresh : Action()
+    data class ToggleGenre(val genre: Genre) : Action()
     data class Store(val genres: List<Genre>) : Action()
 }
 
@@ -28,6 +29,7 @@ sealed class Result {
     object Loading : Result()
     data class Data(val data: List<Genre>) : Result()
     data class Error(val error: Throwable) : Result()
+    data class GenreToggled(val genre: Genre) : Result()
     object None : Result()
 }
 
@@ -56,6 +58,7 @@ class SelectGenresViewModel @Inject constructor(
     private fun processAction(action: Action): Observable<Result> {
         return when (action) {
             is Action.Refresh -> fetchGenres()
+            is Action.ToggleGenre -> toggleGenre(action.genre)
             is Action.Store -> storeGenres(action.genres)
         }
     }
@@ -66,6 +69,11 @@ class SelectGenresViewModel @Inject constructor(
             .map { Result.Data(it) as Result }
             .onErrorReturn { Result.Error(it) }
             .startWith(Result.Loading)
+    }
+
+    private fun toggleGenre(genre: Genre): Observable<Result> {
+        val newGenre = genre.copy(isPreferred = !genre.isPreferred)
+        return Observable.just(Result.GenreToggled(newGenre))
     }
 
     private fun storeGenres(genres: List<Genre>): Observable<Result> {
@@ -83,6 +91,11 @@ class SelectGenresViewModel @Inject constructor(
             is Result.Loading -> viewState.copy(isLoading = true, error = null)
             is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
             is Result.Error -> viewState.copy(isLoading = false, error = result.error)
+            is Result.GenreToggled -> {
+                val index = viewState.data.indexOfFirst { it.id == result.genre.id }
+                val newData = viewState.data.replace(index, result.genre)
+                viewState.copy(data = newData)
+            }
             is Result.None -> viewState
         }
     }
@@ -95,9 +108,20 @@ class SelectGenresViewModel @Inject constructor(
         refreshRelay.accept(Action.Store(genres))
     }
 
+    fun onGenreToggled(genre: Genre) {
+        refreshRelay.accept(Action.ToggleGenre(genre))
+    }
+
     override fun onCleared() {
         compositeDisposable.dispose()
         super.onCleared()
+    }
+
+    private fun <T> List<T>.replace(index: Int, element: T): List<T> {
+        return toMutableList().apply {
+            removeAt(index)
+            add(index, element)
+        }
     }
 
     class Factory(

@@ -56,8 +56,8 @@ class SelectGenresFragment : Fragment() {
         viewModel.navigation.observeNonNull(viewLifecycleOwner, this::navigate)
     }
 
-    private fun updateNextButton(count: Int = 0) {
-        val remaining = MIN_COUNT - count
+    private fun updateNextButton(genres: List<Genre> = emptyList()) {
+        val remaining = MIN_COUNT - genres.filter { it.isPreferred }.size
         val hasSelectedEnough = remaining <= 0
 
         button.isClickable = hasSelectedEnough
@@ -78,6 +78,7 @@ class SelectGenresFragment : Fragment() {
         chipGroup.isVisible = viewState.isLoading.not()
 
         showGenres(viewState.data)
+        updateNextButton(viewState.data)
 
         // TODO: Error and loading handling (SwipeRefreshLayout)
     }
@@ -89,17 +90,22 @@ class SelectGenresFragment : Fragment() {
     }
 
     private fun showGenres(genres: List<Genre>) {
-        genres.map { GenreChip(requireContext(), it.name) }.forEach {
-            it.setOnCheckedChangeListener { _, _ -> onCheckedChange() }
-            chipGroup.addView(it)
-        }
+        chipGroup.removeAllViews()
+        genres
+            .map { genre ->
+                GenreChip(requireContext()).also {
+                    it.genre = genre
+                    it.isChecked = genre.isPreferred
+                }
+            }
+            .forEach {
+                it.setOnCheckedChangeListener { chip, _ -> onCheckedChange(chip as GenreChip) }
+                chipGroup.addView(it)
+            }
     }
 
-    private fun onCheckedChange() {
-        val count = chipGroup.childCount
-        val children = (0 until count).map { chipGroup.getChildAt(it) as Chip }
-        val checked = children.filter { it.isChecked }
-        updateNextButton(checked.size)
+    private fun onCheckedChange(chip: GenreChip) {
+        viewModel.onGenreToggled(chip.genre)
     }
 
     private fun saveGenres() {
