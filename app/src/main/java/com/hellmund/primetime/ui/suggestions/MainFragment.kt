@@ -99,7 +99,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun setupPersonalizationBanner() {
-        if (true /* TODO onboardingHelper.isFirstLaunch && type is Personalized*/) {
+        if (onboardingHelper.isFirstLaunch && type is Personalized) {
             banner.setOnClickListener {
                 val intent = OnboardingActivity.newIntent(requireContext())
                 requireContext().startActivity(intent)
