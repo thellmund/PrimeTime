@@ -21,9 +21,13 @@ import com.hellmund.primetime.utils.showSingleSelectDialog
 import com.hellmund.primetime.utils.showToast
 import kotlinx.android.synthetic.main.fragment_history.progressBar
 import kotlinx.android.synthetic.main.fragment_history.recyclerView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import javax.inject.Provider
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class HistoryFragment : Fragment() {
 
     @Inject
@@ -100,7 +104,7 @@ class HistoryFragment : Fragment() {
 
     private fun removeFromHistory(movie: HistoryMovieViewEntity) {
         if (adapter.canRemove()) {
-            viewModel.remove(movie)
+            viewModel.dispatch(Action.Remove(movie))
         } else {
             requireContext().showToast(R.string.cant_remove_more_items)
         }
@@ -125,7 +129,7 @@ class HistoryFragment : Fragment() {
     }
 
     private fun updateRating(movie: HistoryMovieViewEntity, newRating: Int) {
-        viewModel.update(movie, newRating)
+        viewModel.dispatch(Action.Update(movie, newRating))
     }
 
     companion object {

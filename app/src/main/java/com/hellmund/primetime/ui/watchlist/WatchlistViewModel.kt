@@ -5,17 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.ui.history.HistoryRepository
+import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class WatchlistViewState(
-        val data: List<WatchlistMovieViewEntity> = emptyList(),
-        val isLoading: Boolean = false,
-        val error: Throwable? = null,
-        val deletedIndex: Int? = null
-)
+sealed class Action {
+    data class Remove(val item: WatchlistMovieViewEntity) : Action()
+    data class ToggleNotification(val item: WatchlistMovieViewEntity) : Action()
+    data class RateMovie(val item: WatchlistMovieViewEntity, val rating: Int) : Action()
+}
 
 sealed class Result {
     data class Data(val data: List<WatchlistMovieViewEntity>) : Result()
@@ -24,49 +23,40 @@ sealed class Result {
     data class NotificationToggled(val movie: WatchlistMovieViewEntity) : Result()
 }
 
-class WatchlistViewStateStore : ViewStateStore<WatchlistViewState, Result>(WatchlistViewState()) {
+class WatchlistViewStateReducer : Reducer<WatchlistViewState, Result> {
 
-    override fun reduceState(
+    override fun invoke(
         state: WatchlistViewState,
         result: Result
-    ): WatchlistViewState {
-        return when (result) {
-            is Result.Data -> state.copy(data = result.data, isLoading = false, error = null, deletedIndex = null)
-            is Result.Error -> state.copy(isLoading = false, error = result.error, deletedIndex = null)
-            is Result.Removed -> {
-                val index = state.data.indexOf(result.movie)
-                state.copy(data = state.data.minus(result.movie), deletedIndex = index)
-            }
-            is Result.NotificationToggled -> {
-                val index = state.data.indexOfFirst { it.id == result.movie.id }
-                val newData = state.data.toMutableList()
-                newData[index] = result.movie
-                state.copy(data = newData)
-            }
+    ): WatchlistViewState = when (result) {
+        is Result.Data -> state.toData(result.data)
+        is Result.Error -> state.toError(result.error)
+        is Result.Removed -> state.remove(result.movie)
+        is Result.NotificationToggled -> {
+            val index = state.data.indexOfFirst { it.id == result.movie.id }
+            val newData = state.data.toMutableList()
+            newData[index] = result.movie
+            state.copy(data = newData)
         }
     }
 
 }
 
-class WatchlistViewModel @Inject constructor(
-        private val repository: WatchlistRepository,
-        private val historyRepository: HistoryRepository,
-        viewEntityMapper: WatchlistMovieViewEntityMapper
-) : ViewModel() {
+class WatchlistViewStateStore : ViewStateStore<WatchlistViewState, Result>(
+    initialState = WatchlistViewState(),
+    reducer = WatchlistViewStateReducer()
+)
 
-    private val compositeDisposable = CompositeDisposable()
+class WatchlistViewModel @Inject constructor(
+    private val repository: WatchlistRepository,
+    private val historyRepository: HistoryRepository,
+    viewEntityMapper: WatchlistMovieViewEntityMapper
+) : ViewModel() {
 
     private val store = WatchlistViewStateStore()
     val viewState: LiveData<WatchlistViewState> = store.viewState
 
     init {
-        /*compositeDisposable += repository.getAllRx()
-            .onErrorReturn { emptyList() }
-            .map(viewEntityMapper)
-            .subscribe {
-                store.dispatch(Result.Data(it))
-            }*/
-
         viewModelScope.launch {
             val movies = repository.getAll()
             val viewEntities = viewEntityMapper.apply(movies)
@@ -87,33 +77,20 @@ class WatchlistViewModel @Inject constructor(
     }
 
     private suspend fun rateMovie(movie: WatchlistMovieViewEntity, rating: Int) {
-        repository.remove(movie.id)
         val historyMovie = HistoryMovie.fromWatchlistMovie(movie, rating)
+        repository.remove(movie.id)
         historyRepository.store(historyMovie)
         store.dispatch(Result.Removed(movie))
     }
 
-    fun remove(movie: WatchlistMovieViewEntity) {
+    fun dispatch(action: Action) {
         viewModelScope.launch {
-            removeMovie(movie)
+            when (action) {
+                is Action.Remove -> removeMovie(action.item)
+                is Action.ToggleNotification -> toggleAndStoreNotification(action.item)
+                is Action.RateMovie -> rateMovie(action.item, action.rating)
+            }
         }
-    }
-
-    fun toggleNotification(movie: WatchlistMovieViewEntity) {
-        viewModelScope.launch {
-            toggleAndStoreNotification(movie)
-        }
-    }
-
-    fun onMovieRated(movie: WatchlistMovieViewEntity, rating: Int) {
-        viewModelScope.launch {
-            rateMovie(movie, rating)
-        }
-    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
     }
 
 }

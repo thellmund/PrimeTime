@@ -90,14 +90,14 @@ class WatchlistFragment : Fragment() {
     }
 
     private fun onNotificationToggle(movie: WatchlistMovieViewEntity) {
-        viewModel.toggleNotification(movie)
+        viewModel.dispatch(Action.ToggleNotification(movie))
     }
 
     private fun onRemove(movie: WatchlistMovieViewEntity) {
         requireContext().showCancelableDialog(
                 messageResId = R.string.remove_from_watchlist_header,
                 positiveResId = R.string.remove,
-                onPositive = { viewModel.remove(movie) })
+                onPositive = { viewModel.dispatch(Action.Remove(movie)) })
     }
 
     private fun onWatchedIt(movie: WatchlistMovieViewEntity) {
@@ -109,7 +109,7 @@ class WatchlistFragment : Fragment() {
                 items = options,
                 onSelected = { index ->
                     val rating = if (index == 0) Constants.LIKE else Constants.DISLIKE
-                    viewModel.onMovieRated(movie, rating)
+                    viewModel.dispatch(Action.RateMovie(movie, rating))
                 }
         )
     }

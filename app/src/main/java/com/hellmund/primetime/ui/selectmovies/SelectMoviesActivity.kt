@@ -11,16 +11,24 @@ import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.suggestions.MainActivity
-import com.hellmund.primetime.utils.*
-import kotlinx.android.synthetic.main.activity_select_movies.*
-import kotlinx.android.synthetic.main.view_samples_error.*
+import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.OnboardingHelper
+import com.hellmund.primetime.utils.isConnected
+import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.utils.onBottomReached
+import com.hellmund.primetime.utils.showToast
+import kotlinx.android.synthetic.main.activity_select_movies.button
+import kotlinx.android.synthetic.main.activity_select_movies.error_container
+import kotlinx.android.synthetic.main.activity_select_movies.gridView
+import kotlinx.android.synthetic.main.activity_select_movies.shimmerLayout
+import kotlinx.android.synthetic.main.view_samples_error.error_button
 import javax.inject.Inject
 import javax.inject.Provider
 
 class SelectMoviesActivity : AppCompatActivity() {
 
     private val adapter: SamplesAdapter by lazy {
-        SamplesAdapter(imageLoader, viewModel::onItemClick)
+        SamplesAdapter(imageLoader) { viewModel.dispatch(Action.ItemClicked(it)) }
     }
 
     @Inject
@@ -45,7 +53,7 @@ class SelectMoviesActivity : AppCompatActivity() {
         updateNextButton()
 
         button.setOnClickListener { saveMovies() }
-        error_button.setOnClickListener { viewModel.refresh() }
+        error_button.setOnClickListener { viewModel.dispatch(Action.Refresh) }
 
         viewModel.viewState.observe(this, this::render)
     }
@@ -57,7 +65,7 @@ class SelectMoviesActivity : AppCompatActivity() {
 
         gridView.onBottomReached {
             if (isLoadingMore.not()) {
-                viewModel.refresh()
+                viewModel.dispatch(Action.Refresh)
                 isLoadingMore = true
             }
         }
@@ -115,7 +123,7 @@ class SelectMoviesActivity : AppCompatActivity() {
 
     private fun saveSelection() {
         val selected = adapter.selected
-        viewModel.store(selected)
+        viewModel.dispatch(Action.Store(selected))
     }
 
     private fun openNext() {

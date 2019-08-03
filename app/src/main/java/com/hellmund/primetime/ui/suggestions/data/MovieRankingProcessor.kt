@@ -10,20 +10,20 @@ import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
 data class MovieWithScore(
-        val movie: Movie,
-        val score: Float
+    val movie: Movie,
+    val score: Float
 )
 
 class MovieRankingProcessor @Inject constructor(
-        private val historyRepo: HistoryRepository,
-        private val watchlistRepo: WatchlistRepository
+    private val historyRepo: HistoryRepository,
+    private val watchlistRepo: WatchlistRepository
 ) {
 
     private val history: List<HistoryMovie>
-        get() = historyRepo.getAll().blockingGet()
+        get() = historyRepo.all
 
     private val watchlist: List<WatchlistMovie>
-        get() = watchlistRepo.getAllRx().blockingFirst()
+        get() = watchlistRepo.all
 
     private val watchedMovies: Set<Int>
         get() = history.map { it.id }.toSet()
@@ -31,19 +31,35 @@ class MovieRankingProcessor @Inject constructor(
     private val moviesOnWatchlist: Set<Int>
         get() = watchlist.map { it.id }.toSet()
 
-    fun rank(
-            movies: List<Movie>, type: RecommendationsType
+    operator fun invoke(
+        movies: List<Movie>,
+        type: RecommendationsType
     ): List<Movie> {
         return movies
-                .asSequence()
-                .distinct()
-                .filter { isKnownMovie(it) }
-                .filter { isReleased(it, type) }
-                .filter { hasEnoughInformation(it) }
-                .map { adjustRating(it) }
-                .sortedBy { it.score }
-                .map { it.movie }
-                .toList()
+            .asSequence()
+            .distinct()
+            .filter { isKnownMovie(it) }
+            .filter { isReleased(it, type) }
+            .filter { hasEnoughInformation(it) }
+            .map { adjustRating(it) }
+            .sortedBy { it.score }
+            .map { it.movie }
+            .toList()
+    }
+
+    fun rank(
+        movies: List<Movie>, type: RecommendationsType
+    ): List<Movie> {
+        return movies
+            .asSequence()
+            .distinct()
+            .filter { isKnownMovie(it) }
+            .filter { isReleased(it, type) }
+            .filter { hasEnoughInformation(it) }
+            .map { adjustRating(it) }
+            .sortedBy { it.score }
+            .map { it.movie }
+            .toList()
     }
 
     private fun isKnownMovie(movie: Movie): Boolean {

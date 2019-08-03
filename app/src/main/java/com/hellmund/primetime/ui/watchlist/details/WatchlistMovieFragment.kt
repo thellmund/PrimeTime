@@ -31,6 +31,7 @@ import javax.inject.Provider
 
 private const val KEY_WATCHLIST_MOVIE = "KEY_WATCHLIST_MOVIE"
 
+@Deprecated("Use WatchlistAdapter with Views instead")
 class WatchlistMovieFragment : Fragment() {
 
     @Inject

@@ -11,10 +11,10 @@ import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 data class WatchlistMovieViewState(
-        val movie: WatchlistMovieViewEntity,
-        val isError: Boolean = false,
-        val showToast: Boolean = false,
-        val showRemoveDialog: Boolean = false
+    val movie: WatchlistMovieViewEntity,
+    val isError: Boolean = false,
+    val showToast: Boolean = false,
+    val showRemoveDialog: Boolean = false
 )
 
 sealed class Action {
@@ -37,7 +37,7 @@ sealed class MovieEvent {
 class MovieStore @Inject constructor(var movie: WatchlistMovieViewEntity)
 
 class WatchlistMovieViewModel @Inject constructor(
-        private val store: MovieStore
+    private val store: MovieStore
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -52,9 +52,9 @@ class WatchlistMovieViewModel @Inject constructor(
     init {
         val initialViewState = WatchlistMovieViewState(movie = store.movie)
         compositeDisposable += refreshRelay
-                .switchMap(this::processAction)
-                .scan(initialViewState, this::reduceState)
-                .subscribe(this::render)
+            .switchMap(this::processAction)
+            .scan(initialViewState, this::reduceState)
+            .subscribe(this::render)
     }
 
     private fun processAction(action: Action): Observable<Result> {
@@ -71,8 +71,8 @@ class WatchlistMovieViewModel @Inject constructor(
     }
 
     private fun reduceState(
-            viewState: WatchlistMovieViewState,
-            result: Result
+        viewState: WatchlistMovieViewState,
+        result: Result
     ): WatchlistMovieViewState {
         return when (result) {
             is Result.NotificationToggled -> viewState.copy(movie = result.data, isError = false)

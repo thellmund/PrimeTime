@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import com.hellmund.primetime.di.app
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.notificationManager
 import javax.inject.Inject
 
@@ -22,11 +24,11 @@ class NotificationPublisher : BroadcastReceiver() {
             return
         }
 
-        watchlistRepository
-                .getReleases()
-                .filter { it.isNotEmpty() }
-                .map { NotificationUtils.buildNotification(context, it) }
-                .subscribe { context.notificationManager.notify(0, it) }
+        GlobalScope.launch {
+            val releases = watchlistRepository.getReleases()
+            val notification = NotificationUtils.buildNotification(context, releases)
+            context.notificationManager.notify(0, notification)
+        }
     }
 
 }

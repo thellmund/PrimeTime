@@ -2,9 +2,9 @@ package com.hellmund.primetime.ui.selectmovies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -22,33 +22,38 @@ data class SelectMoviesViewState(
         get() = error != null
 }
 
-class SamplesViewStateStore(
-    initialState: SelectMoviesViewState
-) : ViewStateStore<SelectMoviesViewState, Result>(initialState) {
-
-    override fun reduceState(
+class SamplesViewStateReducer : Reducer<SelectMoviesViewState, Result> {
+    override fun invoke(
         state: SelectMoviesViewState,
         result: Result
-    ): SelectMoviesViewState {
-        return when (result) {
-            is Result.Loading -> state.copy(isLoading = true, error = null)
-            is Result.Data -> {
-                val data = if (result.page == 1) result.data else state.data + result.data
-                state.copy(pages = result.page, data = data, isLoading = false, error = null)
-            }
-            is Result.Error -> state.copy(isLoading = false, error = result.error)
-            is Result.SelectionChanged -> {
-                val items = state.data
-                val index = items.indexOfFirst { it.id == result.sample.id }
-                val newItems = items.toMutableList()
-                newItems[index] = result.sample
-                state.copy(data = newItems)
-            }
-            is Result.Finished -> state.copy(isFinished = true)
-            is Result.None -> state
+    ) = when (result) {
+        is Result.Loading -> state.copy(isLoading = true, error = null)
+        is Result.Data -> {
+            val data = if (result.page == 1) result.data else state.data + result.data
+            state.copy(pages = result.page, data = data, isLoading = false, error = null)
         }
+        is Result.Error -> state.copy(isLoading = false, error = result.error)
+        is Result.SelectionChanged -> {
+            val items = state.data
+            val index = items.indexOfFirst { it.id == result.sample.id }
+            val newItems = items.toMutableList()
+            newItems[index] = result.sample
+            state.copy(data = newItems)
+        }
+        is Result.Finished -> state.copy(isFinished = true)
+        is Result.None -> state
     }
+}
 
+class SamplesViewStateStore : ViewStateStore<SelectMoviesViewState, Result>(
+    initialState = SelectMoviesViewState(),
+    reducer = SamplesViewStateReducer()
+)
+
+sealed class Action {
+    object Refresh : Action()
+    data class ItemClicked(val sample: Sample) : Action()
+    data class Store(val samples: List<Sample>) : Action()
 }
 
 sealed class Result {
@@ -65,7 +70,7 @@ class SelectMoviesViewModel @Inject constructor(
         private val genresRepository: GenresRepository
 ) : ViewModel() {
 
-    private val store = SamplesViewStateStore(SelectMoviesViewState())
+    private val store = SamplesViewStateStore()
     val viewState: LiveData<SelectMoviesViewState> = store.viewState
 
     private var page: Int = 1
@@ -100,32 +105,14 @@ class SelectMoviesViewModel @Inject constructor(
         store.dispatch(Result.Finished)
     }
 
-    fun refresh() {
+    fun dispatch(action: Action) {
         viewModelScope.launch {
-            fetchMovies(page)
+            when (action) {
+                is Action.Refresh -> fetchMovies(page)
+                is Action.ItemClicked -> toggleSelection(action.sample)
+                is Action.Store -> storeSelection(action.samples)
+            }
         }
-    }
-
-    fun onItemClick(sample: Sample) {
-        toggleSelection(sample)
-    }
-
-    fun store(movies: List<Sample>) {
-        viewModelScope.launch {
-            storeSelection(movies)
-        }
-    }
-
-    class Factory(
-            private val repository: SamplesRepository,
-            private val genresRepository: GenresRepository
-    ) : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SelectMoviesViewModel(repository, genresRepository) as T
-        }
-
     }
 
 }

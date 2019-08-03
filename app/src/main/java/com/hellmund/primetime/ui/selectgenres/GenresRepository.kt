@@ -21,8 +21,8 @@ interface GenresRepository {
 }
 
 class RealGenresRepository @Inject constructor(
-        private val apiService: ApiService,
-        private val database: AppDatabase
+    private val apiService: ApiService,
+    private val database: AppDatabase
 ) : GenresRepository {
 
     override suspend fun getAll(): List<Genre> {
@@ -31,8 +31,8 @@ class RealGenresRepository @Inject constructor(
 
     override val all: Single<List<Genre>>
         get() = database.genreDao()
-                .getAllRx()
-                .subscribeOn(Schedulers.io())
+            .getAllRx()
+            .subscribeOn(Schedulers.io())
 
     override suspend fun getPreferredGenres() = database.genreDao().getPreferredGenres()
 
@@ -44,17 +44,17 @@ class RealGenresRepository @Inject constructor(
     }
 
     override fun getGenre(genreId: String): Maybe<Genre> = database.genreDao()
-            .getGenre(genreId.toInt())
-            .subscribeOn(Schedulers.io())
+        .getGenre(genreId.toInt())
+        .subscribeOn(Schedulers.io())
 
     override suspend fun getGenreByName(name: String) = database.genreDao().getGenre(name)
 
     override fun getGenres(genreIds: Set<String>): Single<List<Genre>> {
         return Single
-                .fromCallable {
-                    genreIds.map { database.genreDao().getGenre(it.toInt()).blockingGet() }
-                }
-                .subscribeOn(Schedulers.io())
+            .fromCallable {
+                genreIds.map { database.genreDao().getGenre(it.toInt()).blockingGet() }
+            }
+            .subscribeOn(Schedulers.io())
     }
 
     override suspend fun storeGenres(genres: List<Genre>) {

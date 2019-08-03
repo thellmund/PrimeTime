@@ -3,12 +3,12 @@ package com.hellmund.primetime.ui.suggestions
 import com.hellmund.primetime.utils.containsAny
 
 data class MainViewState(
-        val recommendationsType: RecommendationsType = RecommendationsType.Personalized(),
-        val data: List<MovieViewEntity> = emptyList(),
-        val filtered: List<MovieViewEntity>? = null,
-        val pagesLoaded: Int = 0,
-        val isLoading: Boolean = false,
-        val error: Throwable? = null
+    val recommendationsType: RecommendationsType = RecommendationsType.Personalized(),
+    val data: List<MovieViewEntity> = emptyList(),
+    val filtered: List<MovieViewEntity>? = null,
+    val pagesLoaded: Int = 0,
+    val isLoading: Boolean = false,
+    val error: Throwable? = null
 ) {
 
     fun toLoading(): MainViewState {
@@ -22,12 +22,12 @@ data class MainViewState(
     fun toData(result: Result.Data): MainViewState {
         val newData = if (result.page == 1) result.data else data + result.data
         return copy(
-                recommendationsType = result.type,
-                data = newData,
-                filtered = null,
-                pagesLoaded = result.page,
-                isLoading = false,
-                error = null
+            recommendationsType = result.type,
+            data = newData,
+            filtered = null,
+            pagesLoaded = result.page,
+            isLoading = false,
+            error = null
         )
     }
 

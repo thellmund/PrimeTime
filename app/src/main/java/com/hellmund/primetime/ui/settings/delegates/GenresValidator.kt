@@ -17,7 +17,7 @@ sealed class ValidationResult {
 }
 
 class GenresValidator @Inject constructor(
-        private val genresRepository: GenresRepository
+    private val genresRepository: GenresRepository
 ) {
 
     private val compositeDisposable = CompositeDisposable()
@@ -71,8 +71,8 @@ class GenresValidator @Inject constructor(
 
     private fun getGenresFromValues(values: Set<String>): List<Genre> {
         return values
-                .map { genresRepository.getGenre(it).blockingGet() }
-                .sortedBy { it.name }
+            .map { genresRepository.getGenre(it).blockingGet() }
+            .sortedBy { it.name }
     }
 
     private fun enoughGenresChecked(newGenres: Set<String>): Boolean {

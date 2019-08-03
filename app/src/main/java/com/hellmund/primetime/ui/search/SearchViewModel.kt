@@ -9,6 +9,7 @@ import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewEventsStore
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
@@ -46,22 +47,25 @@ sealed class Result {
     object DismissSnackbar : Result()
 }
 
-class SearchViewStateStore : ViewStateStore<SearchViewState, Result>(SearchViewState()) {
-    override fun reduceState(
+class SearchViewStateReducer : Reducer<SearchViewState, Result> {
+    override fun invoke(
         state: SearchViewState,
         result: Result
-    ): SearchViewState {
-        return when (result) {
-            is Result.GenresLoaded -> state.copy(genres = result.genres)
-            is Result.Loading -> state.copy(isLoading = true, error = null)
-            is Result.Data -> state.copy(data = result.data, isLoading = false, error = null, didPerformSearch = true)
-            is Result.Error -> state.copy(isLoading = false, error = result.error, didPerformSearch = true)
-            is Result.ToggleClearButton -> state.copy(showClearButton = result.show)
-            is Result.ShowSnackbar -> state.copy(snackbarText = result.message)
-            is Result.DismissSnackbar -> state.copy(snackbarText = null)
-        }
+    ) = when (result) {
+        is Result.GenresLoaded -> state.copy(genres = result.genres)
+        is Result.Loading -> state.copy(isLoading = true, error = null)
+        is Result.Data -> state.copy(data = result.data, isLoading = false, error = null, didPerformSearch = true)
+        is Result.Error -> state.copy(isLoading = false, error = result.error, didPerformSearch = true)
+        is Result.ToggleClearButton -> state.copy(showClearButton = result.show)
+        is Result.ShowSnackbar -> state.copy(snackbarText = result.message)
+        is Result.DismissSnackbar -> state.copy(snackbarText = null)
     }
 }
+
+class SearchViewStateStore : ViewStateStore<SearchViewState, Result>(
+    initialState = SearchViewState(),
+    reducer = SearchViewStateReducer()
+)
 
 class NavigationEventsStore : ViewEventsStore<NavigationEvent>()
 

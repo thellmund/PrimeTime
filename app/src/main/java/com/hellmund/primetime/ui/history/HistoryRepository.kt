@@ -2,42 +2,37 @@ package com.hellmund.primetime.ui.history
 
 import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.data.database.HistoryMovie
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.schedulers.Schedulers
+import com.hellmund.primetime.utils.asFlow
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface HistoryRepository {
-    fun getAll(): Maybe<List<HistoryMovie>>
+    val all: List<HistoryMovie>
+    suspend fun getAll(): Flow<List<HistoryMovie>>
     suspend fun getLiked(): List<HistoryMovie>
-    fun getLikedRx(): Maybe<List<HistoryMovie>>
     suspend fun count(movieId: Int): Int
-    fun storeRx(vararg historyMovie: HistoryMovie): Completable
     suspend fun store(vararg historyMovie: HistoryMovie)
     suspend fun remove(movieId: Int)
 }
 
 class RealHistoryRepository @Inject constructor(
-        private val database: AppDatabase
+    private val database: AppDatabase
 ) : HistoryRepository {
 
-    override fun getAll(): Maybe<List<HistoryMovie>> = database.historyDao()
-            .getAll()
-            .subscribeOn(Schedulers.io())
+    override val all: List<HistoryMovie>
+        get() = database.historyDao().getAll().blockingFirst()
+
+    @FlowPreview
+    @ObsoleteCoroutinesApi
+    override suspend fun getAll(): Flow<List<HistoryMovie>> {
+        return database.historyDao().getAll().asFlow()
+    }
 
     override suspend fun getLiked(): List<HistoryMovie> = database.historyDao().getLiked()
 
-    override fun getLikedRx(): Maybe<List<HistoryMovie>> = database.historyDao()
-        .getLikedRx()
-        .subscribeOn(Schedulers.io())
-
     override suspend fun count(movieId: Int) = database.historyDao().count(movieId)
-
-    override fun storeRx(vararg historyMovie: HistoryMovie): Completable {
-        return database.historyDao()
-            .storeRx(*historyMovie)
-            .subscribeOn(Schedulers.io())
-    }
 
     override suspend fun store(vararg historyMovie: HistoryMovie) {
         return database.historyDao().store(*historyMovie)

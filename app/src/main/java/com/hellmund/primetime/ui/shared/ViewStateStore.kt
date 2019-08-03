@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.hellmund.primetime.utils.observe
 
 abstract class ViewStateStore<State, Result>(
-    private val initialState: State
+    private val initialState: State,
+    private val reducer: Reducer<State, Result>
 ) {
 
     val viewState = MutableLiveData<State>().apply {
@@ -26,15 +27,19 @@ abstract class ViewStateStore<State, Result>(
     fun dispatch(
         result: Result
     ) {
-        val state = reduceState(state(), result)
+        val state = reducer(state(), result)
         dispatchState(state)
     }
 
-    abstract fun reduceState(
+    private fun state() = viewState.value!!
+
+}
+
+interface Reducer<State, Result> {
+
+    operator fun invoke(
         state: State,
         result: Result
     ): State
-
-    private fun state() = viewState.value!!
 
 }

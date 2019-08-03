@@ -2,9 +2,9 @@ package com.hellmund.primetime.ui.selectgenres
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -24,28 +24,28 @@ sealed class Result {
     object Finish : Result()
 }
 
-class GenresViewStateStore(
-    initialState: SelectGenresViewState
-) : ViewStateStore<SelectGenresViewState, Result>(initialState) {
-    override fun reduceState(
+class GenresViewStateReducer : Reducer<SelectGenresViewState, Result> {
+    override fun invoke(
         state: SelectGenresViewState,
         result: Result
-    ): SelectGenresViewState {
-        return when (result) {
-            is Result.Loading -> state.copy(isLoading = true, error = null)
-            is Result.Data -> state.copy(data = result.data, isLoading = false, error = null)
-            is Result.Error -> state.copy(isLoading = false, error = result.error)
-            is Result.Finish -> state.copy(isFinished = true)
-        }
+    ) = when (result) {
+        is Result.Loading -> state.copy(isLoading = true, error = null)
+        is Result.Data -> state.copy(data = result.data, isLoading = false, error = null)
+        is Result.Error -> state.copy(isLoading = false, error = result.error)
+        is Result.Finish -> state.copy(isFinished = true)
     }
-
 }
+
+class GenresViewStateStore : ViewStateStore<SelectGenresViewState, Result>(
+    initialState = SelectGenresViewState(),
+    reducer = GenresViewStateReducer()
+)
 
 class SelectGenresViewModel @Inject constructor(
         private val repository: GenresRepository
 ) : ViewModel() {
 
-    private val store = GenresViewStateStore(SelectGenresViewState())
+    private val store = GenresViewStateStore()
 
     val viewState: LiveData<SelectGenresViewState> = store.viewState
 
@@ -74,17 +74,6 @@ class SelectGenresViewModel @Inject constructor(
         viewModelScope.launch {
             storeGenres(genres)
         }
-    }
-
-    class Factory(
-            private val repository: GenresRepository
-    ) : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SelectGenresViewModel(repository) as T
-        }
-
     }
 
 }
