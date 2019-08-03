@@ -6,8 +6,8 @@ import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.ui.history.HistoryFragment
 import com.hellmund.primetime.ui.history.di.HistoryModule
 import com.hellmund.primetime.ui.introduction.IntroductionActivity
+import com.hellmund.primetime.ui.onboarding.SelectGenresFragment
 import com.hellmund.primetime.ui.search.SearchFragment
-import com.hellmund.primetime.ui.selectgenres.SelectGenresActivity
 import com.hellmund.primetime.ui.selectgenres.di.GenresModule
 import com.hellmund.primetime.ui.selectmovies.di.SelectMoviesComponent
 import com.hellmund.primetime.ui.selectstreamingservices.SelectStreamingServicesActivity
@@ -19,9 +19,9 @@ import com.hellmund.primetime.ui.suggestions.di.MoviesComponent
 import com.hellmund.primetime.ui.suggestions.di.MoviesModule
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.ui.watchlist.di.WatchlistModule
-import com.hellmund.primetime.utils.GlideImageLoader
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.NotificationPublisher
+import com.hellmund.primetime.utils.PicassoImageLoader
 import com.hellmund.primetime.utils.RealStringProvider
 import com.hellmund.primetime.utils.RealValueFormatter
 import com.hellmund.primetime.utils.StringProvider
@@ -56,7 +56,7 @@ interface AppComponent {
     fun inject(notificationPublisher: NotificationPublisher)
     fun inject(mainActivity: MainActivity)
     fun inject(searchFragment: SearchFragment)
-    fun inject(selectGenresActivity: SelectGenresActivity)
+    fun inject(selectGenresFragment: SelectGenresFragment)
     fun inject(selectStreamingServicesActivity: SelectStreamingServicesActivity)
     fun inject(settingsFragment: SettingsFragment)
     fun inject(watchlistFragment: WatchlistFragment)
@@ -73,7 +73,7 @@ interface AppModule {
 
     @Singleton
     @Binds
-    fun bindImageLoader(impl: GlideImageLoader): ImageLoader
+    fun bindImageLoader(impl: PicassoImageLoader): ImageLoader
 
     @Singleton
     @Binds

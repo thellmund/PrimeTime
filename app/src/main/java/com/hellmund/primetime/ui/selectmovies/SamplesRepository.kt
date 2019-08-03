@@ -13,13 +13,13 @@ interface SamplesRepository {
 }
 
 class RealSamplesRepository @Inject constructor(
-        private val apiService: ApiService,
-        private val historyRepository: HistoryRepository
+    private val apiService: ApiService,
+    private val historyRepository: HistoryRepository
 ) : SamplesRepository {
 
     override suspend fun fetch(
-            genres: List<Genre>,
-            page: Int
+        genres: List<Genre>,
+        page: Int
     ): List<Sample> {
         val moviesPerGenre = 30 / genres.size
         val endYear = LocalDate.now().minusYears(1).year
@@ -39,13 +39,13 @@ class RealSamplesRepository @Inject constructor(
         }
 
         return results
-                .flatten()
-                .toSet()
-                .toList()
+            .flatten()
+            .toSet()
+            .toList()
     }
 
     override suspend fun store(movies: List<HistoryMovie>) {
-        // TODO historyRepository.store(*movies.toTypedArray())
+        historyRepository.store(*movies.toTypedArray())
     }
 
 }

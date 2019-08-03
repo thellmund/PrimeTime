@@ -9,7 +9,7 @@ interface StringProvider {
 }
 
 class RealStringProvider @Inject constructor(
-        private val context: Context
+    private val context: Context
 ) : StringProvider {
 
     override fun getString(resId: Int): String = context.getString(resId)

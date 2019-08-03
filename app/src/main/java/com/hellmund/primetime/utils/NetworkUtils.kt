@@ -1,4 +1,5 @@
 @file:JvmName("NetworkUtils")
+
 package com.hellmund.primetime.utils
 
 import android.content.Context

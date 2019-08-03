@@ -12,22 +12,30 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.NotificationUtils
 import com.hellmund.primetime.utils.Transformation
-import kotlinx.android.synthetic.main.list_item_watchlist.view.*
+import kotlinx.android.synthetic.main.list_item_watchlist.view.card_view
+import kotlinx.android.synthetic.main.list_item_watchlist.view.description
+import kotlinx.android.synthetic.main.list_item_watchlist.view.infoContainer
+import kotlinx.android.synthetic.main.list_item_watchlist.view.notificationIcon
+import kotlinx.android.synthetic.main.list_item_watchlist.view.posterImageView
+import kotlinx.android.synthetic.main.list_item_watchlist.view.release
+import kotlinx.android.synthetic.main.list_item_watchlist.view.removeButton
+import kotlinx.android.synthetic.main.list_item_watchlist.view.runtime
+import kotlinx.android.synthetic.main.list_item_watchlist.view.watchedButton
 
 private const val COLLAPSED_LINES = 2
 
 class WatchlistAdapter(
-        private val imageLoader: ImageLoader,
-        private val onWatchedIt: (WatchlistMovieViewEntity) -> Unit,
-        private val onRemove: (WatchlistMovieViewEntity) -> Unit,
-        private val onNotificationToggle: (WatchlistMovieViewEntity) -> Unit
+    private val imageLoader: ImageLoader,
+    private val onWatchedIt: (WatchlistMovieViewEntity) -> Unit,
+    private val onRemove: (WatchlistMovieViewEntity) -> Unit,
+    private val onNotificationToggle: (WatchlistMovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<WatchlistAdapter.ViewHolder>() {
 
     private val movies = mutableListOf<WatchlistMovieViewEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_watchlist, parent, false)
+            .inflate(R.layout.list_item_watchlist, parent, false)
         return ViewHolder(view)
     }
 
@@ -45,8 +53,8 @@ class WatchlistAdapter(
     }
 
     class DiffUtilCallback(
-            private val oldItems: List<WatchlistMovieViewEntity>,
-            private val newItems: List<WatchlistMovieViewEntity>
+        private val oldItems: List<WatchlistMovieViewEntity>,
+        private val newItems: List<WatchlistMovieViewEntity>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldItems.size
@@ -66,19 +74,19 @@ class WatchlistAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(
-                movie: WatchlistMovieViewEntity,
-                imageLoader: ImageLoader,
-                onWatchedIt: (WatchlistMovieViewEntity) -> Unit,
-                onRemove: (WatchlistMovieViewEntity) -> Unit,
-                onNotificationToggle: (WatchlistMovieViewEntity) -> Unit
+            movie: WatchlistMovieViewEntity,
+            imageLoader: ImageLoader,
+            onWatchedIt: (WatchlistMovieViewEntity) -> Unit,
+            onRemove: (WatchlistMovieViewEntity) -> Unit,
+            onNotificationToggle: (WatchlistMovieViewEntity) -> Unit
         ) = with(itemView) {
             imageLoader.load(
-                    url = movie.posterUrl,
-                    transformations = arrayOf(
-                            Transformation.CenterCrop,
-                            Transformation.Placeholder(R.drawable.poster_placeholder)
-                    ),
-                    into = posterImageView
+                url = movie.posterUrl,
+                transformations = arrayOf(
+                    Transformation.CenterCrop,
+                    Transformation.Placeholder(R.drawable.poster_placeholder)
+                ),
+                into = posterImageView
             )
 
             description.text = movie.description

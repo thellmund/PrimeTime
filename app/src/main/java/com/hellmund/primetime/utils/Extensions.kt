@@ -15,6 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import org.threeten.bp.LocalDate
 
 fun <T> LiveData<T>.observe(owner: LifecycleOwner, block: (T) -> Unit) {
+    observe(owner, Observer { block(it) })
+}
+
+fun <T> LiveData<T>.observeNonNull(owner: LifecycleOwner, block: (T) -> Unit) {
     observe(owner, Observer { it?.let(block) })
 }
 
@@ -46,4 +50,11 @@ val FragmentManager.backStack: List<FragmentManager.BackStackEntry>
 
 fun ViewGroup.inflate(@LayoutRes resource: Int, attach: Boolean = true): View {
     return LayoutInflater.from(context).inflate(resource, this, attach)
+}
+
+fun <T> List<T>.replace(index: Int, element: T): List<T> {
+    return toMutableList().apply {
+        removeAt(index)
+        add(index, element)
+    }
 }

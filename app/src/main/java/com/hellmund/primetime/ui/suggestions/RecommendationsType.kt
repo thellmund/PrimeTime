@@ -9,7 +9,7 @@ sealed class RecommendationsType : Parcelable {
 
     @Parcelize
     data class Personalized(
-            val genres: List<Genre>? = null
+        val genres: List<Genre>? = null
     ) : RecommendationsType()
 
     @Parcelize

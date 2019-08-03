@@ -25,7 +25,7 @@ class MovieRankingProcessor @Inject constructor(
         val watchedMovies = historyRepo.getAll().collectFirst().map { it.id }.toSet()
         val watchlist = watchlistRepo.getAll().collectFirst().map { it.id }.toSet()
         val knownMovies = watchedMovies + watchlist
-
+        
         return movies
             .asSequence()
             .distinct()

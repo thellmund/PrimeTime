@@ -8,11 +8,11 @@ import org.threeten.bp.LocalDate
 
 @Entity(tableName = "history_movies")
 data class HistoryMovie(
-        @PrimaryKey var id: Int,
-        var title: String,
-        var rating: Int,
-        var timestamp: LocalDate
-): Comparable<HistoryMovie> {
+    @PrimaryKey var id: Int,
+    var title: String,
+    var rating: Int,
+    var timestamp: LocalDate
+) : Comparable<HistoryMovie> {
 
     override fun compareTo(other: HistoryMovie): Int = other.timestamp.compareTo(timestamp)
 

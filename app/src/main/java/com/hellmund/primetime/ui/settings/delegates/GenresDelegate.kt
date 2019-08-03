@@ -10,8 +10,8 @@ import com.hellmund.primetime.utils.Constants
 import javax.inject.Inject
 
 class GenresDelegate @Inject constructor(
-        private val context: Context,
-        private val genresRepository: GenresRepository
+    private val context: Context,
+    private val genresRepository: GenresRepository
 ) {
 
     suspend fun init(pref: MultiSelectListPreference) {
@@ -24,8 +24,8 @@ class GenresDelegate @Inject constructor(
         }
 
         val values = preferenceGenres
-                .map { it.id.toString() }
-                .toSet()
+            .map { it.id.toString() }
+            .toSet()
 
         val genres = genresRepository.getAll()
         val genreIds = genres.map { it.id.toString() }.toTypedArray()

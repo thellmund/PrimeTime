@@ -11,9 +11,9 @@ import kotlinx.android.synthetic.main.view_banner.view.*
 import org.jetbrains.anko.topPadding
 
 class MaterialBanner @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val container: ViewGroup?

@@ -20,11 +20,15 @@ import com.hellmund.primetime.utils.Constants.WATCHLIST_INTENT
 import com.hellmund.primetime.utils.backStack
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.android.synthetic.main.view_toolbar.toolbar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val SHORTCUT_EXTRA = "intent"
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class MainActivity : AppCompatActivity() {
 
     @Inject

@@ -10,13 +10,13 @@ import kotlinx.android.synthetic.main.list_item_review.view.*
 
 private const val COLLAPSED_LINES = 3
 
-class ReviewsAdapter: RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
+class ReviewsAdapter : RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
 
     private val reviews = mutableListOf<Review>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_review, parent, false)
+            .inflate(R.layout.list_item_review, parent, false)
         return ViewHolder(view)
     }
 

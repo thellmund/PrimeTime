@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
+import com.hellmund.primetime.utils.replace
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
@@ -42,10 +43,7 @@ class HistoryViewStateReducer : Reducer<HistoryViewState, Result> {
         is Result.Removed -> state.copy(data = state.data.minus(result.movie))
         is Result.Updated -> {
             val index = state.data.indexOfFirst { it.id == result.movie.id }
-            val newData = state.data
-                .toMutableList()
-                .apply { set(index, result.movie) }
-                .toList()
+            val newData = state.data.replace(index, result.movie)
             state.copy(data = newData)
         }
     }

@@ -1,32 +1,40 @@
-package com.hellmund.primetime.ui.selectmovies
+package com.hellmund.primetime.ui.onboarding
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui.selectmovies.Action
+import com.hellmund.primetime.ui.selectmovies.SamplesAdapter
+import com.hellmund.primetime.ui.selectmovies.SelectMoviesViewModel
+import com.hellmund.primetime.ui.selectmovies.SelectMoviesViewState
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
-import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.OnboardingHelper
 import com.hellmund.primetime.utils.isConnected
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.onBottomReached
 import com.hellmund.primetime.utils.showToast
-import kotlinx.android.synthetic.main.activity_select_movies.button
-import kotlinx.android.synthetic.main.activity_select_movies.error_container
-import kotlinx.android.synthetic.main.activity_select_movies.gridView
-import kotlinx.android.synthetic.main.activity_select_movies.shimmerLayout
+import kotlinx.android.synthetic.main.fragment_select_movies.button
+import kotlinx.android.synthetic.main.fragment_select_movies.error_container
+import kotlinx.android.synthetic.main.fragment_select_movies.gridView
+import kotlinx.android.synthetic.main.fragment_select_movies.shimmerLayout
 import kotlinx.android.synthetic.main.view_samples_error.error_button
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.roundToInt
 
-class SelectMoviesActivity : AppCompatActivity() {
+class SelectMoviesFragment : Fragment() {
 
+    private var onFinishedAction: () -> Unit = {}
     private val adapter: SamplesAdapter by lazy {
         SamplesAdapter(imageLoader) { viewModel.dispatch(Action.ItemClicked(it)) }
     }
@@ -44,24 +52,31 @@ class SelectMoviesActivity : AppCompatActivity() {
 
     private var isLoadingMore: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_select_movies)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         injector.selectMoviesComponent().inject(this)
+    }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_select_movies, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupRecyclerView()
         updateNextButton()
 
         button.setOnClickListener { saveMovies() }
         error_button.setOnClickListener { viewModel.dispatch(Action.Refresh) }
 
-        viewModel.viewState.observe(this, this::render)
+        viewModel.viewState.observe(viewLifecycleOwner, this::render)
     }
 
     private fun setupRecyclerView() {
         gridView.adapter = adapter
         gridView.itemAnimator = DefaultItemAnimator()
-        gridView.layoutManager = GridLayoutManager(this, 3)
+        gridView.layoutManager = GridLayoutManager(requireContext(), 3)
 
         gridView.onBottomReached {
             if (isLoadingMore.not()) {
@@ -70,7 +85,7 @@ class SelectMoviesActivity : AppCompatActivity() {
             }
         }
 
-        val spacing = Math.round(resources.getDimension(R.dimen.default_space))
+        val spacing = resources.getDimension(R.dimen.default_space).roundToInt()
         gridView.addItemDecoration(EqualSpacingGridItemDecoration(spacing, 3))
     }
 
@@ -110,14 +125,15 @@ class SelectMoviesActivity : AppCompatActivity() {
     }
 
     private fun saveMovies() {
+        val context = requireContext()
         if (!button.isEnabled) {
-            showToast(getString(R.string.select_at_least, MIN_COUNT))
+            context.showToast(getString(R.string.select_at_least, MIN_COUNT))
         }
 
-        if (isConnected) {
+        if (context.isConnected) {
             saveSelection()
         } else {
-            showToast(getString(R.string.not_connected))
+            context.showToast(getString(R.string.not_connected))
         }
     }
 
@@ -128,14 +144,14 @@ class SelectMoviesActivity : AppCompatActivity() {
 
     private fun openNext() {
         onboardingHelper.isFirstLaunch = false
-
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
+        onFinishedAction()
     }
 
     companion object {
         private const val MIN_COUNT = 4
+        fun newInstance(onFinished: () -> Unit) = SelectMoviesFragment().apply {
+            onFinishedAction = onFinished
+        }
     }
 
 }

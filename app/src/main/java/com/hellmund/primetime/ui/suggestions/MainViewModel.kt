@@ -15,6 +15,16 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
+sealed class Action {
+    data class LoadMovies(
+        val type: RecommendationsType = RecommendationsType.Personalized(),
+        val page: Int
+    ) : Action()
+
+    data class StoreRating(val rating: Rating) : Action()
+    data class Filter(val genres: List<Genre>) : Action()
+}
+
 sealed class Result {
     object Loading : Result()
     data class Data(

@@ -25,6 +25,6 @@ interface GenreDao {
     suspend fun getGenre(name: String): Genre
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun store(vararg genre: Genre)
+    suspend fun store(genres: List<Genre>)
 
 }

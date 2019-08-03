@@ -10,12 +10,14 @@ import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.shared.Reducer
+import com.hellmund.primetime.ui.shared.SingleLiveDataEvent
 import com.hellmund.primetime.ui.shared.ViewEventsStore
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
+import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.StringProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -23,13 +25,13 @@ import java.io.IOException
 import javax.inject.Inject
 
 data class SearchViewState(
-        val genres: List<Genre> = emptyList(),
-        val data: List<MovieViewEntity> = emptyList(),
-        val showClearButton: Boolean = false,
-        val didPerformSearch: Boolean = false,
-        val isLoading: Boolean = false,
-        val error: Throwable? = null,
-        val snackbarText: String? = null
+    val genres: List<Genre> = emptyList(),
+    val data: List<MovieViewEntity> = emptyList(),
+    val showClearButton: Boolean = false,
+    val didPerformSearch: Boolean = false,
+    val isLoading: Boolean = false,
+    val error: Throwable? = null,
+    val snackbarText: String? = null
 ) {
 
     val showPlaceholder: Boolean
@@ -69,12 +71,14 @@ class SearchViewStateStore : ViewStateStore<SearchViewState, Result>(
 
 class NavigationEventsStore : ViewEventsStore<NavigationEvent>()
 
+class NavigationEvent(value: RecommendationsType) : SingleLiveDataEvent<RecommendationsType>(value)
+
 class SearchViewModel @Inject constructor(
-        private val repository: MoviesRepository,
-        private val historyRepository: HistoryRepository,
-        private val genresRepository: GenresRepository,
-        private val viewEntityMapper: MoviesViewEntityMapper,
-        private val stringProvider: StringProvider
+    private val repository: MoviesRepository,
+    private val historyRepository: HistoryRepository,
+    private val genresRepository: GenresRepository,
+    private val viewEntityMapper: MoviesViewEntityMapper,
+    private val stringProvider: StringProvider
 ) : ViewModel() {
 
     private val store = SearchViewStateStore()
@@ -120,7 +124,7 @@ class SearchViewModel @Inject constructor(
 
     private suspend fun storeInHistory(historyMovie: HistoryMovie): Result {
         val messageResId = when (historyMovie.rating) {
-            0 -> R.string.will_less_like_this
+            Constants.DISLIKE -> R.string.will_less_like_this
             else -> R.string.will_more_like_this
         }
         historyRepository.store(historyMovie)

@@ -25,10 +25,10 @@ interface MoviesRepository {
 }
 
 class RealMoviesRepository @Inject constructor(
-        private val apiService: ApiService,
-        private val genresRepository: GenresRepository,
-        private val historyRepository: HistoryRepository,
-        private val onboardingHelper: OnboardingHelper
+    private val apiService: ApiService,
+    private val genresRepository: GenresRepository,
+    private val historyRepository: HistoryRepository,
+    private val onboardingHelper: OnboardingHelper
 ) : MoviesRepository {
 
     override suspend fun fetchRecommendations(
@@ -48,7 +48,6 @@ class RealMoviesRepository @Inject constructor(
         filterGenres: List<Genre>? = null,
         page: Int
     ): List<Movie> {
-        // TODO: Fix this workaround
         // TODO: Add new movies to results
         if (onboardingHelper.isFirstLaunch) {
             return fetchTopRatedMovies(page)
@@ -77,47 +76,39 @@ class RealMoviesRepository @Inject constructor(
 
     private suspend fun fetchUpcomingRecommendations(
             page: Int
-    ): List<Movie> {
-        return apiService.upcoming(page).results
-    }
+    ): List<Movie> = apiService.upcoming(page).results
 
     override suspend fun fetchRecommendations(
             movieId: Int,
             page: Int
-    ): List<Movie> {
-        return apiService.recommendations(movieId, page).results
-    }
+    ): List<Movie> = apiService.recommendations(movieId, page).results
 
     private suspend fun fetchGenreRecommendations(
             genreId: Int,
             page: Int = 1
-    ): List<Movie> {
-        return apiService.genreRecommendations(genreId, page).results
-    }
+    ): List<Movie> = apiService.genreRecommendations(genreId, page).results
 
     private suspend fun fetchTopRatedMovies(
             page: Int = 1
-    ): List<Movie> {
-        return apiService.topRatedMovies(page).results
-    }
+    ): List<Movie> = apiService.topRatedMovies(page).results
 
     override suspend fun fetchVideo(movie: MovieViewEntity): String {
         val results = apiService.videos(movie.id).results
         return VideoResolver.findBest(movie.title, results)
     }
 
-    override suspend fun fetchMovie(movieId: Int) = apiService.movie(movieId)
+    override suspend fun fetchMovie(
+        movieId: Int
+    ): Movie = apiService.movie(movieId)
 
-    override suspend fun searchMovies(query: String): List<Movie> {
-        return apiService.search(query).results
-    }
+    override suspend fun searchMovies(
+        query: String
+    ): List<Movie> = apiService.search(query).results
 
-    override suspend fun fetchPopularMovies(): List<Movie> {
-        return apiService.popular().results
-    }
+    override suspend fun fetchPopularMovies(): List<Movie> = apiService.popular().results
 
-    override suspend fun fetchReviews(movieId: Int): List<Review> {
-        return apiService.reviews(movieId).results
-    }
+    override suspend fun fetchReviews(
+        movieId: Int
+    ): List<Review> = apiService.reviews(movieId).results
 
 }

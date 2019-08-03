@@ -13,9 +13,9 @@ class SuggestionErrorFragment : Fragment() {
     private lateinit var onRetry: () -> Unit
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_movie_suggestion_error, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

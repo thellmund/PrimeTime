@@ -11,12 +11,12 @@ import java.io.IOException
 import javax.inject.Inject
 
 data class SelectMoviesViewState(
-        val pages: Int = 1,
-        val data: List<Sample> = emptyList(),
-        val isLoading: Boolean = false,
-        val isLoadingMore: Boolean = false,
-        val error: Throwable? = null,
-        val isFinished: Boolean = false
+    val pages: Int = 1,
+    val data: List<Sample> = emptyList(),
+    val isLoading: Boolean = false,
+    val isLoadingMore: Boolean = false,
+    val error: Throwable? = null,
+    val isFinished: Boolean = false
 ) {
     val isError: Boolean
         get() = error != null
@@ -66,8 +66,8 @@ sealed class Result {
 }
 
 class SelectMoviesViewModel @Inject constructor(
-        private val repository: SamplesRepository,
-        private val genresRepository: GenresRepository
+    private val repository: SamplesRepository,
+    private val genresRepository: GenresRepository
 ) : ViewModel() {
 
     private val store = SamplesViewStateStore()

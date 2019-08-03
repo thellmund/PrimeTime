@@ -7,7 +7,7 @@ import javax.inject.Inject
 private const val KEY_FIRST_LAUNCH = "firstLaunchOfPrimeTime"
 
 class OnboardingHelper @Inject constructor(
-        private val context: Context
+    private val context: Context
 ) {
 
     var isFirstLaunch: Boolean

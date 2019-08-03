@@ -21,9 +21,7 @@ class RealGenresRepository @Inject constructor(
     private val database: AppDatabase
 ) : GenresRepository {
 
-    override suspend fun getAll(): List<Genre> {
-        return database.genreDao().getAll()
-    }
+    override suspend fun getAll(): List<Genre> = database.genreDao().getAll()
 
     override suspend fun getPreferredGenres() = database.genreDao().getPreferredGenres()
 
@@ -45,7 +43,7 @@ class RealGenresRepository @Inject constructor(
     }
 
     override suspend fun storeGenres(genres: List<Genre>) {
-        database.genreDao().store(*genres.toTypedArray())
+        database.genreDao().store(genres)
     }
 
 }

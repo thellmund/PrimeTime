@@ -74,9 +74,10 @@ class WatchlistViewModel @Inject constructor(
     }
 
     private suspend fun toggleAndStoreNotification(movie: WatchlistMovieViewEntity) {
+        // TODO Move this out of WatchlistMovie model
         val newMovie = movie.raw.copy(notificationsActivated = movie.raw.notificationsActivated.not())
-        val newViewEntity = movie.copy(notificationsActivated = movie.notificationsActivated.not())
         repository.store(newMovie)
+        val newViewEntity = movie.copy(notificationsActivated = movie.notificationsActivated.not())
         store.dispatch(Result.NotificationToggled(newViewEntity))
     }
 

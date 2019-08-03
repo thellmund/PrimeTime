@@ -8,9 +8,9 @@ import javax.inject.Inject
 private const val KEY_STREAMING_SERVICES = "KEY_STREAMING_SERVICES"
 
 private val DEFAULT_STREAMING_SERVICES = listOf(
-        StreamingService("Amazon", false),
-        StreamingService("iTunes", false),
-        StreamingService("Netflix", false)
+    StreamingService("Amazon", false),
+    StreamingService("iTunes", false),
+    StreamingService("Netflix", false)
 )
 
 interface StreamingServicesStore {
@@ -19,7 +19,7 @@ interface StreamingServicesStore {
 }
 
 class RealStreamingServicesStore @Inject constructor(
-        private val sharedPrefs: SharedPreferences
+    private val sharedPrefs: SharedPreferences
 ) : StreamingServicesStore {
 
     private val gson = Gson()
@@ -32,10 +32,10 @@ class RealStreamingServicesStore @Inject constructor(
 
     override val all: List<StreamingService>
         get() = sharedPrefs
-                .getStringSet(KEY_STREAMING_SERVICES, emptySet())!!
-                .map { gson.fromJson(it, StreamingService::class.java) }
-                .toList()
-                .sortedBy { it.name.toLowerCase() }
+            .getStringSet(KEY_STREAMING_SERVICES, emptySet())!!
+            .map { gson.fromJson(it, StreamingService::class.java) }
+            .toList()
+            .sortedBy { it.name.toLowerCase() }
 
     override fun store(services: List<StreamingService>) {
         sharedPrefs.edit {

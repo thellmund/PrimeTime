@@ -91,7 +91,6 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
         viewModel.viewModelEvents.observe(this, this::handleViewModelEvent)
     }
 

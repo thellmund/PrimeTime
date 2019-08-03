@@ -33,16 +33,22 @@ import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showItemsDialog
 import com.hellmund.primetime.utils.supportActionBar
-import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.state_layout_search_results.*
-import kotlinx.android.synthetic.main.view_search_field.*
+import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView
+import kotlinx.android.synthetic.main.state_layout_search_results.loading
+import kotlinx.android.synthetic.main.state_layout_search_results.placeholder
+import kotlinx.android.synthetic.main.state_layout_search_results.resultsRecyclerView
+import kotlinx.android.synthetic.main.state_layout_search_results.searchResultsContainer
+import kotlinx.android.synthetic.main.view_search_field.backButton
+import kotlinx.android.synthetic.main.view_search_field.clearSearchButton
+import kotlinx.android.synthetic.main.view_search_field.searchBox
+import kotlinx.android.synthetic.main.view_toolbar_search.toolbar
 import org.jetbrains.anko.inputMethodManager
 import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
 
 class SearchFragment : Fragment(), TextWatcher,
-        TextView.OnEditorActionListener, MainActivity.Reselectable {
+    TextView.OnEditorActionListener, MainActivity.Reselectable {
 
     @Inject
     lateinit var imageLoader: ImageLoader
@@ -56,9 +62,9 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private val searchResultsAdapter: SearchResultsAdapter by lazy {
         SearchResultsAdapter(
-                imageLoader,
-                onItemClick = this::onItemClick,
-                onWatched = this::onWatched
+            imageLoader,
+            onItemClick = this::onItemClick,
+            onWatched = this::onWatched
         )
     }
 
@@ -73,15 +79,10 @@ class SearchFragment : Fragment(), TextWatcher,
         injector.inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_search, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -123,7 +124,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
         viewState.snackbarText?.let {
             snackbar.setText(it)
-                    .show()
+                .show()
         } ?: snackbar.dismiss()
     }
 
@@ -149,19 +150,12 @@ class SearchFragment : Fragment(), TextWatcher,
             toggleKeyboard(false)
 
             it.isVisible = searchBox.hasFocus() || searchResultsContainer.isVisible
-            if (searchResultsContainer.isVisible.not()) {
-                supportActionBar?.show()
-            }
+            toolbar.isVisible = !searchResultsContainer.isVisible
         }
 
         searchBox.setOnFocusChangeListener { _, hasFocus ->
             backButton.isVisible = hasFocus || searchResultsContainer.isVisible
-
-            if (hasFocus || searchResultsContainer.isVisible) {
-                supportActionBar?.hide()
-            } else {
-                supportActionBar?.show()
-            }
+            toolbar.isVisible = !backButton.isVisible
 
             if (hasFocus) {
                 toggleSearchResults(true)
@@ -254,17 +248,17 @@ class SearchFragment : Fragment(), TextWatcher,
         val title = movie.title
 
         val options = arrayOf(
-                getString(R.string.show_more_like_this),
-                getString(R.string.show_less_like_this)
+            getString(R.string.show_more_like_this),
+            getString(R.string.show_less_like_this)
         )
 
         requireContext().showItemsDialog(
-                title = title,
-                items = options,
-                onSelected = { index ->
-                    val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
-                    addRating(rating)
-                }
+            title = title,
+            items = options,
+            onSelected = { index ->
+                val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
+                addRating(rating)
+            }
         )
     }
 

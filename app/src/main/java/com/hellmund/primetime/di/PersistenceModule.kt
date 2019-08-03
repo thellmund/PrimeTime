@@ -16,19 +16,19 @@ object PersistenceModule {
     @Singleton
     @Provides
     fun provideDatabase(
-            context: Context
+        context: Context
     ): AppDatabase {
         return Room
-                .databaseBuilder(context, AppDatabase::class.java, "db")
-                .fallbackToDestructiveMigration()
-                .build()
+            .databaseBuilder(context, AppDatabase::class.java, "db")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @JvmStatic
     @Singleton
     @Provides
     fun provideSharedPrefs(
-            context: Context
+        context: Context
     ): SharedPreferences = context.defaultSharedPreferences
 
 }

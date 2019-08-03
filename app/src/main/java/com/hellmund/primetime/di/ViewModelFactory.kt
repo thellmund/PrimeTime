@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import javax.inject.Provider
 
 class ViewModelFactory<T : ViewModel>(
-        private val provider: Provider<T>
+    private val provider: Provider<T>
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

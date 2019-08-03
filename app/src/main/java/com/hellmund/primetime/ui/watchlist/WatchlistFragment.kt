@@ -26,9 +26,13 @@ import kotlinx.android.synthetic.main.fragment_watchlist.content
 import kotlinx.android.synthetic.main.fragment_watchlist.indicator
 import kotlinx.android.synthetic.main.fragment_watchlist.placeholder
 import kotlinx.android.synthetic.main.fragment_watchlist.viewPager
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import javax.inject.Provider
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class WatchlistFragment : Fragment() {
 
     @Inject

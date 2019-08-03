@@ -1,4 +1,5 @@
 @file:JvmName("WebUtils")
+
 package com.hellmund.primetime.utils
 
 import android.content.Context
@@ -12,9 +13,9 @@ import com.hellmund.primetime.R
 fun Context.openUrl(url: String) {
     val color = colorFromResource(R.color.colorPrimary)
     CustomTabsIntent.Builder()
-            .setToolbarColor(color)
-            .build()
-            .launchUrl(this, url.toUri())
+        .setToolbarColor(color)
+        .build()
+        .launchUrl(this, url.toUri())
 }
 
 private fun String.toUri(): Uri = Uri.parse(this)

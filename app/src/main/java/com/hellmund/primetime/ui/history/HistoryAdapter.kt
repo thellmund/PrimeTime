@@ -9,17 +9,17 @@ import com.hellmund.primetime.R
 import kotlinx.android.synthetic.main.list_item_history.view.*
 
 internal class HistoryAdapter(
-        private val listener: (HistoryMovieViewEntity) -> Unit
+    private val listener: (HistoryMovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     private val items = mutableListOf<HistoryMovieViewEntity>()
 
     override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
+        parent: ViewGroup,
+        viewType: Int
     ): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_history, parent, false)
+            .inflate(R.layout.list_item_history, parent, false)
         return ViewHolder(view)
     }
 
@@ -41,8 +41,8 @@ internal class HistoryAdapter(
     }
 
     class DiffUtilCallback(
-            private val oldItems: List<HistoryMovieViewEntity>,
-            private val newItems: List<HistoryMovieViewEntity>
+        private val oldItems: List<HistoryMovieViewEntity>,
+        private val newItems: List<HistoryMovieViewEntity>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldItems.size
@@ -62,8 +62,8 @@ internal class HistoryAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(
-                movie: HistoryMovieViewEntity,
-                listener: (HistoryMovieViewEntity) -> Unit
+            movie: HistoryMovieViewEntity,
+            listener: (HistoryMovieViewEntity) -> Unit
         ) = with(itemView) {
             title.text = movie.title
             subtitle.text = movie.detailsText

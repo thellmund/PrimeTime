@@ -2,6 +2,7 @@ package com.hellmund.primetime.ui.history
 
 import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.data.database.HistoryMovie
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +10,6 @@ import kotlinx.coroutines.reactive.flow.asFlow
 import javax.inject.Inject
 
 interface HistoryRepository {
-    val all: List<HistoryMovie>
     suspend fun getAll(): Flow<List<HistoryMovie>>
     suspend fun getLiked(): List<HistoryMovie>
     suspend fun count(movieId: Int): Int
@@ -21,9 +21,7 @@ class RealHistoryRepository @Inject constructor(
     private val database: AppDatabase
 ) : HistoryRepository {
 
-    override val all: List<HistoryMovie>
-        get() = database.historyDao().getAll().blockingFirst()
-
+    @ExperimentalCoroutinesApi
     @FlowPreview
     @ObsoleteCoroutinesApi
     override suspend fun getAll(): Flow<List<HistoryMovie>> {
@@ -35,7 +33,7 @@ class RealHistoryRepository @Inject constructor(
     override suspend fun count(movieId: Int) = database.historyDao().count(movieId)
 
     override suspend fun store(vararg historyMovie: HistoryMovie) {
-        return database.historyDao().store(*historyMovie)
+        database.historyDao().store(*historyMovie)
     }
 
     override suspend fun remove(movieId: Int) {

@@ -59,8 +59,8 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="@dimen/small_space"
+                android:layout_marginTop="@dimen/default_space"
                 android:contentDescription="@string/access_logo_tmdb"
                 android:src="@drawable/tmdb_logo" />
 

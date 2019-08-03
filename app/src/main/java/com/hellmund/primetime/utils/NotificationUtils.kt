@@ -21,7 +21,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 
 object NotificationUtils {
-    
+
     private const val GROUP_KEY = "releases_group"
     private const val CHANNEL_ID = "releases"
 
@@ -43,19 +43,19 @@ object NotificationUtils {
         titles.forEach { title -> inboxStyle.addLine(title) }
 
         val header = context.resources.getQuantityString(
-                R.plurals.new_releases_notif_header, movies.size, movies.size)
+            R.plurals.new_releases_notif_header, movies.size, movies.size)
         inboxStyle.setBigContentTitle(header)
 
         val collapsedText = titles.joinToString(", ")
 
         return NotificationCompat.Builder(context, CHANNEL_ID)
-                .setStyle(inboxStyle)
-                .setContentTitle(header)
-                .setContentText(collapsedText)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setColor(ContextCompat.getColor(context, R.color.app_color))
-                .setGroup(GROUP_KEY)
-                .build()
+            .setStyle(inboxStyle)
+            .setContentTitle(header)
+            .setContentText(collapsedText)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(ContextCompat.getColor(context, R.color.app_color))
+            .setGroup(GROUP_KEY)
+            .build()
     }
 
     @JvmStatic
@@ -64,9 +64,9 @@ object NotificationUtils {
         val pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, 0)
 
         val alarmTime = LocalDate.now()
-                .atStartOfDay(ZoneId.systemDefault())
-                .withHour(9)
-                .toInstant()
+            .atStartOfDay(ZoneId.systemDefault())
+            .withHour(9)
+            .toInstant()
 
         context.alarmManager.setRepeating(RTC, alarmTime.toEpochMilli(), INTERVAL_DAY, pendingIntent)
     }

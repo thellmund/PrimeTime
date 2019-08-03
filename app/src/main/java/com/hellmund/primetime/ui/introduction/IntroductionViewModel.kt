@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class IntroductionViewModel @Inject constructor(
-        private val repository: MoviesRepository
+    private val repository: MoviesRepository
 ) : ViewModel() {
 
     private val _posterUrls = MutableLiveData<List<String>>()
@@ -23,7 +23,7 @@ class IntroductionViewModel @Inject constructor(
     }
 
     class Factory(
-            private val repository: MoviesRepository
+        private val repository: MoviesRepository
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {

@@ -59,12 +59,12 @@ sealed class Rating(val movie: MovieViewEntity) {
 }
 
 class MovieDetailsViewModel @Inject constructor(
-        private val repository: MoviesRepository,
-        private val historyRepository: HistoryRepository,
-        private val watchlistRepository: WatchlistRepository,
-        private val viewEntitiesMapper: MoviesViewEntityMapper,
-        private val viewEntityMapper: MovieViewEntityMapper,
-        private var movie: MovieViewEntity
+    private val repository: MoviesRepository,
+    private val historyRepository: HistoryRepository,
+    private val watchlistRepository: WatchlistRepository,
+    private val viewEntitiesMapper: MoviesViewEntityMapper,
+    private val viewEntityMapper: MovieViewEntityMapper,
+    private var movie: MovieViewEntity
 ) : ViewModel() {
 
     private val store = ViewModelEventStore()
@@ -129,12 +129,6 @@ class MovieDetailsViewModel @Inject constructor(
         return ViewModelEvent.ImdbLinkLoaded(url)
     }
 
-    /*private suspend fun storeRating(rating: Rating): ViewModelEvent {
-        val historyMovie = HistoryMovie.fromRating(rating)
-        historyRepository.store(historyMovie)
-        return ViewModelEvent.RatingStored(rating)
-    }*/
-
     private suspend fun onAddToWatchlist(): ViewModelEvent {
         val count = watchlistRepository.count(movie.id)
         return if (count > 0) {
@@ -157,6 +151,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private suspend fun onLoadColorPalette(bitmap: Bitmap): ViewModelEvent {
         return try {
+            // TODO
             val palette = Palette.from(bitmap).generate()
             ViewModelEvent.ColorPaletteLoaded(palette)
         } catch (e: Exception) {
@@ -192,13 +187,6 @@ class MovieDetailsViewModel @Inject constructor(
     fun openImdb() {
         store.dispatch(fetchImdbLink())
     }
-
-    /*fun handleRating(which: Int) {
-        viewModelScope.launch {
-            val rating = if (which == 0) Rating.Like(movie) else Rating.Dislike(movie)
-            store.dispatch(storeRating(rating))
-        }
-    }*/
 
     fun addToWatchlist() {
         viewModelScope.launch {
