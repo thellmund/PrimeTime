@@ -21,7 +21,6 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.selectstreamingservices.EqualHorizontalSpacingItemDecoration
-import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
 import com.hellmund.primetime.ui.shared.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsAdapter
@@ -91,7 +90,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.viewModelEvents.observe(this, this::handleViewModelEvent)
+        viewModel.uiEvents.observe(this, this::handleViewModelEvent)
     }
 
     override fun onCreateView(
@@ -106,11 +105,11 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         fillInContent()
         downloadPosters()
 
-        backdropImageView.setOnClickListener { viewModel.loadTrailer() }
-        moreInfoButton.setOnClickListener { viewModel.openImdb() }
+        backdropImageView.setOnClickListener { viewModel.dispatch(Action.OpenTrailer) }
+        moreInfoButton.setOnClickListener { viewModel.dispatch(Action.OpenImdb) }
 
-        addToWatchlistButton.setOnClickListener { viewModel.addToWatchlist() }
-        removeFromWatchlistButton.setOnClickListener { viewModel.removeFromWatchlist() }
+        addToWatchlistButton.setOnClickListener { viewModel.dispatch(Action.AddToWatchlist) }
+        removeFromWatchlistButton.setOnClickListener { viewModel.dispatch(Action.RemoveFromWatchlist) }
     }
 
     private fun fillInContent() {
@@ -133,13 +132,6 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         reviewsRecyclerView.adapter = reviewsAdapter
         reviewsRecyclerView.setHasFixedSize(true)
         reviewsRecyclerView.addItemDecoration(EqualSpacingItemDecoration(spacing))
-
-        if (movie.hasAdditionalInformation.not()) {
-            viewModel.loadAdditionalInformation()
-        }
-
-        viewModel.loadRecommendations()
-        viewModel.loadReviews()
     }
 
     private fun downloadPosters() {
@@ -147,28 +139,20 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         imageLoader.load(url = movie.backdropUrl, into = backdropImageView)
     }
 
-    private fun handleViewModelEvent(event: ViewModelEvent) {
+    private fun handleViewModelEvent(event: UiEvent) {
         when (event) {
-            is ViewModelEvent.TrailerLoading -> showDialog()
-            is ViewModelEvent.TrailerLoaded -> openUrl(event.url)
-            is ViewModelEvent.AdditionalInformationLoaded -> showMovieDetails(event.movie)
-            is ViewModelEvent.ImdbLinkLoaded -> openUrl(event.url)
-            is ViewModelEvent.RatingStored -> onRatingStored()
-            is ViewModelEvent.AddedToWatchlist -> onAddedToWatchlist()
-            is ViewModelEvent.RemovedFromWatchlist -> onRemovedFromWatchlist()
-            is ViewModelEvent.WatchStatus -> updateWatchlistButton(event.watchStatus)
-            is ViewModelEvent.StreamingServicesLoaded -> showStreamingServices(event.services)
-            is ViewModelEvent.RecommendationsLoaded -> showRecommendations(event.movies)
-            is ViewModelEvent.ReviewsLoaded -> showReviews(event.reviews)
-            is ViewModelEvent.ColorPaletteLoaded -> onCoverPaletteLoaded(event.palette)
+            is UiEvent.TrailerLoading -> showDialog()
+            is UiEvent.TrailerLoaded -> openUrl(event.url)
+            is UiEvent.AdditionalInformationLoaded -> showMovieDetails(event.movie)
+            is UiEvent.ImdbLinkLoaded -> openUrl(event.url)
+            is UiEvent.RatingStored -> onRatingStored()
+            is UiEvent.AddedToWatchlist -> onAddedToWatchlist()
+            is UiEvent.RemovedFromWatchlist -> onRemovedFromWatchlist()
+            is UiEvent.WatchStatus -> updateWatchlistButton(event.watchStatus)
+            is UiEvent.RecommendationsLoaded -> showRecommendations(event.movies)
+            is UiEvent.ReviewsLoaded -> showReviews(event.reviews)
+            is UiEvent.ColorPaletteLoaded -> onCoverPaletteLoaded(event.palette)
         }
-    }
-
-    private fun showStreamingServices(services: List<StreamingService>) {
-        // streamingContainer.isVisible = services.isNotEmpty()
-
-        val text = services.map(StreamingService::name).joinToString(", ")
-        // streamingTextView.text = getString(R.string.available_on_format_string, text)
     }
 
     private fun showRecommendations(movies: List<MovieViewEntity>) {
@@ -222,7 +206,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     private fun onImageLoaded(drawable: Drawable) {
         val cover = (drawable as BitmapDrawable).bitmap
-        viewModel.loadColorPalette(cover)
+        viewModel.dispatch(Action.LoadColorPalette(cover))
     }
 
     private fun onCoverPaletteLoaded(palette: Palette) {

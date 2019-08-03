@@ -1,7 +1,6 @@
 package com.hellmund.primetime.ui.history
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showItemsDialog
@@ -77,9 +75,8 @@ class HistoryFragment : Fragment() {
             items = options,
             onSelected = { index ->
                 when (index) {
-                    0 -> showSimilarMovies(movie)
-                    1 -> openEditRatingDialog(movie)
-                    2 -> removeFromHistory(movie)
+                    0 -> openEditRatingDialog(movie)
+                    1 -> removeFromHistory(movie)
                 }
             }
         )
@@ -87,19 +84,9 @@ class HistoryFragment : Fragment() {
 
     private fun getDialogOptions(): Array<String> {
         return arrayOf(
-            getString(R.string.show_similar_movies),
             getString(R.string.edit_rating),
             getString(R.string.remove_from_history)
         )
-    }
-
-    private fun showSimilarMovies(movie: HistoryMovieViewEntity) {
-        val intent = Intent(requireContext(), MainActivity::class.java)
-        intent.putExtra(Constants.SINGLE_MOVIE, true)
-        intent.putExtra(Constants.MOVIE_ID, movie.id)
-        intent.putExtra(Constants.MOVIE_TITLE, movie.title)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
     }
 
     private fun removeFromHistory(movie: HistoryMovieViewEntity) {

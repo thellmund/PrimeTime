@@ -19,11 +19,4 @@ data class MovieViewEntity(
     val formattedRuntime: String,
     val imdbId: String? = null,
     val raw: Movie
-) : Parcelable {
-
-    val hasAdditionalInformation: Boolean
-        get() {
-            return raw.runtime != null && imdbId != null
-        }
-
-}
+) : Parcelable

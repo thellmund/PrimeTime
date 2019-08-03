@@ -194,14 +194,17 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private fun initToolbar() {
         toolbar.setTitle(R.string.app_name)
-        toolbar.inflateMenu(R.menu.menu_main)
 
-        if (requireFragmentManager().backStackEntryCount > 0) {
+        val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        val isInSearchTab = bottomNav.selectedItemId == R.id.search
+
+        if (isInSearchTab) {
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-        }
-
-        toolbar.setNavigationOnClickListener {
-            requireActivity().onBackPressed()
+            toolbar.setNavigationOnClickListener {
+                requireActivity().onBackPressed()
+            }
+        } else {
+            toolbar.inflateMenu(R.menu.menu_main)
         }
 
         toolbar.setOnMenuItemClickListener { menuItem ->

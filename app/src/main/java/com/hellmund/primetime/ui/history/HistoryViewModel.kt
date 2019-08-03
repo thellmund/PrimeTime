@@ -68,6 +68,7 @@ class HistoryViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             repository.observeAll()
+                .map { it.sortedByDescending { movie -> movie.timestamp } }
                 .map { viewEntitiesMapper(it) }
                 .map { Result.Data(it) as Result }
                 .catch { emit(Result.Error(it)) }

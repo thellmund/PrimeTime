@@ -5,6 +5,7 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 import java.util.Locale
@@ -14,7 +15,7 @@ interface ValueFormatter {
     suspend fun formatGenres(movie: Movie): String
     fun formatReleaseYear(releaseDate: LocalDate?): String
     fun formatRuntime(runtime: Int?): String
-    fun formatDate(date: LocalDate): String
+    fun formatDate(date: LocalDateTime): String
     fun formatRating(rating: Int): String
     fun formatCount(count: Int): String
 }
@@ -57,7 +58,7 @@ class RealValueFormatter @Inject constructor(
         return String.format("%s:%s", hours, minutes)
     }
 
-    override fun formatDate(date: LocalDate): String = formatter.format(date)
+    override fun formatDate(date: LocalDateTime): String = formatter.format(date)
 
     override fun formatRating(rating: Int): String {
         val resId = if (rating == Constants.LIKE) R.string.liked else R.string.disliked

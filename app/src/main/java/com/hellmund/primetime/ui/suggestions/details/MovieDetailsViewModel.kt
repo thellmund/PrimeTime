@@ -9,44 +9,52 @@ import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
-import com.hellmund.primetime.ui.selectstreamingservices.StreamingService
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MovieViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
 import com.hellmund.primetime.utils.observe
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
-sealed class ViewModelEvent {
-    data class StreamingServicesLoaded(val services: List<StreamingService>) : ViewModelEvent()
-    data class RecommendationsLoaded(val movies: List<MovieViewEntity>) : ViewModelEvent()
-    data class ReviewsLoaded(val reviews: List<Review>) : ViewModelEvent()
-    data class AdditionalInformationLoaded(val movie: MovieViewEntity) : ViewModelEvent()
-    object TrailerLoading : ViewModelEvent()
-    data class TrailerLoaded(val url: String) : ViewModelEvent()
-    data class ImdbLinkLoaded(val url: String) : ViewModelEvent()
-    data class RatingStored(val rating: Rating) : ViewModelEvent()
-    object AddedToWatchlist : ViewModelEvent()
-    object RemovedFromWatchlist : ViewModelEvent()
-    data class WatchStatus(val watchStatus: Movie.WatchStatus) : ViewModelEvent()
-    data class ColorPaletteLoaded(val palette: Palette) : ViewModelEvent()
-    object None : ViewModelEvent()
+sealed class Action {
+    object AddToWatchlist : Action()
+    data class LoadColorPalette(val bitmap: Bitmap) : Action()
+    object OpenImdb : Action()
+    object OpenTrailer : Action()
+    object RemoveFromWatchlist : Action()
 }
 
-class ViewModelEventStore {
+sealed class UiEvent {
+    data class RecommendationsLoaded(val movies: List<MovieViewEntity>) : UiEvent()
+    data class ReviewsLoaded(val reviews: List<Review>) : UiEvent()
+    data class AdditionalInformationLoaded(val movie: MovieViewEntity) : UiEvent()
+    object TrailerLoading : UiEvent()
+    data class TrailerLoaded(val url: String) : UiEvent()
+    data class ImdbLinkLoaded(val url: String) : UiEvent()
+    data class RatingStored(val rating: Rating) : UiEvent()
+    object AddedToWatchlist : UiEvent()
+    object RemovedFromWatchlist : UiEvent()
+    data class WatchStatus(val watchStatus: Movie.WatchStatus) : UiEvent()
+    data class ColorPaletteLoaded(val palette: Palette) : UiEvent()
+    object None : UiEvent()
+}
 
-    val viewState = MutableLiveData<ViewModelEvent>()
+class UiEventStore {
+
+    val viewState = MutableLiveData<UiEvent>()
 
     fun observe(
         owner: LifecycleOwner,
-        observer: (ViewModelEvent) -> Unit
+        observer: (UiEvent) -> Unit
     ) = viewState.observe(owner) { observer(it) }
 
     fun dispatch(
-        result: ViewModelEvent
+        result: UiEvent
     ) {
         viewState.value = result
     }
@@ -67,142 +75,130 @@ class MovieDetailsViewModel @Inject constructor(
     private var movie: MovieViewEntity
 ) : ViewModel() {
 
-    private val store = ViewModelEventStore()
-    val viewModelEvents: LiveData<ViewModelEvent> = store.viewState
+    private val store = UiEventStore()
+    val uiEvents: LiveData<UiEvent> = store.viewState
 
     init {
         viewModelScope.launch {
             store.dispatch(fetchWatchStatus())
+            store.dispatch(fetchInformation())
+            store.dispatch(fetchRecommendations())
+            store.dispatch(fetchReviews())
         }
     }
 
-    private suspend fun fetchRecommendations(): ViewModelEvent {
+    private suspend fun fetchRecommendations(): UiEvent {
         return try {
             val movies = repository.fetchRecommendations(movie.id)
             val mapped = viewEntitiesMapper(movies)
-            ViewModelEvent.RecommendationsLoaded(mapped)
+            UiEvent.RecommendationsLoaded(mapped)
         } catch (e: IOException) {
-            ViewModelEvent.None
+            UiEvent.None
         }
     }
 
-    private suspend fun fetchReviews(): ViewModelEvent {
+    private suspend fun fetchReviews(): UiEvent {
         return try {
             val reviews = repository.fetchReviews(movie.id)
-            ViewModelEvent.ReviewsLoaded(reviews)
+            UiEvent.ReviewsLoaded(reviews)
         } catch (e: IOException) {
-            ViewModelEvent.None
+            UiEvent.None
         }
     }
 
-    private suspend fun fetchWatchStatus(): ViewModelEvent {
+    private suspend fun fetchWatchStatus(): UiEvent {
         val count = historyRepository.count(movie.id)
         return if (count > 0) {
-            ViewModelEvent.WatchStatus(Movie.WatchStatus.WATCHED)
+            UiEvent.WatchStatus(Movie.WatchStatus.WATCHED)
         } else {
             fetchWatchlistStatus()
         }
     }
 
-    private suspend fun fetchWatchlistStatus(): ViewModelEvent {
+    private suspend fun fetchWatchlistStatus(): UiEvent {
         val count = watchlistRepository.count(movie.id)
         return if (count > 0) {
-            ViewModelEvent.WatchStatus(Movie.WatchStatus.ON_WATCHLIST)
+            UiEvent.WatchStatus(Movie.WatchStatus.ON_WATCHLIST)
         } else {
-            ViewModelEvent.WatchStatus(Movie.WatchStatus.NOT_WATCHED)
+            UiEvent.WatchStatus(Movie.WatchStatus.NOT_WATCHED)
         }
     }
 
-    private suspend fun fetchInformation(): ViewModelEvent {
+    private suspend fun fetchInformation(): UiEvent {
         val movie = repository.fetchMovie(movie.id)
         val viewEntity = viewEntityMapper(movie)
-        return ViewModelEvent.AdditionalInformationLoaded(viewEntity)
+        return UiEvent.AdditionalInformationLoaded(viewEntity)
     }
 
-    private suspend fun fetchTrailer(): ViewModelEvent {
+    private suspend fun fetchTrailer(): UiEvent {
         val video = repository.fetchVideo(movie)
-        return ViewModelEvent.TrailerLoaded(video)
+        return UiEvent.TrailerLoaded(video)
     }
 
-    private fun fetchImdbLink(): ViewModelEvent {
-        val url = "http://www.imdb.com/title/${movie.imdbId}"
-        return ViewModelEvent.ImdbLinkLoaded(url)
-    }
-
-    private suspend fun onAddToWatchlist(): ViewModelEvent {
+    private suspend fun onAddToWatchlist(): UiEvent {
         val count = watchlistRepository.count(movie.id)
         return if (count > 0) {
-            ViewModelEvent.RemovedFromWatchlist
+            UiEvent.RemovedFromWatchlist
         } else {
             storeInWatchlist(movie)
         }
     }
 
-    private suspend fun storeInWatchlist(movie: MovieViewEntity): ViewModelEvent {
+    private suspend fun storeInWatchlist(movie: MovieViewEntity): UiEvent {
         val fetchedMovie = repository.fetchMovie(movie.id)
         watchlistRepository.store(fetchedMovie)
-        return ViewModelEvent.AddedToWatchlist
+        return UiEvent.AddedToWatchlist
     }
 
-    private suspend fun onRemoveFromWatchlist(): ViewModelEvent {
+    private suspend fun onRemoveFromWatchlist(): UiEvent {
         watchlistRepository.remove(movie.id)
-        return ViewModelEvent.RemovedFromWatchlist
+        return UiEvent.RemovedFromWatchlist
     }
 
-    private suspend fun onLoadColorPalette(bitmap: Bitmap): ViewModelEvent {
-        return try {
-            // TODO
-            val palette = Palette.from(bitmap).generate()
-            ViewModelEvent.ColorPaletteLoaded(palette)
-        } catch (e: Exception) {
-            ViewModelEvent.None
+    private suspend fun loadTrailer() {
+        store.dispatch(UiEvent.TrailerLoading)
+        store.dispatch(fetchTrailer())
+    }
+
+    private suspend fun loadImdbId() {
+        val imdbId = movie.imdbId ?: repository.fetchMovie(movie.id).imdbId
+        imdbId?.let {
+            val link = "http://www.imdb.com/title/$it"
+            store.dispatch(UiEvent.ImdbLinkLoaded(link))
         }
     }
 
-    fun loadTrailer() {
-        viewModelScope.launch {
-            store.dispatch(ViewModelEvent.TrailerLoading)
-            store.dispatch(fetchTrailer())
+    private suspend fun addToWatchlist() {
+        store.dispatch(onAddToWatchlist())
+    }
+
+    private suspend fun removeFromWatchlist() {
+        store.dispatch(onRemoveFromWatchlist())
+    }
+
+    private suspend fun loadColorPalette(bitmap: Bitmap) {
+        withContext(Dispatchers.IO) {
+            val event = try {
+                val palette = Palette.from(bitmap).generate()
+                UiEvent.ColorPaletteLoaded(palette)
+            } catch (e: Exception) {
+                UiEvent.None
+            }
+            withContext(Dispatchers.Main) {
+                store.dispatch(event)
+            }
         }
     }
 
-    fun loadAdditionalInformation() {
+    fun dispatch(action: Action) {
         viewModelScope.launch {
-            store.dispatch(fetchInformation())
-        }
-    }
-
-    fun loadRecommendations() {
-        viewModelScope.launch {
-            store.dispatch(fetchRecommendations())
-        }
-    }
-
-    fun loadReviews() {
-        viewModelScope.launch {
-            store.dispatch(fetchReviews())
-        }
-    }
-
-    fun openImdb() {
-        store.dispatch(fetchImdbLink())
-    }
-
-    fun addToWatchlist() {
-        viewModelScope.launch {
-            store.dispatch(onAddToWatchlist())
-        }
-    }
-
-    fun removeFromWatchlist() {
-        viewModelScope.launch {
-            store.dispatch(onRemoveFromWatchlist())
-        }
-    }
-
-    fun loadColorPalette(bitmap: Bitmap) {
-        viewModelScope.launch {
-            store.dispatch(onLoadColorPalette(bitmap))
+            when (action) {
+                is Action.AddToWatchlist -> addToWatchlist()
+                is Action.LoadColorPalette -> loadColorPalette(action.bitmap)
+                is Action.OpenImdb -> loadImdbId()
+                is Action.OpenTrailer -> loadTrailer()
+                is Action.RemoveFromWatchlist -> removeFromWatchlist()
+            }
         }
     }
 

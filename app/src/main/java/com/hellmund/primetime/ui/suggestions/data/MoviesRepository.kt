@@ -54,7 +54,7 @@ class RealMoviesRepository @Inject constructor(
         }
 
         val history = historyRepository.getLiked()
-            .sorted()
+            .sortedByDescending { it.timestamp }
             .take(10)
 
         val personalized = history.map { fetchRecommendations(it.id, page) }.flatten()
