@@ -10,7 +10,10 @@ import io.reactivex.Flowable
 interface HistoryDao {
 
     @Query("SELECT * FROM history_movies ORDER BY timestamp DESC")
-    fun getAll(): Flowable<List<HistoryMovie>>
+    suspend fun getAll(): List<HistoryMovie>
+
+    @Query("SELECT * FROM history_movies ORDER BY timestamp DESC")
+    fun observeAll(): Flowable<List<HistoryMovie>>
 
     @Query("SELECT * FROM history_movies WHERE rating = 1 ORDER BY timestamp DESC")
     suspend fun getLiked(): List<HistoryMovie>

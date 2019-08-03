@@ -10,22 +10,27 @@ import kotlinx.coroutines.reactive.flow.asFlow
 import javax.inject.Inject
 
 interface HistoryRepository {
-    suspend fun getAll(): Flow<List<HistoryMovie>>
+    suspend fun getAll(): List<HistoryMovie>
+    suspend fun observeAll(): Flow<List<HistoryMovie>>
     suspend fun getLiked(): List<HistoryMovie>
     suspend fun count(movieId: Int): Int
     suspend fun store(vararg historyMovie: HistoryMovie)
     suspend fun remove(movieId: Int)
 }
 
+@ExperimentalCoroutinesApi
+@FlowPreview
+@ObsoleteCoroutinesApi
 class RealHistoryRepository @Inject constructor(
     private val database: AppDatabase
 ) : HistoryRepository {
 
-    @ExperimentalCoroutinesApi
-    @FlowPreview
-    @ObsoleteCoroutinesApi
-    override suspend fun getAll(): Flow<List<HistoryMovie>> {
-        return database.historyDao().getAll().asFlow()
+    override suspend fun getAll(): List<HistoryMovie> {
+        return database.historyDao().getAll()
+    }
+
+    override suspend fun observeAll(): Flow<List<HistoryMovie>> {
+        return database.historyDao().observeAll().asFlow()
     }
 
     override suspend fun getLiked(): List<HistoryMovie> = database.historyDao().getLiked()

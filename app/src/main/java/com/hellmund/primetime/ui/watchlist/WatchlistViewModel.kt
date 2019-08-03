@@ -66,7 +66,7 @@ class WatchlistViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             repository
-                .getAll()
+                .observeAll()
                 .map { viewEntityMapper(it) }
                 .filter { true }
                 .collect { store.dispatch(Result.Data(it)) }

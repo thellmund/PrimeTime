@@ -11,7 +11,8 @@ import kotlinx.coroutines.reactive.flow.asFlow
 import javax.inject.Inject
 
 interface WatchlistRepository {
-    suspend fun getAll(): Flow<List<WatchlistMovie>>
+    suspend fun getAll(): List<WatchlistMovie>
+    suspend fun observeAll(): Flow<List<WatchlistMovie>>
     suspend fun getReleases(): List<WatchlistMovie>
     suspend fun count(movieId: Int): Int
     suspend fun store(movie: Movie)
@@ -19,14 +20,16 @@ interface WatchlistRepository {
     suspend fun remove(movieId: Int)
 }
 
+@ExperimentalCoroutinesApi
+@FlowPreview
+@ObsoleteCoroutinesApi
 class RealWatchlistRepository @Inject constructor(
     private val database: AppDatabase
 ) : WatchlistRepository {
 
-    @ExperimentalCoroutinesApi
-    @FlowPreview
-    @ObsoleteCoroutinesApi
-    override suspend fun getAll() = database.watchlistDao().getAll().asFlow()
+    override suspend fun getAll() = database.watchlistDao().getAll()
+
+    override suspend fun observeAll() = database.watchlistDao().observeAll().asFlow()
 
     override suspend fun getReleases() = database.watchlistDao().releases()
 

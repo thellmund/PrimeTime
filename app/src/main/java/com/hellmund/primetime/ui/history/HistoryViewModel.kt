@@ -67,7 +67,7 @@ class HistoryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repository.getAll()
+            repository.observeAll()
                 .map { viewEntitiesMapper(it) }
                 .map { Result.Data(it) as Result }
                 .catch { emit(Result.Error(it)) }

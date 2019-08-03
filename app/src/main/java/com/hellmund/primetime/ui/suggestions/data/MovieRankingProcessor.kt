@@ -4,7 +4,6 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
-import com.hellmund.primetime.utils.collectFirst
 import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
@@ -22,8 +21,8 @@ class MovieRankingProcessor @Inject constructor(
         movies: List<Movie>,
         type: RecommendationsType
     ): List<Movie> {
-        val watchedMovies = historyRepo.getAll().collectFirst().map { it.id }.toSet()
-        val watchlist = watchlistRepo.getAll().collectFirst().map { it.id }.toSet()
+        val watchedMovies = historyRepo.getAll().map { it.id }.toSet()
+        val watchlist = watchlistRepo.getAll().map { it.id }.toSet()
         val knownMovies = watchedMovies + watchlist
         
         return movies
