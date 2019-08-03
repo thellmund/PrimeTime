@@ -79,7 +79,7 @@ class MovieDetailsViewModel @Inject constructor(
     private suspend fun fetchRecommendations(): ViewModelEvent {
         return try {
             val movies = repository.fetchRecommendations(movie.id)
-            val mapped = viewEntitiesMapper.apply(movies)
+            val mapped = viewEntitiesMapper(movies)
             ViewModelEvent.RecommendationsLoaded(mapped)
         } catch (e: IOException) {
             ViewModelEvent.None
@@ -115,7 +115,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     private suspend fun fetchInformation(): ViewModelEvent {
         val movie = repository.fetchMovie(movie.id)
-        val viewEntity = viewEntityMapper.apply(movie)
+        val viewEntity = viewEntityMapper(movie)
         return ViewModelEvent.AdditionalInformationLoaded(viewEntity)
     }
 

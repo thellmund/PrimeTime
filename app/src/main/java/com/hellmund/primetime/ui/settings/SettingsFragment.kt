@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
@@ -16,10 +17,13 @@ import com.hellmund.primetime.ui.selectstreamingservices.StreamingServicesStore
 import com.hellmund.primetime.ui.settings.delegates.GenresDelegate
 import com.hellmund.primetime.ui.settings.delegates.GenresValidator
 import com.hellmund.primetime.ui.settings.delegates.StreamingServicesDelegate
-import com.hellmund.primetime.ui.settings.delegates.ValidationResult
+import com.hellmund.primetime.ui.settings.delegates.ValidationResult.NotEnough
+import com.hellmund.primetime.ui.settings.delegates.ValidationResult.Overlap
+import com.hellmund.primetime.ui.settings.delegates.ValidationResult.Success
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.openUrl
 import com.hellmund.primetime.utils.showInfoDialog
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -58,7 +62,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun initIncludedGenresPref() {
         val preference = requirePreference<MultiSelectListPreference>(Constants.KEY_INCLUDED)
-        genresDelegate.init(preference)
+        lifecycleScope.launch {
+            genresDelegate.init(preference)
+        }
 
         preference.onPreferenceChangeListener = OnPreferenceChangeListener { pref, newValue ->
             saveGenresSelection(pref, newValue)
@@ -67,7 +73,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun initExcludedGenresPref() {
         val preference = requirePreference<MultiSelectListPreference>(Constants.KEY_EXCLUDED)
-        genresDelegate.init(preference)
+        lifecycleScope.launch {
+            genresDelegate.init(preference)
+        }
 
         preference.onPreferenceChangeListener = OnPreferenceChangeListener { pref, newValue ->
             saveGenresSelection(pref, newValue)
@@ -84,21 +92,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun saveGenresSelection(pref: Preference, newValue: Any): Boolean {
-        val result = genresValidator.validate(pref, newValue)
-        return when (result) {
-            is ValidationResult.Success -> {
-                genresDelegate.updateGenresSummary(pref, result.genres)
-                true
-            }
-            is ValidationResult.NotEnough -> {
-                displayNotEnoughCheckedAlert()
-                false
-            }
-            is ValidationResult.Overlap -> {
-                displaySharedGenresAlert(result.genres)
-                false
+        lifecycleScope.launch {
+            when (val result = genresValidator.validate(pref, newValue)) {
+                is Success -> genresDelegate.updateGenresSummary(pref, result.genres)
+                is NotEnough -> displayNotEnoughCheckedAlert()
+                is Overlap -> displaySharedGenresAlert(result.genres)
             }
         }
+
+        // TODO
+        return false
     }
 
     private fun displayNotEnoughCheckedAlert() {
@@ -163,11 +166,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         } catch (e: PackageManager.NameNotFoundException) {
             null
         }
-    }
-
-    override fun onDestroy() {
-        genresValidator.cancel()
-        super.onDestroy()
     }
 
     companion object {

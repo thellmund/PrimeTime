@@ -111,7 +111,7 @@ class SearchViewModel @Inject constructor(
     private suspend fun searchMovies(query: String): Result {
         return try {
             val movies = repository.searchMovies(query)
-            val mapped = viewEntityMapper.apply(movies)
+            val mapped = viewEntityMapper(movies)
             Result.Data(mapped)
         } catch (e: IOException) {
             Result.Error(e)

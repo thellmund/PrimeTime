@@ -7,6 +7,11 @@ import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,6 +52,8 @@ class WatchlistViewStateStore : ViewStateStore<WatchlistViewState, Result>(
     reducer = WatchlistViewStateReducer()
 )
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class WatchlistViewModel @Inject constructor(
     private val repository: WatchlistRepository,
     private val historyRepository: HistoryRepository,
@@ -58,9 +65,11 @@ class WatchlistViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val movies = repository.getAll()
-            val viewEntities = viewEntityMapper.apply(movies)
-            store.dispatch(Result.Data(viewEntities))
+            repository
+                .getAll()
+                .map { viewEntityMapper(it) }
+                .filter { true }
+                .collect { store.dispatch(Result.Data(it)) }
         }
     }
 

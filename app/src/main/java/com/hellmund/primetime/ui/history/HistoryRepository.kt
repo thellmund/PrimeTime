@@ -2,10 +2,10 @@ package com.hellmund.primetime.ui.history
 
 import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.data.database.HistoryMovie
-import com.hellmund.primetime.utils.asFlow
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.flow.asFlow
 import javax.inject.Inject
 
 interface HistoryRepository {

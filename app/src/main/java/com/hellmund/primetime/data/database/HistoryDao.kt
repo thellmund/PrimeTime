@@ -4,13 +4,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import io.reactivex.Observable
+import io.reactivex.Flowable
 
 @Dao
 interface HistoryDao {
 
     @Query("SELECT * FROM history_movies ORDER BY timestamp DESC")
-    fun getAll(): Observable<List<HistoryMovie>>
+    fun getAll(): Flowable<List<HistoryMovie>>
 
     @Query("SELECT * FROM history_movies WHERE rating = 1 ORDER BY timestamp DESC")
     suspend fun getLiked(): List<HistoryMovie>

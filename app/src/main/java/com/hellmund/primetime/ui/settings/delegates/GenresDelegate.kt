@@ -14,20 +14,20 @@ class GenresDelegate @Inject constructor(
         private val genresRepository: GenresRepository
 ) {
 
-    fun init(pref: MultiSelectListPreference) {
+    suspend fun init(pref: MultiSelectListPreference) {
         val isIncludedGenres = pref.key == Constants.KEY_INCLUDED
 
         val preferenceGenres = if (isIncludedGenres) {
-            emptyList<Genre>() // TODO genresRepository.preferredGenres.blockingFirst()
+            genresRepository.getPreferredGenres()
         } else {
-            emptyList<Genre>() // TODO genresRepository.excludedGenres.blockingFirst()
+            genresRepository.getExcludedGenres()
         }
 
         val values = preferenceGenres
                 .map { it.id.toString() }
                 .toSet()
 
-        val genres = genresRepository.all.blockingGet()
+        val genres = genresRepository.getAll()
         val genreIds = genres.map { it.id.toString() }.toTypedArray()
         val genreNames = genres.map { it.name }.toTypedArray()
 

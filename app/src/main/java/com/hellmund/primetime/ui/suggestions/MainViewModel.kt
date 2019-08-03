@@ -74,7 +74,7 @@ class MainViewModel @Inject constructor(
         return try {
             val recommendations = repository.fetchRecommendations(type, page)
             val ranked = rankingProcessor(recommendations, type)
-            val viewEntities = viewEntityMapper.apply(ranked)
+            val viewEntities = viewEntityMapper(ranked)
             Result.Data(type, viewEntities, page)
         } catch (e: IOException) {
             Result.Error(e)

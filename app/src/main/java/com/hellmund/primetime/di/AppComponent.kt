@@ -19,7 +19,6 @@ import com.hellmund.primetime.ui.suggestions.di.MoviesComponent
 import com.hellmund.primetime.ui.suggestions.di.MoviesModule
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.ui.watchlist.di.WatchlistModule
-import com.hellmund.primetime.ui.watchlist.di.WatchlistMovieComponent
 import com.hellmund.primetime.utils.GlideImageLoader
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.NotificationPublisher
@@ -50,7 +49,6 @@ interface AppComponent {
     fun mainComponent(): MoviesComponent.Factory
     fun movieDetailsComponent(): MovieDetailsComponent.Factory
     fun selectMoviesComponent(): SelectMoviesComponent
-    fun watchlistMovieComponent(): WatchlistMovieComponent.Factory
 
     fun inject(genresWorker: GenresPrefetcher.RefreshGenresWorker)
     fun inject(historyFragment: HistoryFragment)

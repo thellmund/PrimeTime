@@ -12,10 +12,7 @@ import io.reactivex.Flowable
 interface WatchlistDao {
 
     @Query("SELECT * FROM watchlist_movies ORDER BY timestamp")
-    suspend fun getAll(): List<WatchlistMovie>
-
-    @Query("SELECT * FROM watchlist_movies ORDER BY timestamp")
-    fun getAllRx(): Flowable<List<WatchlistMovie>>
+    fun getAll(): Flowable<List<WatchlistMovie>>
 
     @Query("SELECT * FROM watchlist_movies WHERE releaseDate BETWEEN :start AND :end")
     suspend fun releases(
