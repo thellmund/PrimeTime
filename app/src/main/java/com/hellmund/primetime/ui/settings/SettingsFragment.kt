@@ -7,7 +7,6 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
-import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
@@ -51,7 +50,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         initIncludedGenresPref()
         initExcludedGenresPref()
-        initStreamingServicesPref()
         initRateAppPref()
         initAboutAppPref()
     }
@@ -66,9 +64,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             genresDelegate.init(preference)
         }
 
-        preference.onPreferenceChangeListener = OnPreferenceChangeListener { pref, newValue ->
-            saveGenresSelection(pref, newValue)
-        }
+        preference.doOnPreferenceChange(lifecycleScope, this::saveGenresSelection)
     }
 
     private fun initExcludedGenresPref() {
@@ -77,31 +73,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
             genresDelegate.init(preference)
         }
 
-        preference.onPreferenceChangeListener = OnPreferenceChangeListener { pref, newValue ->
-            saveGenresSelection(pref, newValue)
-        }
+        preference.doOnPreferenceChange(lifecycleScope, this::saveGenresSelection)
     }
 
-    private fun initStreamingServicesPref() {
-        val preference = requirePreference<MultiSelectListPreference>(Constants.KEY_STREAMING_SERVICES)
-        streamingServicesDelegate.init(preference)
-
-        preference.onPreferenceChangeListener = OnPreferenceChangeListener { pref, newValue ->
-            saveStreamingServices(pref, newValue)
-        }
-    }
-
-    private fun saveGenresSelection(pref: Preference, newValue: Any): Boolean {
-        lifecycleScope.launch {
-            when (val result = genresValidator.validate(pref, newValue)) {
-                is Success -> genresDelegate.updateGenresSummary(pref, result.genres)
-                is NotEnough -> displayNotEnoughCheckedAlert()
-                is Overlap -> displaySharedGenresAlert(result.genres)
+    private suspend fun saveGenresSelection(pref: Preference, newValue: Any): Boolean {
+        return when (val result = genresValidator.validate(pref, newValue)) {
+            is Success -> {
+                genresDelegate.updateGenresSummary(pref, result.genres)
+                true
+            }
+            is NotEnough -> {
+                displayNotEnoughCheckedAlert()
+                false
+            }
+            is Overlap -> {
+                displaySharedGenresAlert(result.genres)
+                false
             }
         }
-
-        // TODO
-        return false
     }
 
     private fun displayNotEnoughCheckedAlert() {
@@ -112,17 +101,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val sharedGenres = genres.joinToString("\n") { "• ${it.name}" }
         val error = getString(R.string.error_already_in_genres, sharedGenres)
         requireContext().showInfoDialog(error)
-    }
-
-    private fun saveStreamingServices(pref: Preference, newValue: Any): Boolean {
-        val values = newValue as Set<String>
-        val services = streamingServicesStore.all
-
-        val updatedServices = services.map { it.copy(isSelected = values.contains(it.name)) }
-        streamingServicesDelegate.updateStreamingServicesSummary(pref, values)
-
-        streamingServicesStore.store(updatedServices)
-        return true
     }
 
     private fun initRateAppPref() {
