@@ -113,13 +113,13 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private fun setupRecyclerView() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
-        swipeRefreshLayout.setOnRefreshListener { viewModel.refresh(page = 1) }
+        swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(Action.LoadMovies(page = 1)) }
 
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.adapter = adapter
 
-        recyclerView.onBottomReached { viewModel.refresh() }
+        recyclerView.onBottomReached { viewModel.dispatch(Action.LoadMore) }
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             private val bottomNavigation =
@@ -180,7 +180,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
             items = options,
             onSelected = { index ->
                 val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
-                viewModel.handleRating(rating)
+                viewModel.dispatch(Action.StoreRating(rating))
             }
         )
     }
@@ -245,7 +245,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
             positiveResId = R.string.filter,
             onConfirmed = { selected ->
                 val selectedGenres = genres.filterIndexed { i, _ -> selected.contains(i) }
-                viewModel.filter(selectedGenres)
+                viewModel.dispatch(Action.Filter(selectedGenres))
             }
         )
     }

@@ -16,11 +16,8 @@ import java.io.IOException
 import javax.inject.Inject
 
 sealed class Action {
-    data class LoadMovies(
-        val type: RecommendationsType = RecommendationsType.Personalized(),
-        val page: Int
-    ) : Action()
-
+    data class LoadMovies(val page: Int = 1) : Action()
+    object LoadMore : Action()
     data class StoreRating(val rating: Rating) : Action()
     data class Filter(val genres: List<Genre>) : Action()
 }
@@ -97,25 +94,24 @@ class MainViewModel @Inject constructor(
         store.dispatch(Result.RatingStored(rating.movie))
     }
 
-    fun refresh(
-        page: Int = pagesLoaded + 1
-    ) {
-        if (isLoadingMore.not()) {
-            isLoadingMore = true
-
-            viewModelScope.launch {
-                fetchRecommendations(recommendationsType, page)
-            }
-        }
-    }
-
-    fun filter(genres: List<Genre>) {
-        store.dispatch(Result.Filter(genres))
-    }
-
-    fun handleRating(rating: Rating) {
+    fun dispatch(action: Action) {
         viewModelScope.launch {
-            storeRating(rating)
+            when (action) {
+                is Action.LoadMovies -> {
+                    if (isLoadingMore.not()) {
+                        isLoadingMore = true
+                        fetchRecommendations(recommendationsType, action.page)
+                    }
+                }
+                is Action.LoadMore -> {
+                    if (isLoadingMore.not()) {
+                        isLoadingMore = true
+                        fetchRecommendations(recommendationsType, pagesLoaded + 1)
+                    }
+                }
+                is Action.Filter -> store.dispatch(Result.Filter(action.genres))
+                is Action.StoreRating -> storeRating(action.rating)
+            }
         }
     }
 
