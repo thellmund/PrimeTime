@@ -1,10 +1,10 @@
 package com.hellmund.primetime.ui.selectgenres
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.ui.shared.ReactiveStore
 import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.SingleLiveDataEvent
 import com.hellmund.primetime.ui.shared.ViewStateStore
@@ -59,11 +59,10 @@ class SelectGenresViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val store = GenresViewStateStore()
+    private val navigationStore = ReactiveStore<SingleLiveDataEvent<Unit>>()
 
     val viewState: LiveData<SelectGenresViewState> = store.viewState
-
-    private val _navigation = MutableLiveData<SingleLiveDataEvent<Unit>>()
-    val navigation: LiveData<SingleLiveDataEvent<Unit>> = _navigation
+    val navigation: LiveData<SingleLiveDataEvent<Unit>> = navigationStore.event
 
     init {
         viewModelScope.launch {
@@ -88,7 +87,7 @@ class SelectGenresViewModel @Inject constructor(
 
     private suspend fun storeGenres(genres: List<Genre>) {
         repository.storeGenres(genres)
-        store.dispatch(Result.None)
+        navigationStore.dispatch(SingleLiveDataEvent(Unit))
     }
 
     fun dispatch(action: Action) {

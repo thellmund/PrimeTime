@@ -1,6 +1,5 @@
 package com.hellmund.primetime.utils
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -16,7 +15,6 @@ class NotificationPublisher : BroadcastReceiver() {
     @Inject
     lateinit var watchlistRepository: WatchlistRepository
 
-    @SuppressLint("CheckResult")
     override fun onReceive(context: Context, intent: Intent) {
         context.app.appComponent.inject(this)
 
@@ -26,6 +24,10 @@ class NotificationPublisher : BroadcastReceiver() {
 
         GlobalScope.launch {
             val releases = watchlistRepository.getReleases()
+            if (releases.isEmpty()) {
+                return@launch
+            }
+
             val notification = NotificationUtils.buildNotification(context, releases)
             context.notificationManager.notify(0, notification)
         }

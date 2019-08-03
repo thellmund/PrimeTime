@@ -9,9 +9,9 @@ import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.ui.shared.NavigationEvent
+import com.hellmund.primetime.ui.shared.NavigationEventsStore
 import com.hellmund.primetime.ui.shared.Reducer
-import com.hellmund.primetime.ui.shared.SingleLiveDataEvent
-import com.hellmund.primetime.ui.shared.ViewEventsStore
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
@@ -68,10 +68,6 @@ class SearchViewStateStore : ViewStateStore<SearchViewState, Result>(
     initialState = SearchViewState(),
     reducer = SearchViewStateReducer()
 )
-
-class NavigationEventsStore : ViewEventsStore<NavigationEvent>()
-
-class NavigationEvent(value: RecommendationsType) : SingleLiveDataEvent<RecommendationsType>(value)
 
 class SearchViewModel @Inject constructor(
     private val repository: MoviesRepository,

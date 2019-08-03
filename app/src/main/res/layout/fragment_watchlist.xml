@@ -8,10 +8,13 @@
     android:background="@color/adapterBackground"
     tools:context=".ui.watchlist.WatchlistFragment">
 
+    <include layout="@layout/view_toolbar" />
+
     <LinearLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:orientation="vertical">
 
         <androidx.viewpager2.widget.ViewPager2
@@ -32,11 +35,12 @@
 
     </LinearLayout>
 
-    <!-- Placeholder container -->
+    <!-- Placeholder -->
     <LinearLayout
         android:id="@+id/placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
