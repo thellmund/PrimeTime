@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
+import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.onboarding.OnboardingActivity
@@ -24,7 +25,6 @@ import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.shared.ScrollAwareFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
-import com.hellmund.primetime.ui.suggestions.details.Rating
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.OnboardingHelper
 import com.hellmund.primetime.utils.observe
@@ -186,8 +186,9 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
             titleResId = R.string.adjust_recommendations,
             items = options,
             onSelected = { index ->
-                val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
-                viewModel.dispatch(Action.StoreRating(rating))
+                val rating = if (index == 0) Rating.Like else Rating.Dislike
+                val ratedMovie = movie.apply(rating)
+                viewModel.dispatch(Action.StoreRating(ratedMovie))
             }
         )
     }

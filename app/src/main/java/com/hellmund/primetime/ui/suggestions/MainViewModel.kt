@@ -10,7 +10,6 @@ import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import com.hellmund.primetime.ui.suggestions.data.MovieRankingProcessor
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
-import com.hellmund.primetime.ui.suggestions.details.Rating
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -18,7 +17,7 @@ import javax.inject.Inject
 sealed class Action {
     data class LoadMovies(val page: Int = 1) : Action()
     object LoadMore : Action()
-    data class StoreRating(val rating: Rating) : Action()
+    data class StoreRating(val ratedMovie: RatedMovie) : Action()
     data class Filter(val genres: List<Genre>) : Action()
 }
 
@@ -88,10 +87,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun storeRating(rating: Rating) {
-        val historyMovie = HistoryMovie.fromRating(rating)
+    private suspend fun storeRating(ratedMovie: RatedMovie) {
+        val historyMovie = HistoryMovie.from(ratedMovie)
         historyRepository.store(historyMovie)
-        store.dispatch(Result.RatingStored(rating.movie))
+        store.dispatch(Result.RatingStored(ratedMovie.movie))
     }
 
     fun dispatch(action: Action) {
@@ -110,7 +109,7 @@ class MainViewModel @Inject constructor(
                     }
                 }
                 is Action.Filter -> store.dispatch(Result.Filter(action.genres))
-                is Action.StoreRating -> storeRating(action.rating)
+                is Action.StoreRating -> storeRating(action.ratedMovie)
             }
         }
     }

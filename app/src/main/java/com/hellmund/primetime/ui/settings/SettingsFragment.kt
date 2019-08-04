@@ -19,7 +19,7 @@ import com.hellmund.primetime.ui.settings.delegates.StreamingServicesDelegate
 import com.hellmund.primetime.ui.settings.delegates.ValidationResult.NotEnough
 import com.hellmund.primetime.ui.settings.delegates.ValidationResult.Overlap
 import com.hellmund.primetime.ui.settings.delegates.ValidationResult.Success
-import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.Preferences
 import com.hellmund.primetime.utils.openUrl
 import com.hellmund.primetime.utils.showInfoDialog
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +60,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun initIncludedGenresPref() {
-        val preference = requirePreference<MultiSelectListPreference>(Constants.KEY_INCLUDED)
+        val preference = requirePreference<MultiSelectListPreference>(Preferences.KEY_INCLUDED)
         lifecycleScope.launch(Dispatchers.IO) {
             genresDelegate.init(preference)
         }
@@ -68,7 +68,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun initExcludedGenresPref() {
-        val preference = requirePreference<MultiSelectListPreference>(Constants.KEY_EXCLUDED)
+        val preference = requirePreference<MultiSelectListPreference>(Preferences.KEY_EXCLUDED)
         lifecycleScope.launch(Dispatchers.IO) {
             genresDelegate.init(preference)
         }
@@ -78,7 +78,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private suspend fun saveGenresSelection(pref: Preference, newValue: Any): Boolean {
         val result = genresValidator.validate(pref, newValue)
         return when (result) {
-            is Success -> {1
+            is Success -> {
                 genresDelegate.updateGenresSummary(pref, result.genres)
                 true
             }
@@ -104,7 +104,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun initRateAppPref() {
-        val ratePrimeTime = requirePreference<Preference>(Constants.KEY_PLAY_STORE)
+        val ratePrimeTime = requirePreference<Preference>(Preferences.KEY_PLAY_STORE)
 
         ratePrimeTime.setOnPreferenceClickListener {
             openPlayStore()
@@ -123,7 +123,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun initAboutAppPref() {
-        val about = requirePreference<Preference>(Constants.KEY_ABOUT)
+        val about = requirePreference<Preference>(Preferences.KEY_ABOUT)
 
         val version = getVersionName()
         about.summary = version?.let { "Version $it" }

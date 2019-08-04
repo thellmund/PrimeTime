@@ -10,9 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.primetime.R
+import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showItemsDialog
 import com.hellmund.primetime.utils.showSingleSelectDialog
@@ -99,7 +99,7 @@ class HistoryFragment : Fragment() {
 
     private fun openEditRatingDialog(movie: HistoryMovieViewEntity) {
         val options = arrayOf(getString(R.string.like), getString(R.string.dislike))
-        val checked = if (movie.rating == Constants.LIKE) 0 else 1
+        val checked = if (movie.rating == Rating.Like) 0 else 1
 
         requireContext().showSingleSelectDialog(
             titleResId = R.string.edit,
@@ -108,15 +108,16 @@ class HistoryFragment : Fragment() {
             positiveResId = R.string.save,
             onSelected = {
                 if (it != checked) {
-                    val newRating = if (it == 0) Constants.LIKE else Constants.DISLIKE
-                    updateRating(movie, newRating)
+                    val newRating = if (it == 0) Rating.Like else Rating.Dislike
+                    val ratedMovie = movie.apply(newRating)
+                    updateRating(ratedMovie)
                 }
             }
         )
     }
 
-    private fun updateRating(movie: HistoryMovieViewEntity, newRating: Int) {
-        viewModel.dispatch(Action.Update(movie, newRating))
+    private fun updateRating(ratedMovie: RatedHistoryMovie) {
+        viewModel.dispatch(Action.Update(ratedMovie))
     }
 
     companion object {

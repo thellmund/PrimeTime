@@ -10,10 +10,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.hellmund.primetime.R
+import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.history.HistoryActivity
-import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showCancelableDialog
@@ -113,8 +113,9 @@ class WatchlistFragment : Fragment() {
             title = header,
             items = options,
             onSelected = { index ->
-                val rating = if (index == 0) Constants.LIKE else Constants.DISLIKE
-                viewModel.dispatch(Action.RateMovie(movie, rating))
+                val rating = if (index == 0) Rating.Like else Rating.Dislike
+                val ratedMovie = movie.apply(rating)
+                viewModel.dispatch(Action.RateMovie(ratedMovie))
             }
         )
     }

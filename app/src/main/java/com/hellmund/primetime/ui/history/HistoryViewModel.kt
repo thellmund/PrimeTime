@@ -3,7 +3,6 @@ package com.hellmund.primetime.ui.history
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import com.hellmund.primetime.utils.replace
@@ -22,7 +21,7 @@ data class HistoryViewState(
 )
 
 sealed class Action {
-    data class Update(val movie: HistoryMovieViewEntity, val rating: Int) : Action()
+    data class Update(val ratedMovie: RatedHistoryMovie) : Action()
     data class Remove(val movie: HistoryMovieViewEntity) : Action()
 }
 
@@ -81,9 +80,10 @@ class HistoryViewModel @Inject constructor(
         store.dispatch(Result.Removed(movie))
     }
 
-    private suspend fun updateMovie(movie: HistoryMovie, rating: Int) {
-        val newMovie = movie.copy(rating = rating)
+    private suspend fun updateMovie(ratedMovie: RatedHistoryMovie) {
+        val newMovie = ratedMovie.movie.raw.copy(rating = ratedMovie.rating)
         repository.store(newMovie)
+
         val viewEntity = viewEntityMapper(newMovie)
         store.dispatch(Result.Updated(viewEntity))
     }
@@ -91,7 +91,7 @@ class HistoryViewModel @Inject constructor(
     fun dispatch(action: Action) {
         viewModelScope.launch {
             when (action) {
-                is Action.Update -> updateMovie(action.movie.raw, action.rating)
+                is Action.Update -> updateMovie(action.ratedMovie)
                 is Action.Remove -> removeMovie(action.movie)
             }
         }

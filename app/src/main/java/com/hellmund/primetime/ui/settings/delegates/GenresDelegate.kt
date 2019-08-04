@@ -6,7 +6,7 @@ import androidx.preference.Preference
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.Preferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -17,7 +17,7 @@ class GenresDelegate @Inject constructor(
 ) {
 
     suspend fun init(pref: MultiSelectListPreference) {
-        val isIncludedGenres = pref.key == Constants.KEY_INCLUDED
+        val isIncludedGenres = pref.key == Preferences.KEY_INCLUDED
 
         val preferenceGenres = if (isIncludedGenres) {
             genresRepository.getPreferredGenres()

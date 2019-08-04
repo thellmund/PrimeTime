@@ -7,6 +7,7 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.shared.NavigationEvent
@@ -17,7 +18,6 @@ import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
-import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.StringProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -120,8 +120,8 @@ class SearchViewModel @Inject constructor(
 
     private suspend fun storeInHistory(historyMovie: HistoryMovie): Result {
         val messageResId = when (historyMovie.rating) {
-            Constants.DISLIKE -> R.string.will_less_like_this
-            else -> R.string.will_more_like_this
+            Rating.Like -> R.string.will_more_like_this
+            Rating.Dislike -> R.string.will_less_like_this
         }
         historyRepository.store(historyMovie)
 

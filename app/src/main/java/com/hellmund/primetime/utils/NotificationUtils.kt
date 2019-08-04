@@ -75,7 +75,7 @@ object NotificationUtils {
     @JvmStatic
     fun areNotificationsEnabled(context: Context): Boolean {
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-        return sharedPrefs.getBoolean(Constants.KEY_NOTIFICATIONS, true)
+        return sharedPrefs.getBoolean(Preferences.KEY_NOTIFICATIONS, true)
     }
 
 }

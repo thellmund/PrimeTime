@@ -18,7 +18,7 @@ import javax.inject.Inject
 sealed class Action {
     data class Remove(val item: WatchlistMovieViewEntity) : Action()
     data class ToggleNotification(val item: WatchlistMovieViewEntity) : Action()
-    data class RateMovie(val item: WatchlistMovieViewEntity, val rating: Int) : Action()
+    data class RateMovie(val item: RatedWatchlistMovie) : Action()
 }
 
 sealed class Result {
@@ -86,11 +86,11 @@ class WatchlistViewModel @Inject constructor(
         store.dispatch(Result.Removed(movie))
     }
 
-    private suspend fun rateMovie(movie: WatchlistMovieViewEntity, rating: Int) {
-        val historyMovie = HistoryMovie.fromWatchlistMovie(movie, rating)
-        repository.remove(movie.id)
+    private suspend fun rateMovie(ratedMovie: RatedWatchlistMovie) {
+        val historyMovie = HistoryMovie.from(ratedMovie)
+        repository.remove(ratedMovie.movie.id)
         historyRepository.store(historyMovie)
-        store.dispatch(Result.Removed(movie))
+        store.dispatch(Result.Removed(ratedMovie.movie))
     }
 
     fun dispatch(action: Action) {
@@ -98,7 +98,7 @@ class WatchlistViewModel @Inject constructor(
             when (action) {
                 is Action.Remove -> removeMovie(action.item)
                 is Action.ToggleNotification -> toggleAndStoreNotification(action.item)
-                is Action.RateMovie -> rateMovie(action.item, action.rating)
+                is Action.RateMovie -> rateMovie(action.item)
             }
         }
     }

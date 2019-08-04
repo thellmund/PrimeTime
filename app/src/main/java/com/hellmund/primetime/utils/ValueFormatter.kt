@@ -3,6 +3,7 @@ package com.hellmund.primetime.utils
 import android.content.Context
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Movie
+import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -16,7 +17,7 @@ interface ValueFormatter {
     fun formatReleaseYear(releaseDate: LocalDate?): String
     fun formatRuntime(runtime: Int?): String
     fun formatDate(date: LocalDateTime): String
-    fun formatRating(rating: Int): String
+    fun formatRating(rating: Rating): String
     fun formatCount(count: Int): String
 }
 
@@ -60,8 +61,8 @@ class RealValueFormatter @Inject constructor(
 
     override fun formatDate(date: LocalDateTime): String = formatter.format(date)
 
-    override fun formatRating(rating: Int): String {
-        val resId = if (rating == Constants.LIKE) R.string.liked else R.string.disliked
+    override fun formatRating(rating: Rating): String {
+        val resId = if (rating == Rating.Like) R.string.liked else R.string.disliked
         return context.getString(resId)
     }
 

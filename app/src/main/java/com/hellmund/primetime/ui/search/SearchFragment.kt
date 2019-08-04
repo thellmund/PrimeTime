@@ -21,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
@@ -28,9 +29,9 @@ import com.hellmund.primetime.ui.shared.NavigationEvent
 import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.ui.suggestions.MainFragment
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
+import com.hellmund.primetime.ui.suggestions.RatedMovie
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
-import com.hellmund.primetime.ui.suggestions.details.Rating
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showItemsDialog
@@ -223,8 +224,8 @@ class SearchFragment : Fragment(), TextWatcher,
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
-    private fun addRating(rating: Rating) {
-        val historyMovie = HistoryMovie.fromRating(rating)
+    private fun addRating(ratedMovie: RatedMovie) {
+        val historyMovie = HistoryMovie.from(ratedMovie)
         viewModel.addToHistory(historyMovie)
     }
 
@@ -261,8 +262,9 @@ class SearchFragment : Fragment(), TextWatcher,
             title = title,
             items = options,
             onSelected = { index ->
-                val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
-                addRating(rating)
+                val rating = if (index == 0) Rating.Like else Rating.Dislike
+                val ratedMovie = RatedMovie(movie, rating)
+                addRating(ratedMovie)
             }
         )
     }

@@ -71,25 +71,25 @@ class RealMoviesRepository @Inject constructor(
     ) = fetchRecommendations(movieId, page)
 
     private suspend fun fetchNowPlayingRecommendations(
-            page: Int
+        page: Int
     ) = apiService.nowPlaying(page).results
 
     private suspend fun fetchUpcomingRecommendations(
-            page: Int
+        page: Int
     ): List<Movie> = apiService.upcoming(page).results
 
     override suspend fun fetchRecommendations(
-            movieId: Int,
-            page: Int
+        movieId: Int,
+        page: Int
     ): List<Movie> = apiService.recommendations(movieId, page).results
 
     private suspend fun fetchGenreRecommendations(
-            genreId: Int,
-            page: Int = 1
+        genreId: Int,
+        page: Int = 1
     ): List<Movie> = apiService.genreRecommendations(genreId, page).results
 
     private suspend fun fetchTopRatedMovies(
-            page: Int = 1
+        page: Int = 1
     ): List<Movie> = apiService.topRatedMovies(page).results
 
     override suspend fun fetchVideo(movie: MovieViewEntity): String {

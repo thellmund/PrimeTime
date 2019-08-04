@@ -3,7 +3,7 @@ package com.hellmund.primetime.ui.settings.delegates
 import androidx.preference.Preference
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.Preferences
 import java.util.Collections
 import javax.inject.Inject
 
@@ -22,8 +22,8 @@ class GenresValidator @Inject constructor(
     suspend fun validate(pref: Preference, newValue: Any): ValidationResult {
         val genreIds = newValue as Set<String>
 
-        val isIncludedGenres = pref.key == Constants.KEY_INCLUDED
-        val isExcludedGenres = pref.key == Constants.KEY_EXCLUDED
+        val isIncludedGenres = pref.key == Preferences.KEY_INCLUDED
+        val isExcludedGenres = pref.key == Preferences.KEY_EXCLUDED
 
         val enoughChecked = if (isIncludedGenres) enoughGenresChecked(genreIds) else true
 
@@ -46,7 +46,7 @@ class GenresValidator @Inject constructor(
     }
 
     private suspend fun getOverlappingGenres(pref: Preference, newValues: Set<String>): List<Genre> {
-        val isIncludedGenres = pref.key == Constants.KEY_INCLUDED
+        val isIncludedGenres = pref.key == Preferences.KEY_INCLUDED
 
         val includedGenres = if (isIncludedGenres) {
             genresRepository.getPreferredGenres().toMutableSet()
@@ -84,7 +84,7 @@ class GenresValidator @Inject constructor(
         val includedIds = includedGenres.map { it.id.toString() }.toMutableSet()
         val excludedIds = excludedGenres.map { it.id.toString() }.toMutableSet()
 
-        if (preference.key == Constants.KEY_INCLUDED) {
+        if (preference.key == Preferences.KEY_INCLUDED) {
             includedIds.clear()
             includedIds += newGenres
         } else {

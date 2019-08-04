@@ -14,9 +14,7 @@ import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
-import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.Constants.SEARCH_INTENT
-import com.hellmund.primetime.utils.Constants.WATCHLIST_INTENT
+import com.hellmund.primetime.utils.Intents
 import com.hellmund.primetime.utils.backStack
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.android.synthetic.main.view_toolbar.toolbar
@@ -102,8 +100,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleShortcutOpen(intent: String) {
         when (intent) {
-            WATCHLIST_INTENT -> openWatchlistFromIntent()
-            SEARCH_INTENT -> openSearchFromIntent()
+            Intents.WATCHLIST -> openWatchlistFromIntent()
+            Intents.SEARCH -> openSearchFromIntent()
             else -> openSearchFromIntent(intent)
         }
     }
@@ -130,8 +128,8 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun createRecommendationsTypeFromIntent(intent: String): RecommendationsType {
         return when (intent) {
-            Constants.NOW_PLAYING_INTENT -> RecommendationsType.NowPlaying
-            Constants.UPCOMING_INTENT -> RecommendationsType.Upcoming
+            Intents.NOW_PLAYING -> RecommendationsType.NowPlaying
+            Intents.UPCOMING -> RecommendationsType.Upcoming
             else -> {
                 val genre = genresRepository.getGenre(intent)
                 val apiGenre = ApiGenre(genre.id, genre.name)
