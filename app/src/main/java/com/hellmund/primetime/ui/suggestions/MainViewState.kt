@@ -1,7 +1,5 @@
 package com.hellmund.primetime.ui.suggestions
 
-import com.hellmund.primetime.utils.containsAny
-
 data class MainViewState(
     val recommendationsType: RecommendationsType = RecommendationsType.Personalized(),
     val data: List<MovieViewEntity> = emptyList(),
@@ -42,5 +40,9 @@ data class MainViewState(
         val type = RecommendationsType.Personalized(result.genres)
         return copy(recommendationsType = type, filtered = genreMovies)
     }
+
+    private fun <T> Set<T>.containsAny(
+        elements: Collection<T>
+    ): Boolean = elements.any { contains(it) }
 
 }

@@ -15,7 +15,6 @@ import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.utils.Intents
-import com.hellmund.primetime.utils.backStack
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.android.synthetic.main.view_toolbar.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -145,7 +144,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStack.isNotEmpty()) {
+        if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStackImmediate()
             adjustBottomNavigation()
         } else {

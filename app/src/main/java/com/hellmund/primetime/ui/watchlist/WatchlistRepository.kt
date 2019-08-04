@@ -8,12 +8,14 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.flow.asFlow
+import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
 import javax.inject.Inject
 
 interface WatchlistRepository {
     suspend fun getAll(): List<WatchlistMovie>
     suspend fun observeAll(): Flow<List<WatchlistMovie>>
-    suspend fun getReleases(): List<WatchlistMovie>
+    suspend fun getReleases(date: LocalDate): List<WatchlistMovie>
     suspend fun count(movieId: Int): Int
     suspend fun store(movie: Movie)
     suspend fun store(watchlistMovie: WatchlistMovie)
@@ -31,7 +33,17 @@ class RealWatchlistRepository @Inject constructor(
 
     override suspend fun observeAll() = database.watchlistDao().observeAll().asFlow()
 
-    override suspend fun getReleases() = database.watchlistDao().releases()
+    override suspend fun getReleases(
+        date: LocalDate
+    ) = database.watchlistDao().releases(
+        start = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+        end = date.atStartOfDay(ZoneId.systemDefault())
+            .withHour(23)
+            .withMinute(59)
+            .withSecond(59)
+            .withNano(999_999)
+            .toInstant().toEpochMilli()
+    )
 
     override suspend fun count(movieId: Int) = database.watchlistDao().count(movieId)
 

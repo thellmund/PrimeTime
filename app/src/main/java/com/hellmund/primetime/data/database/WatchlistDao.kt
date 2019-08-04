@@ -4,8 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.hellmund.primetime.utils.endOfDay
-import com.hellmund.primetime.utils.startOfDay
 import io.reactivex.Flowable
 
 @Dao
@@ -19,8 +17,8 @@ interface WatchlistDao {
 
     @Query("SELECT * FROM watchlist_movies WHERE releaseDate BETWEEN :start AND :end")
     suspend fun releases(
-        start: Long = startOfDay,
-        end: Long = endOfDay
+        start: Long,
+        end: Long
     ): List<WatchlistMovie>
 
     @Query("SELECT COUNT(*) FROM watchlist_movies WHERE id = :movieId")

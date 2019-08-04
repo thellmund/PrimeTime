@@ -9,6 +9,7 @@ import com.hellmund.primetime.di.app
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
 class NotificationPublisher : BroadcastReceiver() {
@@ -24,7 +25,7 @@ class NotificationPublisher : BroadcastReceiver() {
         }
 
         GlobalScope.launch {
-            val releases = watchlistRepository.getReleases()
+            val releases = watchlistRepository.getReleases(LocalDate.now())
             if (releases.isEmpty()) {
                 return@launch
             }

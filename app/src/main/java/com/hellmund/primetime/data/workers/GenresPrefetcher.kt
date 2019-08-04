@@ -8,7 +8,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import java.io.IOException
 import javax.inject.Inject
@@ -41,8 +40,6 @@ class GenresPrefetcher @Inject constructor(
         lateinit var genresRepository: GenresRepository
 
         override suspend fun doWork(): Result {
-            injector.inject(this)
-
             val genres = genresRepository.getAll()
             if (genres.isNotEmpty()) {
                 return Result.success()

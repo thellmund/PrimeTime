@@ -20,7 +20,6 @@ import com.hellmund.primetime.ui.selectgenres.SelectGenresViewModel
 import com.hellmund.primetime.ui.selectgenres.SelectGenresViewState
 import com.hellmund.primetime.ui.shared.SingleLiveDataEvent
 import com.hellmund.primetime.utils.observe
-import com.hellmund.primetime.utils.observeNonNull
 import kotlinx.android.synthetic.main.fragment_select_genres.button
 import kotlinx.android.synthetic.main.fragment_select_genres.chipGroup
 import kotlinx.android.synthetic.main.fragment_select_genres.container
@@ -54,7 +53,7 @@ class SelectGenresFragment : Fragment() {
         updateNextButton()
         button.setOnClickListener { saveGenres() }
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
-        viewModel.navigation.observeNonNull(viewLifecycleOwner, this::navigate)
+        viewModel.navigation.observe(viewLifecycleOwner, this::navigate)
     }
 
     private fun updateNextButton(genres: List<Genre> = emptyList()) {

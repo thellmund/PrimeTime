@@ -35,7 +35,6 @@ import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showItemsDialog
-import com.hellmund.primetime.utils.supportActionBar
 import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView
 import kotlinx.android.synthetic.main.state_layout_search_results.loading
 import kotlinx.android.synthetic.main.state_layout_search_results.placeholder
@@ -105,15 +104,6 @@ class SearchFragment : Fragment(), TextWatcher,
         type?.let {
             handleSearchIntent(it)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initToolbar()
-    }
-
-    private fun initToolbar() {
-        supportActionBar?.title = null
     }
 
     private fun render(viewState: SearchViewState) {
