@@ -4,18 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
+import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.onboarding.OnboardingActivity
@@ -25,7 +25,6 @@ import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.shared.ScrollAwareFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
-import com.hellmund.primetime.ui.suggestions.details.Rating
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.OnboardingHelper
 import com.hellmund.primetime.utils.observe
@@ -38,10 +37,15 @@ import kotlinx.android.synthetic.main.fragment_main.recyclerView
 import kotlinx.android.synthetic.main.fragment_main.shimmerLayout
 import kotlinx.android.synthetic.main.fragment_main.swipeRefreshLayout
 import kotlinx.android.synthetic.main.view_toolbar.toolbar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @ScrollAwareFragment
 class MainFragment : Fragment(), MainActivity.Reselectable {
 
@@ -95,7 +99,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     override fun onResume() {
         super.onResume()
-        setToolbarSubtitle()
+        setToolbarTitle()
     }
 
     private fun setupPersonalizationBanner() {
@@ -112,13 +116,13 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private fun setupRecyclerView() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
-        swipeRefreshLayout.setOnRefreshListener { viewModel.refresh(page = 1) }
+        swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(Action.LoadMovies(page = 1)) }
 
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.adapter = adapter
 
-        recyclerView.onBottomReached { viewModel.refresh() }
+        recyclerView.onBottomReached { viewModel.dispatch(Action.LoadMore) }
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             private val bottomNavigation =
@@ -145,7 +149,11 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private fun setupFab() {
         filterFab.isVisible = type is Personalized && onboardingHelper.isFirstLaunch.not()
-        filterFab.setOnClickListener { showFilterDialog() }
+        filterFab.setOnClickListener {
+            lifecycleScope.launch {
+                showFilterDialog()
+            }
+        }
     }
 
     private fun render(viewState: MainViewState) {
@@ -178,23 +186,32 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
             titleResId = R.string.adjust_recommendations,
             items = options,
             onSelected = { index ->
-                val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
-                viewModel.handleRating(rating)
+                val rating = if (index == 0) Rating.Like else Rating.Dislike
+                val ratedMovie = movie.apply(rating)
+                viewModel.dispatch(Action.StoreRating(ratedMovie))
             }
         )
     }
 
     private fun initToolbar() {
         toolbar.setTitle(R.string.app_name)
-        toolbar.inflateMenu(R.menu.menu_main)
+
+        val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        val isInSearchTab = bottomNav.selectedItemId == R.id.search
+
+        if (isInSearchTab) {
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+            toolbar.setNavigationOnClickListener {
+                requireActivity().onBackPressed()
+            }
+        } else {
+            toolbar.inflateMenu(R.menu.menu_main)
+        }
+
         toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_settings -> {
                     openSettings()
-                    true
-                }
-                android.R.id.home -> {
-                    requireActivity().onBackPressed()
                     true
                 }
                 else -> super.onOptionsItemSelected(menuItem)
@@ -202,7 +219,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         }
     }
 
-    private fun setToolbarSubtitle() {
+    private fun setToolbarTitle() {
         val title = when (val type = type) {
             is Personalized -> getString(R.string.app_name)
             is RecommendationsType.BasedOnMovie -> type.title
@@ -218,13 +235,8 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         startActivity(intent)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    private fun showFilterDialog() {
-        val genres = genresRepository.preferredGenres.blockingFirst()
+    private suspend fun showFilterDialog() {
+        val genres = genresRepository.getPreferredGenres()
         val genreNames = genres
             .map { it.name }
             .toTypedArray()
@@ -244,7 +256,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
             positiveResId = R.string.filter,
             onConfirmed = { selected ->
                 val selectedGenres = genres.filterIndexed { i, _ -> selected.contains(i) }
-                viewModel.filter(selectedGenres)
+                viewModel.dispatch(Action.Filter(selectedGenres))
             }
         )
     }

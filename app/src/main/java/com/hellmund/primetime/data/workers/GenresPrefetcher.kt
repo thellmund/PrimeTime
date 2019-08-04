@@ -1,17 +1,23 @@
 package com.hellmund.primetime.data.workers
 
 import android.content.Context
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.CoroutineWorker
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import io.reactivex.Single
+import java.io.IOException
 import javax.inject.Inject
 
 private const val GENRES_WORKER_ID = "GENRES_WORKER_ID"
 
-class GenresPrefetcher @Inject constructor() {
-
-    private val workManager: WorkManager = WorkManager.getInstance()
+class GenresPrefetcher @Inject constructor(
+    private val workManager: WorkManager
+) {
 
     fun run() {
         val constraints = Constraints.Builder()
@@ -28,23 +34,27 @@ class GenresPrefetcher @Inject constructor() {
     class RefreshGenresWorker(
         context: Context,
         workerParams: WorkerParameters
-    ) : RxWorker(context, workerParams) {
+    ) : CoroutineWorker(context, workerParams) {
 
         // TODO Constructor injection
         @Inject
         lateinit var genresRepository: GenresRepository
 
-        override fun createWork(): Single<Result> {
+        override suspend fun doWork(): Result {
             injector.inject(this)
 
-            return genresRepository
-                .all
-                .filter { it.isEmpty() }
-                .flatMapObservable { genresRepository.fetchGenres() }
-                .single(emptyList())
-                .flatMapCompletable { genresRepository.storeGenres(it) }
-                .andThen(Single.just(Result.success()))
-                .onErrorReturnItem(Result.retry())
+            val genres = genresRepository.getAll()
+            if (genres.isNotEmpty()) {
+                return Result.success()
+            }
+
+            return try {
+                val apiGenres = genresRepository.fetchGenres()
+                genresRepository.storeGenres(apiGenres)
+                Result.success()
+            } catch (e: IOException) {
+                Result.retry()
+            }
         }
 
     }

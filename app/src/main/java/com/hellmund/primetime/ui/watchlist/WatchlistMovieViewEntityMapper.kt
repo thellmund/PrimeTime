@@ -3,16 +3,15 @@ package com.hellmund.primetime.ui.watchlist
 import com.hellmund.primetime.data.database.WatchlistMovie
 import com.hellmund.primetime.utils.ValueFormatter
 import com.hellmund.primetime.utils.isAfterNow
-import io.reactivex.functions.Function
 import javax.inject.Inject
 
 class WatchlistMovieViewEntityMapper @Inject constructor(
-    private val valueFormatter: ValueFormatter
-) : Function<List<WatchlistMovie>, List<WatchlistMovieViewEntity>> {
+        private val valueFormatter: ValueFormatter
+) {
 
-    override fun apply(movies: List<WatchlistMovie>): List<WatchlistMovieViewEntity> {
-        return movies.map(this::convert)
-    }
+    operator fun invoke(
+        movies: List<WatchlistMovie>
+    ) = movies.map(this::convert)
 
     private fun convert(movie: WatchlistMovie): WatchlistMovieViewEntity {
         return WatchlistMovieViewEntity(

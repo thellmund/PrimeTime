@@ -4,30 +4,27 @@ import android.content.Context
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.utils.ValueFormatter
-import io.reactivex.functions.Function
 import javax.inject.Inject
 
 class HistoryMoviesViewEntityMapper @Inject constructor(
     context: Context,
     valueFormatter: ValueFormatter
-) : Function<List<HistoryMovie>, List<HistoryMovieViewEntity>> {
+) {
 
     private val internalMapper = HistoryMovieViewEntityMapper(context, valueFormatter)
 
-    override fun apply(movies: List<HistoryMovie>): List<HistoryMovieViewEntity> {
-        return movies.map(internalMapper::apply)
-    }
+    operator fun invoke(
+        movies: List<HistoryMovie>
+    ) = movies.map(internalMapper::invoke)
 
 }
 
 class HistoryMovieViewEntityMapper @Inject constructor(
     private val context: Context,
     private val valueFormatter: ValueFormatter
-) : Function<HistoryMovie, HistoryMovieViewEntity> {
+) {
 
-    override fun apply(movie: HistoryMovie): HistoryMovieViewEntity {
-        return convert(movie)
-    }
+    operator fun invoke(movie: HistoryMovie) = convert(movie)
 
     private fun convert(movie: HistoryMovie): HistoryMovieViewEntity {
         val formattedDate = valueFormatter.formatDate(movie.timestamp)

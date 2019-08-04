@@ -6,7 +6,9 @@ import androidx.preference.Preference
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.utils.Preferences
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GenresDelegate @Inject constructor(
@@ -14,20 +16,20 @@ class GenresDelegate @Inject constructor(
     private val genresRepository: GenresRepository
 ) {
 
-    fun init(pref: MultiSelectListPreference) {
-        val isIncludedGenres = pref.key == Constants.KEY_INCLUDED
+    suspend fun init(pref: MultiSelectListPreference) {
+        val isIncludedGenres = pref.key == Preferences.KEY_INCLUDED
 
         val preferenceGenres = if (isIncludedGenres) {
-            genresRepository.preferredGenres.blockingFirst()
+            genresRepository.getPreferredGenres()
         } else {
-            genresRepository.excludedGenres.blockingFirst()
+            genresRepository.getExcludedGenres()
         }
 
         val values = preferenceGenres
             .map { it.id.toString() }
             .toSet()
 
-        val genres = genresRepository.all.blockingGet()
+        val genres = genresRepository.getAll()
         val genreIds = genres.map { it.id.toString() }.toTypedArray()
         val genreNames = genres.map { it.name }.toTypedArray()
 
@@ -35,7 +37,9 @@ class GenresDelegate @Inject constructor(
         pref.entryValues = genreIds
         pref.values = values
 
-        updateGenresSummary(pref, preferenceGenres)
+        withContext(Dispatchers.Main) {
+            updateGenresSummary(pref, preferenceGenres)
+        }
     }
 
     fun updateGenresSummary(preference: Preference, genres: List<Genre>) {

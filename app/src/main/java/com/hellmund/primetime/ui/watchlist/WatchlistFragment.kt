@@ -10,10 +10,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.hellmund.primetime.R
+import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.history.HistoryActivity
-import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showCancelableDialog
@@ -23,9 +23,13 @@ import kotlinx.android.synthetic.main.fragment_watchlist.indicator
 import kotlinx.android.synthetic.main.fragment_watchlist.placeholder
 import kotlinx.android.synthetic.main.fragment_watchlist.viewPager
 import kotlinx.android.synthetic.main.view_toolbar.toolbar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import javax.inject.Provider
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class WatchlistFragment : Fragment() {
 
     @Inject
@@ -44,7 +48,6 @@ class WatchlistFragment : Fragment() {
             onNotificationToggle = this::onNotificationToggle
         )
     }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         injector.inject(this)
@@ -92,14 +95,14 @@ class WatchlistFragment : Fragment() {
     }
 
     private fun onNotificationToggle(movie: WatchlistMovieViewEntity) {
-        viewModel.toggleNotification(movie)
+        viewModel.dispatch(Action.ToggleNotification(movie))
     }
 
     private fun onRemove(movie: WatchlistMovieViewEntity) {
         requireContext().showCancelableDialog(
             messageResId = R.string.remove_from_watchlist_header,
             positiveResId = R.string.remove,
-            onPositive = { viewModel.remove(movie) })
+            onPositive = { viewModel.dispatch(Action.Remove(movie)) })
     }
 
     private fun onWatchedIt(movie: WatchlistMovieViewEntity) {
@@ -110,8 +113,9 @@ class WatchlistFragment : Fragment() {
             title = header,
             items = options,
             onSelected = { index ->
-                val rating = if (index == 0) Constants.LIKE else Constants.DISLIKE
-                viewModel.onMovieRated(movie, rating)
+                val rating = if (index == 0) Rating.Like else Rating.Dislike
+                val ratedMovie = movie.apply(rating)
+                viewModel.dispatch(Action.RateMovie(ratedMovie))
             }
         )
     }

@@ -1,30 +1,30 @@
 package com.hellmund.primetime.data.database
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.hellmund.primetime.data.model.Genre
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Single
 
 @Dao
 interface GenreDao {
 
     @Query("SELECT * FROM genres ORDER BY name")
-    fun getAll(): Single<List<Genre>>
+    suspend fun getAll(): List<Genre>
 
     @Query("SELECT * FROM genres WHERE isPreferred = 1 ORDER BY name")
-    fun getPreferredGenres(): Single<List<Genre>>
+    suspend fun getPreferredGenres(): List<Genre>
 
     @Query("SELECT * FROM genres WHERE isExcluded = 1 ORDER BY name")
-    fun getExcludedGenres(): Single<List<Genre>>
+    suspend fun getExcludedGenres(): List<Genre>
 
     @Query("SELECT * FROM genres WHERE id = :id")
-    fun getGenre(id: Int): Maybe<Genre>
+    suspend fun getGenre(id: Int): Genre
 
     @Query("SELECT * FROM genres WHERE name = :name")
-    fun getGenre(name: String): Maybe<Genre>
+    suspend fun getGenre(name: String): Genre
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun store(vararg genre: Genre): Completable
+    suspend fun store(genres: List<Genre>)
 
 }

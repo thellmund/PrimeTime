@@ -1,14 +1,17 @@
 package com.hellmund.primetime.ui.history
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hellmund.primetime.data.database.HistoryMovie
-import com.hellmund.primetime.utils.plusAssign
-import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import androidx.lifecycle.viewModelScope
+import com.hellmund.primetime.ui.shared.Reducer
+import com.hellmund.primetime.ui.shared.ViewStateStore
+import com.hellmund.primetime.utils.replace
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class HistoryViewState(
@@ -18,10 +21,8 @@ data class HistoryViewState(
 )
 
 sealed class Action {
-    object Load : Action()
-    data class DatabaseLoaded(val data: List<HistoryMovieViewEntity>) : Action()
+    data class Update(val ratedMovie: RatedHistoryMovie) : Action()
     data class Remove(val movie: HistoryMovieViewEntity) : Action()
-    data class Update(val movie: HistoryMovie) : Action()
 }
 
 sealed class Result {
@@ -31,107 +32,69 @@ sealed class Result {
     data class Updated(val movie: HistoryMovieViewEntity) : Result()
 }
 
+class HistoryViewStateReducer : Reducer<HistoryViewState, Result> {
+    override fun invoke(
+        state: HistoryViewState,
+        result: Result
+    ) = when (result) {
+        is Result.Data -> state.copy(data = result.data, isLoading = false, error = null)
+        is Result.Error -> state.copy(isLoading = false, error = result.error)
+        is Result.Removed -> state.copy(data = state.data.minus(result.movie))
+        is Result.Updated -> {
+            val index = state.data.indexOfFirst { it.id == result.movie.id }
+            val newData = state.data.replace(index, result.movie)
+            state.copy(data = newData)
+        }
+    }
+}
+
+class HistoryViewStateStore : ViewStateStore<HistoryViewState, Result>(
+    initialState = HistoryViewState(),
+    reducer = HistoryViewStateReducer()
+)
+
+@ExperimentalCoroutinesApi
+@FlowPreview
 class HistoryViewModel @Inject constructor(
     private val repository: HistoryRepository,
     private val viewEntitiesMapper: HistoryMoviesViewEntityMapper,
     private val viewEntityMapper: HistoryMovieViewEntityMapper
 ) : ViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
-    private val refreshRelay = PublishRelay.create<Action>()
-
-    private val _viewState = MutableLiveData<HistoryViewState>()
-    val viewState: LiveData<HistoryViewState> = _viewState
+    private val store = HistoryViewStateStore()
+    val viewState: LiveData<HistoryViewState> = store.viewState
 
     init {
-        val initialViewState = HistoryViewState(isLoading = true)
-
-        val databaseChanges = repository.getAll()
-            .map(viewEntitiesMapper)
-            .onErrorReturn { emptyList() }
-            .toObservable()
-            .map {
-                if (it.isNotEmpty()) {
-                    Action.DatabaseLoaded(it)
-                } else {
-                    Action.Load
-                }
-            }
-
-        val sources = Observable.merge(refreshRelay, databaseChanges)
-
-        compositeDisposable += sources
-            .switchMap(this::processAction)
-            .scan(initialViewState, this::reduceState)
-            .subscribe(this::render)
-    }
-
-    private fun processAction(action: Action): Observable<Result> {
-        return when (action) {
-            is Action.Load -> fetchMovies()
-            is Action.DatabaseLoaded -> Observable.just(Result.Data(action.data))
-            is Action.Remove -> removeMovie(action.movie)
-            is Action.Update -> updateMovie(action.movie)
+        viewModelScope.launch {
+            repository.observeAll()
+                .map { it.sortedByDescending { movie -> movie.timestamp } }
+                .map { viewEntitiesMapper(it) }
+                .map { Result.Data(it) as Result }
+                .catch { emit(Result.Error(it)) }
+                .collect { value -> store.dispatch(value) }
         }
     }
 
-    private fun fetchMovies(): Observable<Result> {
-        return repository.getAll()
-            .subscribeOn(Schedulers.io())
-            .map(viewEntitiesMapper)
-            .map { Result.Data(it) as Result }
-            .onErrorReturn { Result.Error(it) }
-            .toObservable()
+    private suspend fun removeMovie(movie: HistoryMovieViewEntity) {
+        repository.remove(movie.id)
+        store.dispatch(Result.Removed(movie))
     }
 
-    private fun removeMovie(movie: HistoryMovieViewEntity): Observable<Result> {
-        return repository.remove(movie.id)
-            .andThen(Observable.just(Result.Removed(movie) as Result))
+    private suspend fun updateMovie(ratedMovie: RatedHistoryMovie) {
+        val newMovie = ratedMovie.movie.raw.copy(rating = ratedMovie.rating)
+        repository.store(newMovie)
+
+        val viewEntity = viewEntityMapper(newMovie)
+        store.dispatch(Result.Updated(viewEntity))
     }
 
-    private fun updateMovie(movie: HistoryMovie): Observable<Result> {
-        return repository
-            .store(movie)
-            .andThen(Observable.just(movie))
-            .map(viewEntityMapper)
-            .map { Result.Updated(it) }
-    }
-
-    private fun reduceState(
-        viewState: HistoryViewState,
-        result: Result
-    ): HistoryViewState {
-        return when (result) {
-            is Result.Data -> viewState.copy(data = result.data, isLoading = false, error = null)
-            is Result.Error -> viewState.copy(isLoading = false, error = result.error)
-            is Result.Removed -> viewState.copy(data = viewState.data.minus(result.movie))
-            is Result.Updated -> {
-                val index = viewState.data.indexOfFirst { it.id == result.movie.id }
-                val newData = viewState.data
-                    .toMutableList()
-                    .apply { set(index, result.movie) }
-                    .toList()
-                viewState.copy(data = newData)
+    fun dispatch(action: Action) {
+        viewModelScope.launch {
+            when (action) {
+                is Action.Update -> updateMovie(action.ratedMovie)
+                is Action.Remove -> removeMovie(action.movie)
             }
         }
-    }
-
-    private fun render(viewState: HistoryViewState) {
-        _viewState.postValue(viewState)
-    }
-
-    fun update(movie: HistoryMovieViewEntity, newRating: Int) {
-        val raw = movie.raw.copy(rating = newRating)
-        refreshRelay.accept(Action.Update(raw))
-    }
-
-    fun remove(movie: HistoryMovieViewEntity) {
-        refreshRelay.accept(Action.Remove(movie))
-    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
     }
 
 }

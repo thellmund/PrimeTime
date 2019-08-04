@@ -1,5 +1,6 @@
 package com.hellmund.primetime.utils
 
+import android.app.AlarmManager
 import android.app.AlarmManager.INTERVAL_DAY
 import android.app.AlarmManager.RTC
 import android.app.Notification
@@ -12,11 +13,10 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.O
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
+import androidx.preference.PreferenceManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.WatchlistMovie
-import org.jetbrains.anko.alarmManager
-import org.jetbrains.anko.defaultSharedPreferences
-import org.jetbrains.anko.notificationManager
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 
@@ -33,7 +33,7 @@ object NotificationUtils {
 
         val name = context.getString(R.string.release_notifications)
         val channel = NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW)
-        context.notificationManager.createNotificationChannel(channel)
+        context.getSystemService<NotificationManager>()?.createNotificationChannel(channel)
     }
 
     @JvmStatic
@@ -68,12 +68,14 @@ object NotificationUtils {
             .withHour(9)
             .toInstant()
 
-        context.alarmManager.setRepeating(RTC, alarmTime.toEpochMilli(), INTERVAL_DAY, pendingIntent)
+        val alarmManager = context.getSystemService<AlarmManager>()
+        alarmManager?.setRepeating(RTC, alarmTime.toEpochMilli(), INTERVAL_DAY, pendingIntent)
     }
 
     @JvmStatic
     fun areNotificationsEnabled(context: Context): Boolean {
-        return context.defaultSharedPreferences.getBoolean(Constants.KEY_NOTIFICATIONS, true)
+        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return sharedPrefs.getBoolean(Preferences.KEY_NOTIFICATIONS, true)
     }
 
 }

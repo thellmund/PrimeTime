@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.transition.TransitionManager
 import com.hellmund.primetime.R
-import kotlinx.android.synthetic.main.view_banner.view.*
-import org.jetbrains.anko.topPadding
+import kotlinx.android.synthetic.main.view_banner.view.negativeButton
+import kotlinx.android.synthetic.main.view_banner.view.positiveButton
 
 class MaterialBanner @JvmOverloads constructor(
     context: Context,
@@ -33,13 +33,13 @@ class MaterialBanner @JvmOverloads constructor(
     fun show() {
         TransitionManager.beginDelayedTransition(parent as ViewGroup)
         visibility = View.VISIBLE
-        container?.topPadding = height
+        container?.updatePadding(top = height)
     }
 
     fun dismiss() {
         TransitionManager.beginDelayedTransition(parent as ViewGroup)
         visibility = View.GONE
-        container?.topPadding = 0
+        container?.updatePadding(top = 0)
     }
 
 }

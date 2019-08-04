@@ -4,34 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
-import com.hellmund.primetime.utils.plusAssign
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class IntroductionViewModel @Inject constructor(
     private val repository: MoviesRepository
 ) : ViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
-
     private val _posterUrls = MutableLiveData<List<String>>()
     val posterUrls: LiveData<List<String>> = _posterUrls
 
     init {
-        loadPosters()
-    }
-
-    private fun loadPosters() {
-        compositeDisposable += repository
-            .fetchPopularMovies()
-            .map { movies -> movies.map { it.fullPosterUrl } }
-            .subscribe(_posterUrls::postValue)
-    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
+        viewModelScope.launch {
+            _posterUrls.value = repository.fetchPopularMovies().map { it.fullPosterUrl }
+        }
     }
 
     class Factory(

@@ -2,9 +2,9 @@ package com.hellmund.primetime.ui.selectmovies
 
 import com.google.gson.annotations.SerializedName
 import com.hellmund.primetime.data.database.HistoryMovie
-import com.hellmund.primetime.utils.Constants
-import org.threeten.bp.LocalDate
-import java.util.*
+import com.hellmund.primetime.data.model.Rating
+import org.threeten.bp.LocalDateTime
+import java.util.Date
 
 data class SamplesResponse(val results: List<Sample>)
 
@@ -21,7 +21,7 @@ data class Sample(
         get() = "https://image.tmdb.org/t/p/w500$posterPath"
 
     fun toHistoryMovie(): HistoryMovie {
-        return HistoryMovie(id, title, Constants.LIKE, LocalDate.now())
+        return HistoryMovie(id, title, Rating.Like, LocalDateTime.now())
     }
 
 }

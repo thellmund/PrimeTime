@@ -3,10 +3,8 @@ package com.hellmund.primetime.ui.settings.delegates
 import androidx.preference.Preference
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.plusAssign
-import io.reactivex.disposables.CompositeDisposable
-import java.util.*
+import com.hellmund.primetime.utils.Preferences
+import java.util.Collections
 import javax.inject.Inject
 
 private const val MIN_GENRES = 2
@@ -21,13 +19,11 @@ class GenresValidator @Inject constructor(
     private val genresRepository: GenresRepository
 ) {
 
-    private val compositeDisposable = CompositeDisposable()
-
-    fun validate(pref: Preference, newValue: Any): ValidationResult {
+    suspend fun validate(pref: Preference, newValue: Any): ValidationResult {
         val genreIds = newValue as Set<String>
 
-        val isIncludedGenres = pref.key == Constants.KEY_INCLUDED
-        val isExcludedGenres = pref.key == Constants.KEY_EXCLUDED
+        val isIncludedGenres = pref.key == Preferences.KEY_INCLUDED
+        val isExcludedGenres = pref.key == Preferences.KEY_EXCLUDED
 
         val enoughChecked = if (isIncludedGenres) enoughGenresChecked(genreIds) else true
 
@@ -39,8 +35,6 @@ class GenresValidator @Inject constructor(
                 genre.isExcluded = isExcludedGenres
             }
 
-            compositeDisposable += genresRepository.storeGenres(genres).subscribe()
-
             val results = genres.filter { if (isIncludedGenres) it.isPreferred else it.isExcluded }
             ValidationResult.Success(results)
         } else if (!enoughGenresChecked(newValue)) {
@@ -51,28 +45,28 @@ class GenresValidator @Inject constructor(
         }
     }
 
-    private fun getOverlappingGenres(pref: Preference, newValues: Set<String>): List<Genre> {
-        val isIncludedGenres = pref.key == Constants.KEY_INCLUDED
+    private suspend fun getOverlappingGenres(pref: Preference, newValues: Set<String>): List<Genre> {
+        val isIncludedGenres = pref.key == Preferences.KEY_INCLUDED
 
         val includedGenres = if (isIncludedGenres) {
-            genresRepository.preferredGenres.blockingFirst().toMutableSet()
+            genresRepository.getPreferredGenres().toMutableSet()
         } else {
-            genresRepository.getGenres(newValues).blockingGet().toMutableSet()
+            genresRepository.getGenres(newValues).toMutableSet()
         }
 
         val excludedGenres = if (isIncludedGenres.not()) {
-            genresRepository.excludedGenres.blockingFirst().toMutableSet()
+            genresRepository.getExcludedGenres().toMutableSet()
         } else {
-            genresRepository.getGenres(newValues).blockingGet().toMutableSet()
+            genresRepository.getGenres(newValues).toMutableSet()
         }
 
         includedGenres.retainAll(excludedGenres)
         return includedGenres.sortedBy { it.name }
     }
 
-    private fun getGenresFromValues(values: Set<String>): List<Genre> {
+    private suspend fun getGenresFromValues(values: Set<String>): List<Genre> {
         return values
-            .map { genresRepository.getGenre(it).blockingGet() }
+            .map { genresRepository.getGenre(it) }
             .sortedBy { it.name }
     }
 
@@ -80,14 +74,17 @@ class GenresValidator @Inject constructor(
         return newGenres.size >= MIN_GENRES
     }
 
-    private fun genresAreDisjoint(preference: Preference, newGenres: Set<String>): Boolean {
-        val includedGenres = genresRepository.preferredGenres.blockingFirst()
-        val excludedGenres = genresRepository.excludedGenres.blockingFirst()
+    private suspend fun genresAreDisjoint(
+        preference: Preference,
+        newGenres: Set<String>
+    ): Boolean {
+        val includedGenres = genresRepository.getPreferredGenres()
+        val excludedGenres = genresRepository.getExcludedGenres()
 
         val includedIds = includedGenres.map { it.id.toString() }.toMutableSet()
         val excludedIds = excludedGenres.map { it.id.toString() }.toMutableSet()
 
-        if (preference.key == Constants.KEY_INCLUDED) {
+        if (preference.key == Preferences.KEY_INCLUDED) {
             includedIds.clear()
             includedIds += newGenres
         } else {
@@ -96,10 +93,6 @@ class GenresValidator @Inject constructor(
         }
 
         return excludedIds.isEmpty() || Collections.disjoint(includedIds, excludedIds)
-    }
-
-    fun cancel() {
-        compositeDisposable.dispose()
     }
 
 }

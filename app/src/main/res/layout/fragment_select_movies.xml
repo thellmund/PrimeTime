@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:orientation="vertical"
-    tools:context=".ui.selectmovies.SelectMoviesActivity">
+    tools:context=".ui.onboarding.OnboardingActivity">
 
     <TextView
         android:id="@+id/header"

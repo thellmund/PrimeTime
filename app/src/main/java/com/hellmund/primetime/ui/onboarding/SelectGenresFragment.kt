@@ -14,6 +14,7 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui.selectgenres.Action
 import com.hellmund.primetime.ui.selectgenres.GenreChip
 import com.hellmund.primetime.ui.selectgenres.SelectGenresViewModel
 import com.hellmund.primetime.ui.selectgenres.SelectGenresViewState
@@ -105,7 +106,7 @@ class SelectGenresFragment : Fragment() {
     }
 
     private fun onCheckedChange(chip: GenreChip) {
-        viewModel.onGenreToggled(chip.genre)
+        viewModel.dispatch(Action.ToggleGenre(chip.genre))
     }
 
     private fun saveGenres() {
@@ -113,7 +114,7 @@ class SelectGenresFragment : Fragment() {
         val includedGenres = genres.mapIndexed { index, genre ->
             genre.copy(isPreferred = checkedItems[index].isChecked)
         }
-        viewModel.store(includedGenres)
+        viewModel.dispatch(Action.Store(includedGenres))
     }
 
     companion object {

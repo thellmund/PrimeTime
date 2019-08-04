@@ -3,53 +3,48 @@ package com.hellmund.primetime.ui.watchlist
 import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.data.database.WatchlistMovie
 import com.hellmund.primetime.data.model.Movie
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.flow.asFlow
 import javax.inject.Inject
 
 interface WatchlistRepository {
-    fun getAll(): Single<List<WatchlistMovie>>
-    fun getReleases(): Single<List<WatchlistMovie>>
-    fun get(movieId: Int): Maybe<WatchlistMovie>
-    fun count(movieId: Int): Maybe<Int>
-    fun store(movie: Movie): Completable
-    fun store(watchlistMovie: WatchlistMovie): Completable
-    fun remove(movieId: Int): Completable
+    suspend fun getAll(): List<WatchlistMovie>
+    suspend fun observeAll(): Flow<List<WatchlistMovie>>
+    suspend fun getReleases(): List<WatchlistMovie>
+    suspend fun count(movieId: Int): Int
+    suspend fun store(movie: Movie)
+    suspend fun store(watchlistMovie: WatchlistMovie)
+    suspend fun remove(movieId: Int)
 }
 
+@ExperimentalCoroutinesApi
+@FlowPreview
+@ObsoleteCoroutinesApi
 class RealWatchlistRepository @Inject constructor(
     private val database: AppDatabase
 ) : WatchlistRepository {
 
-    override fun getAll(): Single<List<WatchlistMovie>> {
-        return database.watchlistDao().getAll().subscribeOn(Schedulers.io())
+    override suspend fun getAll() = database.watchlistDao().getAll()
+
+    override suspend fun observeAll() = database.watchlistDao().observeAll().asFlow()
+
+    override suspend fun getReleases() = database.watchlistDao().releases()
+
+    override suspend fun count(movieId: Int) = database.watchlistDao().count(movieId)
+
+    override suspend fun store(movie: Movie) {
+        store(WatchlistMovie.from(movie))
     }
 
-    override fun getReleases(): Single<List<WatchlistMovie>> {
-        return database.watchlistDao().releases().subscribeOn(Schedulers.io())
+    override suspend fun store(watchlistMovie: WatchlistMovie) {
+        database.watchlistDao().store(watchlistMovie)
     }
 
-    override fun get(movieId: Int): Maybe<WatchlistMovie> {
-        return database.watchlistDao().get(movieId).subscribeOn(Schedulers.io())
-    }
-
-    override fun count(movieId: Int): Maybe<Int> {
-        return database.watchlistDao().count(movieId).subscribeOn(Schedulers.io())
-    }
-
-    override fun store(movie: Movie): Completable {
-        val watchlistMovie = WatchlistMovie.from(movie)
-        return store(watchlistMovie)
-    }
-
-    override fun store(watchlistMovie: WatchlistMovie): Completable {
-        return database.watchlistDao().store(watchlistMovie).subscribeOn(Schedulers.io())
-    }
-
-    override fun remove(movieId: Int): Completable {
-        return database.watchlistDao().delete(movieId).subscribeOn(Schedulers.io())
+    override suspend fun remove(movieId: Int) {
+        database.watchlistDao().delete(movieId)
     }
 
 }

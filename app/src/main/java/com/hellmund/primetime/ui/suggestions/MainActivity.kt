@@ -5,6 +5,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.ApiGenre
@@ -13,16 +14,19 @@ import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
-import com.hellmund.primetime.utils.Constants
-import com.hellmund.primetime.utils.Constants.SEARCH_INTENT
-import com.hellmund.primetime.utils.Constants.WATCHLIST_INTENT
+import com.hellmund.primetime.utils.Intents
 import com.hellmund.primetime.utils.backStack
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.android.synthetic.main.view_toolbar.toolbar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val SHORTCUT_EXTRA = "intent"
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class MainActivity : AppCompatActivity() {
 
     @Inject
@@ -96,8 +100,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleShortcutOpen(intent: String) {
         when (intent) {
-            WATCHLIST_INTENT -> openWatchlistFromIntent()
-            SEARCH_INTENT -> openSearchFromIntent()
+            Intents.WATCHLIST -> openWatchlistFromIntent()
+            Intents.SEARCH -> openSearchFromIntent()
             else -> openSearchFromIntent(intent)
         }
     }
@@ -114,18 +118,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openSearchFromIntent(extra: String? = null) {
-        val type = extra?.let { createRecommendationsTypeFromIntent(it) }
-        val fragment = SearchFragment.newInstance(type)
-        showFragment(fragment)
-        bottomNavigation.selectedItemId = R.id.search
+        lifecycleScope.launch {
+            val type = extra?.let { createRecommendationsTypeFromIntent(it) }
+            val fragment = SearchFragment.newInstance(type)
+            showFragment(fragment)
+            bottomNavigation.selectedItemId = R.id.search
+        }
     }
 
-    private fun createRecommendationsTypeFromIntent(intent: String): RecommendationsType {
+    private suspend fun createRecommendationsTypeFromIntent(intent: String): RecommendationsType {
         return when (intent) {
-            Constants.NOW_PLAYING_INTENT -> RecommendationsType.NowPlaying
-            Constants.UPCOMING_INTENT -> RecommendationsType.Upcoming
+            Intents.NOW_PLAYING -> RecommendationsType.NowPlaying
+            Intents.UPCOMING -> RecommendationsType.Upcoming
             else -> {
-                val genre = genresRepository.getGenre(intent).blockingGet()
+                val genre = genresRepository.getGenre(intent)
                 val apiGenre = ApiGenre(genre.id, genre.name)
                 RecommendationsType.ByGenre(apiGenre)
             }

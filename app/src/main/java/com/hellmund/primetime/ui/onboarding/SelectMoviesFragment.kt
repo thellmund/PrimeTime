@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui.selectmovies.Action
 import com.hellmund.primetime.ui.selectmovies.SamplesAdapter
 import com.hellmund.primetime.ui.selectmovies.SelectMoviesViewModel
 import com.hellmund.primetime.ui.selectmovies.SelectMoviesViewState
@@ -35,7 +36,7 @@ class SelectMoviesFragment : Fragment() {
 
     private var onFinishedAction: () -> Unit = {}
     private val adapter: SamplesAdapter by lazy {
-        SamplesAdapter(imageLoader, viewModel::onItemClick)
+        SamplesAdapter(imageLoader) { viewModel.dispatch(Action.ItemClicked(it)) }
     }
 
     @Inject
@@ -67,7 +68,7 @@ class SelectMoviesFragment : Fragment() {
         updateNextButton()
 
         button.setOnClickListener { saveMovies() }
-        error_button.setOnClickListener { viewModel.refresh() }
+        error_button.setOnClickListener { viewModel.dispatch(Action.Refresh) }
 
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
     }
@@ -79,7 +80,7 @@ class SelectMoviesFragment : Fragment() {
 
         gridView.onBottomReached {
             if (isLoadingMore.not()) {
-                viewModel.refresh()
+                viewModel.dispatch(Action.Refresh)
                 isLoadingMore = true
             }
         }
@@ -138,7 +139,7 @@ class SelectMoviesFragment : Fragment() {
 
     private fun saveSelection() {
         val selected = adapter.selected
-        viewModel.store(selected)
+        viewModel.dispatch(Action.Store(selected))
     }
 
     private fun openNext() {

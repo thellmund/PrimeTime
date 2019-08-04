@@ -2,6 +2,7 @@ package com.hellmund.primetime.ui.suggestions
 
 import android.os.Parcelable
 import com.hellmund.primetime.data.model.Movie
+import com.hellmund.primetime.data.model.Rating
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -21,9 +22,8 @@ data class MovieViewEntity(
     val raw: Movie
 ) : Parcelable {
 
-    val hasAdditionalInformation: Boolean
-        get() {
-            return raw.runtime != null && imdbId != null
-        }
+    fun apply(rating: Rating) = RatedMovie(this, rating)
 
 }
+
+data class RatedMovie(val movie: MovieViewEntity, val rating: Rating)

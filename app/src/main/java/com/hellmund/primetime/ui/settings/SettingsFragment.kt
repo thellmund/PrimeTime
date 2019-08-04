@@ -4,9 +4,9 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
-import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
@@ -16,10 +16,14 @@ import com.hellmund.primetime.ui.selectstreamingservices.StreamingServicesStore
 import com.hellmund.primetime.ui.settings.delegates.GenresDelegate
 import com.hellmund.primetime.ui.settings.delegates.GenresValidator
 import com.hellmund.primetime.ui.settings.delegates.StreamingServicesDelegate
-import com.hellmund.primetime.ui.settings.delegates.ValidationResult
-import com.hellmund.primetime.utils.Constants
+import com.hellmund.primetime.ui.settings.delegates.ValidationResult.NotEnough
+import com.hellmund.primetime.ui.settings.delegates.ValidationResult.Overlap
+import com.hellmund.primetime.ui.settings.delegates.ValidationResult.Success
+import com.hellmund.primetime.utils.Preferences
 import com.hellmund.primetime.utils.openUrl
 import com.hellmund.primetime.utils.showInfoDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -47,7 +51,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         initIncludedGenresPref()
         initExcludedGenresPref()
-        initStreamingServicesPref()
         initRateAppPref()
         initAboutAppPref()
     }
@@ -57,44 +60,33 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun initIncludedGenresPref() {
-        val preference = requirePreference<MultiSelectListPreference>(Constants.KEY_INCLUDED)
-        genresDelegate.init(preference)
-
-        preference.onPreferenceChangeListener = OnPreferenceChangeListener { pref, newValue ->
-            saveGenresSelection(pref, newValue)
+        val preference = requirePreference<MultiSelectListPreference>(Preferences.KEY_INCLUDED)
+        lifecycleScope.launch(Dispatchers.IO) {
+            genresDelegate.init(preference)
         }
+        preference.doOnPreferenceChange(lifecycleScope, this::saveGenresSelection)
     }
 
     private fun initExcludedGenresPref() {
-        val preference = requirePreference<MultiSelectListPreference>(Constants.KEY_EXCLUDED)
-        genresDelegate.init(preference)
-
-        preference.onPreferenceChangeListener = OnPreferenceChangeListener { pref, newValue ->
-            saveGenresSelection(pref, newValue)
+        val preference = requirePreference<MultiSelectListPreference>(Preferences.KEY_EXCLUDED)
+        lifecycleScope.launch(Dispatchers.IO) {
+            genresDelegate.init(preference)
         }
+        preference.doOnPreferenceChange(lifecycleScope, this::saveGenresSelection)
     }
 
-    private fun initStreamingServicesPref() {
-        val preference = requirePreference<MultiSelectListPreference>(Constants.KEY_STREAMING_SERVICES)
-        streamingServicesDelegate.init(preference)
-
-        preference.onPreferenceChangeListener = OnPreferenceChangeListener { pref, newValue ->
-            saveStreamingServices(pref, newValue)
-        }
-    }
-
-    private fun saveGenresSelection(pref: Preference, newValue: Any): Boolean {
+    private suspend fun saveGenresSelection(pref: Preference, newValue: Any): Boolean {
         val result = genresValidator.validate(pref, newValue)
         return when (result) {
-            is ValidationResult.Success -> {
+            is Success -> {
                 genresDelegate.updateGenresSummary(pref, result.genres)
                 true
             }
-            is ValidationResult.NotEnough -> {
+            is NotEnough -> {
                 displayNotEnoughCheckedAlert()
                 false
             }
-            is ValidationResult.Overlap -> {
+            is Overlap -> {
                 displaySharedGenresAlert(result.genres)
                 false
             }
@@ -111,19 +103,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         requireContext().showInfoDialog(error)
     }
 
-    private fun saveStreamingServices(pref: Preference, newValue: Any): Boolean {
-        val values = newValue as Set<String>
-        val services = streamingServicesStore.all
-
-        val updatedServices = services.map { it.copy(isSelected = values.contains(it.name)) }
-        streamingServicesDelegate.updateStreamingServicesSummary(pref, values)
-
-        streamingServicesStore.store(updatedServices)
-        return true
-    }
-
     private fun initRateAppPref() {
-        val ratePrimeTime = requirePreference<Preference>(Constants.KEY_PLAY_STORE)
+        val ratePrimeTime = requirePreference<Preference>(Preferences.KEY_PLAY_STORE)
 
         ratePrimeTime.setOnPreferenceClickListener {
             openPlayStore()
@@ -142,7 +123,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun initAboutAppPref() {
-        val about = requirePreference<Preference>(Constants.KEY_ABOUT)
+        val about = requirePreference<Preference>(Preferences.KEY_ABOUT)
 
         val version = getVersionName()
         about.summary = version?.let { "Version $it" }
@@ -163,11 +144,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         } catch (e: PackageManager.NameNotFoundException) {
             null
         }
-    }
-
-    override fun onDestroy() {
-        genresValidator.cancel()
-        super.onDestroy()
     }
 
     companion object {

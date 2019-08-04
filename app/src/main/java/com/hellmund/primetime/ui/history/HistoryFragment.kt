@@ -1,7 +1,6 @@
 package com.hellmund.primetime.ui.history
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,19 +10,22 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.primetime.R
+import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.suggestions.MainActivity
-import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showItemsDialog
 import com.hellmund.primetime.utils.showSingleSelectDialog
 import com.hellmund.primetime.utils.showToast
 import kotlinx.android.synthetic.main.fragment_history.progressBar
 import kotlinx.android.synthetic.main.fragment_history.recyclerView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import javax.inject.Provider
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class HistoryFragment : Fragment() {
 
     @Inject
@@ -73,9 +75,8 @@ class HistoryFragment : Fragment() {
             items = options,
             onSelected = { index ->
                 when (index) {
-                    0 -> showSimilarMovies(movie)
-                    1 -> openEditRatingDialog(movie)
-                    2 -> removeFromHistory(movie)
+                    0 -> openEditRatingDialog(movie)
+                    1 -> removeFromHistory(movie)
                 }
             }
         )
@@ -83,24 +84,14 @@ class HistoryFragment : Fragment() {
 
     private fun getDialogOptions(): Array<String> {
         return arrayOf(
-            getString(R.string.show_similar_movies),
             getString(R.string.edit_rating),
             getString(R.string.remove_from_history)
         )
     }
 
-    private fun showSimilarMovies(movie: HistoryMovieViewEntity) {
-        val intent = Intent(requireContext(), MainActivity::class.java)
-        intent.putExtra(Constants.SINGLE_MOVIE, true)
-        intent.putExtra(Constants.MOVIE_ID, movie.id)
-        intent.putExtra(Constants.MOVIE_TITLE, movie.title)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-    }
-
     private fun removeFromHistory(movie: HistoryMovieViewEntity) {
         if (adapter.canRemove()) {
-            viewModel.remove(movie)
+            viewModel.dispatch(Action.Remove(movie))
         } else {
             requireContext().showToast(R.string.cant_remove_more_items)
         }
@@ -108,7 +99,7 @@ class HistoryFragment : Fragment() {
 
     private fun openEditRatingDialog(movie: HistoryMovieViewEntity) {
         val options = arrayOf(getString(R.string.like), getString(R.string.dislike))
-        val checked = if (movie.rating == Constants.LIKE) 0 else 1
+        val checked = if (movie.rating == Rating.Like) 0 else 1
 
         requireContext().showSingleSelectDialog(
             titleResId = R.string.edit,
@@ -117,15 +108,16 @@ class HistoryFragment : Fragment() {
             positiveResId = R.string.save,
             onSelected = {
                 if (it != checked) {
-                    val newRating = if (it == 0) Constants.LIKE else Constants.DISLIKE
-                    updateRating(movie, newRating)
+                    val newRating = if (it == 0) Rating.Like else Rating.Dislike
+                    val ratedMovie = movie.apply(newRating)
+                    updateRating(ratedMovie)
                 }
             }
         )
     }
 
-    private fun updateRating(movie: HistoryMovieViewEntity, newRating: Int) {
-        viewModel.update(movie, newRating)
+    private fun updateRating(ratedMovie: RatedHistoryMovie) {
+        viewModel.dispatch(Action.Update(ratedMovie))
     }
 
     companion object {

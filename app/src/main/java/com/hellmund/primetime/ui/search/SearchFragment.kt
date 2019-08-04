@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
@@ -20,15 +21,17 @@ import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
+import com.hellmund.primetime.ui.shared.NavigationEvent
 import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.ui.suggestions.MainFragment
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
+import com.hellmund.primetime.ui.suggestions.RatedMovie
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
-import com.hellmund.primetime.ui.suggestions.details.Rating
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showItemsDialog
@@ -42,11 +45,14 @@ import kotlinx.android.synthetic.main.view_search_field.backButton
 import kotlinx.android.synthetic.main.view_search_field.clearSearchButton
 import kotlinx.android.synthetic.main.view_search_field.searchBox
 import kotlinx.android.synthetic.main.view_toolbar_search.toolbar
-import org.jetbrains.anko.inputMethodManager
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class SearchFragment : Fragment(), TextWatcher,
     TextView.OnEditorActionListener, MainActivity.Reselectable {
 
@@ -218,8 +224,8 @@ class SearchFragment : Fragment(), TextWatcher,
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
-    private fun addRating(rating: Rating) {
-        val historyMovie = HistoryMovie.fromRating(rating)
+    private fun addRating(ratedMovie: RatedMovie) {
+        val historyMovie = HistoryMovie.from(ratedMovie)
         viewModel.addToHistory(historyMovie)
     }
 
@@ -256,21 +262,22 @@ class SearchFragment : Fragment(), TextWatcher,
             title = title,
             items = options,
             onSelected = { index ->
-                val rating = if (index == 0) Rating.Like(movie) else Rating.Dislike(movie)
-                addRating(rating)
+                val rating = if (index == 0) Rating.Like else Rating.Dislike
+                val ratedMovie = RatedMovie(movie, rating)
+                addRating(ratedMovie)
             }
         )
     }
 
     private fun toggleKeyboard(show: Boolean) {
-        val inputMethodManager = requireContext().inputMethodManager
+        val inputMethodManager = requireContext().getSystemService<InputMethodManager>()
 
         if (show) {
             searchBox.requestFocus()
-            inputMethodManager.showSoftInput(searchBox, InputMethodManager.SHOW_IMPLICIT)
+            inputMethodManager?.showSoftInput(searchBox, InputMethodManager.SHOW_IMPLICIT)
         } else {
             searchBox.clearFocus()
-            inputMethodManager.hideSoftInputFromWindow(searchBox.windowToken, 0)
+            inputMethodManager?.hideSoftInputFromWindow(searchBox.windowToken, 0)
         }
     }
 

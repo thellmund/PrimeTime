@@ -4,25 +4,27 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import io.reactivex.Completable
-import io.reactivex.Maybe
+import io.reactivex.Flowable
 
 @Dao
 interface HistoryDao {
 
     @Query("SELECT * FROM history_movies ORDER BY timestamp DESC")
-    fun getAll(): Maybe<List<HistoryMovie>>
+    suspend fun getAll(): List<HistoryMovie>
+
+    @Query("SELECT * FROM history_movies ORDER BY timestamp DESC")
+    fun observeAll(): Flowable<List<HistoryMovie>>
 
     @Query("SELECT * FROM history_movies WHERE rating = 1 ORDER BY timestamp DESC")
-    fun getLiked(): Maybe<List<HistoryMovie>>
+    suspend fun getLiked(): List<HistoryMovie>
 
     @Query("SELECT COUNT(*) FROM history_movies WHERE id = :movieId")
-    fun count(movieId: Int): Maybe<Int>
+    suspend fun count(movieId: Int): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun store(vararg movie: HistoryMovie): Completable
+    suspend fun store(vararg movie: HistoryMovie)
 
     @Query("DELETE FROM history_movies WHERE id = :id")
-    fun delete(id: Int): Completable
+    suspend fun delete(id: Int)
 
 }

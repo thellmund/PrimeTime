@@ -2,45 +2,47 @@ package com.hellmund.primetime.ui.history
 
 import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.data.database.HistoryMovie
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.flow.asFlow
 import javax.inject.Inject
 
 interface HistoryRepository {
-    fun getAll(): Maybe<List<HistoryMovie>>
-    fun getLiked(): Maybe<List<HistoryMovie>>
-    fun count(movieId: Int): Maybe<Int>
-    fun store(vararg historyMovie: HistoryMovie): Completable
-    fun remove(movieId: Int): Completable
+    suspend fun getAll(): List<HistoryMovie>
+    suspend fun observeAll(): Flow<List<HistoryMovie>>
+    suspend fun getLiked(): List<HistoryMovie>
+    suspend fun count(movieId: Int): Int
+    suspend fun store(vararg historyMovie: HistoryMovie)
+    suspend fun remove(movieId: Int)
 }
 
+@ExperimentalCoroutinesApi
+@FlowPreview
+@ObsoleteCoroutinesApi
 class RealHistoryRepository @Inject constructor(
     private val database: AppDatabase
 ) : HistoryRepository {
 
-    override fun getAll(): Maybe<List<HistoryMovie>> = database.historyDao()
-        .getAll()
-        .subscribeOn(Schedulers.io())
-
-    override fun getLiked(): Maybe<List<HistoryMovie>> = database.historyDao()
-        .getLiked()
-        .subscribeOn(Schedulers.io())
-
-    override fun count(movieId: Int): Maybe<Int> = database.historyDao()
-        .count(movieId)
-        .subscribeOn(Schedulers.io())
-
-    override fun store(vararg historyMovie: HistoryMovie): Completable {
-        return database.historyDao()
-            .store(*historyMovie)
-            .subscribeOn(Schedulers.io())
+    override suspend fun getAll(): List<HistoryMovie> {
+        return database.historyDao().getAll()
     }
 
-    override fun remove(movieId: Int): Completable {
-        return database.historyDao()
-            .delete(movieId)
-            .subscribeOn(Schedulers.io())
+    override suspend fun observeAll(): Flow<List<HistoryMovie>> {
+        return database.historyDao().observeAll().asFlow()
+    }
+
+    override suspend fun getLiked(): List<HistoryMovie> = database.historyDao().getLiked()
+
+    override suspend fun count(movieId: Int) = database.historyDao().count(movieId)
+
+    override suspend fun store(vararg historyMovie: HistoryMovie) {
+        database.historyDao().store(*historyMovie)
+    }
+
+    override suspend fun remove(movieId: Int) {
+        database.historyDao().delete(movieId)
     }
 
 }

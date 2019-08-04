@@ -15,12 +15,6 @@
             android:summary="@string/excluded_genres_summary"
             android:title="@string/excluded_genres" />
 
-        <MultiSelectListPreference
-            android:dialogTitle="@string/streaming_services"
-            android:key="primetime_my_streaming_services"
-            android:summary="@string/streaming_services_summary"
-            android:title="@string/streaming_services" />
-
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/release_notifications">

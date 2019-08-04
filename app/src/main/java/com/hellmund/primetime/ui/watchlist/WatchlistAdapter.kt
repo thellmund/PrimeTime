@@ -12,7 +12,15 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.NotificationUtils
 import com.hellmund.primetime.utils.Transformation
-import kotlinx.android.synthetic.main.list_item_watchlist.view.*
+import kotlinx.android.synthetic.main.list_item_watchlist.view.card_view
+import kotlinx.android.synthetic.main.list_item_watchlist.view.description
+import kotlinx.android.synthetic.main.list_item_watchlist.view.infoContainer
+import kotlinx.android.synthetic.main.list_item_watchlist.view.notificationIcon
+import kotlinx.android.synthetic.main.list_item_watchlist.view.posterImageView
+import kotlinx.android.synthetic.main.list_item_watchlist.view.release
+import kotlinx.android.synthetic.main.list_item_watchlist.view.removeButton
+import kotlinx.android.synthetic.main.list_item_watchlist.view.runtime
+import kotlinx.android.synthetic.main.list_item_watchlist.view.watchedButton
 
 private const val COLLAPSED_LINES = 2
 

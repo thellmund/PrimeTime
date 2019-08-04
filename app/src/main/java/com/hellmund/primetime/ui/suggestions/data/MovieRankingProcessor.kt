@@ -1,11 +1,11 @@
 package com.hellmund.primetime.ui.suggestions.data
 
-import com.hellmund.primetime.data.database.HistoryMovie
-import com.hellmund.primetime.data.database.WatchlistMovie
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
@@ -19,37 +19,27 @@ class MovieRankingProcessor @Inject constructor(
     private val watchlistRepo: WatchlistRepository
 ) {
 
-    private val history: List<HistoryMovie>
-        get() = historyRepo.getAll().blockingGet()
-
-    private val watchlist: List<WatchlistMovie>
-        get() = watchlistRepo.getAll().blockingGet()
-
-    private val watchedMovies: Set<Int>
-        get() = history.map { it.id }.toSet()
-
-    private val moviesOnWatchlist: Set<Int>
-        get() = watchlist.map { it.id }.toSet()
-
-    fun rank(
-        movies: List<Movie>, type: RecommendationsType
+    suspend operator fun invoke(
+        movies: List<Movie>,
+        type: RecommendationsType
     ): List<Movie> {
+
+        val knownMovies = coroutineScope {
+            val watchedMovies = async { historyRepo.getAll().map { it.id }.toSet() }
+            val watchlist = async { watchlistRepo.getAll().map { it.id }.toSet() }
+            watchedMovies.await() + watchlist.await()
+        }
+        
         return movies
             .asSequence()
             .distinct()
-            .filter { isKnownMovie(it) }
+            .filter { knownMovies.contains(it.id).not() }
             .filter { isReleased(it, type) }
             .filter { hasEnoughInformation(it) }
             .map { adjustRating(it) }
             .sortedBy { it.score }
             .map { it.movie }
             .toList()
-    }
-
-    private fun isKnownMovie(movie: Movie): Boolean {
-        val hasSeenMovie = watchedMovies.contains(movie.id)
-        val isOnWatchlist = moviesOnWatchlist.contains(movie.id)
-        return hasSeenMovie.not() && isOnWatchlist.not()
     }
 
     private fun isReleased(movie: Movie, type: RecommendationsType): Boolean {

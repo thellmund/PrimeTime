@@ -2,6 +2,7 @@ package com.hellmund.primetime.ui.watchlist
 
 import android.os.Parcelable
 import com.hellmund.primetime.data.database.WatchlistMovie
+import com.hellmund.primetime.data.model.Rating
 import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.LocalDateTime
 
@@ -18,4 +19,10 @@ data class WatchlistMovieViewEntity(
     val notificationsActivated: Boolean = true,
     val isUnreleased: Boolean,
     val raw: WatchlistMovie
-) : Parcelable
+) : Parcelable {
+
+    fun apply(rating: Rating) = RatedWatchlistMovie(this, rating)
+
+}
+
+data class RatedWatchlistMovie(val movie: WatchlistMovieViewEntity, val rating: Rating)
