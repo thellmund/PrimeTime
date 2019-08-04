@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
@@ -45,7 +46,6 @@ import kotlinx.android.synthetic.main.view_search_field.searchBox
 import kotlinx.android.synthetic.main.view_toolbar_search.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import org.jetbrains.anko.inputMethodManager
 import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
@@ -268,14 +268,14 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun toggleKeyboard(show: Boolean) {
-        val inputMethodManager = requireContext().inputMethodManager
+        val inputMethodManager = requireContext().getSystemService<InputMethodManager>()
 
         if (show) {
             searchBox.requestFocus()
-            inputMethodManager.showSoftInput(searchBox, InputMethodManager.SHOW_IMPLICIT)
+            inputMethodManager?.showSoftInput(searchBox, InputMethodManager.SHOW_IMPLICIT)
         } else {
             searchBox.clearFocus()
-            inputMethodManager.hideSoftInputFromWindow(searchBox.windowToken, 0)
+            inputMethodManager?.hideSoftInputFromWindow(searchBox.windowToken, 0)
         }
     }
 

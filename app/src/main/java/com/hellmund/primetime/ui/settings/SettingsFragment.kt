@@ -22,6 +22,7 @@ import com.hellmund.primetime.ui.settings.delegates.ValidationResult.Success
 import com.hellmund.primetime.utils.Constants
 import com.hellmund.primetime.utils.openUrl
 import com.hellmund.primetime.utils.showInfoDialog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -60,25 +61,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun initIncludedGenresPref() {
         val preference = requirePreference<MultiSelectListPreference>(Constants.KEY_INCLUDED)
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             genresDelegate.init(preference)
         }
-
         preference.doOnPreferenceChange(lifecycleScope, this::saveGenresSelection)
     }
 
     private fun initExcludedGenresPref() {
         val preference = requirePreference<MultiSelectListPreference>(Constants.KEY_EXCLUDED)
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             genresDelegate.init(preference)
         }
-
         preference.doOnPreferenceChange(lifecycleScope, this::saveGenresSelection)
     }
 
     private suspend fun saveGenresSelection(pref: Preference, newValue: Any): Boolean {
-        return when (val result = genresValidator.validate(pref, newValue)) {
-            is Success -> {
+        val result = genresValidator.validate(pref, newValue)
+        return when (result) {
+            is Success -> {1
                 genresDelegate.updateGenresSummary(pref, result.genres)
                 true
             }

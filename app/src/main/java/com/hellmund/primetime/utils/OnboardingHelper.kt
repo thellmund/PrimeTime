@@ -1,7 +1,8 @@
 package com.hellmund.primetime.utils
 
 import android.content.Context
-import org.jetbrains.anko.defaultSharedPreferences
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import javax.inject.Inject
 
 private const val KEY_FIRST_LAUNCH = "firstLaunchOfPrimeTime"
@@ -10,10 +11,13 @@ class OnboardingHelper @Inject constructor(
     private val context: Context
 ) {
 
+    private val sharedPrefs: SharedPreferences
+        get() = PreferenceManager.getDefaultSharedPreferences(context)
+
     var isFirstLaunch: Boolean
-        get() = context.defaultSharedPreferences.getBoolean(KEY_FIRST_LAUNCH, true)
+        get() = sharedPrefs.getBoolean(KEY_FIRST_LAUNCH, true)
         set(value) {
-            context.defaultSharedPreferences.edit().putBoolean(KEY_FIRST_LAUNCH, value).apply()
+            sharedPrefs.edit().putBoolean(KEY_FIRST_LAUNCH, value).apply()
         }
 
 }

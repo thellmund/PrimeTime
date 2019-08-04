@@ -58,3 +58,12 @@ fun <T> List<T>.replace(index: Int, element: T): List<T> {
         add(index, element)
     }
 }
+
+fun View.updatePadding(
+    left: Int = paddingLeft,
+    top: Int = paddingTop,
+    right: Int = paddingRight,
+    bottom: Int = paddingBottom
+) {
+    setPadding(left, top, right, bottom)
+}

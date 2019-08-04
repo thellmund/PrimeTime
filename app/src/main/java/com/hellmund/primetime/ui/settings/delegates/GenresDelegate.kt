@@ -7,6 +7,7 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.utils.Constants
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -36,7 +37,9 @@ class GenresDelegate @Inject constructor(
         pref.entryValues = genreIds
         pref.values = values
 
-        updateGenresSummary(pref, preferenceGenres)
+        withContext(Dispatchers.Main) {
+            updateGenresSummary(pref, preferenceGenres)
+        }
     }
 
     fun updateGenresSummary(preference: Preference, genres: List<Genre>) {

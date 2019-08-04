@@ -4,6 +4,8 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
@@ -21,9 +23,12 @@ class MovieRankingProcessor @Inject constructor(
         movies: List<Movie>,
         type: RecommendationsType
     ): List<Movie> {
-        val watchedMovies = historyRepo.getAll().map { it.id }.toSet()
-        val watchlist = watchlistRepo.getAll().map { it.id }.toSet()
-        val knownMovies = watchedMovies + watchlist
+
+        val knownMovies = coroutineScope {
+            val watchedMovies = async { historyRepo.getAll().map { it.id }.toSet() }
+            val watchlist = async { watchlistRepo.getAll().map { it.id }.toSet() }
+            watchedMovies.await() + watchlist.await()
+        }
         
         return movies
             .asSequence()

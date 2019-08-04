@@ -1,13 +1,14 @@
 package com.hellmund.primetime.utils
 
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.core.content.getSystemService
 import com.hellmund.primetime.di.app
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.notificationManager
 import javax.inject.Inject
 
 class NotificationPublisher : BroadcastReceiver() {
@@ -29,7 +30,8 @@ class NotificationPublisher : BroadcastReceiver() {
             }
 
             val notification = NotificationUtils.buildNotification(context, releases)
-            context.notificationManager.notify(0, notification)
+            val notificationManager = context.getSystemService<NotificationManager>()
+            notificationManager?.notify(0, notification)
         }
     }
 

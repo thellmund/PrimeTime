@@ -2,11 +2,11 @@ package com.hellmund.primetime.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.hellmund.primetime.data.database.AppDatabase
 import dagger.Module
 import dagger.Provides
-import org.jetbrains.anko.defaultSharedPreferences
 import javax.inject.Singleton
 
 @Module
@@ -29,6 +29,6 @@ object PersistenceModule {
     @Provides
     fun provideSharedPrefs(
         context: Context
-    ): SharedPreferences = context.defaultSharedPreferences
+    ): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
 }
