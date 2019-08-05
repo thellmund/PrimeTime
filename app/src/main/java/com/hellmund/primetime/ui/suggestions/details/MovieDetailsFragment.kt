@@ -145,7 +145,6 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
             is UiEvent.TrailerLoaded -> openUrl(event.url)
             is UiEvent.AdditionalInformationLoaded -> showMovieDetails(event.movie)
             is UiEvent.ImdbLinkLoaded -> openUrl(event.url)
-            is UiEvent.RatingStored -> onRatingStored()
             is UiEvent.AddedToWatchlist -> onAddedToWatchlist()
             is UiEvent.RemovedFromWatchlist -> onRemovedFromWatchlist()
             is UiEvent.WatchStatus -> updateWatchlistButton(event.watchStatus)

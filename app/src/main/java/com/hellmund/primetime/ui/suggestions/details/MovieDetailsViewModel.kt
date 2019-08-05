@@ -36,7 +36,6 @@ sealed class UiEvent {
     object TrailerLoading : UiEvent()
     data class TrailerLoaded(val url: String) : UiEvent()
     data class ImdbLinkLoaded(val url: String) : UiEvent()
-    data class RatingStored(val rating: Rating) : UiEvent()
     object AddedToWatchlist : UiEvent()
     object RemovedFromWatchlist : UiEvent()
     data class WatchStatus(val watchStatus: Movie.WatchStatus) : UiEvent()
@@ -59,12 +58,6 @@ class UiEventStore {
         viewState.value = result
     }
 
-}
-
-// TODO Remove
-sealed class Rating(val movie: MovieViewEntity) {
-    class Like(movie: MovieViewEntity) : Rating(movie)
-    class Dislike(movie: MovieViewEntity) : Rating(movie)
 }
 
 class MovieDetailsViewModel @Inject constructor(
