@@ -10,14 +10,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.history.HistoryActivity
+import com.hellmund.primetime.ui.shared.RateMovieDialog
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.showCancelableDialog
-import com.hellmund.primetime.utils.showItemsDialog
 import kotlinx.android.synthetic.main.fragment_watchlist.content
 import kotlinx.android.synthetic.main.fragment_watchlist.indicator
 import kotlinx.android.synthetic.main.fragment_watchlist.placeholder
@@ -107,17 +106,16 @@ class WatchlistFragment : Fragment() {
 
     private fun onWatchedIt(movie: WatchlistMovieViewEntity) {
         val header = getString(R.string.rate_movie, movie.title)
-        val options = arrayOf(getString(R.string.like), getString(R.string.dislike))
-
-        requireContext().showItemsDialog(
-            title = header,
-            items = options,
-            onSelected = { index ->
-                val rating = if (index == 0) Rating.Like else Rating.Dislike
+        RateMovieDialog
+            .make(requireActivity())
+            .setTitle(header)
+            .setPositiveText(R.string.like)
+            .setNegativeText(R.string.dislike)
+            .onItemSelected { rating ->
                 val ratedMovie = movie.apply(rating)
                 viewModel.dispatch(Action.RateMovie(ratedMovie))
             }
-        )
+            .show()
     }
 
     private fun openHistory() {

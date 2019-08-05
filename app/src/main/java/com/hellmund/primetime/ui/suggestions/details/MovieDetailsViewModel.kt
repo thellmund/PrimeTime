@@ -61,6 +61,7 @@ class UiEventStore {
 
 }
 
+// TODO Remove
 sealed class Rating(val movie: MovieViewEntity) {
     class Like(movie: MovieViewEntity) : Rating(movie)
     class Dislike(movie: MovieViewEntity) : Rating(movie)

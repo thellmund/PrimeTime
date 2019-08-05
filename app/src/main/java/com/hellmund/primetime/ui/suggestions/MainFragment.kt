@@ -14,13 +14,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.onboarding.OnboardingActivity
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.settings.SettingsActivity
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
+import com.hellmund.primetime.ui.shared.RateMovieDialog
 import com.hellmund.primetime.ui.shared.ScrollAwareFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
@@ -28,7 +28,6 @@ import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.OnboardingHelper
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.onBottomReached
-import com.hellmund.primetime.utils.showItemsDialog
 import com.hellmund.primetime.utils.showMultiSelectDialog
 import kotlinx.android.synthetic.main.fragment_main.banner
 import kotlinx.android.synthetic.main.fragment_main.filterFab
@@ -161,20 +160,17 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun openRatingDialog(movie: MovieViewEntity) {
-        val options = arrayOf(
-            getString(R.string.show_more_like_this),
-            getString(R.string.show_less_like_this)
-        )
-
-        requireContext().showItemsDialog(
-            titleResId = R.string.adjust_recommendations,
-            items = options,
-            onSelected = { index ->
-                val rating = if (index == 0) Rating.Like else Rating.Dislike
+        val header = getString(R.string.rate_movie, movie.title)
+        RateMovieDialog
+            .make(requireActivity())
+            .setTitle(header)
+            .setPositiveText(R.string.show_more_like_this)
+            .setNegativeText(R.string.show_less_like_this)
+            .onItemSelected { rating ->
                 val ratedMovie = movie.apply(rating)
                 viewModel.dispatch(Action.StoreRating(ratedMovie))
             }
-        )
+            .show()
     }
 
     private fun initToolbar() {

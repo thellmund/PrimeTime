@@ -11,6 +11,7 @@
     <dimen name="large_space">24dp</dimen>
 
     <dimen name="large_button">64dp</dimen>
+    <dimen name="corner_radius">8dp</dimen>
 
     <dimen name="small_icon">24dp</dimen>
     <dimen name="default_icon">48dp</dimen>
