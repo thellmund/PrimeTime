@@ -40,7 +40,7 @@ class MainViewStateReducer : Reducer<MainViewState, Result> {
         result: Result
     ) = when (result) {
         is Result.Loading -> state.toLoading()
-        is Result.Data -> state.toData(result) // TODO .also { pagesLoaded = it.pagesLoaded }
+        is Result.Data -> state.toData(result)
         is Result.Error -> state.toError(result.error)
         is Result.RatingStored -> state.toData(result)
         is Result.Filter -> state.toFiltered(result)
@@ -69,15 +69,15 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             store.dispatch(Result.Loading)
-            store.dispatch(fetchRecommendations(recommendationsType, pagesLoaded + 1))
+            fetchRecommendations(recommendationsType, pagesLoaded + 1)
         }
     }
 
     private suspend fun fetchRecommendations(
         type: RecommendationsType,
         page: Int
-    ): Result {
-        return try {
+    ) {
+        val result = try {
             val recommendations = repository.fetchRecommendations(type, page)
             val ranked = rankingProcessor(recommendations, type)
             val viewEntities = viewEntityMapper(ranked)
@@ -85,6 +85,7 @@ class MainViewModel @Inject constructor(
         } catch (e: IOException) {
             Result.Error(e)
         }
+        store.dispatch(result)
     }
 
     private suspend fun storeRating(ratedMovie: RatedMovie) {
@@ -96,16 +97,12 @@ class MainViewModel @Inject constructor(
     fun dispatch(action: Action) {
         viewModelScope.launch {
             when (action) {
-                is Action.LoadMovies -> {
-                    if (isLoadingMore.not()) {
-                        isLoadingMore = true
-                        fetchRecommendations(recommendationsType, action.page)
-                    }
-                }
+                is Action.LoadMovies -> fetchRecommendations(recommendationsType, action.page)
                 is Action.LoadMore -> {
                     if (isLoadingMore.not()) {
                         isLoadingMore = true
                         fetchRecommendations(recommendationsType, pagesLoaded + 1)
+                        isLoadingMore = false
                     }
                 }
                 is Action.Filter -> store.dispatch(Result.Filter(action.genres))

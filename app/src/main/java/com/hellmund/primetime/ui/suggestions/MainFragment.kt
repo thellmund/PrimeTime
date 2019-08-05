@@ -120,7 +120,9 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.adapter = adapter
-        recyclerView.onBottomReached { viewModel.dispatch(Action.LoadMore) }
+        recyclerView.onBottomReached {
+            viewModel.dispatch(Action.LoadMore)
+        }
 
         val spacing = round(resources.getDimension(R.dimen.default_space))
         recyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))

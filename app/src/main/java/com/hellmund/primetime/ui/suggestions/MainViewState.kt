@@ -18,7 +18,7 @@ data class MainViewState(
     }
 
     fun toData(result: Result.Data): MainViewState {
-        val newData = if (result.page == 1) result.data else data + result.data
+        val newData = data + result.data
         return copy(
             recommendationsType = result.type,
             data = newData,
