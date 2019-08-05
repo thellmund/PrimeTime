@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Rating
@@ -121,27 +120,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.adapter = adapter
-
         recyclerView.onBottomReached { viewModel.dispatch(Action.LoadMore) }
-
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            private val bottomNavigation =
-                requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigation)
-            private var didAnimateDown = false
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val isScrollingUp = dy > 0
-                val isScrollingDown = dy < 0
-
-                if (isScrollingUp && !didAnimateDown) {
-                    filterFab.animate().translationYBy(bottomNavigation.height.toFloat())
-                    didAnimateDown = true
-                } else if (isScrollingDown && didAnimateDown) {
-                    filterFab.animate().translationYBy(bottomNavigation.height.toFloat() * (-1))
-                    didAnimateDown = false
-                }
-            }
-        })
 
         val spacing = round(resources.getDimension(R.dimen.default_space))
         recyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
@@ -158,6 +137,9 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
 
     private fun render(viewState: MainViewState) {
         swipeRefreshLayout.isRefreshing = viewState.isLoading
+        if (viewState.isLoading.not()) {
+            swipeRefreshLayout.isEnabled = false
+        }
 
         viewState.filtered?.let {
             adapter.update(it)
