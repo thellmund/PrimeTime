@@ -69,10 +69,18 @@ class RateMovieDialogFragment : RoundedBottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         titleTextView.text = title
-        positiveButton.setOnClickListener { onItemSelected(Rating.Like) }
+
         positiveButtonText.text = positiveText
-        negativeButton.setOnClickListener { onItemSelected(Rating.Dislike) }
+        positiveButton.setOnClickListener {
+            onItemSelected(Rating.Like)
+            dismiss()
+        }
+
         negativeButtonText.text = negativeText
+        negativeButton.setOnClickListener {
+            onItemSelected(Rating.Dislike)
+            dismiss()
+        }
     }
 
     companion object {
