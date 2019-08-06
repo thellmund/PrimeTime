@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/grey_850"
     tools:context=".ui.suggestions.details.MovieDetailsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +17,7 @@
             android:layout_height="0dp"
             android:background="?android:attr/selectableItemBackground"
             android:scaleType="centerCrop"
-            android:src="@color/placeholder_grey"
+            android:src="@color/grey_300"
             app:layout_constraintDimensionRatio="H,16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,12 +40,11 @@
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/default_space"
             android:layout_marginTop="@dimen/default_space"
-            app:cardCornerRadius="@dimen/small_space"
+            app:cardCornerRadius="@dimen/corner_radius"
             app:cardElevation="@dimen/small_space"
             app:layout_constraintBottom_toBottomOf="@id/genresTextView"
             app:layout_constraintDimensionRatio="H,2:3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:riv_corner_radius="@dimen/small_space">
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
                 android:id="@+id/posterImageView"
@@ -59,14 +58,12 @@
 
         <TextView
             android:id="@+id/titleTextView"
+            style="@style/TextAppearance.Headline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_space"
             android:layout_marginTop="@dimen/default_space"
             android:layout_marginEnd="@dimen/default_space"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/genresTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/posterContainer"
@@ -76,14 +73,13 @@
 
         <TextView
             android:id="@+id/genresTextView"
+            style="@style/TextAppearance.Title.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_space"
             android:layout_marginEnd="@dimen/default_space"
             android:layout_marginBottom="@dimen/default_space"
-            android:textColor="@android:color/white"
             android:textIsSelectable="true"
-            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/posterContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/posterContainer"
@@ -107,11 +103,11 @@
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:backgroundTint="@color/background"
                 android:text="@string/add_to_watchlist"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                app:backgroundTint="@color/grey_850" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/removeFromWatchlistButton"
@@ -133,7 +129,7 @@
             android:layout_marginStart="@dimen/default_space"
             android:layout_marginTop="@dimen/default_space"
             android:layout_marginEnd="@dimen/default_space"
-            android:background="#bdbdbd"
+            android:background="@color/grey_400"
             app:layout_constraintBottom_toTopOf="@id/releaseContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -155,12 +151,11 @@
 
             <TextView
                 android:id="@+id/releaseTextView"
+                style="@style/TextAppearance.Body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@android:color/white"
                 android:textIsSelectable="true"
-                android:textSize="16sp"
                 tools:text="2019" />
 
             <TextView
@@ -187,12 +182,11 @@
 
             <TextView
                 android:id="@+id/durationTextView"
+                style="@style/TextAppearance.Body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@android:color/white"
                 android:textIsSelectable="true"
-                android:textSize="16sp"
                 tools:text="1:23" />
 
             <TextView
@@ -219,12 +213,11 @@
 
             <TextView
                 android:id="@+id/ratingTextView"
+                style="@style/TextAppearance.Body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@android:color/white"
                 android:textIsSelectable="true"
-                android:textSize="16sp"
                 tools:text="8 / 10" />
 
             <TextView
@@ -244,7 +237,7 @@
             android:layout_marginTop="@dimen/default_space"
             android:layout_marginEnd="@dimen/default_space"
             android:layout_marginBottom="@dimen/default_space"
-            android:background="#bdbdbd"
+            android:background="@color/grey_400"
             app:layout_constraintBottom_toTopOf="@+id/descriptionTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -252,14 +245,12 @@
 
         <TextView
             android:id="@+id/descriptionTextView"
+            style="@style/TextAppearance.Body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_space"
             android:layout_marginTop="@dimen/default_space"
             android:layout_marginEnd="@dimen/default_space"
-            android:lineSpacingMultiplier="1.1"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@id/metadataBottomDivider"
             tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
 
@@ -288,7 +279,7 @@
             android:layout_marginStart="@dimen/default_space"
             android:layout_marginTop="@dimen/default_space"
             android:layout_marginEnd="@dimen/default_space"
-            android:background="#bdbdbd"
+            android:background="@color/grey_400"
             app:layout_constraintBottom_toTopOf="@id/similarMoviesTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -296,15 +287,13 @@
 
         <TextView
             android:id="@+id/similarMoviesTitle"
+            style="@style/TextAppearance.Title.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_space"
             android:layout_marginTop="@dimen/default_space"
             android:layout_marginEnd="@dimen/default_space"
-            android:fontFamily="sans-serif-medium"
             android:text="@string/similar_movies"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@id/similarMoviesContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -352,7 +341,7 @@
             android:layout_marginStart="@dimen/default_space"
             android:layout_marginTop="@dimen/default_space"
             android:layout_marginEnd="@dimen/default_space"
-            android:background="#bdbdbd"
+            android:background="@color/grey_400"
             app:layout_constraintBottom_toTopOf="@id/similarMoviesContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -360,15 +349,13 @@
 
         <TextView
             android:id="@+id/reviewsTitle"
+            style="@style/TextAppearance.Title.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_space"
             android:layout_marginTop="@dimen/default_space"
             android:layout_marginEnd="@dimen/default_space"
-            android:fontFamily="sans-serif-medium"
             android:text="@string/reviews"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@id/reviewsContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -113,7 +113,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun setupRecyclerView() {
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+        swipeRefreshLayout.setColorSchemeResources(R.color.teal_500)
         swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(Action.LoadMovies(page = 1)) }
 
         recyclerView.itemAnimator = DefaultItemAnimator()

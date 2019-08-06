@@ -7,13 +7,11 @@
 
     <TextView
         android:id="@+id/titleTextView"
+        style="@style/TextAppearance.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_space"
         android:alpha="0.8"
-        android:lineSpacingMultiplier="1.1"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
         tools:text="Rate movie" />
 
     <LinearLayout
@@ -32,19 +30,17 @@
             android:alpha="0.8"
             android:contentDescription="@string/show_more_like_this"
             android:src="@drawable/ic_outline_thumb_up"
-            android:tint="@android:color/white" />
+            android:tint="@color/white" />
 
         <TextView
             android:id="@+id/positiveButtonText"
+            style="@style/TextAppearance.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/default_space"
             android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/show_more_like_this"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:text="@string/show_more_like_this" />
 
     </LinearLayout>
 
@@ -69,15 +65,13 @@
 
         <TextView
             android:id="@+id/negativeButtonText"
+            style="@style/TextAppearance.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/default_space"
             android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/show_less_like_this"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:text="@string/show_less_like_this" />
 
     </LinearLayout>
 

@@ -53,7 +53,7 @@ object NotificationUtils {
             .setContentTitle(header)
             .setContentText(collapsedText)
             .setSmallIcon(R.drawable.ic_notification)
-            .setColor(ContextCompat.getColor(context, R.color.app_color))
+            .setColor(ContextCompat.getColor(context, R.color.red_400))
             .setGroup(GROUP_KEY)
             .build()
     }

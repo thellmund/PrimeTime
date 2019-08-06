@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="app_color">#EF5350</color>
+    <color name="black">#000000</color>
+    <color name="black_alpha_70">#B3000000</color>
 
-    <color name="colorPrimary">#212121</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#009688</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_alpha_70">#B3FFFFFF</color>
 
-    <color name="toolbar">#292929</color>
+    <color name="red_400">#EF5350</color>
 
-    <color name="colorAccentDisabled">#bdbdbd</color>
-    <color name="buttonDisabled">#00675b</color>
+    <color name="teal_500">#009688</color>
 
-    <color name="cover_overlay">#B3000000</color>
-    <color name="background">#303030</color>
-    <color name="adapterBackground">#373737</color>
-    <color name="navigationBar">#4A4A4A</color>
-
-    <color name="grey_background">#455A64</color>
-
-    <color name="placeholder_grey">#E0E0E0</color>
-    <color name="description_text">#B3FFFFFF</color>
-
-    <color name="snackbar_button">#E0E0E0</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_400">#bdbdbd</color>
+    <color name="grey_600">#757575</color>
+    <color name="grey_700">#616161</color>
+    <color name="grey_800">#424242</color>
+    <color name="grey_850">#303030</color>
+    <color name="grey_900">#212121</color>
 </resources>

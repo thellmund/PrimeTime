@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import com.hellmund.primetime.R
 
 fun Context.openUrl(url: String) {
-    val color = colorFromResource(R.color.colorPrimary)
+    val color = colorFromResource(R.color.grey_900)
     CustomTabsIntent.Builder()
         .setToolbarColor(color)
         .build()

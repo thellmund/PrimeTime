@@ -13,7 +13,7 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="@dimen/tiny_space">
+        app:cardCornerRadius="@dimen/corner_radius">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -43,120 +43,108 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@color/cover_overlay"
-                android:orientation="horizontal"
+                android:background="@color/black_alpha_70"
+                android:orientation="vertical"
                 android:padding="@dimen/small_space">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <!-- Description -->
+                <TextView
+                    android:id="@+id/description"
+                    style="@style/TextAppearance.Body"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_marginStart="@dimen/small_space"
+                    android:layout_marginTop="@dimen/small_space"
+                    android:layout_marginEnd="@dimen/small_space"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
 
-                    <!-- Description -->
-                    <TextView
-                        android:id="@+id/description"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_space"
-                        android:layout_marginTop="@dimen/small_space"
-                        android:layout_marginEnd="@dimen/small_space"
-                        android:ellipsize="end"
-                        android:lineSpacingMultiplier="1.15"
-                        android:maxLines="2"
-                        android:textColor="@android:color/white"
-                        android:textSize="15sp"
-                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
-
-                    <!-- Movie length -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_space"
-                        android:layout_marginTop="@dimen/small_space"
-                        android:layout_marginEnd="@dimen/small_space"
-                        android:layout_marginBottom="@dimen/small_space"
-                        android:orientation="horizontal"
-                        tools:ignore="UseCompoundDrawables">
-
-                        <LinearLayout
-                            android:id="@+id/runtime_container"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="14dp"
-                                android:layout_height="14dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="@dimen/small_space"
-                                android:src="@drawable/ic_today_white_24dp"
-                                tools:ignore="ContentDescription" />
-
-                            <TextView
-                                android:id="@+id/runtime"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#FFFFFF"
-                                android:textSize="15sp"
-                                tools:text="1:23" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/release_container"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/large_space"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="14dp"
-                                android:layout_height="14dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="@dimen/small_space"
-                                android:src="@drawable/ic_today_white_24dp"
-                                tools:ignore="ContentDescription" />
-
-                            <TextView
-                                android:id="@+id/release"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#FFFFFF"
-                                android:textSize="15sp"
-                                tools:text="2018" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
+                <!-- Movie length -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_space"
+                    android:layout_marginTop="@dimen/small_space"
+                    android:layout_marginEnd="@dimen/small_space"
+                    android:layout_marginBottom="@dimen/small_space"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/runtime_container"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/watchedButton"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center_vertical"
                             android:layout_marginEnd="@dimen/small_space"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="@string/watched_it"
-                            android:textAllCaps="false"
-                            android:textColor="@android:color/white" />
+                            android:src="@drawable/ic_today_white_24dp"
+                            tools:ignore="ContentDescription" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/removeButton"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                        <TextView
+                            android:id="@+id/runtime"
+                            style="@style/TextAppearance.Caption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="@string/remove"
-                            android:textAllCaps="false"
-                            android:textColor="@android:color/white" />
+                            tools:text="1:23" />
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/release_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/large_space"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/small_space"
+                            android:src="@drawable/ic_today_white_24dp"
+                            tools:ignore="ContentDescription" />
+
+                        <TextView
+                            android:id="@+id/release"
+                            style="@style/TextAppearance.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="2018" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/watchedButton"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/small_space"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/watched_it"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/removeButton"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/remove"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white" />
 
                 </LinearLayout>
 

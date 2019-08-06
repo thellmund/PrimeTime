@@ -98,7 +98,7 @@
     <string name="movie_poster">Movie poster</string>
     <string name="history_need_4_movies">At least 4 movies have to stayed rated in order to provide recommendations.</string>
     <string name="not_available">Not available</string>
-    <string name="error_select_movie">The sample movies couldn’t be downloaded. Try again or restart PrimeTime.</string>
+    <string name="error_select_movie">The sample movies couldn’t be downloaded. Try again.</string>
     <string name="remove_from_history">Remove from history</string>
     <string name="show_similar_movies">Show similar movies</string>
     <string name="preferred_genres">Favorite genres</string>

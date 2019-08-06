@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/searchResultsContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/background">
+    android:layout_height="wrap_content">
 
     <!-- RESULTS LIST VIEW -->
     <androidx.recyclerview.widget.RecyclerView
@@ -42,25 +41,22 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="30dp"
-        android:visibility="gone">
+        android:padding="@dimen/large_space"
+        android:visibility="visible">
 
         <TextView
+            style="@style/TextAppearance.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="@string/no_results_found"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:text="@string/no_results_found" />
 
         <TextView
+            style="@style/TextAppearance.Body.Secondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/try_again_search_text"
-            android:textColor="@android:color/secondary_text_dark"
-            android:textSize="16sp" />
+            android:text="@string/try_again_search_text" />
 
     </LinearLayout>
 

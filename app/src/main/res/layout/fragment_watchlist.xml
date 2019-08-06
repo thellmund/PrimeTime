@@ -5,7 +5,6 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/adapterBackground"
     tools:context=".ui.watchlist.WatchlistFragment">
 
     <include layout="@layout/view_toolbar" />
@@ -48,30 +47,26 @@
         <!-- Error title -->
         <TextView
             android:id="@+id/placeholder_title"
+            style="@style/TextAppearance.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large_space"
+            android:layout_marginEnd="@dimen/large_space"
             android:layout_marginBottom="@dimen/default_space"
-            android:fontFamily="sans-serif-medium"
             android:gravity="center"
-            android:paddingLeft="@dimen/default_space"
-            android:paddingRight="@dimen/default_space"
             android:singleLine="true"
-            android:text="@string/watchlist_error_title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@android:color/white" />
+            android:text="@string/watchlist_error_title" />
 
         <!-- Error text -->
         <TextView
             android:id="@+id/placeholder_text"
+            style="@style/TextAppearance.Body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large_space"
+            android:layout_marginEnd="@dimen/large_space"
             android:gravity="center"
-            android:lineSpacingMultiplier="1.1"
-            android:paddingLeft="@dimen/large_space"
-            android:paddingRight="@dimen/large_space"
-            android:text="@string/watchlist_error_text"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:text="@string/watchlist_error_text" />
 
     </LinearLayout>
 

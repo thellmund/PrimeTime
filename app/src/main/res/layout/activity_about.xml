@@ -9,68 +9,53 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/default_space">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="@dimen/large_space"
+                android:layout_marginBottom="@dimen/default_space"
                 android:contentDescription="@string/access_app_icon"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_faq" />
 
             <TextView
                 android:id="@+id/header_title"
+                style="@style/TextAppearance.Title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="4dp"
                 android:gravity="center_horizontal"
-                android:text="@string/app_name"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:fontFamily="sans-serif-medium" />
+                android:text="@string/app_name" />
 
             <TextView
                 android:id="@+id/headerTextView"
+                style="@style/TextAppearance.Title.Small"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="2dp"
+                android:layout_marginBottom="@dimen/tiny_space"
                 android:gravity="center_horizontal"
-                android:textColor="#EEEEEE"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="20dp"
-                android:gravity="center_horizontal"
-                android:text="@string/faq_header"
-                android:textColor="#EEEEEE"
-                android:textSize="15sp" />
+                tools:text="Version 1.2.3" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/small_space"
                 android:layout_marginTop="@dimen/default_space"
+                android:layout_marginBottom="@dimen/small_space"
                 android:contentDescription="@string/access_logo_tmdb"
                 android:src="@drawable/tmdb_logo" />
 
             <TextView
+                style="@style/TextAppearance.Body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lineSpacingMultiplier="1.1"
-                android:text="@string/faq_tmdb_notice"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@android:color/white" />
+                android:text="@string/faq_tmdb_notice" />
 
         </LinearLayout>
 

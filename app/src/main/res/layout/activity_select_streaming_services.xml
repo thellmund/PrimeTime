@@ -35,7 +35,7 @@
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         app:backgroundTint="@color/selector_conditional_skip_button"
-        app:cornerRadius="@dimen/small_space"
+        app:cornerRadius="@dimen/corner_radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

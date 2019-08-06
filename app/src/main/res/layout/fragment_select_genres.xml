@@ -5,19 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context=".ui.selectgenres.SelectGenresActivity">
+    tools:context=".ui.onboarding.OnboardingActivity">
 
     <TextView
         android:id="@+id/header"
+        style="@style/TextAppearance.Title.Large"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_space"
         android:layout_marginTop="@dimen/default_space"
         android:layout_marginEnd="@dimen/default_space"
-        android:fontFamily="sans-serif-black"
         android:text="@string/select_genres_header"
-        android:textColor="@android:color/white"
-        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -55,10 +53,7 @@
         android:clickable="false"
         android:enabled="false"
         android:text="@string/next"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
         app:backgroundTint="@color/selector_conditional_next_button"
-        app:cornerRadius="@dimen/small_space"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
