@@ -45,14 +45,6 @@ fun Context.showCancelableDialog(
 }
 
 fun Context.showItemsDialog(
-    @StringRes titleResId: Int,
-    items: Array<String>,
-    onSelected: ((index: Int) -> Unit)? = null
-): Dialog {
-    return showItemsDialog(getString(titleResId), items, onSelected)
-}
-
-fun Context.showItemsDialog(
     title: String,
     items: Array<String>,
     onSelected: ((index: Int) -> Unit)? = null

@@ -21,11 +21,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.shared.NavigationEvent
+import com.hellmund.primetime.ui.shared.RateMovieDialog
 import com.hellmund.primetime.ui.suggestions.MainActivity
 import com.hellmund.primetime.ui.suggestions.MainFragment
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
@@ -34,7 +34,6 @@ import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.observe
-import com.hellmund.primetime.utils.showItemsDialog
 import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView
 import kotlinx.android.synthetic.main.state_layout_search_results.loading
 import kotlinx.android.synthetic.main.state_layout_search_results.placeholder
@@ -43,7 +42,6 @@ import kotlinx.android.synthetic.main.state_layout_search_results.searchResultsC
 import kotlinx.android.synthetic.main.view_search_field.backButton
 import kotlinx.android.synthetic.main.view_search_field.clearSearchButton
 import kotlinx.android.synthetic.main.view_search_field.searchBox
-import kotlinx.android.synthetic.main.view_toolbar_search.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import java.lang.Math.round
@@ -119,8 +117,7 @@ class SearchFragment : Fragment(), TextWatcher,
         clearSearchButton.isVisible = viewState.showClearButton
 
         viewState.snackbarText?.let {
-            snackbar.setText(it)
-                .show()
+            snackbar.setText(it).show()
         } ?: snackbar.dismiss()
     }
 
@@ -141,17 +138,15 @@ class SearchFragment : Fragment(), TextWatcher,
         searchBox.addTextChangedListener(this)
 
         backButton.setOnClickListener {
-            clearSearchBarContent()
             toggleSearchResults(false)
             toggleKeyboard(false)
+            clearSearchBarContent()
 
             it.isVisible = searchBox.hasFocus() || searchResultsContainer.isVisible
-            toolbar.isVisible = !searchResultsContainer.isVisible
         }
 
         searchBox.setOnFocusChangeListener { _, hasFocus ->
             backButton.isVisible = hasFocus || searchResultsContainer.isVisible
-            toolbar.isVisible = !backButton.isVisible
 
             if (hasFocus) {
                 toggleSearchResults(true)
@@ -241,22 +236,16 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun onWatched(movie: MovieViewEntity) {
-        val title = movie.title
-
-        val options = arrayOf(
-            getString(R.string.show_more_like_this),
-            getString(R.string.show_less_like_this)
-        )
-
-        requireContext().showItemsDialog(
-            title = title,
-            items = options,
-            onSelected = { index ->
-                val rating = if (index == 0) Rating.Like else Rating.Dislike
+        RateMovieDialog
+            .make(requireActivity())
+            .setTitle(movie.title)
+            .setPositiveText(R.string.show_more_like_this)
+            .setNegativeText(R.string.show_less_like_this)
+            .onItemSelected { rating ->
                 val ratedMovie = RatedMovie(movie, rating)
                 addRating(ratedMovie)
             }
-        )
+            .show()
     }
 
     private fun toggleKeyboard(show: Boolean) {

@@ -1,52 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:animateLayoutChanges="true"
     android:background="@color/adapterBackground"
     tools:context=".ui.search.SearchFragment">
 
-    <include layout="@layout/view_toolbar_search" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/categoriesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingTop="88dp" />
+
+        <include
+            layout="@layout/state_layout_search_results"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_search_field_gradient">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/categoriesRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:clipToPadding="false"
-                android:paddingTop="88dp" />
-
-            <include
-                layout="@layout/state_layout_search_results"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:clipToPadding="false"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background_search_field_gradient">
-
-            <include layout="@layout/view_search_field" />
-
-        </FrameLayout>
+        <include layout="@layout/view_search_field" />
 
     </FrameLayout>
 
-</LinearLayout>
+</FrameLayout>
