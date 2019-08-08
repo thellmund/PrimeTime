@@ -2,6 +2,7 @@ package com.hellmund.primetime.di
 
 import android.content.Context
 import androidx.work.WorkManager
+import com.hellmund.primetime.App
 import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.ui.history.HistoryFragment
 import com.hellmund.primetime.ui.history.di.HistoryModule
@@ -13,10 +14,10 @@ import com.hellmund.primetime.ui.selectmovies.di.SelectMoviesComponent
 import com.hellmund.primetime.ui.selectstreamingservices.SelectStreamingServicesActivity
 import com.hellmund.primetime.ui.selectstreamingservices.di.StreamingServiceModule
 import com.hellmund.primetime.ui.settings.SettingsFragment
-import com.hellmund.primetime.ui.suggestions.MainActivity
+import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui.suggestions.di.MovieDetailsComponent
-import com.hellmund.primetime.ui.suggestions.di.MoviesComponent
-import com.hellmund.primetime.ui.suggestions.di.MoviesModule
+import com.hellmund.primetime.ui.suggestions.di.HomeComponent
+import com.hellmund.primetime.ui.suggestions.di.HomeModule
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.ui.watchlist.di.WatchlistModule
 import com.hellmund.primetime.utils.ImageLoader
@@ -38,7 +39,7 @@ import javax.inject.Singleton
     AppModule::class,
     NetworkModule::class,
     PersistenceModule::class,
-    MoviesModule::class,
+    HomeModule::class,
     HistoryModule::class,
     GenresModule::class,
     WatchlistModule::class,
@@ -46,10 +47,11 @@ import javax.inject.Singleton
 ])
 interface AppComponent {
 
-    fun mainComponent(): MoviesComponent.Factory
+    fun mainComponent(): HomeComponent.Factory
     fun movieDetailsComponent(): MovieDetailsComponent.Factory
     fun selectMoviesComponent(): SelectMoviesComponent
 
+    fun inject(app: App)
     fun inject(genresWorker: GenresPrefetcher.RefreshGenresWorker)
     fun inject(historyFragment: HistoryFragment)
     fun inject(introductionActivity: IntroductionActivity)

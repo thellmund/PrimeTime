@@ -4,15 +4,27 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.R
-import kotlinx.android.synthetic.main.list_item_review.view.*
+import kotlinx.android.synthetic.main.list_item_review.view.reviewTextView
 
 private const val COLLAPSED_LINES = 3
 
-class ReviewsAdapter : RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
+class ReviewsAdapter : ListAdapter<Review, ReviewsAdapter.ViewHolder>(
+    object : DiffUtil.ItemCallback<Review>() {
+        override fun areItemsTheSame(
+            oldItem: Review,
+            newItem: Review
+        ) = oldItem.id == newItem.id
 
-    private val reviews = mutableListOf<Review>()
+        override fun areContentsTheSame(
+            oldItem: Review,
+            newItem: Review
+        ) = oldItem == newItem
+    }
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -21,15 +33,7 @@ class ReviewsAdapter : RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(reviews[position])
-    }
-
-    override fun getItemCount(): Int = reviews.size
-
-    fun update(newReviews: List<Review>) {
-        reviews.clear()
-        reviews += newReviews
-        notifyDataSetChanged()
+        holder.bind(getItem(position))
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

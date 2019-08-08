@@ -4,16 +4,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.hellmund.primetime.ui.suggestions.AdapterItem.LoadMore
+import com.hellmund.primetime.ui.suggestions.AdapterItem.Movie
 import com.hellmund.primetime.utils.ImageLoader
 
 class MoviesAdapter(
     private val imageLoader: ImageLoader,
     private val onClick: (MovieViewEntity) -> Unit,
     private val onMenuClick: (MovieViewEntity) -> Unit
-) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
+) : ListAdapter<AdapterItem, MoviesAdapter.ViewHolder>(
+    object : DiffUtil.ItemCallback<AdapterItem>() {
+        override fun areItemsTheSame(
+            oldItem: AdapterItem,
+            newItem: AdapterItem
+        ) = when {
+            oldItem is Movie.Item && newItem is Movie.Item -> oldItem.movie.id == newItem.movie.id
+            else -> oldItem.viewType == newItem.viewType
+        }
 
-    private val items = mutableListOf<AdapterItem>()
+        override fun areContentsTheSame(
+            oldItem: AdapterItem,
+            newItem: AdapterItem
+        ) = when {
+            oldItem is Movie.Item && newItem is Movie.Item -> oldItem.movie == newItem.movie
+            else -> oldItem.viewType == newItem.viewType
+        }
+    }
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -21,67 +40,20 @@ class MoviesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        items[position].bind(holder, imageLoader, onClick, onMenuClick)
+        getItem(position).bind(holder, imageLoader, onClick, onMenuClick)
     }
-
-    override fun getItemCount(): Int = items.size
 
     override fun getItemViewType(position: Int): Int {
-        return items[position].viewType
+        return getItem(position).viewType
     }
 
-    fun update(movies: List<MovieViewEntity>) {
+    fun submit(movies: List<MovieViewEntity>) {
         val newItems = if (movies.isNotEmpty()) {
-            movies.map { AdapterItem.Movie.Item(it) } + AdapterItem.LoadMore
+            movies.map { Movie.Item(it) } + LoadMore
         } else {
-            MutableList(25) { AdapterItem.Movie.Empty }
+            MutableList(25) { Movie.Empty }
         }
-
-        val diffResult = DiffUtil.calculateDiff(DiffUtilCallback(items, newItems))
-
-        items.clear()
-        items += newItems
-
-        diffResult.dispatchUpdatesTo(this)
-    }
-
-    class DiffUtilCallback(
-        private val oldItems: List<AdapterItem>,
-        private val newItems: List<AdapterItem>
-    ) : DiffUtil.Callback() {
-
-        override fun getOldListSize(): Int = oldItems.size
-
-        override fun getNewListSize(): Int = newItems.size
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem = oldItems[oldItemPosition]
-            val newItem = newItems[newItemPosition]
-
-            return when {
-                oldItem is AdapterItem.Movie.Item && newItem is AdapterItem.Movie.Item -> {
-                    oldItem.movie.id == newItem.movie.id
-                }
-                oldItem is AdapterItem.Movie.Empty && newItem is AdapterItem.Movie.Empty -> true
-                oldItem is AdapterItem.LoadMore && newItem is AdapterItem.LoadMore -> true
-                else -> false
-            }
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem = oldItems[oldItemPosition]
-            val newItem = newItems[newItemPosition]
-
-            return when {
-                oldItem is AdapterItem.Movie.Item && newItem is AdapterItem.Movie.Item -> {
-                    oldItem.movie == newItem.movie
-                }
-                oldItem is AdapterItem.Movie.Empty && newItem is AdapterItem.Movie.Empty -> true
-                oldItem is AdapterItem.LoadMore && newItem is AdapterItem.LoadMore -> true
-                else -> false
-            }
-        }
-
+        submitList(newItems)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

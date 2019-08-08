@@ -3,7 +3,8 @@ package com.hellmund.primetime.ui.selectmovies
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.domain.FetchSamplesUseCase
+import com.hellmund.primetime.domain.StoreSamplesUseCase
 import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import kotlinx.coroutines.launch
@@ -66,8 +67,8 @@ sealed class Result {
 }
 
 class SelectMoviesViewModel @Inject constructor(
-    private val repository: SamplesRepository,
-    private val genresRepository: GenresRepository
+    private val fetchSamples: FetchSamplesUseCase,
+    private val storeSamples: StoreSamplesUseCase
 ) : ViewModel() {
 
     private val store = SamplesViewStateStore()
@@ -83,12 +84,11 @@ class SelectMoviesViewModel @Inject constructor(
     }
 
     private suspend fun fetchMovies(
-            page: Int
+        page: Int
     ): Result {
         return try {
-            val genres = genresRepository.getPreferredGenres()
-            val recommendations = repository.fetch(genres, page)
-            Result.Data(recommendations, page)
+            val samples = fetchSamples(page)
+            Result.Data(samples, page)
         } catch (e: IOException) {
             Result.Error(e)
         }
@@ -100,8 +100,7 @@ class SelectMoviesViewModel @Inject constructor(
     }
 
     private suspend fun storeSelection(samples: List<Sample>) {
-        val historyMovies = samples.map { it.toHistoryMovie() }
-        repository.store(historyMovies)
+        storeSamples(samples)
         store.dispatch(Result.Finished)
     }
 

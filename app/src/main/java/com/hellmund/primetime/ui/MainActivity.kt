@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.suggestions
+package com.hellmund.primetime.ui
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -6,17 +6,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.ApiGenre
-import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.ui.suggestions.FragmentLifecycleCallback
+import com.hellmund.primetime.ui.suggestions.HomeFragment
+import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.utils.Intents
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
-import kotlinx.android.synthetic.main.view_toolbar.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -31,9 +32,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var genresRepository: GenresRepository
 
-    @Inject
-    lateinit var genresPrefetcher: GenresPrefetcher
-
     private val fragmentLifecycleCallback: FragmentLifecycleCallback by lazy {
         FragmentLifecycleCallback(this)
     }
@@ -42,26 +40,20 @@ class MainActivity : AppCompatActivity() {
         get() = supportFragmentManager.findFragmentById(R.id.contentFrame)
 
     private val onNavigationItemSelected = { menuItem: MenuItem ->
-        val isInMainFragment = currentFragment is MainFragment
+        val isInMainFragment = currentFragment is HomeFragment
         val isInSearchTab = bottomNavigation.selectedItemId == R.id.search
 
-        when (menuItem.itemId) {
-            R.id.home -> {
-                if (isInMainFragment && isInSearchTab) {
-                    supportFragmentManager.popBackStack()
-                }
+        if (isInSearchTab && isInMainFragment) {
+            supportFragmentManager.popBackStack()
+        }
 
-                supportFragmentManager.popBackStack()
-            }
+        when (menuItem.itemId) {
+            R.id.home -> supportFragmentManager.popBackStack()
             R.id.search -> {
                 val fragment = SearchFragment.newInstance()
                 showFragment(fragment)
             }
             R.id.watchlist -> {
-                if (isInMainFragment && isInSearchTab) {
-                    supportFragmentManager.popBackStack()
-                }
-
                 val fragment = WatchlistFragment.newInstance()
                 showFragment(fragment)
             }
@@ -69,9 +61,8 @@ class MainActivity : AppCompatActivity() {
         true
     }
 
-    private val onNavigationItemReselected = BottomNavigationView.OnNavigationItemReselectedListener {
-        val reselectable = currentFragment as? Reselectable
-        reselectable?.onReselected()
+    private val onNavigationItemReselected = OnNavigationItemReselectedListener {
+        (currentFragment as? Reselectable)?.onReselected()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,15 +72,12 @@ class MainActivity : AppCompatActivity() {
 
         injector.inject(this)
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallback, false)
-        setSupportActionBar(toolbar)
-
-        genresPrefetcher.run()
 
         bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelected)
         bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
 
         if (savedInstanceState == null) {
-            showFragment(MainFragment.newInstance())
+            showFragment(HomeFragment.newInstance())
         }
 
         intent?.getStringExtra(SHORTCUT_EXTRA)?.let {
@@ -110,13 +98,13 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.transaction {
             replace(R.id.contentFrame, fragment)
 
-            if (currentFragment is MainFragment && isBackStackEmpty) {
+            if (currentFragment is HomeFragment && isBackStackEmpty) {
                 addToBackStack(null)
             }
         }
     }
 
-    fun openSearchFromIntent(extra: String? = null) {
+    private fun openSearchFromIntent(extra: String? = null) {
         lifecycleScope.launch {
             val type = extra?.let { createRecommendationsTypeFromIntent(it) }
             val fragment = SearchFragment.newInstance(type)
@@ -156,7 +144,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnNavigationItemSelectedListener(null)
         bottomNavigation.setOnNavigationItemReselectedListener(null)
         bottomNavigation.selectedItemId = when (currentFragment) {
-            is MainFragment -> R.id.home
+            is HomeFragment -> R.id.home
             is SearchFragment -> R.id.search
             is WatchlistFragment -> R.id.watchlist
             else -> throw IllegalStateException()

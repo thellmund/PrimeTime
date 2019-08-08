@@ -64,11 +64,18 @@ class HistoryFragment : Fragment() {
     private fun render(viewState: HistoryViewState) {
         recyclerView.isVisible = viewState.isLoading.not()
         progressBar.isVisible = viewState.isLoading
-        adapter.update(viewState.data)
+        adapter.submitList(viewState.data)
+
+        if (viewState.showRemoveFailedWarning) {
+            showToast(R.string.cant_remove_more_items)
+        }
     }
 
     private fun onOpenDialog(movie: HistoryMovieViewEntity) {
-        val options = getDialogOptions()
+        val options = arrayOf(
+            getString(R.string.edit_rating),
+            getString(R.string.remove_from_history)
+        )
 
         requireContext().showItemsDialog(
             title = movie.title,
@@ -82,19 +89,8 @@ class HistoryFragment : Fragment() {
         )
     }
 
-    private fun getDialogOptions(): Array<String> {
-        return arrayOf(
-            getString(R.string.edit_rating),
-            getString(R.string.remove_from_history)
-        )
-    }
-
     private fun removeFromHistory(movie: HistoryMovieViewEntity) {
-        if (adapter.canRemove()) {
-            viewModel.dispatch(Action.Remove(movie))
-        } else {
-            requireContext().showToast(R.string.cant_remove_more_items)
-        }
+        viewModel.dispatch(Action.Remove(movie))
     }
 
     private fun openEditRatingDialog(movie: HistoryMovieViewEntity) {

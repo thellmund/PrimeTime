@@ -31,7 +31,7 @@ abstract class ViewStateStore<State, Result>(
         dispatchState(state)
     }
 
-    private fun state() = viewState.value!!
+    fun state() = viewState.value!!
 
 }
 

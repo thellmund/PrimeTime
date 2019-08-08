@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.hellmund.primetime.R
@@ -29,9 +30,19 @@ class WatchlistAdapter(
     private val onWatchedIt: (WatchlistMovieViewEntity) -> Unit,
     private val onRemove: (WatchlistMovieViewEntity) -> Unit,
     private val onNotificationToggle: (WatchlistMovieViewEntity) -> Unit
-) : RecyclerView.Adapter<WatchlistAdapter.ViewHolder>() {
+) : ListAdapter<WatchlistMovieViewEntity, WatchlistAdapter.ViewHolder>(
+    object : DiffUtil.ItemCallback<WatchlistMovieViewEntity>() {
+        override fun areItemsTheSame(
+            oldItem: WatchlistMovieViewEntity,
+            newItem: WatchlistMovieViewEntity
+        ) = oldItem.id == newItem.id
 
-    private val movies = mutableListOf<WatchlistMovieViewEntity>()
+        override fun areContentsTheSame(
+            oldItem: WatchlistMovieViewEntity,
+            newItem: WatchlistMovieViewEntity
+        ) = oldItem == newItem
+    }
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -40,35 +51,7 @@ class WatchlistAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(movies[position], imageLoader, onWatchedIt, onRemove, onNotificationToggle)
-    }
-
-    override fun getItemCount(): Int = movies.size
-
-    fun update(newItems: List<WatchlistMovieViewEntity>) {
-        val diffResult = DiffUtil.calculateDiff(DiffUtilCallback(movies, newItems))
-        movies.clear()
-        movies += newItems
-        diffResult.dispatchUpdatesTo(this)
-    }
-
-    class DiffUtilCallback(
-        private val oldItems: List<WatchlistMovieViewEntity>,
-        private val newItems: List<WatchlistMovieViewEntity>
-    ) : DiffUtil.Callback() {
-
-        override fun getOldListSize(): Int = oldItems.size
-
-        override fun getNewListSize(): Int = newItems.size
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems[oldItemPosition].id == newItems[newItemPosition].id
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems[oldItemPosition] == newItems[newItemPosition]
-        }
-
+        holder.bind(getItem(position), imageLoader, onWatchedIt, onRemove, onNotificationToggle)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

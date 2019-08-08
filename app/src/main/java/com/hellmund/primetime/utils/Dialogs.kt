@@ -81,7 +81,8 @@ fun Context.showMultiSelectDialog(
     items: Array<String>,
     checkedItems: BooleanArray,
     @StringRes positiveResId: Int,
-    onConfirmed: (selected: List<Int>) -> Unit
+    onConfirmed: (selected: List<Int>) -> Unit,
+    onDismiss: () -> Unit = {}
 ) {
     AlertDialog.Builder(this)
         .setTitle(titleResId)
@@ -89,7 +90,7 @@ fun Context.showMultiSelectDialog(
             checkedItems[index] = isSelected
         }
         .setCancelable(true)
-        .setNegativeButton(R.string.cancel, null)
+        .setNegativeButton(R.string.cancel) { _, _ -> onDismiss() }
         .setPositiveButton(positiveResId) { _, _ ->
             val selected = (0 until items.size).filterIndexed { i, _ -> checkedItems[i] }
             onConfirmed(selected)
