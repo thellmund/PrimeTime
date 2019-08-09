@@ -10,7 +10,7 @@ import com.hellmund.primetime.utils.ImageLoader
 class MoviesAdapter(
     private val imageLoader: ImageLoader,
     private val onClick: (MovieViewEntity) -> Unit,
-    private val onMenuClick: (MovieViewEntity) -> Unit
+    private val onLongClick: (MovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     private val items = mutableListOf<AdapterItem>()
@@ -21,7 +21,7 @@ class MoviesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        items[position].bind(holder, imageLoader, onClick, onMenuClick)
+        items[position].bind(holder, imageLoader, onClick, onLongClick)
     }
 
     override fun getItemCount(): Int = items.size

@@ -18,15 +18,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:riv_corner_radius="@dimen/corner_radius" />
 
-    <ImageButton
-        android:id="@+id/menuButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/tiny_space"
-        android:background="@drawable/background_more_button"
-        android:padding="@dimen/tiny_space"
-        android:src="@drawable/ic_more_vert_white_24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

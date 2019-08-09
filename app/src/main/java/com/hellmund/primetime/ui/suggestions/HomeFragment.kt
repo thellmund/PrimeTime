@@ -70,7 +70,7 @@ class HomeFragment : Fragment(), MainActivity.Reselectable {
         MoviesAdapter(
             imageLoader = imageLoader,
             onClick = this::openMovieDetails,
-            onMenuClick = this::openRatingDialog
+            onLongClick = this::openRatingDialog
         )
     }
 

@@ -1,11 +1,10 @@
 package com.hellmund.primetime.ui.suggestions
 
 import androidx.annotation.LayoutRes
-import androidx.core.view.isVisible
 import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.Transformation
-import kotlinx.android.synthetic.main.list_item_movies.view.*
+import kotlinx.android.synthetic.main.list_item_movies.view.posterImageView
 
 sealed class AdapterItem(@LayoutRes val viewType: Int) {
 
@@ -29,7 +28,6 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
                 onLongClick: (MovieViewEntity) -> Unit
             ) = with(holder.itemView) {
                 posterImageView.setImageResource(0)
-                menuButton.isVisible = false
             }
 
         }
@@ -50,10 +48,12 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
                     transformations = transformations,
                     into = posterImageView
                 )
-                menuButton.isVisible = true
 
                 setOnClickListener { onClick(movie) }
-                menuButton.setOnClickListener { onLongClick(movie) }
+                setOnLongClickListener {
+                    onLongClick(movie)
+                    true
+                }
             }
 
         }
