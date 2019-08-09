@@ -5,23 +5,16 @@ package com.hellmund.primetime.utils
 import android.content.Context
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 
+@JvmOverloads
 fun Context.showToast(resId: Int, length: Int = Toast.LENGTH_SHORT) {
     showToast(getString(resId), length)
 }
 
-fun Fragment.showToast(resId: Int, length: Int = Toast.LENGTH_SHORT) {
-    requireContext().showToast(resId, length)
-}
-
+@JvmOverloads
 fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, message, length).show()
-}
-
-fun Fragment.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
-    requireContext().showToast(message, length)
 }
 
 fun RecyclerView.onBottomReached(block: () -> Unit) {

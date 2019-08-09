@@ -3,7 +3,6 @@ package com.hellmund.primetime.ui.history
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.domain.ObserveHistoryUseCase
 import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import com.hellmund.primetime.utils.replace
@@ -15,13 +14,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val MIN_HISTORY_SIZE = 4
-
 data class HistoryViewState(
     val data: List<HistoryMovieViewEntity> = emptyList(),
     val isLoading: Boolean = false,
-    val error: Throwable? = null,
-    val showRemoveFailedWarning: Boolean = false
+    val error: Throwable? = null
 )
 
 sealed class Action {
@@ -34,8 +30,6 @@ sealed class Result {
     data class Error(val error: Throwable) : Result()
     data class Removed(val movie: HistoryMovieViewEntity) : Result()
     data class Updated(val movie: HistoryMovieViewEntity) : Result()
-    object ShowRemoveFailedWarning : Result()
-    object HideRemoveFailedWarning : Result()
 }
 
 class HistoryViewStateReducer : Reducer<HistoryViewState, Result> {
@@ -51,8 +45,6 @@ class HistoryViewStateReducer : Reducer<HistoryViewState, Result> {
             val newData = state.data.replace(index, result.movie)
             state.copy(data = newData)
         }
-        is Result.ShowRemoveFailedWarning -> state.copy(showRemoveFailedWarning = true)
-        is Result.HideRemoveFailedWarning -> state.copy(showRemoveFailedWarning = false)
     }
 }
 
@@ -64,8 +56,8 @@ class HistoryViewStateStore : ViewStateStore<HistoryViewState, Result>(
 @ExperimentalCoroutinesApi
 @FlowPreview
 class HistoryViewModel @Inject constructor(
-    private val observeHistory: ObserveHistoryUseCase,
     private val repository: HistoryRepository,
+    private val viewEntitiesMapper: HistoryMoviesViewEntityMapper,
     private val viewEntityMapper: HistoryMovieViewEntityMapper
 ) : ViewModel() {
 
@@ -74,7 +66,9 @@ class HistoryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            observeHistory()
+            repository.observeAll()
+                .map { it.sortedByDescending { movie -> movie.timestamp } }
+                .map { viewEntitiesMapper(it) }
                 .map { Result.Data(it) as Result }
                 .catch { emit(Result.Error(it)) }
                 .collect { value -> store.dispatch(value) }
@@ -82,14 +76,8 @@ class HistoryViewModel @Inject constructor(
     }
 
     private suspend fun removeMovie(movie: HistoryMovieViewEntity) {
-        val canRemove = store.state().data.size > MIN_HISTORY_SIZE
-        if (canRemove) {
-            repository.remove(movie.id)
-            store.dispatch(Result.Removed(movie))
-        } else {
-            store.dispatch(Result.ShowRemoveFailedWarning)
-            store.dispatch(Result.HideRemoveFailedWarning)
-        }
+        repository.remove(movie.id)
+        store.dispatch(Result.Removed(movie))
     }
 
     private suspend fun updateMovie(ratedMovie: RatedHistoryMovie) {

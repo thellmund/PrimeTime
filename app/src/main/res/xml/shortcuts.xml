@@ -12,7 +12,7 @@
         android:shortcutShortLabel="@string/watchlist">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hellmund.primetime.ui.MainActivity"
+            android:targetClass="com.hellmund.primetime.ui.suggestions.MainActivity"
             android:targetPackage="com.hellmund.primetime">
             <extra
                 android:name="intent"
@@ -29,7 +29,7 @@
         android:shortcutShortLabel="@string/now_playing">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hellmund.primetime.ui.MainActivity"
+            android:targetClass="com.hellmund.primetime.ui.suggestions.MainActivity"
             android:targetPackage="com.hellmund.primetime">
             <extra
                 android:name="intent"
@@ -46,7 +46,7 @@
         android:shortcutShortLabel="@string/upcoming">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hellmund.primetime.ui.MainActivity"
+            android:targetClass="com.hellmund.primetime.ui.suggestions.MainActivity"
             android:targetPackage="com.hellmund.primetime">
             <extra
                 android:name="intent"
@@ -63,7 +63,7 @@
         android:shortcutShortLabel="@string/search">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hellmund.primetime.ui.MainActivity"
+            android:targetClass="com.hellmund.primetime.ui.suggestions.MainActivity"
             android:targetPackage="com.hellmund.primetime">
             <extra
                 android:name="intent"

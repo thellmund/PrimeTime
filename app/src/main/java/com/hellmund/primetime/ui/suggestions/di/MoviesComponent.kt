@@ -1,6 +1,6 @@
 package com.hellmund.primetime.ui.suggestions.di
 
-import com.hellmund.primetime.ui.suggestions.HomeFragment
+import com.hellmund.primetime.ui.suggestions.MainFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.suggestions.data.RealMoviesRepository
@@ -10,19 +10,19 @@ import dagger.Module
 import dagger.Subcomponent
 
 @Subcomponent
-interface HomeComponent {
+interface MoviesComponent {
 
-    fun inject(homeFragment: HomeFragment)
+    fun inject(mainFragment: MainFragment)
 
     @Subcomponent.Factory
     interface Factory {
-        fun create(@BindsInstance recommendationsType: RecommendationsType): HomeComponent
+        fun create(@BindsInstance recommendationsType: RecommendationsType): MoviesComponent
     }
 
 }
 
 @Module
-interface HomeModule {
+interface MoviesModule {
 
     @Binds
     fun bindMoviesRepository(impl: RealMoviesRepository): MoviesRepository

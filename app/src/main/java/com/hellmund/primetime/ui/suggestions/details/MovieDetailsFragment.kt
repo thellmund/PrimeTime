@@ -158,14 +158,14 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         recommendationsProgressBar.isVisible = false
         noRecommendationsPlaceholder.isVisible = movies.isEmpty()
         recommendationsRecyclerView.isVisible = movies.isNotEmpty()
-        recommendationsAdapter.submitList(movies)
+        recommendationsAdapter.update(movies)
     }
 
     private fun showReviews(reviews: List<Review>) {
         reviewsProgressBar.isVisible = false
         noReviewsPlaceholder.isVisible = reviews.isEmpty()
         reviewsProgressBar.isVisible = reviews.isNotEmpty()
-        reviewsAdapter.submitList(reviews)
+        reviewsAdapter.update(reviews)
     }
 
     private fun onRecommendationClicked(movie: MovieViewEntity) {

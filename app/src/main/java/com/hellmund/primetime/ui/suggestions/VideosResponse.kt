@@ -18,11 +18,11 @@ object VideoResolver {
                 .map { "https://www.youtube.com/watch?v=$it" }
                 .first()
         } else {
-            createYouTubeQueryUrl(title)
+            buildYouTubeUrl(title)
         }
     }
 
-    private fun createYouTubeQueryUrl(title: String): String {
+    private fun buildYouTubeUrl(title: String): String {
         val query = "$title Trailer"
         return "http://www.youtube.com/results?search_query=$query"
     }

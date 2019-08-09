@@ -15,7 +15,7 @@ import com.hellmund.primetime.ui.shared.NavigationEventsStore
 import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
-import com.hellmund.primetime.ui.suggestions.MovieViewEntitiesMapper
+import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.utils.StringProvider
@@ -73,7 +73,7 @@ class SearchViewModel @Inject constructor(
     private val repository: MoviesRepository,
     private val historyRepository: HistoryRepository,
     private val genresRepository: GenresRepository,
-    private val viewEntitiesMapper: MovieViewEntitiesMapper,
+    private val viewEntityMapper: MoviesViewEntityMapper,
     private val stringProvider: StringProvider
 ) : ViewModel() {
 
@@ -111,7 +111,7 @@ class SearchViewModel @Inject constructor(
     private suspend fun searchMovies(query: String): Result {
         return try {
             val movies = repository.searchMovies(query)
-            val mapped = viewEntitiesMapper(movies)
+            val mapped = viewEntityMapper(movies)
             Result.Data(mapped)
         } catch (e: IOException) {
             Result.Error(e)

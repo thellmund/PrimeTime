@@ -11,7 +11,7 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MovieViewEntityMapper
-import com.hellmund.primetime.ui.suggestions.MovieViewEntitiesMapper
+import com.hellmund.primetime.ui.suggestions.MoviesViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.watchlist.WatchlistRepository
 import com.hellmund.primetime.utils.observe
@@ -64,7 +64,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val repository: MoviesRepository,
     private val historyRepository: HistoryRepository,
     private val watchlistRepository: WatchlistRepository,
-    private val viewEntitiesMapper: MovieViewEntitiesMapper,
+    private val viewEntitiesMapper: MoviesViewEntityMapper,
     private val viewEntityMapper: MovieViewEntityMapper,
     private var movie: MovieViewEntity
 ) : ViewModel() {

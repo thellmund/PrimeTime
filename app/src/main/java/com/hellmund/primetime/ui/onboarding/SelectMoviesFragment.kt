@@ -127,13 +127,13 @@ class SelectMoviesFragment : Fragment() {
     private fun saveMovies() {
         val context = requireContext()
         if (!button.isEnabled) {
-            showToast(R.string.select_at_least, MIN_COUNT)
+            context.showToast(getString(R.string.select_at_least, MIN_COUNT))
         }
 
         if (context.isConnected) {
             saveSelection()
         } else {
-            showToast(R.string.not_connected)
+            context.showToast(getString(R.string.not_connected))
         }
     }
 

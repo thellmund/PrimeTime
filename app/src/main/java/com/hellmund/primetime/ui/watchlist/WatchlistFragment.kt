@@ -86,7 +86,7 @@ class WatchlistFragment : Fragment() {
     }
 
     private fun render(viewState: WatchlistViewState) {
-        adapter.submitList(viewState.data)
+        adapter.update(viewState.data)
         indicator.reattach()
 
         content.isVisible = viewState.data.isNotEmpty()

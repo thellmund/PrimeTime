@@ -4,13 +4,15 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.utils.ValueFormatter
 import javax.inject.Inject
 
-class MovieViewEntitiesMapper @Inject constructor(
+class MoviesViewEntityMapper @Inject constructor(
     valueFormatter: ValueFormatter
 ) {
 
     private val internalMapper = MovieViewEntityMapper(valueFormatter)
 
-    suspend operator fun invoke(movies: List<Movie>) = movies.map { internalMapper(it) }
+    suspend operator fun invoke(movies: List<Movie>): List<MovieViewEntity> {
+        return movies.map { internalMapper(it) }
+    }
 
 }
 

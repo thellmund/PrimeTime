@@ -9,13 +9,15 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui.onboarding.OnboardingActivity
+import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.settings.SettingsActivity
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.shared.RateMovieDialog
@@ -23,6 +25,7 @@ import com.hellmund.primetime.ui.shared.ScrollAwareFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.utils.OnboardingHelper
 import com.hellmund.primetime.utils.observe
 import com.hellmund.primetime.utils.onBottomReached
 import com.hellmund.primetime.utils.showMultiSelectDialog
@@ -34,6 +37,7 @@ import kotlinx.android.synthetic.main.fragment_main.swipeRefreshLayout
 import kotlinx.android.synthetic.main.view_toolbar.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
@@ -41,15 +45,21 @@ import javax.inject.Provider
 @FlowPreview
 @ExperimentalCoroutinesApi
 @ScrollAwareFragment
-class HomeFragment : Fragment(), MainActivity.Reselectable {
+class MainFragment : Fragment(), MainActivity.Reselectable {
 
     @Inject
     lateinit var imageLoader: ImageLoader
 
     @Inject
-    lateinit var viewModelProvider: Provider<HomeViewModel>
+    lateinit var onboardingHelper: OnboardingHelper
 
-    private val viewModel: HomeViewModel by lazyViewModel { viewModelProvider }
+    @Inject
+    lateinit var genresRepository: GenresRepository
+
+    @Inject
+    lateinit var viewModelProvider: Provider<MainViewModel>
+
+    private val viewModel: MainViewModel by lazyViewModel { viewModelProvider }
 
     private val type: RecommendationsType by lazy {
         checkNotNull(arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE))
@@ -91,9 +101,14 @@ class HomeFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun setupPersonalizationBanner() {
-        banner.setOnClickListener {
-            val intent = OnboardingActivity.newIntent(requireContext())
-            requireContext().startActivity(intent)
+        if (onboardingHelper.isFirstLaunch && type is Personalized) {
+            banner.setOnClickListener {
+                val intent = OnboardingActivity.newIntent(requireContext())
+                requireContext().startActivity(intent)
+            }
+            banner.show()
+        } else {
+            banner.dismiss()
         }
     }
 
@@ -113,36 +128,28 @@ class HomeFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun setupFab() {
+        filterFab.isVisible = type is Personalized && onboardingHelper.isFirstLaunch.not()
         filterFab.setOnClickListener {
-            viewModel.dispatch(Action.ShowFilterDialog)
+            lifecycleScope.launch {
+                showFilterDialog()
+            }
         }
     }
 
-    private fun render(viewState: HomeViewState) {
+    private fun render(viewState: MainViewState) {
         swipeRefreshLayout.isRefreshing = viewState.isLoading
         if (viewState.isLoading.not()) {
             swipeRefreshLayout.isEnabled = false
         }
 
-        if (viewState.showOnboardingBanner) {
-            banner.show()
-        } else {
-            banner.dismiss()
-        }
-
-        val items = viewState.filtered ?: viewState.data
-        adapter.submit(items)
+        viewState.filtered?.let {
+            adapter.update(it)
+        } ?: adapter.update(viewState.data)
 
         if (viewState.isLoading.not()) {
             shimmerLayout.stopShimmer()
             shimmerLayout.setShimmer(null)
         }
-
-        viewState.genresFilter?.let {
-            showFilterDialog(it)
-        }
-
-        filterFab.isVisible = viewState.showFilterButton
 
         // TODO Error handling
     }
@@ -169,9 +176,10 @@ class HomeFragment : Fragment(), MainActivity.Reselectable {
     private fun initToolbar() {
         toolbar.setTitle(R.string.app_name)
 
-        val isInCategory = type !is Personalized
-        if (isInCategory) {
-            // Display a back button so that the user can go back to the tab's initial screen
+        val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        val isInSearchTab = bottomNav.selectedItemId == R.id.search
+
+        if (isInSearchTab) {
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
             toolbar.setNavigationOnClickListener {
                 requireActivity().onBackPressed()
@@ -192,13 +200,14 @@ class HomeFragment : Fragment(), MainActivity.Reselectable {
     }
 
     private fun setToolbarTitle() {
-        toolbar.title = when (val type = type) {
+        val title = when (val type = type) {
             is Personalized -> getString(R.string.app_name)
             is RecommendationsType.BasedOnMovie -> type.title
             is RecommendationsType.NowPlaying -> getString(R.string.now_playing)
             is RecommendationsType.Upcoming -> getString(R.string.upcoming)
             is RecommendationsType.ByGenre -> type.genre.name
         }
+        toolbar.title = title
     }
 
     private fun openSettings() {
@@ -206,17 +215,27 @@ class HomeFragment : Fragment(), MainActivity.Reselectable {
         startActivity(intent)
     }
 
-    private fun showFilterDialog(filter: Filter) {
+    private suspend fun showFilterDialog() {
+        val genres = genresRepository.getPreferredGenres()
+        val genreNames = genres
+            .map { it.name }
+            .toTypedArray()
+
+        val checkedItems = when (val type = type) {
+            is Personalized -> {
+                val selectedGenres = type.genres ?: genres
+                genres.map { selectedGenres.contains(it) }.toBooleanArray()
+            }
+            else -> genres.map { true }.toBooleanArray()
+        }
+
         requireContext().showMultiSelectDialog(
             titleResId = R.string.filter_recommendations,
-            items = filter.genreNames,
-            checkedItems = filter.checkedItems,
+            items = genreNames,
+            checkedItems = checkedItems,
             positiveResId = R.string.filter,
-            onDismiss = {
-                viewModel.dispatch(Action.HideFilterDialog)
-            },
             onConfirmed = { selected ->
-                val selectedGenres = filter.genres.filterIndexed { i, _ -> selected.contains(i) }
+                val selectedGenres = genres.filterIndexed { i, _ -> selected.contains(i) }
                 viewModel.dispatch(Action.Filter(selectedGenres))
             }
         )
@@ -233,7 +252,7 @@ class HomeFragment : Fragment(), MainActivity.Reselectable {
         @JvmStatic
         fun newInstance(
             type: RecommendationsType = Personalized()
-        ) = HomeFragment().apply {
+        ) = MainFragment().apply {
             arguments = bundleOf(KEY_RECOMMENDATIONS_TYPE to type)
         }
 

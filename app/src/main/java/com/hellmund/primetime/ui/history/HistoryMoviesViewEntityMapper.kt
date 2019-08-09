@@ -6,7 +6,7 @@ import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.utils.ValueFormatter
 import javax.inject.Inject
 
-class HistoryMovieViewEntitiesMapper @Inject constructor(
+class HistoryMoviesViewEntityMapper @Inject constructor(
     context: Context,
     valueFormatter: ValueFormatter
 ) {

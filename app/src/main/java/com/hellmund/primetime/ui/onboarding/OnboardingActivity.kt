@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.transaction
 import com.hellmund.primetime.R
-import com.hellmund.primetime.ui.MainActivity
+import com.hellmund.primetime.ui.suggestions.MainActivity
 
 class OnboardingActivity : AppCompatActivity() {
 
