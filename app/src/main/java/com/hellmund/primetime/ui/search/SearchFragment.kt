@@ -19,14 +19,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.shared.NavigationEvent
 import com.hellmund.primetime.ui.shared.RateMovieDialog
-import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui.suggestions.HomeFragment
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RatedMovie
@@ -210,7 +209,7 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
     private fun addRating(ratedMovie: RatedMovie) {
-        val historyMovie = HistoryMovie.from(ratedMovie)
+        val historyMovie = ratedMovie.toHistoryMovie()
         viewModel.addToHistory(historyMovie)
     }
 

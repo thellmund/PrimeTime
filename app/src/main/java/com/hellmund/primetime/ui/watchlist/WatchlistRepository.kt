@@ -1,8 +1,8 @@
 package com.hellmund.primetime.ui.watchlist
 
 import com.hellmund.primetime.data.database.AppDatabase
-import com.hellmund.primetime.data.database.WatchlistMovie
 import com.hellmund.primetime.data.model.Movie
+import com.hellmund.primetime.data.model.WatchlistMovie
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi

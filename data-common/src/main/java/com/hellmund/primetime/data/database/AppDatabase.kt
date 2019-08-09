@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.data.model.HistoryMovie
+import com.hellmund.primetime.data.model.WatchlistMovie
 
 @Database(entities = [
     WatchlistMovie::class,

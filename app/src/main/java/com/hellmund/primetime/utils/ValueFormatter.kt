@@ -29,12 +29,7 @@ class RealValueFormatter @Inject constructor(
     private val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 
     override suspend fun formatGenres(movie: Movie): String {
-        val genreIds = if (movie.genres.isNullOrEmpty()) {
-            movie.genreIds.orEmpty()
-        } else {
-            movie.genres.map { it.id }
-        }
-
+        val genreIds = movie.genres?.map { it.id } ?: movie.genreIds.orEmpty()
         val genres = genresRepository.getAll().filter { genreIds.contains(it.id) }
         return genres.map { it.name }.sorted().joinToString(", ")
     }

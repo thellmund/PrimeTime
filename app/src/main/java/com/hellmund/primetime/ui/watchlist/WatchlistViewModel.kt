@@ -3,7 +3,6 @@ package com.hellmund.primetime.ui.watchlist
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
@@ -87,7 +86,7 @@ class WatchlistViewModel @Inject constructor(
     }
 
     private suspend fun rateMovie(ratedMovie: RatedWatchlistMovie) {
-        val historyMovie = HistoryMovie.from(ratedMovie)
+        val historyMovie = ratedMovie.toHistoryMovie()
         repository.remove(ratedMovie.movie.id)
         historyRepository.store(historyMovie)
         store.dispatch(Result.Removed(ratedMovie.movie))

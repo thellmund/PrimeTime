@@ -3,7 +3,6 @@ package com.hellmund.primetime.ui.suggestions
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
 import com.hellmund.primetime.ui.shared.Reducer
@@ -89,7 +88,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun storeRating(ratedMovie: RatedMovie) {
-        val historyMovie = HistoryMovie.from(ratedMovie)
+        val historyMovie = ratedMovie.toHistoryMovie()
         historyRepository.store(historyMovie)
         store.dispatch(Result.RatingStored(ratedMovie.movie))
     }

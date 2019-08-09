@@ -48,6 +48,7 @@ dependencies {
 
     // Modules
     implementation project(':api')
+    implementation project(':data-common')
 
     // AndroidX
     implementation 'androidx.appcompat:appcompat:1.0.2'

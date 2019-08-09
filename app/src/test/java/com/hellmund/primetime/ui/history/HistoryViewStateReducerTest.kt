@@ -1,6 +1,6 @@
 package com.hellmund.primetime.ui.history
 
-import com.hellmund.primetime.data.database.HistoryMovie
+import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

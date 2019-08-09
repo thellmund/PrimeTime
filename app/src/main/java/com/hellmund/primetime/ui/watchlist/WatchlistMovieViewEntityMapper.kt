@@ -1,12 +1,12 @@
 package com.hellmund.primetime.ui.watchlist
 
-import com.hellmund.primetime.data.database.WatchlistMovie
+import com.hellmund.primetime.data.model.WatchlistMovie
 import com.hellmund.primetime.utils.ValueFormatter
 import com.hellmund.primetime.utils.isAfterNow
 import javax.inject.Inject
 
 class WatchlistMovieViewEntityMapper @Inject constructor(
-        private val valueFormatter: ValueFormatter
+    private val valueFormatter: ValueFormatter
 ) {
 
     operator fun invoke(

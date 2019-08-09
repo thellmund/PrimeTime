@@ -2,7 +2,7 @@ package com.hellmund.primetime.ui.history
 
 import android.content.Context
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.database.HistoryMovie
+import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.utils.ValueFormatter
 import javax.inject.Inject
 

@@ -1,8 +1,9 @@
 package com.hellmund.primetime.ui.watchlist
 
 import android.os.Parcelable
-import com.hellmund.primetime.data.database.WatchlistMovie
+import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
+import com.hellmund.primetime.data.model.WatchlistMovie
 import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.LocalDateTime
 
@@ -25,4 +26,6 @@ data class WatchlistMovieViewEntity(
 
 }
 
-data class RatedWatchlistMovie(val movie: WatchlistMovieViewEntity, val rating: Rating)
+data class RatedWatchlistMovie(val movie: WatchlistMovieViewEntity, val rating: Rating) {
+    fun toHistoryMovie() = HistoryMovie(movie.id, movie.title, rating, LocalDateTime.now())
+}

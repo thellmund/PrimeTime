@@ -1,7 +1,7 @@
 package com.hellmund.primetime.ui.history
 
 import com.hellmund.primetime.data.database.AppDatabase
-import com.hellmund.primetime.data.database.HistoryMovie
+import com.hellmund.primetime.data.model.HistoryMovie
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi

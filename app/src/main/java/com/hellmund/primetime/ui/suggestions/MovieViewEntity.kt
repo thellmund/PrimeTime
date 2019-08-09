@@ -3,7 +3,9 @@ package com.hellmund.primetime.ui.suggestions
 import android.os.Parcelable
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.Rating
+import com.hellmund.primetime.data.model.HistoryMovie
 import kotlinx.android.parcel.Parcelize
+import org.threeten.bp.LocalDateTime
 
 @Parcelize
 data class MovieViewEntity(
@@ -26,4 +28,6 @@ data class MovieViewEntity(
 
 }
 
-data class RatedMovie(val movie: MovieViewEntity, val rating: Rating)
+data class RatedMovie(val movie: MovieViewEntity, val rating: Rating) {
+    fun toHistoryMovie() = HistoryMovie(movie.id, movie.title, rating, LocalDateTime.now())
+}
