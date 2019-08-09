@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.suggestions
+package com.hellmund.primetime.ui
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -13,6 +13,9 @@ import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.ui.suggestions.FragmentLifecycleCallback
+import com.hellmund.primetime.ui.suggestions.HomeFragment
+import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.utils.Intents
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
@@ -42,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         get() = supportFragmentManager.findFragmentById(R.id.contentFrame)
 
     private val onNavigationItemSelected = { menuItem: MenuItem ->
-        val isInMainFragment = currentFragment is MainFragment
+        val isInMainFragment = currentFragment is HomeFragment
         val isInSearchTab = bottomNavigation.selectedItemId == R.id.search
 
         when (menuItem.itemId) {
@@ -89,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
 
         if (savedInstanceState == null) {
-            showFragment(MainFragment.newInstance())
+            showFragment(HomeFragment.newInstance())
         }
 
         intent?.getStringExtra(SHORTCUT_EXTRA)?.let {
@@ -110,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.transaction {
             replace(R.id.contentFrame, fragment)
 
-            if (currentFragment is MainFragment && isBackStackEmpty) {
+            if (currentFragment is HomeFragment && isBackStackEmpty) {
                 addToBackStack(null)
             }
         }
@@ -156,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnNavigationItemSelectedListener(null)
         bottomNavigation.setOnNavigationItemReselectedListener(null)
         bottomNavigation.selectedItemId = when (currentFragment) {
-            is MainFragment -> R.id.home
+            is HomeFragment -> R.id.home
             is SearchFragment -> R.id.search
             is WatchlistFragment -> R.id.watchlist
             else -> throw IllegalStateException()

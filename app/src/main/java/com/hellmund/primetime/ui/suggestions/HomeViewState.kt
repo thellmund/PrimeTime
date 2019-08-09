@@ -1,6 +1,6 @@
 package com.hellmund.primetime.ui.suggestions
 
-data class MainViewState(
+data class HomeViewState(
     val recommendationsType: RecommendationsType = RecommendationsType.Personalized(),
     val data: List<MovieViewEntity> = emptyList(),
     val filtered: List<MovieViewEntity>? = null,
@@ -9,15 +9,15 @@ data class MainViewState(
     val error: Throwable? = null
 ) {
 
-    fun toLoading(): MainViewState {
+    fun toLoading(): HomeViewState {
         return copy(isLoading = true, error = null)
     }
 
-    fun toError(t: Throwable): MainViewState {
+    fun toError(t: Throwable): HomeViewState {
         return copy(isLoading = false, error = t)
     }
 
-    fun toData(result: Result.Data): MainViewState {
+    fun toData(result: Result.Data): HomeViewState {
         val newData = data + result.data
         return copy(
             recommendationsType = result.type,
@@ -29,12 +29,12 @@ data class MainViewState(
         )
     }
 
-    fun toData(result: Result.RatingStored): MainViewState {
+    fun toData(result: Result.RatingStored): HomeViewState {
         val movies = data.minus(result.movie)
         return copy(data = movies)
     }
 
-    fun toFiltered(result: Result.Filter): MainViewState {
+    fun toFiltered(result: Result.Filter): HomeViewState {
         val genreIds = result.genres.map { it.id }.toSet()
         val genreMovies = data.filter { genreIds.containsAny(it.raw.genreIds.orEmpty()) }
         val type = RecommendationsType.Personalized(result.genres)

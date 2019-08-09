@@ -1,6 +1,6 @@
 package com.hellmund.primetime.ui.suggestions.di
 
-import com.hellmund.primetime.ui.suggestions.MainFragment
+import com.hellmund.primetime.ui.suggestions.HomeFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.suggestions.data.RealMoviesRepository
@@ -12,7 +12,7 @@ import dagger.Subcomponent
 @Subcomponent
 interface MoviesComponent {
 
-    fun inject(mainFragment: MainFragment)
+    fun inject(mainFragment: HomeFragment)
 
     @Subcomponent.Factory
     interface Factory {

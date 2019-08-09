@@ -34,9 +34,9 @@ sealed class Result {
     data class Filter(val genres: List<Genre>) : Result()
 }
 
-class MainViewStateReducer : Reducer<MainViewState, Result> {
+class HomeViewStateReducer : Reducer<HomeViewState, Result> {
     override fun invoke(
-        state: MainViewState,
+        state: HomeViewState,
         result: Result
     ) = when (result) {
         is Result.Loading -> state.toLoading()
@@ -47,21 +47,21 @@ class MainViewStateReducer : Reducer<MainViewState, Result> {
     }
 }
 
-class MainViewStateStore : ViewStateStore<MainViewState, Result>(
-    initialState = MainViewState(),
-    reducer = MainViewStateReducer()
+class HomeViewStateStore : ViewStateStore<HomeViewState, Result>(
+    initialState = HomeViewState(),
+    reducer = HomeViewStateReducer()
 )
 
-class MainViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val repository: MoviesRepository,
     private val historyRepository: HistoryRepository,
     private val rankingProcessor: MovieRankingProcessor,
-    private val viewEntityMapper: MoviesViewEntityMapper,
+    private val viewEntitiesMapper: MovieViewEntitiesMapper,
     private val recommendationsType: RecommendationsType
 ) : ViewModel() {
 
-    private val store = MainViewStateStore()
-    val viewState: LiveData<MainViewState> = store.viewState
+    private val store = HomeViewStateStore()
+    val viewState: LiveData<HomeViewState> = store.viewState
 
     private var pagesLoaded: Int = 0
     private var isLoadingMore: Boolean = false
@@ -80,7 +80,7 @@ class MainViewModel @Inject constructor(
         val result = try {
             val recommendations = repository.fetchRecommendations(type, page)
             val ranked = rankingProcessor(recommendations, type)
-            val viewEntities = viewEntityMapper(ranked)
+            val viewEntities = viewEntitiesMapper(ranked)
             Result.Data(type, viewEntities, page)
         } catch (e: IOException) {
             Result.Error(e)

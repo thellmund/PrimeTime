@@ -26,8 +26,8 @@ import com.hellmund.primetime.di.lazyViewModel
 import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui.shared.NavigationEvent
 import com.hellmund.primetime.ui.shared.RateMovieDialog
-import com.hellmund.primetime.ui.suggestions.MainActivity
-import com.hellmund.primetime.ui.suggestions.MainFragment
+import com.hellmund.primetime.ui.MainActivity
+import com.hellmund.primetime.ui.suggestions.HomeFragment
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RatedMovie
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
@@ -122,7 +122,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun handleSearchIntent(type: RecommendationsType) {
-        val fragment = MainFragment.newInstance(type)
+        val fragment = HomeFragment.newInstance(type)
         showFragment(fragment)
     }
 
@@ -179,7 +179,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun navigate(event: NavigationEvent) {
         val recommendationsType = event.getIfNotHandled() ?: return
-        val fragment = MainFragment.newInstance(recommendationsType)
+        val fragment = HomeFragment.newInstance(recommendationsType)
         requireFragmentManager().transaction {
             replace(R.id.contentFrame, fragment)
             addToBackStack(fragment.javaClass.simpleName)

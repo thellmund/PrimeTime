@@ -4,7 +4,7 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.utils.ValueFormatter
 import javax.inject.Inject
 
-class MoviesViewEntityMapper @Inject constructor(
+class MovieViewEntitiesMapper @Inject constructor(
     valueFormatter: ValueFormatter
 ) {
 

@@ -16,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui.onboarding.OnboardingActivity
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.settings.SettingsActivity
@@ -45,7 +46,7 @@ import javax.inject.Provider
 @FlowPreview
 @ExperimentalCoroutinesApi
 @ScrollAwareFragment
-class MainFragment : Fragment(), MainActivity.Reselectable {
+class HomeFragment : Fragment(), MainActivity.Reselectable {
 
     @Inject
     lateinit var imageLoader: ImageLoader
@@ -57,9 +58,9 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
     lateinit var genresRepository: GenresRepository
 
     @Inject
-    lateinit var viewModelProvider: Provider<MainViewModel>
+    lateinit var viewModelProvider: Provider<HomeViewModel>
 
-    private val viewModel: MainViewModel by lazyViewModel { viewModelProvider }
+    private val viewModel: HomeViewModel by lazyViewModel { viewModelProvider }
 
     private val type: RecommendationsType by lazy {
         checkNotNull(arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE))
@@ -136,7 +137,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         }
     }
 
-    private fun render(viewState: MainViewState) {
+    private fun render(viewState: HomeViewState) {
         swipeRefreshLayout.isRefreshing = viewState.isLoading
         if (viewState.isLoading.not()) {
             swipeRefreshLayout.isEnabled = false
@@ -252,7 +253,7 @@ class MainFragment : Fragment(), MainActivity.Reselectable {
         @JvmStatic
         fun newInstance(
             type: RecommendationsType = Personalized()
-        ) = MainFragment().apply {
+        ) = HomeFragment().apply {
             arguments = bundleOf(KEY_RECOMMENDATIONS_TYPE to type)
         }
 

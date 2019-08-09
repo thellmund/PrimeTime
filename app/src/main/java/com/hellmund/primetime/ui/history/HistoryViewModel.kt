@@ -57,7 +57,7 @@ class HistoryViewStateStore : ViewStateStore<HistoryViewState, Result>(
 @FlowPreview
 class HistoryViewModel @Inject constructor(
     private val repository: HistoryRepository,
-    private val viewEntitiesMapper: HistoryMoviesViewEntityMapper,
+    private val viewEntitiesMapper: HistoryMovieViewEntitiesMapper,
     private val viewEntityMapper: HistoryMovieViewEntityMapper
 ) : ViewModel() {
 
