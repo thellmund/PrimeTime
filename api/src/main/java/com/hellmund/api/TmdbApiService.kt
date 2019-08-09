@@ -1,16 +1,10 @@
-package com.hellmund.primetime.data.api
+package com.hellmund.api
 
-import com.hellmund.primetime.data.model.GenresResponse
-import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.ui.selectmovies.SamplesResponse
-import com.hellmund.primetime.ui.suggestions.VideosResponse
-import com.hellmund.primetime.ui.suggestions.data.MoviesResponse
-import com.hellmund.primetime.ui.suggestions.details.ReviewsResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ApiService {
+interface TmdbApiService {
 
     @GET("genre/movie/list")
     suspend fun genres(): GenresResponse
@@ -55,7 +49,7 @@ interface ApiService {
     suspend fun videos(@Path("movieId") movieId: Int): VideosResponse
 
     @GET("movie/{movieId}")
-    suspend fun movie(@Path("movieId") movieId: Int): Movie
+    suspend fun movie(@Path("movieId") movieId: Int): ApiMovie
 
     @GET("search/movie")
     suspend fun search(@Query("query") query: String): MoviesResponse

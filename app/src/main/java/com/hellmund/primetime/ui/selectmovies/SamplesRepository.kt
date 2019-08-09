@@ -1,6 +1,7 @@
 package com.hellmund.primetime.ui.selectmovies
 
-import com.hellmund.primetime.data.api.ApiService
+import com.hellmund.api.Sample
+import com.hellmund.api.TmdbApiService
 import com.hellmund.primetime.data.database.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui.history.HistoryRepository
@@ -13,7 +14,7 @@ interface SamplesRepository {
 }
 
 class RealSamplesRepository @Inject constructor(
-    private val apiService: ApiService,
+    private val apiService: TmdbApiService,
     private val historyRepository: HistoryRepository
 ) : SamplesRepository {
 

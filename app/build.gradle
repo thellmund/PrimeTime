@@ -46,6 +46,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    // Modules
+    implementation project(':api')
+
     // AndroidX
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.browser:browser:1.0.0'
@@ -89,6 +92,7 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.1.0'
 
     // Networking
+    // TODO Remove Retrofit here, as it's already in API module
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.13.1'

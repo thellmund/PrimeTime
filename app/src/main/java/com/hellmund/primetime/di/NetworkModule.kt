@@ -2,7 +2,7 @@ package com.hellmund.primetime.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.hellmund.primetime.data.api.ApiService
+import com.hellmund.api.TmdbApiService
 import com.hellmund.primetime.data.api.DateSerializer
 import com.hellmund.primetime.data.api.RetryInterceptor
 import com.hellmund.primetime.data.api.TmdbInterceptor
@@ -14,6 +14,8 @@ import org.threeten.bp.LocalDate
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+
+// TODO Move to API module; dependency vs. subcomponent?
 
 @Module
 object NetworkModule {
@@ -56,16 +58,14 @@ object NetworkModule {
     @JvmStatic
     @Singleton
     @Provides
-    fun provideApiService(
+    fun provideTmdbApiService(
         okHttpClient: OkHttpClient,
         gson: Gson
-    ): ApiService {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-            .create(ApiService::class.java)
-    }
+    ): TmdbApiService = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .build()
+        .create(TmdbApiService::class.java)
 
 }

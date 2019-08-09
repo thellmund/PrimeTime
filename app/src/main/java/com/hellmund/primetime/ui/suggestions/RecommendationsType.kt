@@ -1,7 +1,6 @@
 package com.hellmund.primetime.ui.suggestions
 
 import android.os.Parcelable
-import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
 import kotlinx.android.parcel.Parcelize
 
@@ -22,6 +21,6 @@ sealed class RecommendationsType : Parcelable {
     object Upcoming : RecommendationsType()
 
     @Parcelize
-    data class ByGenre(val genre: ApiGenre) : RecommendationsType()
+    data class ByGenre(val genre: Genre) : RecommendationsType()
 
 }

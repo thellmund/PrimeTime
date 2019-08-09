@@ -1,6 +1,6 @@
 package com.hellmund.primetime.ui.selectgenres
 
-import com.hellmund.primetime.data.api.ApiService
+import com.hellmund.api.TmdbApiService
 import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.data.model.Genre
 import javax.inject.Inject
@@ -17,7 +17,7 @@ interface GenresRepository {
 }
 
 class RealGenresRepository @Inject constructor(
-    private val apiService: ApiService,
+    private val apiService: TmdbApiService,
     private val database: AppDatabase
 ) : GenresRepository {
 

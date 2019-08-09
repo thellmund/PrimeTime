@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.suggestions.details
+package com.hellmund.api
 
 import com.google.gson.annotations.SerializedName
 

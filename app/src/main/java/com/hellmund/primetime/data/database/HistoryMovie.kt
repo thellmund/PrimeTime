@@ -2,6 +2,7 @@ package com.hellmund.primetime.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.hellmund.api.Sample
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.ui.suggestions.RatedMovie
 import com.hellmund.primetime.ui.watchlist.RatedWatchlistMovie
@@ -29,6 +30,10 @@ data class HistoryMovie(
                 ratedMovie.rating,
                 LocalDateTime.now()
             )
+        }
+
+        fun from(sample: Sample): HistoryMovie {
+            return HistoryMovie(sample.id, sample.title, Rating.Like, LocalDateTime.now())
         }
 
     }

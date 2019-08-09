@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.hellmund.api.Review
 import com.hellmund.primetime.R
-import kotlinx.android.synthetic.main.list_item_review.view.*
+import kotlinx.android.synthetic.main.list_item_review.view.reviewTextView
 
 private const val COLLAPSED_LINES = 3
 

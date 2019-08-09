@@ -8,7 +8,6 @@ import androidx.fragment.app.transaction
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.search.SearchFragment
@@ -134,8 +133,7 @@ class MainActivity : AppCompatActivity() {
             Intents.UPCOMING -> RecommendationsType.Upcoming
             else -> {
                 val genre = genresRepository.getGenre(intent)
-                val apiGenre = ApiGenre(genre.id, genre.name)
-                RecommendationsType.ByGenre(apiGenre)
+                RecommendationsType.ByGenre(genre)
             }
         }
     }

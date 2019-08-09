@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.database.HistoryMovie
-import com.hellmund.primetime.data.model.ApiGenre
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.ui.history.HistoryRepository
@@ -14,8 +13,8 @@ import com.hellmund.primetime.ui.shared.NavigationEvent
 import com.hellmund.primetime.ui.shared.NavigationEventsStore
 import com.hellmund.primetime.ui.shared.Reducer
 import com.hellmund.primetime.ui.shared.ViewStateStore
-import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MovieViewEntitiesMapper
+import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.utils.StringProvider
@@ -95,8 +94,7 @@ class SearchViewModel @Inject constructor(
             "Upcoming" -> RecommendationsType.Upcoming
             else -> {
                 val genre = genresRepository.getGenreByName(category)
-                val apiGenre = ApiGenre(genre.id, genre.name)
-                RecommendationsType.ByGenre(apiGenre)
+                RecommendationsType.ByGenre(genre)
             }
         }
 

@@ -1,8 +1,9 @@
 package com.hellmund.primetime.data.model
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import android.os.Parcelable
+import com.hellmund.api.ApiGenre
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -12,4 +13,10 @@ data class Genre(
     var name: String,
     var isPreferred: Boolean = false,
     var isExcluded: Boolean = false
-) : Parcelable
+) : Parcelable {
+
+    companion object {
+        fun from(apiGenre: ApiGenre) = Genre(apiGenre.id, apiGenre.name)
+    }
+
+}

@@ -1,6 +1,9 @@
-package com.hellmund.primetime.ui.selectmovies
+package com.hellmund.api
 
-/*data class SamplesResponse(val results: List<Sample>)
+import com.google.gson.annotations.SerializedName
+import java.util.Date
+
+data class SamplesResponse(val results: List<Sample>)
 
 data class Sample(
     val id: Int,
@@ -14,8 +17,4 @@ data class Sample(
     val fullPosterUrl: String
         get() = "https://image.tmdb.org/t/p/w500$posterPath"
 
-    fun toHistoryMovie(): HistoryMovie {
-        return HistoryMovie(id, title, Rating.Like, LocalDateTime.now())
-    }
-
-}*/
+}

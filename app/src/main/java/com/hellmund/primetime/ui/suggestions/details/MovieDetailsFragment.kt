@@ -16,6 +16,7 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.hellmund.api.Review
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.di.injector
