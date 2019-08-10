@@ -33,18 +33,11 @@ dependencies {
     implementation project(':data-common')
     implementation project(':ui-common')
 
-    // AndroidX
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.2'
-    implementation 'androidx.preference:preference:1.1.0-rc01'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-
     // AdapterDelegates
-    implementation 'com.hannesdorfmann:adapterdelegates4:4.1.1'
-    implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.1.1'
-    implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-layoutcontainer:4.1.1'
+    implementation libraries.adapterDelegates
+    implementation libraries.adapterDelegatesDsl
+    implementation libraries.adapterDelegatesLayoutContainer
 
-    // Dagger
-    implementation 'com.google.dagger:dagger:2.24'
-    kapt 'com.google.dagger:dagger-compiler:2.24'
+    implementation libraries.constraintLayout
+    kapt libraries.daggerProcessor
 }

@@ -4,20 +4,17 @@ apply plugin: 'kotlin-kapt'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation libraries.kotlin
 
-    // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.13.1'
-    api 'com.google.code.gson:gson:2.8.5'
+    api libraries.retrofit
+    api libraries.retrofitGson
+    api libraries.okHttpLogging
+    api libraries.gson
 
-    // Dagger
-    implementation 'com.google.dagger:dagger:2.24'
-    kapt 'com.google.dagger:dagger-compiler:2.24'
+    implementation libraries.dagger
+    kapt libraries.daggerProcessor
 
-    // Helpers
-    api 'com.jakewharton.threetenabp:threetenabp:1.2.1'
+    api libraries.threeTenAbp
 }
 
 sourceCompatibility = "8"

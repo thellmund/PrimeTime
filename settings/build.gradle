@@ -32,10 +32,5 @@ dependencies {
     implementation project(':data-common')
     implementation project(':ui-common')
 
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.2'
-
-    // Dagger
-    implementation 'com.google.dagger:dagger:2.24'
-    kapt 'com.google.dagger:dagger-compiler:2.24'
+    kapt libraries.daggerProcessor
 }

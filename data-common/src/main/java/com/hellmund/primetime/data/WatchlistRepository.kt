@@ -7,7 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactive.flow.asFlow
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import javax.inject.Inject

@@ -30,7 +30,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation libraries.kotlin
 
     implementation project(':api')
     implementation project(':core')
@@ -38,15 +38,6 @@ dependencies {
     implementation project(':ui-common')
     implementation project(':onboarding')
 
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.2'
-    implementation 'androidx.palette:palette:1.0.0'
-
-    // Dagger
-    implementation 'com.google.dagger:dagger:2.24'
-    kapt 'com.google.dagger:dagger-compiler:2.24'
-
-    // Helpers
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
-    implementation 'com.makeramen:roundedimageview:2.3.0'
+    implementation libraries.palette
+    kapt libraries.daggerProcessor
 }

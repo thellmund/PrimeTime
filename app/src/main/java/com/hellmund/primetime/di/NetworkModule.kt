@@ -2,9 +2,9 @@ package com.hellmund.primetime.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.hellmund.api.TmdbApiService
 import com.hellmund.api.DateSerializer
 import com.hellmund.api.RetryInterceptor
+import com.hellmund.api.TmdbApiService
 import com.hellmund.api.TmdbInterceptor
 import dagger.Module
 import dagger.Provides
@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 import javax.inject.Singleton
 
-// TODO Move to API module; dependency vs. subcomponent?
+// TODO Move to API module?
 
 @Module
 object NetworkModule {
@@ -52,7 +52,7 @@ object NetworkModule {
     @Provides
     fun provideGson(): Gson {
         return GsonBuilder()
-            .registerTypeAdapter(LocalDate::class.java, DateSerializer(Timber::i))
+            .registerTypeAdapter(LocalDate::class.java, DateSerializer { Timber.i(it) })
             .create()
     }
 
