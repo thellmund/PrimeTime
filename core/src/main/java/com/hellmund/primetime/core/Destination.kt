@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 
 enum class AddressableActivity(val className: String) {
+    About("com.hellmund.primetime.about.AboutActivity"),
     Main("com.hellmund.primetime.ui.MainActivity"),
     Onboarding("com.hellmund.primetime.ui.onboarding.OnboardingActivity")
 }

@@ -15,7 +15,7 @@ import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.onboarding.selectmovies.di.SelectMoviesComponent
 import com.hellmund.primetime.ui.selectstreamingservices.SelectStreamingServicesActivity
 import com.hellmund.primetime.ui.selectstreamingservices.di.StreamingServiceModule
-import com.hellmund.primetime.ui.settings.SettingsFragment
+import com.hellmund.primetime.settings.ui.SettingsFragment
 import com.hellmund.primetime.ui.suggestions.di.MovieDetailsComponent
 import com.hellmund.primetime.ui.suggestions.di.MoviesComponent
 import com.hellmund.primetime.ui.suggestions.di.MoviesModule

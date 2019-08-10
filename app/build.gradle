@@ -53,11 +53,11 @@ dependencies {
     implementation project(':data-common')
     implementation project(':history')
     implementation project(':onboarding')
+    implementation project(':settings')
     implementation project(':ui-common')
 
     // AndroidX
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.preference:preference:1.1.0-rc01'

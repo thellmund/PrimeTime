@@ -28,7 +28,7 @@ import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
 import com.hellmund.primetime.ui_common.showLoading
 import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.utils.openUrl
+import com.hellmund.primetime.ui_common.openUrl
 import kotlinx.android.synthetic.main.fragment_movie_details.addToWatchlistButton
 import kotlinx.android.synthetic.main.fragment_movie_details.backdropImageView
 import kotlinx.android.synthetic.main.fragment_movie_details.descriptionTextView

@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/data-common/data-common.iml" filepath="$PROJECT_DIR$/data-common/data-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/history/history.iml" filepath="$PROJECT_DIR$/history/history.iml" />
       <module fileurl="file://$PROJECT_DIR$/onboarding/onboarding.iml" filepath="$PROJECT_DIR$/onboarding/onboarding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/settings/settings.iml" filepath="$PROJECT_DIR$/settings/settings.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui-common/ui-common.iml" filepath="$PROJECT_DIR$/ui-common/ui-common.iml" />
     </modules>
   </component>

@@ -6,6 +6,7 @@ import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.history.HistoryFragment
 import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
 import com.hellmund.primetime.onboarding.selectmovies.ui.SelectMoviesFragment
+import com.hellmund.primetime.settings.ui.SettingsFragment
 import com.hellmund.primetime.utils.NotificationUtils.createChannel
 import com.hellmund.primetime.utils.NotificationUtils.scheduleNotifications
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -16,7 +17,7 @@ import timber.log.Timber
 @ExperimentalCoroutinesApi
 @FlowPreview
 class App : Application(), HistoryFragment.Injector,
-    SelectGenresFragment.Injector, SelectMoviesFragment.Injector {
+    SelectGenresFragment.Injector, SelectMoviesFragment.Injector, SettingsFragment.Injector {
 
     val appComponent: AppComponent by lazy {
         DaggerAppComponent.factory().create(this)
@@ -50,6 +51,10 @@ class App : Application(), HistoryFragment.Injector,
 
     override fun injectSelectGenresFragment(selectGenresFragment: SelectGenresFragment) {
         appComponent.inject(selectGenresFragment)
+    }
+
+    override fun injectSettingsFragment(settingsFragment: SettingsFragment) {
+        appComponent.inject(settingsFragment)
     }
 
 }
