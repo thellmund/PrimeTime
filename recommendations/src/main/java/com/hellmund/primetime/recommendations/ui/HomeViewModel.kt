@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.model.RecommendationsType
-import com.hellmund.primetime.moviedetails.ui.MovieViewEntitiesMapper
-import com.hellmund.primetime.moviedetails.ui.MovieViewEntity
-import com.hellmund.primetime.moviedetails.ui.RatedMovie
+import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.recommendations.data.MovieRankingProcessor
 import com.hellmund.primetime.recommendations.data.MoviesRepository
+import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
+import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.RatedMovie
 import com.hellmund.primetime.ui_common.Reducer
 import com.hellmund.primetime.ui_common.ViewStateStore
 import kotlinx.coroutines.launch

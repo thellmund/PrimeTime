@@ -1,7 +1,7 @@
 package com.hellmund.primetime.recommendations.ui
 
 import com.hellmund.primetime.data.model.RecommendationsType
-import com.hellmund.primetime.moviedetails.ui.MovieViewEntity
+import com.hellmund.primetime.ui_common.MovieViewEntity
 
 data class HomeViewState(
     val recommendationsType: RecommendationsType = RecommendationsType.Personalized(),

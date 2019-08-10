@@ -12,24 +12,24 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.core.AddressableActivity
+import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentArgs.KEY_RECOMMENDATIONS_TYPE
+import com.hellmund.primetime.core.FragmentFactory
 import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.core.createIntent
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.model.RecommendationsType.Personalized
 import com.hellmund.primetime.data.repositories.GenresRepository
-import com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment
-import com.hellmund.primetime.moviedetails.ui.MovieViewEntity
-import com.hellmund.primetime.onboarding.OnboardingActivity
-import com.hellmund.primetime.onboarding.OnboardingHelper
 import com.hellmund.primetime.recommendations.R
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
-import com.hellmund.primetime.ui_common.RateMovieDialog
+import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.Reselectable
+import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
+import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
 import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
 import com.hellmund.primetime.ui_common.onBottomReached
-import com.hellmund.primetime.ui_common.showMultiSelectDialog
 import kotlinx.android.synthetic.main.fragment_home.banner
 import kotlinx.android.synthetic.main.fragment_home.filterFab
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
@@ -59,6 +59,9 @@ class HomeFragment : Fragment(), Reselectable {
 
     @Inject
     lateinit var viewModelProvider: Provider<HomeViewModel>
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     private val viewModel: HomeViewModel by lazyViewModel { viewModelProvider }
 
@@ -102,7 +105,7 @@ class HomeFragment : Fragment(), Reselectable {
     private fun setupPersonalizationBanner() {
         if (onboardingHelper.isFirstLaunch && type is Personalized) {
             banner.setOnClickListener {
-                val intent = OnboardingActivity.newIntent(requireContext())
+                val intent = requireContext().createIntent(AddressableActivity.Onboarding)
                 requireContext().startActivity(intent)
             }
             banner.show()
@@ -154,7 +157,8 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun openMovieDetails(movie: MovieViewEntity) {
-        val fragment = MovieDetailsFragment.newInstance(movie)
+        val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
+        val fragment = fragmentFactory.movieDetails(args)
         fragment.show(requireFragmentManager(), fragment.tag)
     }
 

@@ -2,14 +2,13 @@ package com.hellmund.primetime.watchlist.ui
 
 data class WatchlistViewState(
     val data: List<WatchlistMovieViewEntity> = emptyList(),
-    val isLoading: Boolean = false,
     val error: Throwable? = null,
     val deletedIndex: Int? = null
 ) {
 
     fun toData(
         data: List<WatchlistMovieViewEntity>
-    ) = copy(data = data, isLoading = false, error = null, deletedIndex = null)
+    ) = copy(data = data, error = null, deletedIndex = null)
 
     fun remove(
         removedItem: WatchlistMovieViewEntity
@@ -18,6 +17,6 @@ data class WatchlistViewState(
         return copy(data = data.minus(removedItem), deletedIndex = index)
     }
 
-    fun toError(t: Throwable) = copy(isLoading = false, error = t, deletedIndex = null)
+    fun toError(t: Throwable) = copy(error = t, deletedIndex = null)
 
 }

@@ -5,7 +5,7 @@ import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.settings.util.Preferences
+import com.hellmund.primetime.core.Preferences
 import com.hellmund.primetime.settings.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

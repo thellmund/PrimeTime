@@ -1,11 +1,11 @@
-package com.hellmund.primetime.moviedetails.ui
+package com.hellmund.primetime.ui_common
 
-import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.Movie
+import com.hellmund.primetime.data.repositories.GenresRepository
 import javax.inject.Inject
 
 class MovieViewEntitiesMapper @Inject constructor(
-    valueFormatter: com.hellmund.primetime.ui_common.ValueFormatter,
+    valueFormatter: ValueFormatter,
     genresRepository: GenresRepository
 ) {
 
@@ -18,7 +18,7 @@ class MovieViewEntitiesMapper @Inject constructor(
 }
 
 class MovieViewEntityMapper @Inject constructor(
-    private val valueFormatter: com.hellmund.primetime.ui_common.ValueFormatter,
+    private val valueFormatter: ValueFormatter,
     private val genresRepository: GenresRepository
 ) {
 

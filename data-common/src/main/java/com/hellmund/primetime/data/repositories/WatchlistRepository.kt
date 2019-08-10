@@ -5,7 +5,6 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.WatchlistMovie
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.flow.asFlow
 import org.threeten.bp.LocalDate
@@ -24,7 +23,6 @@ interface WatchlistRepository {
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-@ObsoleteCoroutinesApi
 class RealWatchlistRepository @Inject constructor(
     private val database: AppDatabase
 ) : WatchlistRepository {

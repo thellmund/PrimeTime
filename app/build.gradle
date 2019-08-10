@@ -4,12 +4,12 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion buildConfig.compileSdk
 
     defaultConfig {
         applicationId "com.hellmund.primetime"
-        minSdkVersion 21
-        targetSdkVersion 29
+        minSdkVersion buildConfig.minSdk
+        targetSdkVersion buildConfig.targetSdk
         versionCode 300
         versionName "3.0.0"
 

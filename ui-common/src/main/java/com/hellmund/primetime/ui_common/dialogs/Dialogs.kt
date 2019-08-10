@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui_common
+package com.hellmund.primetime.ui_common.dialogs
 
 import android.app.Dialog
 import android.app.ProgressDialog
@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import com.hellmund.primetime.ui_common.R
 
 @Suppress("DEPRECATION")
 fun Context.showLoading(messageResId: Int): ProgressDialog {

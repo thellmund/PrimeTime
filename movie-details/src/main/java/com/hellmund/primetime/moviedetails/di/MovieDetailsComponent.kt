@@ -3,7 +3,7 @@ package com.hellmund.primetime.moviedetails.di
 import com.hellmund.primetime.moviedetails.data.RealMovieDetailsRepository
 import com.hellmund.primetime.moviedetails.data.MovieDetailsRepository
 import com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment
-import com.hellmund.primetime.moviedetails.ui.MovieViewEntity
+import com.hellmund.primetime.ui_common.MovieViewEntity
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Module

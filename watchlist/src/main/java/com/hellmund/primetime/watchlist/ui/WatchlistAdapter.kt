@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.core.Preferences
 import com.hellmund.primetime.core.Transformation
-import com.hellmund.primetime.settings.util.Preferences
 import com.hellmund.primetime.watchlist.R
 import kotlinx.android.synthetic.main.list_item_watchlist.view.card_view
 import kotlinx.android.synthetic.main.list_item_watchlist.view.description
@@ -124,8 +124,7 @@ class WatchlistAdapter(
         }
 
         private fun setNotificationIcon(movie: WatchlistMovieViewEntity) = with(itemView) {
-            val isEnabled = context.areNotificationsEnabled
-            notificationIcon.isVisible = isEnabled
+            notificationIcon.isVisible = context.areNotificationsEnabled
 
             if (movie.notificationsActivated) {
                 notificationIcon.setImageResource(R.drawable.ic_notifications_active_white_24dp)

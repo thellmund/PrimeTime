@@ -26,8 +26,8 @@ import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
-import com.hellmund.primetime.ui_common.RateMovieDialog
 import com.hellmund.primetime.ui_common.Reselectable
+import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
 import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.isConnected
-import com.hellmund.primetime.onboarding.OnboardingHelper
+import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.lazyViewModel

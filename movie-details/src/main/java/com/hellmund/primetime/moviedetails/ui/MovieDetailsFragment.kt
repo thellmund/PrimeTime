@@ -23,10 +23,11 @@ import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.moviedetails.R
 import com.hellmund.primetime.moviedetails.util.EqualHorizontalSpacingItemDecoration
 import com.hellmund.primetime.moviedetails.util.EqualSpacingItemDecoration
+import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.dialogs.showLoading
 import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
 import com.hellmund.primetime.ui_common.openUrl
-import com.hellmund.primetime.ui_common.showLoading
 import kotlinx.android.synthetic.main.fragment_movie_details.addToWatchlistButton
 import kotlinx.android.synthetic.main.fragment_movie_details.backdropImageView
 import kotlinx.android.synthetic.main.fragment_movie_details.descriptionTextView
@@ -162,7 +163,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     private fun showReviews(reviews: List<Review>) {
         reviewsProgressBar.isVisible = false
         noReviewsPlaceholder.isVisible = reviews.isEmpty()
-        reviewsProgressBar.isVisible = reviews.isNotEmpty()
+        reviewsRecyclerView.isVisible = reviews.isNotEmpty()
         reviewsAdapter.update(reviews)
     }
 
@@ -179,10 +180,6 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         progressDialog?.dismiss()
         requireContext().openUrl(url)
     }
-
-    /*private fun onRatingStored() {
-        updateWatchlistButton(Movie.WatchStatus.WATCHED)
-    }*/
 
     private fun showMovieDetails(movie: MovieViewEntity) {
         durationTextView.text = movie.formattedRuntime

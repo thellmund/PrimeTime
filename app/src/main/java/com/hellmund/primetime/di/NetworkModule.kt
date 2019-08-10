@@ -16,8 +16,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 import javax.inject.Singleton
 
-// TODO Move to API module?
-
 @Module
 object NetworkModule {
 

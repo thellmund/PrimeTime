@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui_common
+package com.hellmund.primetime.ui_common.dialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import com.hellmund.primetime.data.model.Rating
+import com.hellmund.primetime.ui_common.R
+import com.hellmund.primetime.ui_common.RoundedBottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_rate_movie_dialog.negativeButton
 import kotlinx.android.synthetic.main.fragment_rate_movie_dialog.negativeButtonText
 import kotlinx.android.synthetic.main.fragment_rate_movie_dialog.positiveButton

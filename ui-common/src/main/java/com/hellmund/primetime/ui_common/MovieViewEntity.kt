@@ -1,4 +1,4 @@
-package com.hellmund.primetime.moviedetails.ui
+package com.hellmund.primetime.ui_common
 
 import android.os.Parcelable
 import com.hellmund.primetime.data.model.HistoryMovie

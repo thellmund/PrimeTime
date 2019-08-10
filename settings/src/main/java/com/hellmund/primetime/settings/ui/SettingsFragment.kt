@@ -1,6 +1,5 @@
 package com.hellmund.primetime.settings.ui
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -17,11 +16,10 @@ import com.hellmund.primetime.settings.delegates.GenresValidator
 import com.hellmund.primetime.settings.delegates.ValidationResult.NotEnough
 import com.hellmund.primetime.settings.delegates.ValidationResult.Overlap
 import com.hellmund.primetime.settings.delegates.ValidationResult.Success
-import com.hellmund.primetime.settings.util.Preferences
+import com.hellmund.primetime.core.Preferences
 import com.hellmund.primetime.settings.util.doOnPreferenceChange
 import com.hellmund.primetime.settings.util.requirePreference
-import com.hellmund.primetime.ui_common.openUrl
-import com.hellmund.primetime.ui_common.showInfoDialog
+import com.hellmund.primetime.ui_common.dialogs.showInfoDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,11 +39,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
-
         initIncludedGenresPref()
         initExcludedGenresPref()
-        initRateAppPref()
         initAboutAppPref()
     }
 
@@ -70,8 +65,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private suspend fun saveGenresSelection(pref: Preference, newValue: Any): Boolean {
-        val result = genresValidator.validate(pref, newValue)
-        return when (result) {
+        return when (val result = genresValidator.validate(pref, newValue)) {
             is Success -> {
                 genresDelegate.updateGenresSummary(pref, result.genres)
                 true
@@ -95,25 +89,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val sharedGenres = genres.joinToString("\n") { "• ${it.name}" }
         val error = getString(R.string.error_already_in_genres, sharedGenres)
         requireContext().showInfoDialog(error)
-    }
-
-    private fun initRateAppPref() {
-        val ratePrimeTime = requirePreference<Preference>(Preferences.KEY_PLAY_STORE)
-
-        ratePrimeTime.setOnPreferenceClickListener {
-            openPlayStore()
-            true
-        }
-    }
-
-    private fun openPlayStore() {
-        val packageName = requireActivity().packageName
-
-        try {
-            requireContext().openUrl("market://details?id=$packageName")
-        } catch (e: ActivityNotFoundException) {
-            requireContext().openUrl("https://play.google.com/store/apps/details?id=$packageName")
-        }
     }
 
     private fun initAboutAppPref() {

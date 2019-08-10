@@ -13,8 +13,8 @@ import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.history.R
 import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
-import com.hellmund.primetime.ui_common.showItemsDialog
-import com.hellmund.primetime.ui_common.showSingleSelectDialog
+import com.hellmund.primetime.ui_common.dialogs.showItemsDialog
+import com.hellmund.primetime.ui_common.dialogs.showSingleSelectDialog
 import com.hellmund.primetime.ui_common.showToast
 import kotlinx.android.synthetic.main.fragment_history.progressBar
 import kotlinx.android.synthetic.main.fragment_history.recyclerView

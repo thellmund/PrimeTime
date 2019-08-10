@@ -30,10 +30,6 @@
     <PreferenceCategory android:title="@string/about_the_app">
 
         <PreferenceScreen
-            android:key="primetime_rate_playstore"
-            android:title="@string/rate_on_play_store" />
-
-        <PreferenceScreen
             android:key="primetime_about_app"
             android:title="@string/about" />
 

@@ -17,7 +17,7 @@ import androidx.core.content.getSystemService
 import androidx.preference.PreferenceManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.WatchlistMovie
-import com.hellmund.primetime.settings.util.Preferences
+import com.hellmund.primetime.core.Preferences
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 
