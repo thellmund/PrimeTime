@@ -3,9 +3,9 @@ package com.hellmund.primetime.di
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.hellmund.api.TmdbApiService
-import com.hellmund.primetime.data.api.DateSerializer
-import com.hellmund.primetime.data.api.RetryInterceptor
-import com.hellmund.primetime.data.api.TmdbInterceptor
+import com.hellmund.api.DateSerializer
+import com.hellmund.api.RetryInterceptor
+import com.hellmund.api.TmdbInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -13,6 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.threeten.bp.LocalDate
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import javax.inject.Singleton
 
 // TODO Move to API module; dependency vs. subcomponent?
@@ -51,7 +52,7 @@ object NetworkModule {
     @Provides
     fun provideGson(): Gson {
         return GsonBuilder()
-            .registerTypeAdapter(LocalDate::class.java, DateSerializer())
+            .registerTypeAdapter(LocalDate::class.java, DateSerializer(Timber::i))
             .create()
     }
 

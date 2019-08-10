@@ -21,8 +21,8 @@ import com.hellmund.primetime.ui.selectstreamingservices.SelectStreamingServices
 import com.hellmund.primetime.ui.selectstreamingservices.di.StreamingServiceModule
 import com.hellmund.primetime.moviedetails.di.MovieDetailsComponent
 import com.hellmund.primetime.moviedetails.di.MovieDetailsModule
-import com.hellmund.primetime.ui.recommendations.di.MoviesComponent
-import com.hellmund.primetime.ui.recommendations.di.MoviesModule
+import com.hellmund.primetime.recommendations.di.MoviesComponent
+import com.hellmund.primetime.recommendations.di.MoviesModule
 import com.hellmund.primetime.utils.NotificationPublisher
 import com.hellmund.primetime.watchlist.di.WatchlistModule
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment

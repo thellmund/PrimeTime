@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.onboarding.OnboardingHelper
-import kotlinx.android.synthetic.main.activity_select_streaming_services.*
+import com.hellmund.primetime.ui.MainActivity
+import kotlinx.android.synthetic.main.activity_select_streaming_services.button
+import kotlinx.android.synthetic.main.activity_select_streaming_services.recyclerView
 import javax.inject.Inject
 
+@Deprecated("")
 class SelectStreamingServicesActivity : AppCompatActivity() {
 
     @Inject

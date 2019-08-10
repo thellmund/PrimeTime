@@ -2,7 +2,7 @@ package com.hellmund.primetime.data.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.hellmund.api.ApiMovie
+import com.hellmund.api.model.ApiMovie
 import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.LocalDate
 

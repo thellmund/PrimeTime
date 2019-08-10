@@ -14,7 +14,6 @@ android {
         versionName "3.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_KEY", API_KEY)
     }
 
     compileOptions {
@@ -53,7 +52,8 @@ dependencies {
     implementation project(':data-common')
     implementation project(':history')
     implementation project(':onboarding')
-    implementation project(':moviedetails')
+    implementation project(':movie-details')
+    implementation project(':recommendations')
     implementation project(':search')
     implementation project(':settings')
     implementation project(':ui-common')

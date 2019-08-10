@@ -3,7 +3,7 @@ package com.hellmund.primetime.onboarding.selectmovies.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.api.Sample
+import com.hellmund.api.model.Sample
 import com.hellmund.primetime.data.GenresRepository
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating

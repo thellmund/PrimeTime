@@ -1,5 +1,11 @@
 package com.hellmund.api
 
+import com.hellmund.api.model.ApiMovie
+import com.hellmund.api.model.GenresResponse
+import com.hellmund.api.model.MoviesResponse
+import com.hellmund.api.model.ReviewsResponse
+import com.hellmund.api.model.SamplesResponse
+import com.hellmund.api.model.VideosResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

@@ -3,7 +3,7 @@ package com.hellmund.primetime.onboarding.selectmovies.ui
 import android.widget.ImageView
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateLayoutContainer
-import com.hellmund.api.Sample
+import com.hellmund.api.model.Sample
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.Transformation
 import com.hellmund.primetime.onboarding.R

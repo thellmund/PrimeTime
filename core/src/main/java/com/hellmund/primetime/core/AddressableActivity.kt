@@ -11,7 +11,8 @@ enum class AddressableActivity(val className: String) {
     About("com.hellmund.primetime.about.AboutActivity"),
     History("com.hellmund.primetime.history.ui.HistoryActivity"),
     Main("com.hellmund.primetime.ui.MainActivity"),
-    Onboarding("com.hellmund.primetime.ui.onboarding.OnboardingActivity")
+    Onboarding("com.hellmund.primetime.ui.onboarding.OnboardingActivity"),
+    Settings("com.hellmund.primetime.settings.ui.SettingsActivity")
 }
 
 enum class AddressableFragment(val className: String) {

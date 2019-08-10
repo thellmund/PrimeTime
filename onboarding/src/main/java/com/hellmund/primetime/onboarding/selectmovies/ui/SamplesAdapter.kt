@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
-import com.hellmund.api.Sample
+import com.hellmund.api.model.Sample
 import com.hellmund.primetime.core.ImageLoader
 
 class SamplesAdapter(

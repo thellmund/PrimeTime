@@ -1,13 +1,15 @@
 package com.hellmund.primetime
 
 import android.app.Application
+import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.di.AppComponent
 import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.history.ui.HistoryFragment
-import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
-import com.hellmund.primetime.onboarding.selectmovies.ui.SelectMoviesFragment
 import com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment
 import com.hellmund.primetime.moviedetails.ui.MovieViewEntity
+import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
+import com.hellmund.primetime.onboarding.selectmovies.ui.SelectMoviesFragment
+import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.settings.ui.SettingsFragment
 import com.hellmund.primetime.utils.NotificationUtils.createChannel
@@ -22,7 +24,8 @@ import timber.log.Timber
 @FlowPreview
 class App : Application(), HistoryFragment.Injector, SelectGenresFragment.Injector,
     SelectMoviesFragment.Injector, SettingsFragment.Injector,
-    WatchlistFragment.Injector, SearchFragment.Injector, MovieDetailsFragment.Injector {
+    WatchlistFragment.Injector, SearchFragment.Injector,
+    MovieDetailsFragment.Injector, HomeFragment.Injector {
 
     val appComponent: AppComponent by lazy {
         DaggerAppComponent.factory().create(this)
@@ -77,6 +80,12 @@ class App : Application(), HistoryFragment.Injector, SelectGenresFragment.Inject
         appComponent.movieDetailsComponent()
             .create(movieViewEntity)
             .inject(movieDetailsFragment)
+    }
+
+    override fun injectHomeFragment(homeFragment: HomeFragment, type: RecommendationsType) {
+        appComponent.mainComponent()
+            .create(type)
+            .inject(homeFragment)
     }
 
 }
