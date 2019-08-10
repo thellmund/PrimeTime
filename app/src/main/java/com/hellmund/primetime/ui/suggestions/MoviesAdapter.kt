@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.core.ImageLoader
 
 class MoviesAdapter(
     private val imageLoader: ImageLoader,

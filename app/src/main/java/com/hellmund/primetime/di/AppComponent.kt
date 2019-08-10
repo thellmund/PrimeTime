@@ -2,12 +2,14 @@ package com.hellmund.primetime.di
 
 import android.content.Context
 import androidx.work.WorkManager
+import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.core.PicassoImageLoader
 import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.history.HistoryFragment
-import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.history.HistoryModule
+import com.hellmund.primetime.onboarding.selectgenres.SelectGenresFragment
+import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui.introduction.IntroductionActivity
-import com.hellmund.primetime.ui.onboarding.SelectGenresFragment
 import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.selectgenres.di.GenresModule
 import com.hellmund.primetime.ui.selectmovies.di.SelectMoviesComponent
@@ -19,9 +21,7 @@ import com.hellmund.primetime.ui.suggestions.di.MoviesComponent
 import com.hellmund.primetime.ui.suggestions.di.MoviesModule
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.ui.watchlist.di.WatchlistModule
-import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.NotificationPublisher
-import com.hellmund.primetime.utils.PicassoImageLoader
 import com.hellmund.primetime.utils.RealStringProvider
 import com.hellmund.primetime.utils.StringProvider
 import dagger.Binds

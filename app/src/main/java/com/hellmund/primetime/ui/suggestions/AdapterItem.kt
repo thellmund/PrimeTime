@@ -2,8 +2,8 @@ package com.hellmund.primetime.ui.suggestions
 
 import androidx.annotation.LayoutRes
 import com.hellmund.primetime.R
-import com.hellmund.primetime.utils.ImageLoader
-import com.hellmund.primetime.utils.Transformation
+import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.core.Transformation
 import kotlinx.android.synthetic.main.list_item_movies.view.posterImageView
 
 sealed class AdapterItem(@LayoutRes val viewType: Int) {

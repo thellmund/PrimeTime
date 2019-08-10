@@ -8,10 +8,10 @@ import androidx.fragment.app.transaction
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
+import com.hellmund.primetime.data.GenresRepository
 import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.search.SearchFragment
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.suggestions.FragmentLifecycleCallback
 import com.hellmund.primetime.ui.suggestions.HomeFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType

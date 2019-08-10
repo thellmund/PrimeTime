@@ -1,7 +1,7 @@
 package com.hellmund.primetime.ui.selectgenres.di
 
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import com.hellmund.primetime.ui.selectgenres.RealGenresRepository
+import com.hellmund.primetime.data.GenresRepository
+import com.hellmund.primetime.data.RealGenresRepository
 import dagger.Binds
 import dagger.Module
 

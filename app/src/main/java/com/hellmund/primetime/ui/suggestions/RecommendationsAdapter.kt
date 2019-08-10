@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.R
-import com.hellmund.primetime.utils.ImageLoader
-import com.hellmund.primetime.utils.Transformation
-import kotlinx.android.synthetic.main.list_item_samples_list.view.*
+import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.core.Transformation
+import kotlinx.android.synthetic.main.list_item_recommendations.view.posterImageView
 
 class RecommendationsAdapter(
     private val imageLoader: ImageLoader,

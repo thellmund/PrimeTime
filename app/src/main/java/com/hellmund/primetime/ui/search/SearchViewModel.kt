@@ -7,8 +7,8 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Rating
-import com.hellmund.primetime.history.HistoryRepository
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.data.HistoryRepository
+import com.hellmund.primetime.data.GenresRepository
 import com.hellmund.primetime.ui.shared.NavigationEvent
 import com.hellmund.primetime.ui.shared.NavigationEventsStore
 import com.hellmund.primetime.ui_common.Reducer

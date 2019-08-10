@@ -10,7 +10,7 @@ import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.shared.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui.MainActivity
-import com.hellmund.primetime.utils.OnboardingHelper
+import com.hellmund.primetime.onboarding.OnboardingHelper
 import kotlinx.android.synthetic.main.activity_select_streaming_services.*
 import javax.inject.Inject
 

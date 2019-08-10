@@ -1,8 +1,8 @@
 package com.hellmund.primetime.ui.selectmovies.di
 
-import com.hellmund.primetime.ui.onboarding.SelectMoviesFragment
-import com.hellmund.primetime.ui.selectmovies.RealSamplesRepository
-import com.hellmund.primetime.ui.selectmovies.SamplesRepository
+import com.hellmund.primetime.onboarding.selectmovies.SelectMoviesFragment
+import com.hellmund.primetime.onboarding.selectmovies.RealSamplesRepository
+import com.hellmund.primetime.onboarding.selectmovies.SamplesRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Subcomponent

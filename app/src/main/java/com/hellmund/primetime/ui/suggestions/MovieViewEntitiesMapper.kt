@@ -1,7 +1,7 @@
 package com.hellmund.primetime.ui.suggestions
 
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.data.GenresRepository
 import javax.inject.Inject
 
 class MovieViewEntitiesMapper @Inject constructor(

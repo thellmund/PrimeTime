@@ -51,6 +51,7 @@ dependencies {
     implementation project(':core')
     implementation project(':data-common')
     implementation project(':history')
+    implementation project(':onboarding')
     implementation project(':ui-common')
 
     // AndroidX
@@ -100,13 +101,7 @@ dependencies {
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.makeramen:roundedimageview:2.3.0'
-    implementation 'com.facebook.shimmer:shimmer:0.4.0'
     implementation 'com.github.thellmund:ViewPagerTwoIndicator:0.8.1'
-
-    // AdapterDelegates
-    implementation 'com.hannesdorfmann:adapterdelegates4:4.1.1'
-    implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.1.1'
-    implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl-layoutcontainer:4.1.1'
 
     // Testing
     testImplementation 'junit:junit:4.12'

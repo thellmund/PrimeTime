@@ -3,7 +3,7 @@ package com.hellmund.primetime.ui.watchlist
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.history.HistoryRepository
+import com.hellmund.primetime.data.HistoryRepository
 import com.hellmund.primetime.ui_common.Reducer
 import com.hellmund.primetime.ui_common.ViewStateStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi

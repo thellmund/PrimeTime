@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.hellmund.primetime.R
-import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.utils.NotificationUtils
-import com.hellmund.primetime.utils.Transformation
+import com.hellmund.primetime.core.Transformation
 import kotlinx.android.synthetic.main.list_item_watchlist.view.card_view
 import kotlinx.android.synthetic.main.list_item_watchlist.view.description
 import kotlinx.android.synthetic.main.list_item_watchlist.view.infoContainer

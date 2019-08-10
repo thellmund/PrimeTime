@@ -15,7 +15,7 @@ import com.hellmund.primetime.ui.shared.RateMovieDialog
 import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
 import com.hellmund.primetime.ui_common.showCancelableDialog
-import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.core.ImageLoader
 import kotlinx.android.synthetic.main.fragment_watchlist.content
 import kotlinx.android.synthetic.main.fragment_watchlist.indicator
 import kotlinx.android.synthetic.main.fragment_watchlist.placeholder

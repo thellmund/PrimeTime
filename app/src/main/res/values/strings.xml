@@ -15,7 +15,6 @@
     <string name="title_activity_select_movie">Select Movie</string>
 
     <!-- Dialogs -->
-    <string name="select_genres_header">What are your favorite genres?</string>
     <string name="close">Close</string>
 
     <!-- Recommendations dialog -->
@@ -36,9 +35,6 @@
 
     <!-- SelectMovies Activity -->
     <string name="watchlist_error_text">Go ahead and add some by tapping “Add to Watchlist” when swiping through recommendations.</string>
-    <string name="select_movies_header">What are your favorite movies?</string>
-    <string name="select_movies_text">Mark some that you’ve liked.</string>
-    <string name="finish">Finish</string>
 
     <!-- Main Activity -->
     <string name="no_more_recommendations">No more recommendations</string>
@@ -49,7 +45,6 @@
 
 
     <!-- Main Menu -->
-    <string name="not_connected">You are not connected to the Internet.</string>
     <string name="categories">Categories</string>
     <string name="refresh">Refresh</string>
 
@@ -75,7 +70,6 @@
     <!-- Settings Activity -->
     <string name="faq_tmdb_notice"><small>This product uses the TMDb API but is not endorsed or certified by TMDb.</small></string>
     <string name="settings">Settings</string>
-    <string name="error_text">An error occurred</string>
     <string name="error_already_in_genres">You selected the following genres in both “Preferred genres” and “Excluded genres”:\n\n%s\n\nA genre can only be added to one of them, not both. Your changes will not be saved.</string>
     <string name="need_more_genres">At least 2 genres have to stay checked in order to provide recommendations. Your changes will not be saved.</string>
     <string name="preferred_genres_summary">Select the genres that you want recommendations from</string>
@@ -94,7 +88,6 @@
     <string name="movie_poster">Movie poster</string>
     <string name="history_need_4_movies">At least 4 movies have to stayed rated in order to provide recommendations.</string>
     <string name="not_available">Not available</string>
-    <string name="error_select_movie">The sample movies couldn’t be downloaded. Try again.</string>
     <string name="show_similar_movies">Show similar movies</string>
     <string name="preferred_genres">Favorite genres</string>
     <string name="excluded_genres">Excluded genres</string>
@@ -168,7 +161,7 @@
     <string name="notification_off">Notification turned off</string>
 
     <string name="remove_from_watchlist_header">Remove from watchlist?</string>
-    <string name="select_at_least">Select at least %d movies</string>
+
     <string name="action">Action</string>
     <string name="adventure">Adventure</string>
     <string name="animation">Animation</string>
@@ -191,9 +184,7 @@
     <string name="western">Western</string>
 
     <string name="home">Home</string>
-    <string name="next">Next</string>
     <string name="discover">Discover</string>
-    <string name="select_more_format_string">Select %d more</string>
     <string name="filter">Filter</string>
     <string name="filter_recommendations">Filter recommendations</string>
     <string name="skip">Skip</string>

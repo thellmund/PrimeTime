@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui_common.lazyViewModel
-import com.hellmund.primetime.utils.ImageLoader
+import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.ui_common.observe
 import kotlinx.android.synthetic.main.activity_introduction.gridView
 import kotlinx.android.synthetic.main.activity_introduction.introductionButton

@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
 import com.hellmund.api.Review
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.history.HistoryRepository
+import com.hellmund.primetime.data.HistoryRepository
 import com.hellmund.primetime.ui.suggestions.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MovieViewEntityMapper

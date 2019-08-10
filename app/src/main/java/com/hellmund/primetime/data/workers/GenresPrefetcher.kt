@@ -9,7 +9,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
+import com.hellmund.primetime.data.GenresRepository
 import java.io.IOException
 import javax.inject.Inject
 
