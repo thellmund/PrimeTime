@@ -2,7 +2,7 @@ package com.hellmund.primetime.ui.suggestions.data
 
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.HistoryRepository
-import com.hellmund.primetime.ui.suggestions.RecommendationsType
+import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.WatchlistRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

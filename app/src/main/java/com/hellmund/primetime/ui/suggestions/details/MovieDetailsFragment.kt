@@ -18,17 +18,19 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.hellmund.api.Review
 import com.hellmund.primetime.R
+import com.hellmund.primetime.core.FragmentArgs
+import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.search.ui.SearchViewEntity
 import com.hellmund.primetime.ui.selectstreamingservices.EqualHorizontalSpacingItemDecoration
 import com.hellmund.primetime.ui.shared.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsAdapter
 import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
-import com.hellmund.primetime.ui_common.showLoading
-import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.ui_common.openUrl
+import com.hellmund.primetime.ui_common.showLoading
 import kotlinx.android.synthetic.main.fragment_movie_details.addToWatchlistButton
 import kotlinx.android.synthetic.main.fragment_movie_details.backdropImageView
 import kotlinx.android.synthetic.main.fragment_movie_details.descriptionTextView
@@ -62,7 +64,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     private val viewModel: MovieDetailsViewModel by lazyViewModel { viewModelProvider }
 
     private val movie: MovieViewEntity by lazy {
-        checkNotNull(arguments?.getParcelable<MovieViewEntity>(KEY_MOVIE))
+        checkNotNull(arguments?.getParcelable<MovieViewEntity>(FragmentArgs.KEY_MOVIE))
     }
 
     private val recommendationsAdapter: RecommendationsAdapter by lazy {
@@ -218,11 +220,13 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     companion object {
 
-        private const val KEY_MOVIE = "KEY_MOVIE"
+        fun newInstance(
+            movie: SearchViewEntity
+        ): MovieDetailsFragment = newInstance(MovieViewEntity.fromSearchResult(movie))
 
         fun newInstance(movie: MovieViewEntity): MovieDetailsFragment {
             return MovieDetailsFragment().apply {
-                arguments = bundleOf(KEY_MOVIE to movie)
+                arguments = bundleOf(FragmentArgs.KEY_MOVIE to movie)
             }
         }
 

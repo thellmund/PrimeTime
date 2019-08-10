@@ -54,7 +54,7 @@
         android:contentDescription="@string/clear_search"
         android:paddingLeft="@dimen/large_space"
         android:paddingRight="@dimen/large_space"
-        android:src="@drawable/ic_clear_white_24dp"
+        android:src="@drawable/ic_clear_black"
         android:visibility="gone"
         tools:visibility="visible" />
 

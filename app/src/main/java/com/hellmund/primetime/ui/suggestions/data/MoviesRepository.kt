@@ -2,17 +2,15 @@ package com.hellmund.primetime.ui.suggestions.data
 
 import com.hellmund.api.Review
 import com.hellmund.api.TmdbApiService
+import com.hellmund.primetime.data.GenresRepository
+import com.hellmund.primetime.data.HistoryRepository
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.data.HistoryRepository
-import com.hellmund.primetime.data.GenresRepository
-import com.hellmund.primetime.ui.suggestions.MovieViewEntity
-import com.hellmund.primetime.ui.suggestions.RecommendationsType
-import com.hellmund.primetime.ui.suggestions.VideoResolver
+import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.onboarding.OnboardingHelper
+import com.hellmund.primetime.ui.suggestions.MovieViewEntity
+import com.hellmund.primetime.ui.suggestions.VideoResolver
 import javax.inject.Inject
-
-/*data class MoviesResponse(val results: List<Movie>)*/
 
 interface MoviesRepository {
     suspend fun fetchRecommendations(type: RecommendationsType, page: Int): List<Movie>

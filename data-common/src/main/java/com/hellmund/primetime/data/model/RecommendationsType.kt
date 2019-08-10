@@ -1,7 +1,6 @@
-package com.hellmund.primetime.ui.suggestions
+package com.hellmund.primetime.data.model
 
 import android.os.Parcelable
-import com.hellmund.primetime.data.model.Genre
 import kotlinx.android.parcel.Parcelize
 
 sealed class RecommendationsType : Parcelable {

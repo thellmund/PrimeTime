@@ -1,7 +1,7 @@
 package com.hellmund.primetime.ui.suggestions.di
 
+import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.HomeFragment
-import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui.suggestions.data.RealMoviesRepository
 import dagger.Binds

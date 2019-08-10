@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.HistoryRepository
+import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.ui.suggestions.data.MovieRankingProcessor
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
 import com.hellmund.primetime.ui_common.Reducer

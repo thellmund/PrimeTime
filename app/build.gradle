@@ -53,6 +53,7 @@ dependencies {
     implementation project(':data-common')
     implementation project(':history')
     implementation project(':onboarding')
+    implementation project(':search')
     implementation project(':settings')
     implementation project(':ui-common')
     implementation project(':watchlist')

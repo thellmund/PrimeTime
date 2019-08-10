@@ -1,23 +1,25 @@
-package com.hellmund.primetime.ui.search
+package com.hellmund.primetime.search.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.hellmund.primetime.R
-import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.Transformation
-import kotlinx.android.synthetic.main.list_item_search_results.view.*
+import com.hellmund.primetime.search.R
+import kotlinx.android.synthetic.main.list_item_search_results.view.description
+import kotlinx.android.synthetic.main.list_item_search_results.view.genres
+import kotlinx.android.synthetic.main.list_item_search_results.view.posterImageView
+import kotlinx.android.synthetic.main.list_item_search_results.view.title
 
 class SearchResultsAdapter(
     private val imageLoader: ImageLoader,
-    private val onItemClick: (MovieViewEntity) -> Unit,
-    private val onWatched: (MovieViewEntity) -> Unit
+    private val onItemClick: (SearchViewEntity) -> Unit,
+    private val onWatched: (SearchViewEntity) -> Unit
 ) : RecyclerView.Adapter<SearchResultsAdapter.ViewHolder>() {
 
-    private val items = mutableListOf<MovieViewEntity>()
+    private val items = mutableListOf<SearchViewEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -31,7 +33,7 @@ class SearchResultsAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    fun update(newItems: List<MovieViewEntity>) {
+    fun update(newItems: List<SearchViewEntity>) {
         items.clear()
         items += newItems
         notifyDataSetChanged()
@@ -46,9 +48,9 @@ class SearchResultsAdapter(
 
         fun bind(
             imageLoader: ImageLoader,
-            searchResult: MovieViewEntity,
-            onItemClick: (MovieViewEntity) -> Unit,
-            onWatchedIt: (MovieViewEntity) -> Unit
+            searchResult: SearchViewEntity,
+            onItemClick: (SearchViewEntity) -> Unit,
+            onWatchedIt: (SearchViewEntity) -> Unit
         ) = with(itemView) {
             loadImage(imageLoader, searchResult.posterUrl)
 

@@ -9,14 +9,15 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.GenresRepository
+import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.ui.search.SearchFragment
+import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.ui.suggestions.FragmentLifecycleCallback
 import com.hellmund.primetime.ui.suggestions.HomeFragment
-import com.hellmund.primetime.ui.suggestions.RecommendationsType
-import com.hellmund.primetime.watchlist.ui.WatchlistFragment
+import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.utils.Intents
+import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager.popBackStack()
             }
             R.id.search -> {
-                val fragment = SearchFragment.newInstance()
+                val fragment = SearchFragment.newInstance(onCategorySelected = this::openRecommendationsType)
                 showFragment(fragment)
             }
             R.id.watchlist -> {
@@ -97,6 +98,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun openRecommendationsType(type: RecommendationsType) {
+        val fragment = HomeFragment.newInstance(type)
+        supportFragmentManager.transaction {
+            replace(R.id.contentFrame, fragment)
+            addToBackStack(fragment.javaClass.simpleName)
+        }
+    }
+
     private fun handleShortcutOpen(intent: String) {
         when (intent) {
             Intents.WATCHLIST -> openWatchlistFromIntent()
@@ -116,10 +125,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun openSearchFromIntent(extra: String? = null) {
+    private fun openSearchFromIntent(extra: String? = null) {
         lifecycleScope.launch {
             val type = extra?.let { createRecommendationsTypeFromIntent(it) }
-            val fragment = SearchFragment.newInstance(type)
+            val fragment = SearchFragment.newInstance(type, this@MainActivity::openRecommendationsType)
             showFragment(fragment)
             bottomNavigation.selectedItemId = R.id.search
         }
@@ -167,10 +176,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallback)
         super.onDestroy()
-    }
-
-    interface Reselectable {
-        fun onReselected()
     }
 
 }

@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.search
+package com.hellmund.primetime.search.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -12,25 +12,21 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.core.content.getSystemService
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.transaction
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.hellmund.primetime.R
+import com.hellmund.primetime.core.FragmentArgs
+import com.hellmund.primetime.core.FragmentFactory
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.ui.MainActivity
-import com.hellmund.primetime.ui.shared.NavigationEvent
-import com.hellmund.primetime.ui_common.RateMovieDialog
-import com.hellmund.primetime.ui.suggestions.HomeFragment
-import com.hellmund.primetime.ui.suggestions.MovieViewEntity
-import com.hellmund.primetime.ui.suggestions.RatedMovie
-import com.hellmund.primetime.ui.suggestions.RecommendationsType
-import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
+import com.hellmund.primetime.data.model.RecommendationsType
+import com.hellmund.primetime.search.R
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
+import com.hellmund.primetime.ui_common.RateMovieDialog
+import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
 import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView
@@ -50,13 +46,18 @@ import javax.inject.Provider
 @ExperimentalCoroutinesApi
 @FlowPreview
 class SearchFragment : Fragment(), TextWatcher,
-    TextView.OnEditorActionListener, MainActivity.Reselectable {
+    TextView.OnEditorActionListener, Reselectable {
 
     @Inject
     lateinit var imageLoader: ImageLoader
 
     @Inject
     lateinit var viewModelProvider: Provider<SearchViewModel>
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
+    private var onCategorySelected: (RecommendationsType) -> Unit = {}
 
     private val categoriesAdapter: SearchCategoriesAdapter by lazy {
         SearchCategoriesAdapter(onItemClick = this::onCategorySelected)
@@ -78,7 +79,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        injector.inject(this)
+        (context.applicationContext as Injector).injectSearchFragment(this)
     }
 
     override fun onCreateView(
@@ -121,15 +122,12 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun handleSearchIntent(type: RecommendationsType) {
-        val fragment = HomeFragment.newInstance(type)
-        showFragment(fragment)
-    }
-
-    private fun showFragment(fragment: Fragment) {
+        // TODO
+        /*val fragment = HomeFragment.newInstance(type)
         requireFragmentManager().transaction {
             replace(R.id.contentFrame, fragment)
             addToBackStack(fragment.javaClass.simpleName)
-        }
+        }*/
     }
 
     private fun initSearch() {
@@ -178,11 +176,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun navigate(event: NavigationEvent) {
         val recommendationsType = event.getIfNotHandled() ?: return
-        val fragment = HomeFragment.newInstance(recommendationsType)
-        requireFragmentManager().transaction {
-            replace(R.id.contentFrame, fragment)
-            addToBackStack(fragment.javaClass.simpleName)
-        }
+        onCategorySelected(recommendationsType)
     }
 
     private fun buildCategories(genres: List<Genre>): List<String> {
@@ -229,12 +223,13 @@ class SearchFragment : Fragment(), TextWatcher,
         return false
     }
 
-    private fun onItemClick(movie: MovieViewEntity) {
-        val fragment = MovieDetailsFragment.newInstance(movie)
+    private fun onItemClick(movie: SearchViewEntity) {
+        val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
+        val fragment = fragmentFactory.movieDetails(args)
         fragment.show(requireFragmentManager(), fragment.tag)
     }
 
-    private fun onWatched(movie: MovieViewEntity) {
+    private fun onWatched(movie: SearchViewEntity) {
         RateMovieDialog
             .make(requireActivity())
             .setTitle(movie.title)
@@ -264,14 +259,22 @@ class SearchFragment : Fragment(), TextWatcher,
         super.onDestroyView()
     }
 
+    interface Injector {
+        fun injectSearchFragment(searchFragment: SearchFragment)
+    }
+
     companion object {
 
         private const val KEY_RECOMMENDATIONS_TYPE = "KEY_RECOMMENDATIONS_TYPE"
 
         @JvmStatic
-        fun newInstance(type: RecommendationsType? = null): SearchFragment {
+        fun newInstance(
+            type: RecommendationsType? = null,
+            onCategorySelected: (RecommendationsType) -> Unit = {}
+        ): SearchFragment {
             return SearchFragment().apply {
                 arguments = Bundle().apply { putParcelable(KEY_RECOMMENDATIONS_TYPE, type) }
+                this.onCategorySelected = onCategorySelected
             }
         }
 

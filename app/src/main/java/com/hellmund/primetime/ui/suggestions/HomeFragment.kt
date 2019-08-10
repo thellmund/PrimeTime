@@ -16,16 +16,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.data.GenresRepository
+import com.hellmund.primetime.data.model.RecommendationsType
+import com.hellmund.primetime.data.model.RecommendationsType.Personalized
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.onboarding.OnboardingActivity
 import com.hellmund.primetime.onboarding.OnboardingHelper
-import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.settings.ui.SettingsActivity
-import com.hellmund.primetime.ui_common.RateMovieDialog
 import com.hellmund.primetime.ui.shared.ScrollAwareFragment
-import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
+import com.hellmund.primetime.ui_common.RateMovieDialog
+import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
 import com.hellmund.primetime.ui_common.onBottomReached
@@ -46,7 +47,7 @@ import javax.inject.Provider
 @FlowPreview
 @ExperimentalCoroutinesApi
 @ScrollAwareFragment
-class HomeFragment : Fragment(), MainActivity.Reselectable {
+class HomeFragment : Fragment(), Reselectable {
 
     @Inject
     lateinit var imageLoader: ImageLoader

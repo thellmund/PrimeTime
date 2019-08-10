@@ -21,7 +21,6 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.concurrent.schedule
 
-
 class IntroductionActivity : AppCompatActivity() {
 
     @Inject

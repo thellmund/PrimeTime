@@ -1,9 +1,10 @@
 package com.hellmund.primetime.ui.suggestions
 
 import android.os.Parcelable
+import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.Rating
-import com.hellmund.primetime.data.model.HistoryMovie
+import com.hellmund.primetime.search.ui.SearchViewEntity
 import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.LocalDateTime
 
@@ -25,6 +26,28 @@ data class MovieViewEntity(
 ) : Parcelable {
 
     fun apply(rating: Rating) = RatedMovie(this, rating)
+
+    companion object {
+
+        fun fromSearchResult(
+            searchViewEntity: SearchViewEntity
+        ) = MovieViewEntity(
+            searchViewEntity.id,
+            searchViewEntity.posterUrl,
+            searchViewEntity.backdropUrl,
+            searchViewEntity.title,
+            searchViewEntity.formattedGenres,
+            searchViewEntity.description,
+            searchViewEntity.releaseYear,
+            searchViewEntity.popularity,
+            searchViewEntity.formattedVoteAverage,
+            searchViewEntity.formattedVoteCount,
+            searchViewEntity.formattedRuntime,
+            searchViewEntity.imdbId,
+            searchViewEntity.raw
+        )
+
+    }
 
 }
 

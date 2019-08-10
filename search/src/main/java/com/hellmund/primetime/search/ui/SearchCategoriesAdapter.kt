@@ -1,10 +1,10 @@
-package com.hellmund.primetime.ui.search
+package com.hellmund.primetime.search.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hellmund.primetime.R
+import com.hellmund.primetime.search.R
 import kotlinx.android.synthetic.main.list_item_category.view.*
 
 class SearchCategoriesAdapter(

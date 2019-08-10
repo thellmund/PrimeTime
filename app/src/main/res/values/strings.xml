@@ -95,15 +95,10 @@
     <string name="random_download_text_05">Still looking for the movie tickets …</string>
     <string name="random_download_text_06">The actors are still putting on their makeup …</string>
     <string name="random_download_text_07">Patience is a virtue …</string>
-    <string name="will_more_like_this">Will show more like this</string>
-    <string name="will_less_like_this">Will show less like this</string>
     <string name="removed_like">Removed like</string>
     <string name="removed_dislike">Removed dislike</string>
     <string name="downloading_samples">Downloading some sample movies</string>
     <string name="movie_based_recommendations">Recommendation based on movie</string>
-    <string name="search">Search</string>
-    <string name="no_results_found">No results found</string>
-    <string name="try_again_search_text">Check your spelling or try another keyword.</string>
     <string name="currently_popular">Currently popular</string>
     <string name="no_similar_movies_header">No similar movies</string>
     <string name="no_similar_movies_text">Couldn’t find similar movies. Maybe try recommendations based on a genre or a specific movie?</string>
@@ -127,10 +122,8 @@
     <string name="show_more">Show more …</string>
     <string name="show_less">Show less …</string>
     <string name="removing_like">Removed like</string>
-    <string name="clear_search">Clear search</string>
+
     <string name="removed_from_history">Removed from history</string>
-    <string name="now_playing">Now playing</string>
-    <string name="upcoming">Upcoming</string>
     <string name="notify_release_date">Notify on %s at 9am</string>
     <string name="dont_notify">Don’t notify</string>
     <string name="done">Done</string>
