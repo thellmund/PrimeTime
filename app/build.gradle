@@ -48,7 +48,10 @@ dependencies {
 
     // Modules
     implementation project(':api')
+    implementation project(':core')
     implementation project(':data-common')
+    implementation project(':history')
+    implementation project(':ui-common')
 
     // AndroidX
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -61,13 +64,6 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0-beta02'
 
     implementation 'com.google.android.material:material:1.1.0-alpha09'
-
-    // Lifecycle & ViewModel
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha02'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha02'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha02'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha02'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
 
     // RxJava
     implementation 'io.reactivex.rxjava2:rxjava:2.2.11'

@@ -13,13 +13,13 @@ import com.google.android.material.chip.Chip
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui.selectgenres.Action
 import com.hellmund.primetime.ui.selectgenres.GenreChip
 import com.hellmund.primetime.ui.selectgenres.SelectGenresViewModel
 import com.hellmund.primetime.ui.selectgenres.SelectGenresViewState
 import com.hellmund.primetime.ui.shared.SingleLiveDataEvent
-import com.hellmund.primetime.utils.observe
+import com.hellmund.primetime.ui_common.observe
 import kotlinx.android.synthetic.main.fragment_select_genres.button
 import kotlinx.android.synthetic.main.fragment_select_genres.chipGroup
 import kotlinx.android.synthetic.main.fragment_select_genres.container

@@ -1,5 +1,3 @@
-@file:JvmName("WebUtils")
-
 package com.hellmund.primetime.utils
 
 import android.content.Context

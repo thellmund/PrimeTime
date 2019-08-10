@@ -1,0 +1,10 @@
+<resources>
+    <string name="history">History</string>
+    <string name="access_open_rating_dialog">Open rating dialog</string>
+    <string name="added_on">%1$s on %2$s</string>
+    <string name="edit_rating">Edit rating</string>
+    <string name="remove_from_history">Remove from history</string>
+    <string name="cant_remove_more_items">Can’t remove more items.</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+</resources>

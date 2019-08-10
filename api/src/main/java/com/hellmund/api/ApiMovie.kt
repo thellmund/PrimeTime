@@ -7,8 +7,8 @@ data class MoviesResponse(val results: List<ApiMovie>)
 
 data class ApiMovie(
     val id: Int,
-    @SerializedName("poster_path") val posterPath: String,
-    @SerializedName("backdrop_path") val backdropPath: String,
+    @SerializedName("poster_path") val posterPath: String?,
+    @SerializedName("backdrop_path") val backdropPath: String?,
     val title: String,
     @SerializedName("genre_ids") val genreIds: List<Int>? = emptyList(),
     @SerializedName("genres") val genres: List<ApiGenre>? = emptyList(),
@@ -21,11 +21,7 @@ data class ApiMovie(
     @SerializedName("imdb_id") val imdbId: String? = null
 ) {
 
-    val fullPosterUrl: String
-        get() = "https://image.tmdb.org/t/p/w500$posterPath"
-
-    enum class WatchStatus {
-        NOT_WATCHED, ON_WATCHLIST, WATCHED
-    }
+    val isValid: Boolean
+        get() = posterPath != null && backdropPath != null
 
 }

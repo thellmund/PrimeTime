@@ -34,8 +34,8 @@ data class Movie(
 
         fun from(apiMovie: ApiMovie) = Movie(
             apiMovie.id,
-            apiMovie.posterPath,
-            apiMovie.backdropPath,
+            checkNotNull(apiMovie.posterPath),
+            checkNotNull(apiMovie.backdropPath),
             apiMovie.title,
             apiMovie.genreIds,
             apiMovie.genres.orEmpty().map { Genre.from(it) },

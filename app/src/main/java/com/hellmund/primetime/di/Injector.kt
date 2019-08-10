@@ -17,3 +17,7 @@ val Fragment.injector: AppComponent
 
 val ListenableWorker.injector: AppComponent
     get() = (applicationContext as App).appComponent
+
+interface Injector {
+    fun inject()
+}

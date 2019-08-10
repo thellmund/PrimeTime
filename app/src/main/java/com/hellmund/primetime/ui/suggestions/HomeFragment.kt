@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui.onboarding.OnboardingActivity
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
@@ -27,9 +27,9 @@ import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.OnboardingHelper
-import com.hellmund.primetime.utils.observe
-import com.hellmund.primetime.utils.onBottomReached
-import com.hellmund.primetime.utils.showMultiSelectDialog
+import com.hellmund.primetime.ui_common.observe
+import com.hellmund.primetime.ui_common.onBottomReached
+import com.hellmund.primetime.ui_common.showMultiSelectDialog
 import kotlinx.android.synthetic.main.fragment_main.banner
 import kotlinx.android.synthetic.main.fragment_main.filterFab
 import kotlinx.android.synthetic.main.fragment_main.recyclerView

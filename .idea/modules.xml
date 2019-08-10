@@ -5,7 +5,10 @@
       <module fileurl="file://$PROJECT_DIR$/PrimeTime.iml" filepath="$PROJECT_DIR$/PrimeTime.iml" />
       <module fileurl="file://$PROJECT_DIR$/api/api.iml" filepath="$PROJECT_DIR$/api/api.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/data-common/data-common.iml" filepath="$PROJECT_DIR$/data-common/data-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/history/history.iml" filepath="$PROJECT_DIR$/history/history.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ui-common/ui-common.iml" filepath="$PROJECT_DIR$/ui-common/ui-common.iml" />
     </modules>
   </component>
 </project>

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.transition.TransitionManager
 import com.hellmund.primetime.R
+import com.hellmund.primetime.ui_common.updatePadding
 import kotlinx.android.synthetic.main.view_banner.view.negativeButton
 import kotlinx.android.synthetic.main.view_banner.view.positiveButton
 

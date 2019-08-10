@@ -44,7 +44,7 @@
         <item name="android:navigationBarColor" tools:targetApi="o_mr1">@color/grey_800</item>
     </style>
 
-    <style name="TextAppearance" />
+    <!--<style name="TextAppearance" />
 
     <style name="TextAppearance.Headline">
         <item name="fontFamily">sans-serif-medium</item>
@@ -86,6 +86,6 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="TextAppearance.Button" parent="TextAppearance.Title.Small" />
+    <style name="TextAppearance.Button" parent="TextAppearance.Title.Small" />-->
 
 </resources>

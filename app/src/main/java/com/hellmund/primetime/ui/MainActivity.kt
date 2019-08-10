@@ -18,7 +18,6 @@ import com.hellmund.primetime.ui.suggestions.RecommendationsType
 import com.hellmund.primetime.ui.watchlist.WatchlistFragment
 import com.hellmund.primetime.utils.Intents
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
-import kotlinx.android.synthetic.main.view_toolbar.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -83,7 +82,6 @@ class MainActivity : AppCompatActivity() {
 
         injector.inject(this)
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallback, false)
-        setSupportActionBar(toolbar)
 
         genresPrefetcher.run()
 

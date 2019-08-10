@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.di.lazyViewModel
+import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui.selectmovies.Action
 import com.hellmund.primetime.ui.selectmovies.SamplesAdapter
 import com.hellmund.primetime.ui.selectmovies.SelectMoviesViewModel
@@ -20,9 +20,9 @@ import com.hellmund.primetime.ui.shared.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.OnboardingHelper
 import com.hellmund.primetime.utils.isConnected
-import com.hellmund.primetime.utils.observe
-import com.hellmund.primetime.utils.onBottomReached
-import com.hellmund.primetime.utils.showToast
+import com.hellmund.primetime.ui_common.observe
+import com.hellmund.primetime.ui_common.onBottomReached
+import com.hellmund.primetime.ui_common.showToast
 import kotlinx.android.synthetic.main.fragment_select_movies.button
 import kotlinx.android.synthetic.main.fragment_select_movies.error_container
 import kotlinx.android.synthetic.main.fragment_select_movies.gridView

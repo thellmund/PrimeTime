@@ -11,12 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.di.lazyViewModel
-import com.hellmund.primetime.ui.history.HistoryActivity
 import com.hellmund.primetime.ui.shared.RateMovieDialog
+import com.hellmund.primetime.ui_common.lazyViewModel
+import com.hellmund.primetime.ui_common.observe
+import com.hellmund.primetime.ui_common.showCancelableDialog
 import com.hellmund.primetime.utils.ImageLoader
-import com.hellmund.primetime.utils.observe
-import com.hellmund.primetime.utils.showCancelableDialog
 import kotlinx.android.synthetic.main.fragment_watchlist.content
 import kotlinx.android.synthetic.main.fragment_watchlist.indicator
 import kotlinx.android.synthetic.main.fragment_watchlist.placeholder
@@ -119,7 +118,7 @@ class WatchlistFragment : Fragment() {
     }
 
     private fun openHistory() {
-        val intent = Intent(requireContext(), HistoryActivity::class.java)
+        val intent = Intent(requireContext(), com.hellmund.primetime.history.HistoryActivity::class.java)
         startActivity(intent)
     }
 

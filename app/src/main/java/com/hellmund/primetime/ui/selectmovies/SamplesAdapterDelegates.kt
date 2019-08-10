@@ -6,7 +6,7 @@ import com.hellmund.api.Sample
 import com.hellmund.primetime.R
 import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.Transformation
-import com.hellmund.primetime.utils.showToast
+import com.hellmund.primetime.ui_common.showToast
 import kotlinx.android.synthetic.main.list_item_samples_list.container
 import kotlinx.android.synthetic.main.list_item_samples_list.posterImageView
 

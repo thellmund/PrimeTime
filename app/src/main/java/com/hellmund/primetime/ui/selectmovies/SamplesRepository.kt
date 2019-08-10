@@ -4,7 +4,7 @@ import com.hellmund.api.Sample
 import com.hellmund.api.TmdbApiService
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.ui.history.HistoryRepository
+import com.hellmund.primetime.history.HistoryRepository
 import org.threeten.bp.LocalDate
 import javax.inject.Inject
 

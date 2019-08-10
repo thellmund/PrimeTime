@@ -7,8 +7,8 @@ import com.hellmund.api.Sample
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import com.hellmund.primetime.ui.shared.Reducer
-import com.hellmund.primetime.ui.shared.ViewStateStore
+import com.hellmund.primetime.ui_common.Reducer
+import com.hellmund.primetime.ui_common.ViewStateStore
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime.now
 import java.io.IOException

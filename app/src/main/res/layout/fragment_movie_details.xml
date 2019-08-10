@@ -73,7 +73,7 @@
 
         <TextView
             android:id="@+id/genresTextView"
-            style="@style/TextAppearance.Title.Small"
+            style="@style/TextAppearance.Body"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_space"

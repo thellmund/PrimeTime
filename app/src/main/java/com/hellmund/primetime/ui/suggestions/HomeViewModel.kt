@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.ui.history.HistoryRepository
-import com.hellmund.primetime.ui.shared.Reducer
-import com.hellmund.primetime.ui.shared.ViewStateStore
+import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.ui.suggestions.data.MovieRankingProcessor
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
+import com.hellmund.primetime.ui_common.Reducer
+import com.hellmund.primetime.ui_common.ViewStateStore
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject

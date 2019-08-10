@@ -4,7 +4,7 @@ import com.hellmund.api.Review
 import com.hellmund.api.TmdbApiService
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.ui.history.HistoryRepository
+import com.hellmund.primetime.history.HistoryRepository
 import com.hellmund.primetime.ui.selectgenres.GenresRepository
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
@@ -72,25 +72,35 @@ class RealMoviesRepository @Inject constructor(
 
     private suspend fun fetchNowPlayingRecommendations(
         page: Int
-    ) = apiService.nowPlaying(page).results.map { Movie.from(it) }
+    ) = apiService.nowPlaying(page).results
+        .filter { it.isValid }
+        .map { Movie.from(it) }
 
     private suspend fun fetchUpcomingRecommendations(
         page: Int
-    ): List<Movie> = apiService.upcoming(page).results.map { Movie.from(it) }
+    ): List<Movie> = apiService.upcoming(page).results
+        .filter { it.isValid }
+        .map { Movie.from(it) }
 
     override suspend fun fetchRecommendations(
         movieId: Int,
         page: Int
-    ): List<Movie> = apiService.recommendations(movieId, page).results.map { Movie.from(it) }
+    ): List<Movie> = apiService.recommendations(movieId, page).results
+        .filter { it.isValid }
+        .map { Movie.from(it) }
 
     private suspend fun fetchGenreRecommendations(
         genreId: Int,
         page: Int = 1
-    ): List<Movie> = apiService.genreRecommendations(genreId, page).results.map { Movie.from(it) }
+    ) = apiService.genreRecommendations(genreId, page).results
+        .filter { it.isValid }
+        .map { Movie.from(it) }
 
     private suspend fun fetchTopRatedMovies(
         page: Int = 1
-    ): List<Movie> = apiService.topRatedMovies(page).results.map { Movie.from(it) }
+    ): List<Movie> = apiService.topRatedMovies(page).results
+        .filter { it.isValid }
+        .map { Movie.from(it) }
 
     override suspend fun fetchVideo(movie: MovieViewEntity): String {
         val results = apiService.videos(movie.id).results
@@ -103,10 +113,12 @@ class RealMoviesRepository @Inject constructor(
 
     override suspend fun searchMovies(
         query: String
-    ): List<Movie> = apiService.search(query).results.map { Movie.from(it) }
+    ): List<Movie> = apiService.search(query).results
+        .filter { it.isValid }
+        .map { Movie.from(it) }
 
     override suspend fun fetchPopularMovies(): List<Movie> {
-        return apiService.popular().results.map { Movie.from(it) }
+        return apiService.popular().results.filter { it.isValid }.map { Movie.from(it) }
     }
 
     override suspend fun fetchReviews(

@@ -3,8 +3,9 @@ package com.hellmund.primetime.di
 import android.content.Context
 import androidx.work.WorkManager
 import com.hellmund.primetime.data.workers.GenresPrefetcher
-import com.hellmund.primetime.ui.history.HistoryFragment
-import com.hellmund.primetime.ui.history.di.HistoryModule
+import com.hellmund.primetime.history.HistoryFragment
+import com.hellmund.primetime.ui.MainActivity
+import com.hellmund.primetime.history.HistoryModule
 import com.hellmund.primetime.ui.introduction.IntroductionActivity
 import com.hellmund.primetime.ui.onboarding.SelectGenresFragment
 import com.hellmund.primetime.ui.search.SearchFragment
@@ -13,7 +14,6 @@ import com.hellmund.primetime.ui.selectmovies.di.SelectMoviesComponent
 import com.hellmund.primetime.ui.selectstreamingservices.SelectStreamingServicesActivity
 import com.hellmund.primetime.ui.selectstreamingservices.di.StreamingServiceModule
 import com.hellmund.primetime.ui.settings.SettingsFragment
-import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui.suggestions.di.MovieDetailsComponent
 import com.hellmund.primetime.ui.suggestions.di.MoviesComponent
 import com.hellmund.primetime.ui.suggestions.di.MoviesModule
@@ -23,9 +23,7 @@ import com.hellmund.primetime.utils.ImageLoader
 import com.hellmund.primetime.utils.NotificationPublisher
 import com.hellmund.primetime.utils.PicassoImageLoader
 import com.hellmund.primetime.utils.RealStringProvider
-import com.hellmund.primetime.utils.RealValueFormatter
 import com.hellmund.primetime.utils.StringProvider
-import com.hellmund.primetime.utils.ValueFormatter
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
@@ -77,7 +75,7 @@ interface AppModule {
 
     @Singleton
     @Binds
-    fun bindValueFormatter(impl: RealValueFormatter): ValueFormatter
+    fun bindValueFormatter(impl: com.hellmund.primetime.ui_common.RealValueFormatter): com.hellmund.primetime.ui_common.ValueFormatter
 
     @Singleton
     @Binds

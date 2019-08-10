@@ -3,9 +3,9 @@ package com.hellmund.primetime.ui.watchlist
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.ui.history.HistoryRepository
-import com.hellmund.primetime.ui.shared.Reducer
-import com.hellmund.primetime.ui.shared.ViewStateStore
+import com.hellmund.primetime.history.HistoryRepository
+import com.hellmund.primetime.ui_common.Reducer
+import com.hellmund.primetime.ui_common.ViewStateStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect

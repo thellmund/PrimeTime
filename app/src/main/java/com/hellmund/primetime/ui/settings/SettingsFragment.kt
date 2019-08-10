@@ -21,7 +21,7 @@ import com.hellmund.primetime.ui.settings.delegates.ValidationResult.Overlap
 import com.hellmund.primetime.ui.settings.delegates.ValidationResult.Success
 import com.hellmund.primetime.utils.Preferences
 import com.hellmund.primetime.utils.openUrl
-import com.hellmund.primetime.utils.showInfoDialog
+import com.hellmund.primetime.ui_common.showInfoDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
