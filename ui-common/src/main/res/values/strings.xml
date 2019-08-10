@@ -8,6 +8,10 @@
     <string name="cancel">Cancel</string>
     <string name="like">It was great</string>
     <string name="dislike">Didn’t like it</string>
+    <string name="history">History</string>
+    <string name="rate_movie">Rate “%s”</string>
+    <string name="show_more_like_this">Show more like this</string>
+    <string name="show_less_like_this">Show less like this</string>
 
     <plurals name="vote_count_format_string">
         <item quantity="one">%d votes</item>

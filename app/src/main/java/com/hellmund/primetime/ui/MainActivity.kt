@@ -15,7 +15,7 @@ import com.hellmund.primetime.ui.search.SearchFragment
 import com.hellmund.primetime.ui.suggestions.FragmentLifecycleCallback
 import com.hellmund.primetime.ui.suggestions.HomeFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType
-import com.hellmund.primetime.ui.watchlist.WatchlistFragment
+import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.hellmund.primetime.utils.Intents
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,0 +1,8 @@
+<resources>
+    <string name="watchlist_error_title">No movies in your Watchlist</string>
+    <string name="watchlist_error_text">Go ahead and add some by tapping “Add to Watchlist” when swiping through recommendations.</string>
+    <string name="release_on">Release on %s</string>
+    <string name="watchlist">Watchlist</string>
+    <string name="remove_from_watchlist_header">Remove from watchlist?</string>
+    <string name="remove">Remove</string>
+</resources>

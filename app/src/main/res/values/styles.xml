@@ -20,20 +20,6 @@
         <item name="android:statusBarColor">@color/grey_850</item>
     </style>
 
-    <style name="BottomDialog" parent="@style/Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/bottom_sheet_background</item>
-    </style>
-
-    <style name="BaseBottomSheetDialog" parent="@style/Theme.MaterialComponents.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="bottomSheetStyle">@style/BottomDialog</item>
-    </style>
-
-    <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor" tools:targetApi="o_mr1">@color/grey_800</item>
-    </style>
-
     <!--<style name="TextAppearance" />
 
     <style name="TextAppearance.Headline">

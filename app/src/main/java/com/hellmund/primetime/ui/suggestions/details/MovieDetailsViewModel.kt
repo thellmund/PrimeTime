@@ -14,7 +14,7 @@ import com.hellmund.primetime.ui.suggestions.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.MovieViewEntityMapper
 import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
-import com.hellmund.primetime.ui.watchlist.WatchlistRepository
+import com.hellmund.primetime.data.WatchlistRepository
 import com.hellmund.primetime.ui_common.observe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

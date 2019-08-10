@@ -52,7 +52,7 @@
             android:label="@string/title_activity_introduction"
             android:theme="@style/AppTheme.Introduction" />
         <activity
-            android:name=".history.HistoryActivity"
+            android:name=".history.ui.HistoryActivity"
             android:label="@string/title_activity_history">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

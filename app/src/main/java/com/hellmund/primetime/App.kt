@@ -3,12 +3,13 @@ package com.hellmund.primetime
 import android.app.Application
 import com.hellmund.primetime.di.AppComponent
 import com.hellmund.primetime.di.DaggerAppComponent
-import com.hellmund.primetime.history.HistoryFragment
+import com.hellmund.primetime.history.ui.HistoryFragment
 import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
 import com.hellmund.primetime.onboarding.selectmovies.ui.SelectMoviesFragment
 import com.hellmund.primetime.settings.ui.SettingsFragment
 import com.hellmund.primetime.utils.NotificationUtils.createChannel
 import com.hellmund.primetime.utils.NotificationUtils.scheduleNotifications
+import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.jakewharton.threetenabp.AndroidThreeTen
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -16,8 +17,8 @@ import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class App : Application(), HistoryFragment.Injector,
-    SelectGenresFragment.Injector, SelectMoviesFragment.Injector, SettingsFragment.Injector {
+class App : Application(), HistoryFragment.Injector, SelectGenresFragment.Injector,
+    SelectMoviesFragment.Injector, SettingsFragment.Injector, WatchlistFragment.Injector {
 
     val appComponent: AppComponent by lazy {
         DaggerAppComponent.factory().create(this)
@@ -55,6 +56,10 @@ class App : Application(), HistoryFragment.Injector,
 
     override fun injectSettingsFragment(settingsFragment: SettingsFragment) {
         appComponent.inject(settingsFragment)
+    }
+
+    override fun injectWatchlistFragment(watchlistFragment: WatchlistFragment) {
+        appComponent.inject(watchlistFragment)
     }
 
 }

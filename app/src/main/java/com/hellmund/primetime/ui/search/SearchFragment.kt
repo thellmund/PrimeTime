@@ -24,7 +24,7 @@ import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui.shared.NavigationEvent
-import com.hellmund.primetime.ui.shared.RateMovieDialog
+import com.hellmund.primetime.ui_common.RateMovieDialog
 import com.hellmund.primetime.ui.suggestions.HomeFragment
 import com.hellmund.primetime.ui.suggestions.MovieViewEntity
 import com.hellmund.primetime.ui.suggestions.RatedMovie

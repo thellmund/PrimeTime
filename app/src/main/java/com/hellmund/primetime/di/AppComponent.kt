@@ -5,8 +5,8 @@ import androidx.work.WorkManager
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.PicassoImageLoader
 import com.hellmund.primetime.data.workers.GenresPrefetcher
-import com.hellmund.primetime.history.HistoryFragment
-import com.hellmund.primetime.history.HistoryModule
+import com.hellmund.primetime.history.ui.HistoryFragment
+import com.hellmund.primetime.history.di.HistoryModule
 import com.hellmund.primetime.onboarding.selectgenres.di.GenresModule
 import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
 import com.hellmund.primetime.ui.MainActivity
@@ -19,8 +19,8 @@ import com.hellmund.primetime.settings.ui.SettingsFragment
 import com.hellmund.primetime.ui.suggestions.di.MovieDetailsComponent
 import com.hellmund.primetime.ui.suggestions.di.MoviesComponent
 import com.hellmund.primetime.ui.suggestions.di.MoviesModule
-import com.hellmund.primetime.ui.watchlist.WatchlistFragment
-import com.hellmund.primetime.ui.watchlist.di.WatchlistModule
+import com.hellmund.primetime.watchlist.ui.WatchlistFragment
+import com.hellmund.primetime.watchlist.di.WatchlistModule
 import com.hellmund.primetime.utils.NotificationPublisher
 import com.hellmund.primetime.utils.RealStringProvider
 import com.hellmund.primetime.utils.StringProvider

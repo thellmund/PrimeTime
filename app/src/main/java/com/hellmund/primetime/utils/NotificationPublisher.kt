@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.getSystemService
 import com.hellmund.primetime.di.app
-import com.hellmund.primetime.ui.watchlist.WatchlistRepository
+import com.hellmund.primetime.data.WatchlistRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate

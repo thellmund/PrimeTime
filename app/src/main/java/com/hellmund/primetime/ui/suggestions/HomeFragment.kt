@@ -21,7 +21,7 @@ import com.hellmund.primetime.onboarding.OnboardingActivity
 import com.hellmund.primetime.onboarding.OnboardingHelper
 import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.settings.ui.SettingsActivity
-import com.hellmund.primetime.ui.shared.RateMovieDialog
+import com.hellmund.primetime.ui_common.RateMovieDialog
 import com.hellmund.primetime.ui.shared.ScrollAwareFragment
 import com.hellmund.primetime.ui.suggestions.RecommendationsType.Personalized
 import com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment

@@ -1,5 +1,4 @@
 <resources>
-    <string name="history">History</string>
     <string name="access_open_rating_dialog">Open rating dialog</string>
     <string name="added_on">%1$s on %2$s</string>
     <string name="edit_rating">Edit rating</string>

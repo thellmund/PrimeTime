@@ -22,19 +22,16 @@
 
     <!-- Notifications -->
     <string name="personalized_recommendations">Personalized recommendations</string>
-    <string name="rate_movie">Rate “%s”</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="delete">Delete</string>
 
     <!-- Watchlist Activity -->
-    <string name="remove">Remove</string>
     <string name="watched_it">Watched it</string>
     <string name="error_getting_movies">An error occurred. Please try again.</string>
     <string name="watchlist_error_title">No movies in your Watchlist</string>
 
     <!-- SelectMovies Activity -->
-    <string name="watchlist_error_text">Go ahead and add some by tapping “Add to Watchlist” when swiping through recommendations.</string>
 
     <!-- Main Activity -->
     <string name="no_more_recommendations">No more recommendations</string>
@@ -54,7 +51,6 @@
 
 
     <!-- MovieDetail Activity -->
-    <string name="watchlist">Watchlist</string>
     <string name="more_info">More info</string>
     <string name="poster_content_description">Widescreen movie poster</string>
     <string name="movie_referrer">Recommendation based on %s</string>
@@ -99,8 +95,6 @@
     <string name="random_download_text_05">Still looking for the movie tickets …</string>
     <string name="random_download_text_06">The actors are still putting on their makeup …</string>
     <string name="random_download_text_07">Patience is a virtue …</string>
-    <string name="show_more_like_this">Show more like this</string>
-    <string name="show_less_like_this">Show less like this</string>
     <string name="will_more_like_this">Will show more like this</string>
     <string name="will_less_like_this">Will show less like this</string>
     <string name="removed_like">Removed like</string>
@@ -137,7 +131,6 @@
     <string name="removed_from_history">Removed from history</string>
     <string name="now_playing">Now playing</string>
     <string name="upcoming">Upcoming</string>
-    <string name="release_on">Release on %s</string>
     <string name="notify_release_date">Notify on %s at 9am</string>
     <string name="dont_notify">Don’t notify</string>
     <string name="done">Done</string>
@@ -145,8 +138,6 @@
     <string name="opening_trailer">Opening trailer …</string>
     <string name="showing_notification_on">Showing notification on %s</string>
     <string name="notification_off">Notification turned off</string>
-
-    <string name="remove_from_watchlist_header">Remove from watchlist?</string>
 
     <string name="action">Action</string>
     <string name="adventure">Adventure</string>

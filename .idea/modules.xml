@@ -12,6 +12,7 @@
       <module fileurl="file://$PROJECT_DIR$/onboarding/onboarding.iml" filepath="$PROJECT_DIR$/onboarding/onboarding.iml" />
       <module fileurl="file://$PROJECT_DIR$/settings/settings.iml" filepath="$PROJECT_DIR$/settings/settings.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui-common/ui-common.iml" filepath="$PROJECT_DIR$/ui-common/ui-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/watchlist/watchlist.iml" filepath="$PROJECT_DIR$/watchlist/watchlist.iml" />
     </modules>
   </component>
 </project>
