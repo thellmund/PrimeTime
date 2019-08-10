@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.transaction
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
 import com.hellmund.primetime.R
@@ -75,14 +74,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun openCategory(type: RecommendationsType) {
-        val fragment = HomeFragment.newInstance(type)
-        supportFragmentManager.transaction {
-            replace(R.id.contentFrame, fragment)
-            addToBackStack(null)
-        }
-    }
-
     private fun handleShortcutOpen(intent: String) {
         when (intent) {
             Intents.WATCHLIST -> openWatchlistFromIntent()
@@ -94,7 +85,7 @@ class MainActivity : AppCompatActivity() {
     private fun openSearchFromIntent(extra: String? = null) {
         lifecycleScope.launch {
             val type = extra?.let { getRecommendationsTypeFromIntent(it) }
-            navigator.openSearch(type, this@MainActivity::openCategory)
+            navigator.openSearch(type)
             bottomNavigation.selectedItemId = R.id.search
         }
     }

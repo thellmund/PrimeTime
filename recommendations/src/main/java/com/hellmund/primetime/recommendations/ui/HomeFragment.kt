@@ -12,11 +12,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.core.AddressableActivity
+import com.hellmund.primetime.core.FragmentArgs.KEY_RECOMMENDATIONS_TYPE
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.createIntent
-import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.model.RecommendationsType.Personalized
+import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment
 import com.hellmund.primetime.moviedetails.ui.MovieViewEntity
 import com.hellmund.primetime.onboarding.OnboardingActivity
@@ -246,8 +247,6 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     companion object {
-
-        private const val KEY_RECOMMENDATIONS_TYPE = "KEY_RECOMMENDATIONS_TYPE"
 
         @JvmStatic
         fun newInstance(

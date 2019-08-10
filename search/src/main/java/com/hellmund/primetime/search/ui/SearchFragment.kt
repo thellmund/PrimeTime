@@ -15,6 +15,7 @@ import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.transaction
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -57,8 +58,6 @@ class SearchFragment : Fragment(), TextWatcher,
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private var onCategorySelected: (RecommendationsType) -> Unit = {}
-
     private val categoriesAdapter: SearchCategoriesAdapter by lazy {
         SearchCategoriesAdapter(onItemClick = this::onCategorySelected)
     }
@@ -100,7 +99,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
         val type = arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE)
         type?.let {
-            handleSearchIntent(it)
+            openCategory(it)
         }
     }
 
@@ -119,15 +118,6 @@ class SearchFragment : Fragment(), TextWatcher,
         viewState.snackbarText?.let {
             snackbar.setText(it).show()
         } ?: snackbar.dismiss()
-    }
-
-    private fun handleSearchIntent(type: RecommendationsType) {
-        // TODO
-        /*val fragment = HomeFragment.newInstance(type)
-        requireFragmentManager().transaction {
-            replace(R.id.contentFrame, fragment)
-            addToBackStack(fragment.javaClass.simpleName)
-        }*/
     }
 
     private fun initSearch() {
@@ -176,7 +166,16 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun navigate(event: NavigationEvent) {
         val recommendationsType = event.getIfNotHandled() ?: return
-        onCategorySelected(recommendationsType)
+        openCategory(recommendationsType)
+    }
+
+    private fun openCategory(type: RecommendationsType) {
+        val args = bundleOf(FragmentArgs.KEY_RECOMMENDATIONS_TYPE to type)
+        val fragment = fragmentFactory.category(args)
+        requireFragmentManager().transaction {
+            replace(R.id.contentFrame, fragment)
+            addToBackStack(null)
+        }
     }
 
     private fun buildCategories(genres: List<Genre>): List<String> {
@@ -269,13 +268,9 @@ class SearchFragment : Fragment(), TextWatcher,
 
         @JvmStatic
         fun newInstance(
-            type: RecommendationsType? = null,
-            onCategorySelected: (RecommendationsType) -> Unit = {}
-        ): SearchFragment {
-            return SearchFragment().apply {
-                arguments = Bundle().apply { putParcelable(KEY_RECOMMENDATIONS_TYPE, type) }
-                this.onCategorySelected = onCategorySelected
-            }
+            type: RecommendationsType? = null
+        ) = SearchFragment().apply {
+            arguments = bundleOf(KEY_RECOMMENDATIONS_TYPE to type)
         }
 
     }

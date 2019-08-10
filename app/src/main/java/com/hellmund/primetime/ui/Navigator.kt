@@ -30,8 +30,8 @@ class Navigator(
         open(R.id.home)
     }
 
-    fun openSearch(type: RecommendationsType?, onCategorySelected: (RecommendationsType) -> Unit) {
-        val fragment = SearchFragment.newInstance(type, onCategorySelected)
+    fun openSearch(type: RecommendationsType?) {
+        val fragment = SearchFragment.newInstance(type)
         store[R.id.search] = fragment
         showFragment(fragment)
     }
