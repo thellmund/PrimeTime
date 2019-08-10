@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
 import com.hellmund.api.model.Review
-import com.hellmund.primetime.data.HistoryRepository
-import com.hellmund.primetime.data.WatchlistRepository
+import com.hellmund.primetime.data.repositories.HistoryRepository
+import com.hellmund.primetime.data.repositories.WatchlistRepository
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.moviedetails.data.MovieDetailsRepository
 import kotlinx.coroutines.Dispatchers

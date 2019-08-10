@@ -48,20 +48,15 @@
                 android:value="com.hellmund.primetime.ui.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.introduction.IntroductionActivity"
-            android:label="@string/title_activity_introduction"
-            android:theme="@style/AppTheme.Introduction" />
-        <activity
             android:name=".history.ui.HistoryActivity"
             android:label="@string/title_activity_history">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hellmund.primetime.ui.MainActivity" />
         </activity>
-        <activity android:name=".ui.selectstreamingservices.SelectStreamingServicesActivity" />
         <activity android:name=".onboarding.OnboardingActivity" />
 
-        <receiver android:name=".utils.NotificationPublisher" />
+        <receiver android:name=".notifications.NotificationPublisher" />
     </application>
 
 </manifest>

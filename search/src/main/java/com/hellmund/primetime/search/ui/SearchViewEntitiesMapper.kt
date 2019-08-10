@@ -1,6 +1,6 @@
 package com.hellmund.primetime.search.ui
 
-import com.hellmund.primetime.data.GenresRepository
+import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.Movie
 import javax.inject.Inject
 

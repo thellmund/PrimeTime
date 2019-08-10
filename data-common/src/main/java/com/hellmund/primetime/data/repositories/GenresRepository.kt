@@ -1,4 +1,4 @@
-package com.hellmund.primetime.data
+package com.hellmund.primetime.data.repositories
 
 import com.hellmund.api.TmdbApiService
 import com.hellmund.primetime.data.database.AppDatabase

@@ -1,4 +1,4 @@
-package com.hellmund.primetime.data
+package com.hellmund.primetime.data.repositories
 
 import com.hellmund.primetime.data.database.AppDatabase
 import com.hellmund.primetime.data.model.HistoryMovie

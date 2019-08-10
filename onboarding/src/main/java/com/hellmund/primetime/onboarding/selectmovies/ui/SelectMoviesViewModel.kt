@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.api.model.Sample
-import com.hellmund.primetime.data.GenresRepository
+import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.onboarding.selectmovies.domain.SamplesRepository

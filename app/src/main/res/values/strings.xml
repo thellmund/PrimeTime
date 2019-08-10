@@ -27,7 +27,6 @@
     <string name="delete">Delete</string>
 
     <!-- Watchlist Activity -->
-    <string name="watched_it">Watched it</string>
     <string name="error_getting_movies">An error occurred. Please try again.</string>
     <string name="watchlist_error_title">No movies in your Watchlist</string>
 
@@ -74,7 +73,6 @@
 
     <string name="title_activity_watchlist">Watchlist</string>
     <string name="watchlist_removed">Removed from watchlist</string>
-    <string name="movie_poster">Movie poster</string>
     <string name="history_need_4_movies">At least 4 movies have to stayed rated in order to provide recommendations.</string>
     <string name="not_available">Not available</string>
     <string name="show_similar_movies">Show similar movies</string>

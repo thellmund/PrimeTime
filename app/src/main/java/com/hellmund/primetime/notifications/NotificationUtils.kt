@@ -1,4 +1,4 @@
-package com.hellmund.primetime.utils
+package com.hellmund.primetime.notifications
 
 import android.app.AlarmManager
 import android.app.AlarmManager.INTERVAL_DAY

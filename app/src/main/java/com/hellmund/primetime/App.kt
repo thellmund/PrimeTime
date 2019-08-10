@@ -12,8 +12,8 @@ import com.hellmund.primetime.onboarding.selectmovies.ui.SelectMoviesFragment
 import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.settings.ui.SettingsFragment
-import com.hellmund.primetime.utils.NotificationUtils.createChannel
-import com.hellmund.primetime.utils.NotificationUtils.scheduleNotifications
+import com.hellmund.primetime.notifications.NotificationUtils.createChannel
+import com.hellmund.primetime.notifications.NotificationUtils.scheduleNotifications
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.jakewharton.threetenabp.AndroidThreeTen
 import kotlinx.coroutines.ExperimentalCoroutinesApi

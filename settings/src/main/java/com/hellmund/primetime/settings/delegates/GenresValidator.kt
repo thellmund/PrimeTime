@@ -1,7 +1,7 @@
 package com.hellmund.primetime.settings.delegates
 
 import androidx.preference.Preference
-import com.hellmund.primetime.data.GenresRepository
+import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.settings.util.Preferences
 import java.util.Collections

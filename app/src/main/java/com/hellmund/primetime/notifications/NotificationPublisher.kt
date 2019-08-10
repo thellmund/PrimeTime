@@ -1,4 +1,4 @@
-package com.hellmund.primetime.utils
+package com.hellmund.primetime.notifications
 
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.getSystemService
 import com.hellmund.primetime.di.app
-import com.hellmund.primetime.data.WatchlistRepository
+import com.hellmund.primetime.data.repositories.WatchlistRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate

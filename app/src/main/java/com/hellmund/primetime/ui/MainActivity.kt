@@ -8,14 +8,13 @@ import androidx.fragment.app.transaction
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.GenresRepository
 import com.hellmund.primetime.data.model.RecommendationsType
-import com.hellmund.primetime.data.workers.GenresPrefetcher
+import com.hellmund.primetime.data.repositories.GenresRepository
+import com.hellmund.primetime.workers.GenresPrefetcher
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.ui_common.Reselectable
-import com.hellmund.primetime.utils.Intents
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -175,6 +174,13 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallback)
         super.onDestroy()
+    }
+
+    private object Intents {
+        const val NOW_PLAYING = "now_playing"
+        const val UPCOMING = "upcoming"
+        const val WATCHLIST = "watchlist"
+        const val SEARCH = "search"
     }
 
 }

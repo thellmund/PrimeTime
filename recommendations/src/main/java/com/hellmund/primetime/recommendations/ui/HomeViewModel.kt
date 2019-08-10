@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.data.HistoryRepository
+import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.moviedetails.ui.MovieViewEntitiesMapper
 import com.hellmund.primetime.moviedetails.ui.MovieViewEntity

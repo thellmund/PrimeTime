@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.createIntent
-import com.hellmund.primetime.data.GenresRepository
+import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.model.RecommendationsType.Personalized
 import com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment

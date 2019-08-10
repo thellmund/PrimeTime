@@ -1,4 +1,4 @@
-package com.hellmund.primetime.data.workers
+package com.hellmund.primetime.workers
 
 import android.content.Context
 import androidx.work.Constraints
@@ -8,8 +8,8 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.data.GenresRepository
 import java.io.IOException
 import javax.inject.Inject
 

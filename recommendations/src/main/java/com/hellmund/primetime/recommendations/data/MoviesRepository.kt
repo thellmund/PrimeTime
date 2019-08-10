@@ -1,8 +1,8 @@
 package com.hellmund.primetime.recommendations.data
 
 import com.hellmund.api.TmdbApiService
-import com.hellmund.primetime.data.GenresRepository
-import com.hellmund.primetime.data.HistoryRepository
+import com.hellmund.primetime.data.repositories.GenresRepository
+import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.RecommendationsType
