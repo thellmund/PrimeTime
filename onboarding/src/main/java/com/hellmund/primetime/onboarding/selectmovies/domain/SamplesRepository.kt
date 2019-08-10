@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding.selectmovies
+package com.hellmund.primetime.onboarding.selectmovies.domain
 
 import com.hellmund.api.Sample
 import com.hellmund.api.TmdbApiService

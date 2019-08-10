@@ -47,6 +47,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Modules
+    implementation project(':about')
     implementation project(':api')
     implementation project(':core')
     implementation project(':data-common')

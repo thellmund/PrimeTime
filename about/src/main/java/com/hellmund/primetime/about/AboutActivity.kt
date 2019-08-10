@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.about
+package com.hellmund.primetime.about
 
 import android.content.Context
 import android.content.Intent
@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.hellmund.primetime.R
 import kotlinx.android.synthetic.main.activity_about.headerTextView
 import kotlinx.android.synthetic.main.view_toolbar.toolbar
 

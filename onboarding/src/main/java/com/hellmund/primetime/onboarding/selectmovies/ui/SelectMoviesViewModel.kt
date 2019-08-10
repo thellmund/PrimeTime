@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding.selectmovies
+package com.hellmund.primetime.onboarding.selectmovies.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +7,7 @@ import com.hellmund.api.Sample
 import com.hellmund.primetime.data.GenresRepository
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
+import com.hellmund.primetime.onboarding.selectmovies.domain.SamplesRepository
 import com.hellmund.primetime.ui_common.Reducer
 import com.hellmund.primetime.ui_common.ViewStateStore
 import kotlinx.coroutines.launch

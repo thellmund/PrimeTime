@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding.selectmovies
+package com.hellmund.primetime.onboarding.selectmovies.ui
 
 import android.view.View
 import android.view.ViewGroup

@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.transaction
 import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.createIntent
-import com.hellmund.primetime.onboarding.selectgenres.SelectGenresFragment
-import com.hellmund.primetime.onboarding.selectmovies.SelectMoviesFragment
+import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
+import com.hellmund.primetime.onboarding.selectmovies.ui.SelectMoviesFragment
 
 class OnboardingActivity : AppCompatActivity() {
 

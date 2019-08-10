@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui.selectgenres.di
+package com.hellmund.primetime.onboarding.selectgenres.di
 
 import com.hellmund.primetime.data.GenresRepository
 import com.hellmund.primetime.data.RealGenresRepository

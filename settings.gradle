@@ -1,1 +1,1 @@
-include ':app', ':api', ':data-common', ':core', ':history', ':ui-common', ':onboarding'
+include ':app', ':api', ':data-common', ':core', ':history', ':ui-common', ':onboarding', ':about'

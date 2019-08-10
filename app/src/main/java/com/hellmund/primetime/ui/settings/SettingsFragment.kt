@@ -11,7 +11,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.ui.about.AboutActivity
+import com.hellmund.primetime.about.AboutActivity
 import com.hellmund.primetime.ui.selectstreamingservices.StreamingServicesStore
 import com.hellmund.primetime.ui.settings.delegates.GenresDelegate
 import com.hellmund.primetime.ui.settings.delegates.GenresValidator
@@ -129,7 +129,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         about.summary = version?.let { "Version $it" }
 
         about.setOnPreferenceClickListener {
-            val intent = AboutActivity.newIntent(requireContext())
+            val intent = com.hellmund.primetime.about.AboutActivity.newIntent(requireContext())
             startActivity(intent)
             true
         }

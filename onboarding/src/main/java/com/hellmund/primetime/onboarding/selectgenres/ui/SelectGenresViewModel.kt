@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding.selectgenres
+package com.hellmund.primetime.onboarding.selectgenres.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

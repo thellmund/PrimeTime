@@ -4,8 +4,8 @@ import android.app.Application
 import com.hellmund.primetime.di.AppComponent
 import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.history.HistoryFragment
-import com.hellmund.primetime.onboarding.selectgenres.SelectGenresFragment
-import com.hellmund.primetime.onboarding.selectmovies.SelectMoviesFragment
+import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
+import com.hellmund.primetime.onboarding.selectmovies.ui.SelectMoviesFragment
 import com.hellmund.primetime.utils.NotificationUtils.createChannel
 import com.hellmund.primetime.utils.NotificationUtils.scheduleNotifications
 import com.jakewharton.threetenabp.AndroidThreeTen

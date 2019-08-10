@@ -63,7 +63,6 @@
 
     <!-- About Activity -->
     <string name="movie_referrer_unavailable">Recommendation based on: Not available</string>
-    <string name="version">Version %s</string>
     <string name="faq_header">Thanks for downloading.</string>
 
 
