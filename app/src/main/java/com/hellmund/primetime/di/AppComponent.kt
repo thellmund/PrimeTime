@@ -10,18 +10,19 @@ import com.hellmund.primetime.history.ui.HistoryFragment
 import com.hellmund.primetime.onboarding.selectgenres.di.GenresModule
 import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
 import com.hellmund.primetime.onboarding.selectmovies.di.SelectMoviesComponent
+import com.hellmund.primetime.search.di.SearchModule
+import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.search.util.RealStringProvider
 import com.hellmund.primetime.search.util.StringProvider
 import com.hellmund.primetime.settings.ui.SettingsFragment
 import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui.introduction.IntroductionActivity
-import com.hellmund.primetime.search.ui.SearchFragment
-import com.hellmund.primetime.search.di.SearchModule
 import com.hellmund.primetime.ui.selectstreamingservices.SelectStreamingServicesActivity
 import com.hellmund.primetime.ui.selectstreamingservices.di.StreamingServiceModule
-import com.hellmund.primetime.ui.suggestions.di.MovieDetailsComponent
-import com.hellmund.primetime.ui.suggestions.di.MoviesComponent
-import com.hellmund.primetime.ui.suggestions.di.MoviesModule
+import com.hellmund.primetime.moviedetails.di.MovieDetailsComponent
+import com.hellmund.primetime.moviedetails.di.MovieDetailsModule
+import com.hellmund.primetime.ui.recommendations.di.MoviesComponent
+import com.hellmund.primetime.ui.recommendations.di.MoviesModule
 import com.hellmund.primetime.utils.NotificationPublisher
 import com.hellmund.primetime.watchlist.di.WatchlistModule
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
@@ -38,6 +39,7 @@ import javax.inject.Singleton
     NetworkModule::class,
     PersistenceModule::class,
     MoviesModule::class,
+    MovieDetailsModule::class,
     SearchModule::class,
     HistoryModule::class,
     GenresModule::class,

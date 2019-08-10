@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.ui.suggestions.data.MoviesRepository
+import com.hellmund.primetime.ui.recommendations.MoviesRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

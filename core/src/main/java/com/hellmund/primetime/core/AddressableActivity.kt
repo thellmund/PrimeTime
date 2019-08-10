@@ -16,7 +16,7 @@ enum class AddressableActivity(val className: String) {
 
 enum class AddressableFragment(val className: String) {
     Home("com.hellmund.primetime.ui.suggestions.HomeFragment"),
-    MovieDetails("com.hellmund.primetime.ui.suggestions.details.MovieDetailsFragment")
+    MovieDetails("com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment")
 }
 
 object FragmentArgs {

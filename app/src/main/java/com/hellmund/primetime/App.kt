@@ -6,6 +6,8 @@ import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.history.ui.HistoryFragment
 import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
 import com.hellmund.primetime.onboarding.selectmovies.ui.SelectMoviesFragment
+import com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment
+import com.hellmund.primetime.moviedetails.ui.MovieViewEntity
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.settings.ui.SettingsFragment
 import com.hellmund.primetime.utils.NotificationUtils.createChannel
@@ -20,7 +22,7 @@ import timber.log.Timber
 @FlowPreview
 class App : Application(), HistoryFragment.Injector, SelectGenresFragment.Injector,
     SelectMoviesFragment.Injector, SettingsFragment.Injector,
-    WatchlistFragment.Injector, SearchFragment.Injector {
+    WatchlistFragment.Injector, SearchFragment.Injector, MovieDetailsFragment.Injector {
 
     val appComponent: AppComponent by lazy {
         DaggerAppComponent.factory().create(this)
@@ -66,6 +68,15 @@ class App : Application(), HistoryFragment.Injector, SelectGenresFragment.Inject
 
     override fun injectSearchFragment(searchFragment: SearchFragment) {
         appComponent.inject(searchFragment)
+    }
+
+    override fun injectMovieDetailsFragment(
+        movieDetailsFragment: MovieDetailsFragment,
+        movieViewEntity: MovieViewEntity
+    ) {
+        appComponent.movieDetailsComponent()
+            .create(movieViewEntity)
+            .inject(movieDetailsFragment)
     }
 
 }

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.primetime.R
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.ui.shared.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.onboarding.OnboardingHelper
 import kotlinx.android.synthetic.main.activity_select_streaming_services.*
@@ -50,8 +49,8 @@ class SelectStreamingServicesActivity : AppCompatActivity() {
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val spacing = Math.round(resources.getDimension(R.dimen.small_space))
-        recyclerView.addItemDecoration(EqualSpacingItemDecoration(spacing))
+        // val spacing = Math.round(resources.getDimension(R.dimen.small_space))
+        // recyclerView.addItemDecoration(EqualSpacingItemDecoration(spacing))
     }
 
     private fun onItemSelected(streamingService: StreamingService) {

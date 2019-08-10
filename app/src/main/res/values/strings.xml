@@ -128,7 +128,6 @@
     <string name="dont_notify">Don’t notify</string>
     <string name="done">Done</string>
     <string name="genres">Genres</string>
-    <string name="opening_trailer">Opening trailer …</string>
     <string name="showing_notification_on">Showing notification on %s</string>
     <string name="notification_off">Notification turned off</string>
 

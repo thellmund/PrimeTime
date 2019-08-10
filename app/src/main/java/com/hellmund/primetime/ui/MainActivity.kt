@@ -13,8 +13,8 @@ import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.workers.GenresPrefetcher
 import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.search.ui.SearchFragment
-import com.hellmund.primetime.ui.suggestions.FragmentLifecycleCallback
-import com.hellmund.primetime.ui.suggestions.HomeFragment
+import com.hellmund.primetime.ui.recommendations.FragmentLifecycleCallback
+import com.hellmund.primetime.ui.recommendations.HomeFragment
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.utils.Intents
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
