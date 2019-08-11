@@ -1,21 +1,20 @@
 package com.hellmund.primetime.watchlist.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.createIntent
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
+import com.hellmund.primetime.ui_common.dialogs.showCancelableDialog
 import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
-import com.hellmund.primetime.ui_common.dialogs.showCancelableDialog
 import com.hellmund.primetime.watchlist.R
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_watchlist.content
 import kotlinx.android.synthetic.main.fragment_watchlist.indicator
 import kotlinx.android.synthetic.main.fragment_watchlist.placeholder
@@ -28,7 +27,7 @@ import javax.inject.Provider
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class WatchlistFragment : Fragment() {
+class WatchlistFragment : DaggerFragment() {
 
     @Inject
     lateinit var imageLoader: ImageLoader
@@ -45,10 +44,6 @@ class WatchlistFragment : Fragment() {
             onRemove = this::onRemove,
             onNotificationToggle = this::onNotificationToggle
         )
-    }
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (context.applicationContext as Injector).injectWatchlistFragment(this)
     }
 
     override fun onCreateView(
@@ -120,10 +115,6 @@ class WatchlistFragment : Fragment() {
     private fun openHistory() {
         val intent = requireContext().createIntent(AddressableActivity.History)
         startActivity(intent)
-    }
-
-    interface Injector {
-        fun injectWatchlistFragment(watchlistFragment: WatchlistFragment)
     }
 
     companion object {

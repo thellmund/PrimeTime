@@ -1,23 +1,22 @@
 package com.hellmund.primetime.onboarding.selectmovies.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.isConnected
 import com.hellmund.primetime.core.OnboardingHelper
+import com.hellmund.primetime.core.isConnected
 import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.lazyViewModel
 import com.hellmund.primetime.ui_common.observe
 import com.hellmund.primetime.ui_common.onBottomReached
 import com.hellmund.primetime.ui_common.showToast
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_select_movies.button
 import kotlinx.android.synthetic.main.fragment_select_movies.error_container
 import kotlinx.android.synthetic.main.fragment_select_movies.gridView
@@ -27,7 +26,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-class SelectMoviesFragment : Fragment() {
+class SelectMoviesFragment : DaggerFragment() {
 
     private var onFinishedAction: () -> Unit = {}
     private val adapter: SamplesAdapter by lazy {
@@ -46,11 +45,6 @@ class SelectMoviesFragment : Fragment() {
     private val viewModel: SelectMoviesViewModel by lazyViewModel { viewModelProvider }
 
     private var isLoadingMore: Boolean = false
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (context.applicationContext as Injector).injectSelectMoviesFragment(this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -140,10 +134,6 @@ class SelectMoviesFragment : Fragment() {
     private fun openNext() {
         onboardingHelper.isFirstLaunch = false
         onFinishedAction()
-    }
-
-    interface Injector {
-        fun injectSelectMoviesFragment(selectMoviesFragment: SelectMoviesFragment)
     }
 
     companion object {

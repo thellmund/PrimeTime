@@ -5,15 +5,13 @@ import com.hellmund.primetime.onboarding.selectmovies.domain.SamplesRepository
 import com.hellmund.primetime.onboarding.selectmovies.ui.SelectMoviesFragment
 import dagger.Binds
 import dagger.Module
-import dagger.Subcomponent
-
-@Subcomponent(modules = [SelectMoviesModule::class])
-interface SelectMoviesComponent {
-    fun inject(selectMoviesFragment: SelectMoviesFragment)
-}
+import dagger.android.ContributesAndroidInjector
 
 @Module
 interface SelectMoviesModule {
+
+    @ContributesAndroidInjector
+    fun contributeFragmentInjector(): SelectMoviesFragment
 
     @Binds
     fun bindSamplesRepository(impl: RealSamplesRepository): SamplesRepository

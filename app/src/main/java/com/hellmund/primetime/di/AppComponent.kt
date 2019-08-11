@@ -2,6 +2,7 @@ package com.hellmund.primetime.di
 
 import android.content.Context
 import androidx.work.WorkManager
+import com.hellmund.primetime.App
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.PicassoImageLoader
 import com.hellmund.primetime.history.di.HistoryModule
@@ -10,8 +11,7 @@ import com.hellmund.primetime.moviedetails.di.MovieDetailsComponent
 import com.hellmund.primetime.moviedetails.di.MovieDetailsModule
 import com.hellmund.primetime.notifications.NotificationPublisher
 import com.hellmund.primetime.onboarding.selectgenres.di.GenresModule
-import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
-import com.hellmund.primetime.onboarding.selectmovies.di.SelectMoviesComponent
+import com.hellmund.primetime.onboarding.selectmovies.di.SelectMoviesModule
 import com.hellmund.primetime.recommendations.di.MoviesComponent
 import com.hellmund.primetime.recommendations.di.MoviesModule
 import com.hellmund.primetime.search.di.SearchModule
@@ -30,10 +30,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import dagger.android.AndroidInjectionModule
 import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [
+    AndroidInjectionModule::class,
     AppModule::class,
     NetworkModule::class,
     PersistenceModule::class,
@@ -42,20 +44,20 @@ import javax.inject.Singleton
     SearchModule::class,
     HistoryModule::class,
     GenresModule::class,
+    SelectMoviesModule::class,
     WatchlistModule::class
 ])
 interface AppComponent {
 
     fun mainComponent(): MoviesComponent.Factory
     fun movieDetailsComponent(): MovieDetailsComponent.Factory
-    fun selectMoviesComponent(): SelectMoviesComponent
 
+    fun inject(app: App)
     fun inject(genresWorker: GenresPrefetcher.RefreshGenresWorker)
     fun inject(historyFragment: HistoryFragment)
-    fun inject(notificationPublisher: NotificationPublisher)
     fun inject(mainActivity: MainActivity)
+    fun inject(notificationPublisher: NotificationPublisher)
     fun inject(searchFragment: SearchFragment)
-    fun inject(selectGenresFragment: SelectGenresFragment)
     fun inject(settingsFragment: SettingsFragment)
     fun inject(watchlistFragment: WatchlistFragment)
 

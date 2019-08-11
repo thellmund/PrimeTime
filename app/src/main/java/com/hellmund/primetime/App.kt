@@ -4,38 +4,41 @@ import android.app.Application
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.di.AppComponent
 import com.hellmund.primetime.di.DaggerAppComponent
-import com.hellmund.primetime.history.ui.HistoryFragment
 import com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment
-import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresFragment
-import com.hellmund.primetime.onboarding.selectmovies.ui.SelectMoviesFragment
+import com.hellmund.primetime.notifications.NotificationUtils.createChannel
+import com.hellmund.primetime.notifications.NotificationUtils.scheduleNotifications
 import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.settings.ui.SettingsFragment
-import com.hellmund.primetime.notifications.NotificationUtils.createChannel
-import com.hellmund.primetime.notifications.NotificationUtils.scheduleNotifications
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.jakewharton.threetenabp.AndroidThreeTen
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class App : Application(), HistoryFragment.Injector, SelectGenresFragment.Injector,
-    SelectMoviesFragment.Injector, SettingsFragment.Injector,
-    WatchlistFragment.Injector, SearchFragment.Injector,
-    MovieDetailsFragment.Injector, HomeFragment.Injector {
+class App : Application(), SettingsFragment.Injector, SearchFragment.Injector,
+    MovieDetailsFragment.Injector, HomeFragment.Injector, HasAndroidInjector {
 
-    val appComponent: AppComponent by lazy {
-        DaggerAppComponent.factory().create(this)
-    }
+    lateinit var appComponent: AppComponent
+
+    @Inject
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
+
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
     override fun onCreate() {
         super.onCreate()
-
         initThreeTen()
         initTimber()
+
+        appComponent = DaggerAppComponent.factory().create(this)
+        appComponent.inject(this)
 
         createChannel(this)
         scheduleNotifications(this)
@@ -49,24 +52,8 @@ class App : Application(), HistoryFragment.Injector, SelectGenresFragment.Inject
         Timber.plant(Timber.DebugTree())
     }
 
-    override fun injectHistoryFragment(historyFragment: HistoryFragment) {
-        appComponent.inject(historyFragment)
-    }
-
-    override fun injectSelectMoviesFragment(selectMoviesFragment: SelectMoviesFragment) {
-        appComponent.selectMoviesComponent().inject(selectMoviesFragment)
-    }
-
-    override fun injectSelectGenresFragment(selectGenresFragment: SelectGenresFragment) {
-        appComponent.inject(selectGenresFragment)
-    }
-
     override fun injectSettingsFragment(settingsFragment: SettingsFragment) {
         appComponent.inject(settingsFragment)
-    }
-
-    override fun injectWatchlistFragment(watchlistFragment: WatchlistFragment) {
-        appComponent.inject(watchlistFragment)
     }
 
     override fun injectSearchFragment(searchFragment: SearchFragment) {

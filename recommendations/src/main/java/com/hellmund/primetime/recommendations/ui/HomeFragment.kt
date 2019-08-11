@@ -103,7 +103,7 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun setupPersonalizationBanner() {
-        if (onboardingHelper.isFirstLaunch && type is Personalized) {
+        if (true /*onboardingHelper.isFirstLaunch && type is Personalized*/) {
             banner.setOnClickListener {
                 val intent = requireContext().createIntent(AddressableActivity.Onboarding)
                 requireContext().startActivity(intent)

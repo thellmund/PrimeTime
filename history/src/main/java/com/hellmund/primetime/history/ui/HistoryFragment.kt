@@ -1,21 +1,20 @@
 package com.hellmund.primetime.history.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.history.R
-import com.hellmund.primetime.ui_common.lazyViewModel
-import com.hellmund.primetime.ui_common.observe
 import com.hellmund.primetime.ui_common.dialogs.showItemsDialog
 import com.hellmund.primetime.ui_common.dialogs.showSingleSelectDialog
+import com.hellmund.primetime.ui_common.lazyViewModel
+import com.hellmund.primetime.ui_common.observe
 import com.hellmund.primetime.ui_common.showToast
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_history.progressBar
 import kotlinx.android.synthetic.main.fragment_history.recyclerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,7 +24,7 @@ import javax.inject.Provider
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class HistoryFragment : Fragment() {
+class HistoryFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProvider: Provider<HistoryViewModel>
@@ -34,12 +33,6 @@ class HistoryFragment : Fragment() {
 
     private val adapter: HistoryAdapter by lazy {
         HistoryAdapter(this::onOpenDialog)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (context.applicationContext as Injector).injectHistoryFragment(this)
-        // injector.injectHistoryFragment(this)
     }
 
     override fun onCreateView(
@@ -118,10 +111,6 @@ class HistoryFragment : Fragment() {
 
     private fun updateRating(ratedMovie: RatedHistoryMovie) {
         viewModel.dispatch(Action.Update(ratedMovie))
-    }
-
-    interface Injector {
-        fun injectHistoryFragment(historyFragment: HistoryFragment)
     }
 
     companion object {

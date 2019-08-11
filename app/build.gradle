@@ -67,7 +67,12 @@ dependencies {
     implementation libraries.workManager
     implementation libraries.workManagerKtx
 
+    // Dagger
+    implementation libraries.daggerAndroid
+    implementation libraries.daggerAndroidSupport
+    kapt libraries.daggerAndroidProcessor
     kapt libraries.daggerProcessor
+
     kapt libraries.roomProcessor
 
     implementation libraries.timber
