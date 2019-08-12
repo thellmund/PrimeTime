@@ -2,10 +2,10 @@ package com.hellmund.primetime.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.hellmund.primetime.data.api.ApiService
-import com.hellmund.primetime.data.api.DateSerializer
-import com.hellmund.primetime.data.api.RetryInterceptor
-import com.hellmund.primetime.data.api.TmdbInterceptor
+import com.hellmund.api.DateSerializer
+import com.hellmund.api.RetryInterceptor
+import com.hellmund.api.TmdbApiService
+import com.hellmund.api.TmdbInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -13,6 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.threeten.bp.LocalDate
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import javax.inject.Singleton
 
 @Module
@@ -49,23 +50,21 @@ object NetworkModule {
     @Provides
     fun provideGson(): Gson {
         return GsonBuilder()
-            .registerTypeAdapter(LocalDate::class.java, DateSerializer())
+            .registerTypeAdapter(LocalDate::class.java, DateSerializer { Timber.i(it) })
             .create()
     }
 
     @JvmStatic
     @Singleton
     @Provides
-    fun provideApiService(
+    fun provideTmdbApiService(
         okHttpClient: OkHttpClient,
         gson: Gson
-    ): ApiService {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-            .create(ApiService::class.java)
-    }
+    ): TmdbApiService = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .build()
+        .create(TmdbApiService::class.java)
 
 }

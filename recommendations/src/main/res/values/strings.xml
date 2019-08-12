@@ -1,0 +1,9 @@
+<resources>
+    <string name="dismiss">Dismiss</string>
+    <string name="get_started">Get started</string>
+    <string name="get_personalized_recommendations">Get personalized recommendations</string>
+    <string name="add_your_favorite_genres_to_get_started">Add your favorite genres to get started</string>
+    <string name="settings">Settings</string>
+    <string name="filter_recommendations">Filter recommendations</string>
+    <string name="filter">Filter</string>
+</resources>

@@ -4,7 +4,6 @@
     package="com.hellmund.primetime">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".App"
@@ -32,15 +31,15 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".ui.about.AboutActivity"
+            android:name=".about.AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".ui.settings.SettingsActivity">
+            android:parentActivityName=".settings.ui.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.hellmund.primetime.ui.settings.SettingsActivity" />
+                android:value="com.hellmund.primetime.settings.ui.SettingsActivity" />
         </activity>
         <activity
-            android:name=".ui.settings.SettingsActivity"
+            android:name=".settings.ui.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTop"
             android:parentActivityName=".ui.MainActivity">
@@ -49,20 +48,15 @@
                 android:value="com.hellmund.primetime.ui.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.introduction.IntroductionActivity"
-            android:label="@string/title_activity_introduction"
-            android:theme="@style/AppTheme.Introduction" />
-        <activity
-            android:name=".ui.history.HistoryActivity"
+            android:name=".history.ui.HistoryActivity"
             android:label="@string/title_activity_history">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hellmund.primetime.ui.MainActivity" />
         </activity>
-        <activity android:name=".ui.selectstreamingservices.SelectStreamingServicesActivity" />
-        <activity android:name=".ui.onboarding.OnboardingActivity" />
+        <activity android:name=".onboarding.OnboardingActivity" />
 
-        <receiver android:name=".utils.NotificationPublisher" />
+        <receiver android:name=".notifications.NotificationPublisher" />
     </application>
 
 </manifest>

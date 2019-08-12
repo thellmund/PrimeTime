@@ -1,0 +1,8 @@
+<resources>
+    <string name="no_results_found">No results found</string>
+    <string name="try_again_search_text">Check your spelling or try another keyword.</string>
+    <string name="clear_search">Clear search</string>
+    <string name="search">Search</string>
+    <string name="will_more_like_this">Will show more like this</string>
+    <string name="will_less_like_this">Will show less like this</string>
+</resources>

@@ -1,0 +1,15 @@
+<resources>
+    <string name="excluded_genres_summary">Select genres that you don’t want to appear in your recommendations</string>
+    <string name="need_more_genres">At least 2 genres have to stay checked in order to provide recommendations. Your changes will not be saved.</string>
+    <string name="error_already_in_genres">You selected the following genres in both “Preferred genres” and “Excluded genres”:\n\n%s\n\nA genre can only be added to one of them, not both. Your changes will not be saved.</string>
+    <string name="recommendation_settings">Recommendations</string>
+    <string name="preferred_genres">Favorite genres</string>
+    <string name="preferred_genres_summary">Select the genres that you want recommendations from</string>
+    <string name="excluded_genres">Excluded genres</string>
+    <string name="release_notifications">Release notifications</string>
+    <string name="release_notifications_summary">Notify me when a movie on my watchlist is released</string>
+    <string name="release_notifications_title">Notify about theater releases</string>
+    <string name="about_the_app">About the app</string>
+    <string name="rate_on_play_store">Rate PrimeTime on the Play Store</string>
+    <string name="about">About</string>
+</resources>

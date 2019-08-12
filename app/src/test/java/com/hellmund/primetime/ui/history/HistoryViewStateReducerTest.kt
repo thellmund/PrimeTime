@@ -1,7 +1,11 @@
 package com.hellmund.primetime.ui.history
 
-import com.hellmund.primetime.data.database.HistoryMovie
+import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
+import com.hellmund.primetime.history.ui.HistoryMovieViewEntity
+import com.hellmund.primetime.history.ui.HistoryViewState
+import com.hellmund.primetime.history.ui.HistoryViewStateReducer
+import com.hellmund.primetime.history.ui.Result
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull

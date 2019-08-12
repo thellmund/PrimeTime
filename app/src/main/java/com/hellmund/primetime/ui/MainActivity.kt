@@ -4,22 +4,18 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.transaction
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.model.ApiGenre
-import com.hellmund.primetime.data.workers.GenresPrefetcher
+import com.hellmund.primetime.data.model.RecommendationsType
+import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.di.injector
-import com.hellmund.primetime.ui.search.SearchFragment
-import com.hellmund.primetime.ui.selectgenres.GenresRepository
-import com.hellmund.primetime.ui.suggestions.FragmentLifecycleCallback
-import com.hellmund.primetime.ui.suggestions.HomeFragment
-import com.hellmund.primetime.ui.suggestions.RecommendationsType
-import com.hellmund.primetime.ui.watchlist.WatchlistFragment
-import com.hellmund.primetime.utils.Intents
+import com.hellmund.primetime.recommendations.ui.HomeFragment
+import com.hellmund.primetime.search.ui.SearchFragment
+import com.hellmund.primetime.ui_common.Reselectable
+import com.hellmund.primetime.watchlist.ui.WatchlistFragment
+import com.hellmund.primetime.workers.GenresPrefetcher
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
-import kotlinx.android.synthetic.main.view_toolbar.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -37,42 +33,21 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var genresPrefetcher: GenresPrefetcher
 
-    private val fragmentLifecycleCallback: FragmentLifecycleCallback by lazy {
+    private val fragmentCallback: FragmentLifecycleCallback by lazy {
         FragmentLifecycleCallback(this)
     }
+
+    private val navigator = Navigator(this)
 
     private val currentFragment: Fragment?
         get() = supportFragmentManager.findFragmentById(R.id.contentFrame)
 
     private val onNavigationItemSelected = { menuItem: MenuItem ->
-        val isInMainFragment = currentFragment is HomeFragment
-        val isInSearchTab = bottomNavigation.selectedItemId == R.id.search
-
-        when (menuItem.itemId) {
-            R.id.home -> {
-                if (isInMainFragment && isInSearchTab) {
-                    supportFragmentManager.popBackStack()
-                }
-
-                supportFragmentManager.popBackStack()
-            }
-            R.id.search -> {
-                val fragment = SearchFragment.newInstance()
-                showFragment(fragment)
-            }
-            R.id.watchlist -> {
-                if (isInMainFragment && isInSearchTab) {
-                    supportFragmentManager.popBackStack()
-                }
-
-                val fragment = WatchlistFragment.newInstance()
-                showFragment(fragment)
-            }
-        }
+        navigator.open(menuItem.itemId)
         true
     }
 
-    private val onNavigationItemReselected = BottomNavigationView.OnNavigationItemReselectedListener {
+    private val onNavigationItemReselected = OnNavigationItemReselectedListener {
         val reselectable = currentFragment as? Reselectable
         reselectable?.onReselected()
     }
@@ -83,16 +58,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         injector.inject(this)
-        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallback, false)
-        setSupportActionBar(toolbar)
-
-        genresPrefetcher.run()
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentCallback, false)
 
         bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelected)
         bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
 
+        genresPrefetcher.run()
+
         if (savedInstanceState == null) {
-            showFragment(HomeFragment.newInstance())
+            navigator.openHome()
         }
 
         intent?.getStringExtra(SHORTCUT_EXTRA)?.let {
@@ -108,41 +82,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showFragment(fragment: Fragment) {
-        val isBackStackEmpty = supportFragmentManager.backStackEntryCount == 0
-        supportFragmentManager.transaction {
-            replace(R.id.contentFrame, fragment)
-
-            if (currentFragment is HomeFragment && isBackStackEmpty) {
-                addToBackStack(null)
-            }
-        }
-    }
-
-    fun openSearchFromIntent(extra: String? = null) {
+    private fun openSearchFromIntent(extra: String? = null) {
         lifecycleScope.launch {
-            val type = extra?.let { createRecommendationsTypeFromIntent(it) }
-            val fragment = SearchFragment.newInstance(type)
-            showFragment(fragment)
+            val type = extra?.let { getRecommendationsTypeFromIntent(it) }
+            navigator.openSearch(type)
             bottomNavigation.selectedItemId = R.id.search
         }
     }
 
-    private suspend fun createRecommendationsTypeFromIntent(intent: String): RecommendationsType {
-        return when (intent) {
-            Intents.NOW_PLAYING -> RecommendationsType.NowPlaying
-            Intents.UPCOMING -> RecommendationsType.Upcoming
-            else -> {
-                val genre = genresRepository.getGenre(intent)
-                val apiGenre = ApiGenre(genre.id, genre.name)
-                RecommendationsType.ByGenre(apiGenre)
-            }
+    private suspend fun getRecommendationsTypeFromIntent(
+        intent: String
+    ): RecommendationsType = when (intent) {
+        Intents.NOW_PLAYING -> RecommendationsType.NowPlaying
+        Intents.UPCOMING -> RecommendationsType.Upcoming
+        else -> {
+            val genre = genresRepository.getGenre(intent)
+            RecommendationsType.ByGenre(genre)
         }
     }
 
     private fun openWatchlistFromIntent() {
-        val fragment = WatchlistFragment.newInstance()
-        showFragment(fragment)
+        navigator.openWatchlist()
         bottomNavigation.selectedItemId = R.id.watchlist
     }
 
@@ -169,12 +129,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallback)
+        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentCallback)
         super.onDestroy()
     }
 
-    interface Reselectable {
-        fun onReselected()
+    private object Intents {
+        const val NOW_PLAYING = "now_playing"
+        const val UPCOMING = "upcoming"
+        const val WATCHLIST = "watchlist"
+        const val SEARCH = "search"
     }
 
 }

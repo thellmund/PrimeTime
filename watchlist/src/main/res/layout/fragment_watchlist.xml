@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.WatchlistFragment">
+
+    <include layout="@layout/view_toolbar" />
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="vertical">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.hellmund.viewpager2indicator.ViewPager2Indicator
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small_space"
+            app:radius="@dimen/tiny_space"
+            app:selectedFillColor="@android:color/white"
+            app:spacing="@dimen/small_space"
+            app:unselectedFillColor="@android:color/darker_gray" />
+
+    </LinearLayout>
+
+    <!-- Placeholder -->
+    <LinearLayout
+        android:id="@+id/placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- Error title -->
+        <TextView
+            android:id="@+id/placeholder_title"
+            style="@style/TextAppearance.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large_space"
+            android:layout_marginEnd="@dimen/large_space"
+            android:layout_marginBottom="@dimen/default_space"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/watchlist_error_title" />
+
+        <!-- Error text -->
+        <TextView
+            android:id="@+id/placeholder_text"
+            style="@style/TextAppearance.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large_space"
+            android:layout_marginEnd="@dimen/large_space"
+            android:gravity="center"
+            android:text="@string/watchlist_error_text" />
+
+    </LinearLayout>
+
+</FrameLayout>
