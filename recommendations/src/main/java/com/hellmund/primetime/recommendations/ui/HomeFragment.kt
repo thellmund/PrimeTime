@@ -16,7 +16,6 @@ import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentArgs.KEY_RECOMMENDATIONS_TYPE
 import com.hellmund.primetime.core.FragmentFactory
-import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.core.createIntent
 import com.hellmund.primetime.data.model.RecommendationsType
@@ -28,9 +27,10 @@ import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
-import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.observe
 import com.hellmund.primetime.ui_common.util.onBottomReached
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import kotlinx.android.synthetic.main.fragment_home.banner
 import kotlinx.android.synthetic.main.fragment_home.filterFab
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
@@ -104,7 +104,7 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun setupPersonalizationBanner() {
-        if (true /*onboardingHelper.isFirstLaunch && type is Personalized*/) {
+        if (onboardingHelper.isFirstLaunch && type is Personalized) {
             banner.setOnClickListener {
                 val intent = requireContext().createIntent(AddressableActivity.Onboarding)
                 requireContext().startActivity(intent)
@@ -116,8 +116,9 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun setupRecyclerView() {
-        swipeRefreshLayout.setColorSchemeResources(R.color.teal_500)
-        swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(Action.LoadMovies(page = 1)) }
+        // TODO
+        // swipeRefreshLayout.setColorSchemeResources(R.color.teal_500)
+        // swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(Action.LoadMovies(page = 1)) }
 
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -140,7 +141,9 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun render(viewState: HomeViewState) {
-        swipeRefreshLayout.isRefreshing = viewState.isLoading
+        // TODO
+        // swipeRefreshLayout.isRefreshing = viewState.isLoading
+
         if (viewState.isLoading.not()) {
             swipeRefreshLayout.isEnabled = false
         }
