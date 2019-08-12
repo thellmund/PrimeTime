@@ -95,8 +95,8 @@ class SearchFragment : Fragment(), TextWatcher,
         initCategoriesRecyclerView()
         initSearchResultsRecyclerView()
 
-        viewModel.viewState.observe(viewLifecycleOwner, this::render)
-        viewModel.destinations.observe(viewLifecycleOwner, this::navigate)
+        viewModel.viewState.observe(requireActivity(), this::render)
+        viewModel.destinations.observe(requireActivity(), this::navigate)
 
         val type = arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE)
         type?.let {
