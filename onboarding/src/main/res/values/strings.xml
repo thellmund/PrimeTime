@@ -8,5 +8,4 @@
     <string name="finish">Finish</string>
     <string name="select_more_format_string">Select %d more</string>
     <string name="select_at_least">Select at least %d movies</string>
-    <string name="not_connected">You are not connected to the Internet.</string>
 </resources>

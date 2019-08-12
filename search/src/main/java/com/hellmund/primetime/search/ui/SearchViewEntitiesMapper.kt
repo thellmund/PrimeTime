@@ -2,10 +2,11 @@ package com.hellmund.primetime.search.ui
 
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.Movie
+import com.hellmund.primetime.ui_common.util.ValueFormatter
 import javax.inject.Inject
 
 class SearchViewEntitiesMapper @Inject constructor(
-    valueFormatter: com.hellmund.primetime.ui_common.ValueFormatter,
+    valueFormatter: ValueFormatter,
     genresRepository: GenresRepository
 ) {
 
@@ -18,7 +19,7 @@ class SearchViewEntitiesMapper @Inject constructor(
 }
 
 class SearchViewEntityMapper @Inject constructor(
-    private val valueFormatter: com.hellmund.primetime.ui_common.ValueFormatter,
+    private val valueFormatter: ValueFormatter,
     private val genresRepository: GenresRepository
 ) {
 

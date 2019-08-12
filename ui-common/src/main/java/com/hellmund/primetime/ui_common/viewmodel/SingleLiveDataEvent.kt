@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui_common
+package com.hellmund.primetime.ui_common.viewmodel
 
 open class SingleLiveDataEvent<T>(
     private val value: T

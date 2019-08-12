@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.Transformation
+import com.hellmund.primetime.ui_common.util.ImageLoader
+import com.hellmund.primetime.ui_common.util.Transformation
 import com.hellmund.primetime.search.R
 import kotlinx.android.synthetic.main.list_item_search_results.view.description
 import kotlinx.android.synthetic.main.list_item_search_results.view.genres

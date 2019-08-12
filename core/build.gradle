@@ -29,9 +29,6 @@ dependencies {
 
     // AndroidX
     api libraries.appCompat
-    api libraries.coreKtx
-    api libraries.browser
-    api libraries.material
 
     // Dagger
     api libraries.dagger
@@ -41,8 +38,4 @@ dependencies {
     api libraries.coroutines
     api libraries.coroutinesAndroid
     api libraries.coroutinesRxJava2
-
-    // Helpers
-    implementation libraries.picasso
-    api libraries.threeTenAbp
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import javax.inject.Inject
 
 enum class AddressableActivity(val className: String) {
@@ -27,10 +26,10 @@ object FragmentArgs {
 
 class FragmentFactory @Inject constructor(private val context: Context) {
 
-    fun movieDetails(bundle: Bundle): BottomSheetDialogFragment {
+    fun movieDetails(bundle: Bundle): Fragment {
         val fragment = context.createFragment(AddressableFragment.MovieDetails)
         fragment.arguments = bundle
-        return fragment as BottomSheetDialogFragment
+        return fragment
     }
 
     fun category(bundle: Bundle): Fragment {

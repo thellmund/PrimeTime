@@ -13,7 +13,7 @@ import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.search.data.SearchRepository
 import com.hellmund.primetime.search.util.StringProvider
-import com.hellmund.primetime.ui_common.SingleLiveDataEvent
+import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException

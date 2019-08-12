@@ -3,7 +3,7 @@ package com.hellmund.primetime.history.ui
 import android.content.Context
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.history.R
-import com.hellmund.primetime.ui_common.ValueFormatter
+import com.hellmund.primetime.ui_common.util.ValueFormatter
 import javax.inject.Inject
 
 class HistoryMovieViewEntitiesMapper @Inject constructor(

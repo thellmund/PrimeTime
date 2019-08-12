@@ -11,11 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentArgs.KEY_RECOMMENDATIONS_TYPE
 import com.hellmund.primetime.core.FragmentFactory
-import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.core.createIntent
 import com.hellmund.primetime.data.model.RecommendationsType
@@ -27,9 +28,9 @@ import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
-import com.hellmund.primetime.ui_common.lazyViewModel
-import com.hellmund.primetime.ui_common.observe
-import com.hellmund.primetime.ui_common.onBottomReached
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.util.observe
+import com.hellmund.primetime.ui_common.util.onBottomReached
 import kotlinx.android.synthetic.main.fragment_home.banner
 import kotlinx.android.synthetic.main.fragment_home.filterFab
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
@@ -158,7 +159,7 @@ class HomeFragment : Fragment(), Reselectable {
 
     private fun openMovieDetails(movie: MovieViewEntity) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val fragment = fragmentFactory.movieDetails(args)
+        val fragment = fragmentFactory.movieDetails(args) as BottomSheetDialogFragment
         fragment.show(requireFragmentManager(), fragment.tag)
     }
 

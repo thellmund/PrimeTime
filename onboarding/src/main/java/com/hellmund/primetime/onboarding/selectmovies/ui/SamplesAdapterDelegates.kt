@@ -4,10 +4,10 @@ import android.widget.ImageView
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateLayoutContainer
 import com.hellmund.api.model.Sample
-import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.Transformation
+import com.hellmund.primetime.ui_common.util.ImageLoader
+import com.hellmund.primetime.ui_common.util.Transformation
 import com.hellmund.primetime.onboarding.R
-import com.hellmund.primetime.ui_common.showToast
+import com.hellmund.primetime.ui_common.util.showToast
 
 fun loadMoreAdapterDelegate() = adapterDelegate<AdapterItem.LoadingMore, AdapterItem>(
     R.layout.list_item_load_more

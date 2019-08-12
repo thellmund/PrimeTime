@@ -3,8 +3,8 @@ package com.hellmund.primetime.di
 import android.content.Context
 import androidx.work.WorkManager
 import com.hellmund.primetime.App
-import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.PicassoImageLoader
+import com.hellmund.primetime.ui_common.util.ImageLoader
+import com.hellmund.primetime.ui_common.util.PicassoImageLoader
 import com.hellmund.primetime.history.di.HistoryModule
 import com.hellmund.primetime.history.ui.HistoryFragment
 import com.hellmund.primetime.moviedetails.di.MovieDetailsComponent
@@ -20,8 +20,8 @@ import com.hellmund.primetime.search.util.RealStringProvider
 import com.hellmund.primetime.search.util.StringProvider
 import com.hellmund.primetime.settings.ui.SettingsFragment
 import com.hellmund.primetime.ui.MainActivity
-import com.hellmund.primetime.ui_common.RealValueFormatter
-import com.hellmund.primetime.ui_common.ValueFormatter
+import com.hellmund.primetime.ui_common.util.RealValueFormatter
+import com.hellmund.primetime.ui_common.util.ValueFormatter
 import com.hellmund.primetime.watchlist.di.WatchlistModule
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.hellmund.primetime.workers.GenresPrefetcher

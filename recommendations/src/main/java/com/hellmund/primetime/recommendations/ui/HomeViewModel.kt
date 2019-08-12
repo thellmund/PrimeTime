@@ -11,8 +11,8 @@ import com.hellmund.primetime.recommendations.data.MoviesRepository
 import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.RatedMovie
-import com.hellmund.primetime.ui_common.Reducer
-import com.hellmund.primetime.ui_common.ViewStateStore
+import com.hellmund.primetime.ui_common.viewmodel.Reducer
+import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject

@@ -1,8 +1,8 @@
 package com.hellmund.primetime.watchlist.ui
 
 import com.hellmund.primetime.data.model.WatchlistMovie
-import com.hellmund.primetime.ui_common.ValueFormatter
-import com.hellmund.primetime.ui_common.isAfterNow
+import com.hellmund.primetime.ui_common.util.ValueFormatter
+import org.threeten.bp.LocalDate.*
 import javax.inject.Inject
 
 class WatchlistMovieViewEntityMapper @Inject constructor(
@@ -24,7 +24,7 @@ class WatchlistMovieViewEntityMapper @Inject constructor(
             valueFormatter.formatReleaseYear(movie.releaseDate),
             movie.timestamp,
             movie.notificationsActivated,
-            movie.releaseDate.isAfterNow,
+            movie.releaseDate.isAfter(now()),
             movie
         )
     }

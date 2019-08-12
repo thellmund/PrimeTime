@@ -11,9 +11,9 @@ import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.history.R
 import com.hellmund.primetime.ui_common.dialogs.showItemsDialog
 import com.hellmund.primetime.ui_common.dialogs.showSingleSelectDialog
-import com.hellmund.primetime.ui_common.lazyViewModel
-import com.hellmund.primetime.ui_common.observe
-import com.hellmund.primetime.ui_common.showToast
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.util.observe
+import com.hellmund.primetime.ui_common.util.showToast
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_history.progressBar
 import kotlinx.android.synthetic.main.fragment_history.recyclerView

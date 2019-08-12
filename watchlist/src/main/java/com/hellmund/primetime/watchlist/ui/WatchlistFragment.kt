@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
 import com.hellmund.primetime.core.AddressableActivity
-import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.core.createIntent
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showCancelableDialog
-import com.hellmund.primetime.ui_common.lazyViewModel
-import com.hellmund.primetime.ui_common.observe
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.util.observe
 import com.hellmund.primetime.watchlist.R
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_watchlist.content

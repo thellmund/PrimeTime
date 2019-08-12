@@ -8,8 +8,8 @@ import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.onboarding.selectmovies.domain.SamplesRepository
-import com.hellmund.primetime.ui_common.Reducer
-import com.hellmund.primetime.ui_common.ViewStateStore
+import com.hellmund.primetime.ui_common.viewmodel.Reducer
+import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime.now
 import java.io.IOException

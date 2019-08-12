@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.ui_common.Reducer
-import com.hellmund.primetime.ui_common.SingleLiveDataEvent
-import com.hellmund.primetime.ui_common.ViewStateStore
-import com.hellmund.primetime.ui_common.replace
+import com.hellmund.primetime.ui_common.viewmodel.Reducer
+import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
+import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
+import com.hellmund.primetime.ui_common.util.replace
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject

@@ -10,9 +10,9 @@ import androidx.core.view.isVisible
 import com.google.android.material.chip.Chip
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.onboarding.R
-import com.hellmund.primetime.ui_common.SingleLiveDataEvent
-import com.hellmund.primetime.ui_common.lazyViewModel
-import com.hellmund.primetime.ui_common.observe
+import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.util.observe
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_select_genres.button
 import kotlinx.android.synthetic.main.fragment_select_genres.chipGroup

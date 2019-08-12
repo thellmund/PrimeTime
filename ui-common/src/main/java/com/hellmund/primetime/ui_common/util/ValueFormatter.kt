@@ -1,9 +1,11 @@
-package com.hellmund.primetime.ui_common
+package com.hellmund.primetime.ui_common.util
 
 import android.content.Context
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Rating
+import com.hellmund.primetime.ui_common.R
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDate.now
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
@@ -34,7 +36,7 @@ class RealValueFormatter @Inject constructor(
             return context.getString(R.string.no_information)
         }
 
-        return if (releaseDate.isAfterNow) {
+        return if (releaseDate.isAfter(now())) {
             formatter.format(releaseDate)
         } else {
             releaseDate.year.toString()

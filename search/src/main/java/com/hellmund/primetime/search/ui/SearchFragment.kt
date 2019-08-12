@@ -18,18 +18,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentFactory
-import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
-import com.hellmund.primetime.ui_common.lazyViewModel
-import com.hellmund.primetime.ui_common.observe
+import com.hellmund.primetime.ui_common.util.ImageLoader
+import com.hellmund.primetime.ui_common.util.observe
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView
 import kotlinx.android.synthetic.main.state_layout_search_results.loading
 import kotlinx.android.synthetic.main.state_layout_search_results.placeholder
@@ -224,7 +225,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun onItemClick(movie: SearchViewEntity) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val fragment = fragmentFactory.movieDetails(args)
+        val fragment = fragmentFactory.movieDetails(args) as BottomSheetDialogFragment
         fragment.show(requireFragmentManager(), fragment.tag)
     }
 

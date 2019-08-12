@@ -1,6 +1,5 @@
-package com.hellmund.primetime.ui_common
+package com.hellmund.primetime.ui_common.viewmodel
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 
 abstract class ViewStateStore<State, Result>(
@@ -11,11 +10,6 @@ abstract class ViewStateStore<State, Result>(
     val viewState = MutableLiveData<State>().apply {
         value = initialState
     }
-
-    fun observe(
-        owner: LifecycleOwner,
-        observer: (State) -> Unit
-    ) = viewState.observe(owner) { observer(it) }
 
     private fun dispatchState(
         state: State

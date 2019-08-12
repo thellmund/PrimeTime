@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui_common
+package com.hellmund.primetime.ui_common.util
 
 import android.content.Context
 import android.net.Uri
@@ -6,6 +6,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import com.hellmund.primetime.ui_common.R
 
 fun Context.openUrl(url: String) {
     val color = colorFromResource(R.color.grey_900)

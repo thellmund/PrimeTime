@@ -2,6 +2,7 @@ package com.hellmund.primetime.ui_common
 
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.repositories.GenresRepository
+import com.hellmund.primetime.ui_common.util.ValueFormatter
 import javax.inject.Inject
 
 class MovieViewEntitiesMapper @Inject constructor(

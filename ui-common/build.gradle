@@ -35,7 +35,10 @@ dependencies {
     implementation project(':data-common')
 
     // AndroidX
+    implementation libraries.browser
+    api libraries.coreKtx
     api libraries.fragmentKtx
+    api libraries.material
     api libraries.preference
 
     // Lifecycle & ViewModel
@@ -45,11 +48,12 @@ dependencies {
     api libraries.lifecycleExtensions
     api libraries.lifecycleCommon
 
-
     // Dagger
     kapt libraries.daggerProcessor
 
     // Helpers
+    implementation libraries.picasso
     api libraries.roundedImageView
     api libraries.shimmer
+    api libraries.threeTenAbp
 }

@@ -7,15 +7,14 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.core.OnboardingHelper
-import com.hellmund.primetime.core.isConnected
 import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
-import com.hellmund.primetime.ui_common.lazyViewModel
-import com.hellmund.primetime.ui_common.observe
-import com.hellmund.primetime.ui_common.onBottomReached
-import com.hellmund.primetime.ui_common.showToast
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.util.observe
+import com.hellmund.primetime.ui_common.util.onBottomReached
+import com.hellmund.primetime.ui_common.util.showToast
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_select_movies.button
 import kotlinx.android.synthetic.main.fragment_select_movies.error_container
@@ -119,11 +118,7 @@ class SelectMoviesFragment : DaggerFragment() {
             context.showToast(getString(R.string.select_at_least, MIN_COUNT))
         }
 
-        if (context.isConnected) {
-            saveSelection()
-        } else {
-            context.showToast(getString(R.string.not_connected))
-        }
+        saveSelection()
     }
 
     private fun saveSelection() {

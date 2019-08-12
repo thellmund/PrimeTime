@@ -1,8 +1,8 @@
 package com.hellmund.primetime.search.ui
 
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.ui_common.Reducer
-import com.hellmund.primetime.ui_common.ViewStateStore
+import com.hellmund.primetime.ui_common.viewmodel.Reducer
+import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 
 data class SearchViewState(
     val genres: List<Genre> = emptyList(),

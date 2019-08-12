@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.Transformation
+import com.hellmund.primetime.ui_common.util.ImageLoader
+import com.hellmund.primetime.ui_common.util.Transformation
 import com.hellmund.primetime.moviedetails.R
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import kotlinx.android.synthetic.main.list_item_recommendations.view.posterImageView

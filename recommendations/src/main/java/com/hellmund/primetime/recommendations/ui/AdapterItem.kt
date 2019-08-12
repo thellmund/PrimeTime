@@ -1,8 +1,8 @@
 package com.hellmund.primetime.recommendations.ui
 
 import androidx.annotation.LayoutRes
-import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.Transformation
+import com.hellmund.primetime.ui_common.util.ImageLoader
+import com.hellmund.primetime.ui_common.util.Transformation
 import com.hellmund.primetime.recommendations.R
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import kotlinx.android.synthetic.main.list_item_movies.view.posterImageView

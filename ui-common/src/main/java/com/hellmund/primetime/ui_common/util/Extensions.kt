@@ -1,16 +1,12 @@
-package com.hellmund.primetime.ui_common
+package com.hellmund.primetime.ui_common.util
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import org.threeten.bp.LocalDate
 
 fun <T> LiveData<T>.observe(owner: LifecycleOwner, block: (T) -> Unit) {
     observe(owner, Observer { block(it) })
 }
-
-val LocalDate.isAfterNow: Boolean
-    get() = isAfter(LocalDate.now())
 
 fun <T> List<T>.replace(index: Int, element: T): List<T> {
     return toMutableList().apply {
