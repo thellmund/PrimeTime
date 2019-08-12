@@ -6,7 +6,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.reactive.flow.asFlow
 import javax.inject.Inject
 
 interface HistoryRepository {
@@ -30,7 +29,7 @@ class RealHistoryRepository @Inject constructor(
     }
 
     override suspend fun observeAll(): Flow<List<HistoryMovie>> {
-        return database.historyDao().observeAll().asFlow()
+        return database.historyDao().observeAll()
     }
 
     override suspend fun getLiked(): List<HistoryMovie> = database.historyDao().getLiked()

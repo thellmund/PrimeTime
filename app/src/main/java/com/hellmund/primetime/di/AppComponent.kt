@@ -3,8 +3,6 @@ package com.hellmund.primetime.di
 import android.content.Context
 import androidx.work.WorkManager
 import com.hellmund.primetime.App
-import com.hellmund.primetime.ui_common.util.ImageLoader
-import com.hellmund.primetime.ui_common.util.PicassoImageLoader
 import com.hellmund.primetime.history.di.HistoryModule
 import com.hellmund.primetime.history.ui.HistoryFragment
 import com.hellmund.primetime.moviedetails.di.MovieDetailsComponent
@@ -20,6 +18,8 @@ import com.hellmund.primetime.search.util.RealStringProvider
 import com.hellmund.primetime.search.util.StringProvider
 import com.hellmund.primetime.settings.ui.SettingsFragment
 import com.hellmund.primetime.ui.MainActivity
+import com.hellmund.primetime.ui_common.util.ImageLoader
+import com.hellmund.primetime.ui_common.util.PicassoImageLoader
 import com.hellmund.primetime.ui_common.util.RealValueFormatter
 import com.hellmund.primetime.ui_common.util.ValueFormatter
 import com.hellmund.primetime.watchlist.di.WatchlistModule
@@ -31,8 +31,12 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import dagger.android.AndroidInjectionModule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Singleton
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 @Singleton
 @Component(modules = [
     AndroidInjectionModule::class,

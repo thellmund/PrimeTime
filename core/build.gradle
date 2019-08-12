@@ -37,5 +37,4 @@ dependencies {
     // Coroutines
     api libraries.coroutines
     api libraries.coroutinesAndroid
-    api libraries.coroutinesRxJava2
 }

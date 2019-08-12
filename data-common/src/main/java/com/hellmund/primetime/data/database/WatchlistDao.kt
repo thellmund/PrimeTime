@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.hellmund.primetime.data.model.WatchlistMovie
-import io.reactivex.Flowable
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WatchlistDao {
@@ -14,7 +14,7 @@ interface WatchlistDao {
     suspend fun getAll(): List<WatchlistMovie>
 
     @Query("SELECT * FROM watchlist_movies ORDER BY timestamp")
-    fun observeAll(): Flowable<List<WatchlistMovie>>
+    fun observeAll(): Flow<List<WatchlistMovie>>
 
     @Query("SELECT * FROM watchlist_movies WHERE releaseDate BETWEEN :start AND :end")
     suspend fun releases(

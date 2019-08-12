@@ -6,7 +6,6 @@ import com.hellmund.primetime.data.model.WatchlistMovie
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.reactive.flow.asFlow
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import javax.inject.Inject
@@ -29,7 +28,7 @@ class RealWatchlistRepository @Inject constructor(
 
     override suspend fun getAll() = database.watchlistDao().getAll()
 
-    override suspend fun observeAll() = database.watchlistDao().observeAll().asFlow()
+    override suspend fun observeAll() = database.watchlistDao().observeAll()
 
     override suspend fun getReleases(
         date: LocalDate

@@ -10,6 +10,8 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.di.injector
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import java.io.IOException
 import javax.inject.Inject
 
@@ -40,6 +42,8 @@ class GenresPrefetcher @Inject constructor(
         @Inject
         lateinit var genresRepository: GenresRepository
 
+        @FlowPreview
+        @ExperimentalCoroutinesApi
         override suspend fun doWork(): Result {
             injector.inject(this)
 

@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.hellmund.primetime.data.model.HistoryMovie
-import io.reactivex.Flowable
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HistoryDao {
@@ -14,7 +14,7 @@ interface HistoryDao {
     suspend fun getAll(): List<HistoryMovie>
 
     @Query("SELECT * FROM history_movies ORDER BY timestamp DESC")
-    fun observeAll(): Flowable<List<HistoryMovie>>
+    fun observeAll(): Flow<List<HistoryMovie>>
 
     @Query("SELECT * FROM history_movies WHERE rating = 1 ORDER BY timestamp DESC")
     suspend fun getLiked(): List<HistoryMovie>
