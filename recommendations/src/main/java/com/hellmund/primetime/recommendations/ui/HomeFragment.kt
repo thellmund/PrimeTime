@@ -81,7 +81,7 @@ class HomeFragment : Fragment(), Reselectable {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (context.applicationContext as Injector)
+        (context.applicationContext as ComponentProvider)
             .moviesComponent()
             .create(type)
             .inject(this)
@@ -254,7 +254,7 @@ class HomeFragment : Fragment(), Reselectable {
         recyclerView.smoothScrollToPosition(0)
     }
 
-    interface Injector {
+    interface ComponentProvider {
         fun moviesComponent(): MoviesComponent.Factory
     }
 

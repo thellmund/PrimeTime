@@ -85,7 +85,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (context.applicationContext as Injector)
+        (context.applicationContext as ComponentProvider)
             .movieDetailsComponent()
             .create(movie)
             .inject(this)
@@ -214,7 +214,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         removeFromWatchlistButton.strokeColor = colorStateList
     }
 
-    interface Injector {
+    interface ComponentProvider {
         fun movieDetailsComponent(): MovieDetailsComponent.Factory
     }
 

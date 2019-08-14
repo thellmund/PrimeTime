@@ -165,17 +165,15 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private suspend fun loadColorPalette(bitmap: Bitmap) {
-        withContext(Dispatchers.IO) {
-            val event = try {
+        val event = withContext(Dispatchers.IO) {
+            try {
                 val palette = Palette.from(bitmap).generate()
                 UiEvent.ColorPaletteLoaded(palette)
             } catch (e: Exception) {
                 UiEvent.None
             }
-            withContext(Dispatchers.Main) {
-                store.dispatch(event)
-            }
         }
+        store.dispatch(event)
     }
 
     fun dispatch(action: Action) {

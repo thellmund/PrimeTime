@@ -18,14 +18,13 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class App : Application(), MovieDetailsFragment.Injector, HomeFragment.Injector, HasAndroidInjector {
+class App : Application(), HasAndroidInjector,
+    MovieDetailsFragment.ComponentProvider, HomeFragment.ComponentProvider {
 
     lateinit var appComponent: AppComponent
 
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>
-
-    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
     override fun onCreate() {
         super.onCreate()
@@ -47,8 +46,10 @@ class App : Application(), MovieDetailsFragment.Injector, HomeFragment.Injector,
         Timber.plant(Timber.DebugTree())
     }
 
+    override fun moviesComponent() = appComponent.mainComponent()
+
     override fun movieDetailsComponent() = appComponent.movieDetailsComponent()
 
-    override fun moviesComponent() = appComponent.mainComponent()
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
 }
