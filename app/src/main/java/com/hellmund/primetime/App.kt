@@ -7,6 +7,7 @@ import com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment
 import com.hellmund.primetime.notifications.NotificationUtils.createChannel
 import com.hellmund.primetime.notifications.NotificationUtils.scheduleNotifications
 import com.hellmund.primetime.recommendations.ui.HomeFragment
+import com.hellmund.primetime.workers.GenresPrefetcher
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -26,6 +27,9 @@ class App : Application(), HasAndroidInjector,
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>
 
+    @Inject
+    lateinit var genresPrefetcher: GenresPrefetcher
+
     override fun onCreate() {
         super.onCreate()
         initThreeTen()
@@ -36,6 +40,7 @@ class App : Application(), HasAndroidInjector,
 
         createChannel(this)
         scheduleNotifications(this)
+        prefetchGenres()
     }
 
     private fun initThreeTen() {
@@ -44,6 +49,10 @@ class App : Application(), HasAndroidInjector,
 
     private fun initTimber() {
         Timber.plant(Timber.DebugTree())
+    }
+
+    private fun prefetchGenres() {
+        genresPrefetcher.run()
     }
 
     override fun moviesComponent() = appComponent.mainComponent()

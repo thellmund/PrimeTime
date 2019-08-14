@@ -89,12 +89,11 @@ class SearchFragment : DaggerFragment(), TextWatcher,
         initCategoriesRecyclerView()
         initSearchResultsRecyclerView()
 
-        viewModel.viewState.observe(requireActivity(), this::render)
-        viewModel.destinations.observe(requireActivity(), this::navigate)
+        viewModel.viewState.observe(viewLifecycleOwner, this::render)
+        viewModel.destinations.observe(viewLifecycleOwner, this::navigate)
 
-        val type = arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE)
-        type?.let {
-            openCategory(it)
+        arguments?.getString(KEY_EXTRA)?.let {
+            viewModel.dispatch(Action.ProcessExtra(it))
         }
     }
 
@@ -156,7 +155,7 @@ class SearchFragment : DaggerFragment(), TextWatcher,
     }
 
     private fun onCategorySelected(category: String) {
-        viewModel.onCategorySelected(category)
+        viewModel.dispatch(Action.CategorySelected(category))
     }
 
     private fun navigate(event: NavigationEvent) {
@@ -189,7 +188,7 @@ class SearchFragment : DaggerFragment(), TextWatcher,
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        viewModel.onTextChanged(s.toString())
+        viewModel.dispatch(Action.TextChanged(s.toString()))
     }
 
     override fun afterTextChanged(s: Editable?) = Unit
@@ -197,8 +196,7 @@ class SearchFragment : DaggerFragment(), TextWatcher,
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
     private fun addRating(ratedMovie: RatedMovie) {
-        val historyMovie = ratedMovie.toHistoryMovie()
-        viewModel.addToHistory(historyMovie)
+        viewModel.dispatch(Action.AddToHistory(ratedMovie))
     }
 
     private fun clearSearchBarContent() {
@@ -209,7 +207,7 @@ class SearchFragment : DaggerFragment(), TextWatcher,
     override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
             val input = v.text.toString().trim()
-            viewModel.search(input)
+            viewModel.dispatch(Action.Search(input))
             toggleKeyboard(false)
             return true
         }
@@ -255,13 +253,13 @@ class SearchFragment : DaggerFragment(), TextWatcher,
 
     companion object {
 
-        private const val KEY_RECOMMENDATIONS_TYPE = "KEY_RECOMMENDATIONS_TYPE"
+        private const val KEY_EXTRA = "KEY_EXTRA"
 
         @JvmStatic
         fun newInstance(
-            type: RecommendationsType? = null
+            extra: String? = null
         ) = SearchFragment().apply {
-            arguments = bundleOf(KEY_RECOMMENDATIONS_TYPE to type)
+            arguments = bundleOf(KEY_EXTRA to extra)
         }
 
     }

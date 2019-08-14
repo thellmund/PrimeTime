@@ -2,41 +2,30 @@ package com.hellmund.primetime.ui
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
 import com.hellmund.primetime.R
-import com.hellmund.primetime.data.model.RecommendationsType
-import com.hellmund.primetime.data.repositories.GenresRepository
+import com.hellmund.primetime.core.Intents
 import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
-import com.hellmund.primetime.workers.GenresPrefetcher
-import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 private const val SHORTCUT_EXTRA = "intent"
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class MainActivity : DaggerAppCompatActivity() {
-
-    @Inject
-    lateinit var genresRepository: GenresRepository
-
-    @Inject
-    lateinit var genresPrefetcher: GenresPrefetcher
+class MainActivity : AppCompatActivity() {
 
     private val fragmentCallback: FragmentLifecycleCallback by lazy {
         FragmentLifecycleCallback(this)
     }
 
-    private val navigator = Navigator(this)
+    private val navigator = TabsNavigator(this)
 
     private val currentFragment: Fragment?
         get() = supportFragmentManager.findFragmentById(R.id.contentFrame)
@@ -60,8 +49,6 @@ class MainActivity : DaggerAppCompatActivity() {
         bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelected)
         bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
 
-        genresPrefetcher.run()
-
         if (savedInstanceState == null) {
             navigator.openHome()
         }
@@ -80,22 +67,8 @@ class MainActivity : DaggerAppCompatActivity() {
     }
 
     private fun openSearchFromIntent(extra: String? = null) {
-        lifecycleScope.launch {
-            val type = extra?.let { getRecommendationsTypeFromIntent(it) }
-            navigator.openSearch(type)
-            bottomNavigation.selectedItemId = R.id.search
-        }
-    }
-
-    private suspend fun getRecommendationsTypeFromIntent(
-        intent: String
-    ): RecommendationsType = when (intent) {
-        Intents.NOW_PLAYING -> RecommendationsType.NowPlaying
-        Intents.UPCOMING -> RecommendationsType.Upcoming
-        else -> {
-            val genre = genresRepository.getGenre(intent)
-            RecommendationsType.ByGenre(genre)
-        }
+        navigator.openSearch(extra)
+        bottomNavigation.selectedItemId = R.id.search
     }
 
     private fun openWatchlistFromIntent() {
@@ -128,13 +101,6 @@ class MainActivity : DaggerAppCompatActivity() {
     override fun onDestroy() {
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentCallback)
         super.onDestroy()
-    }
-
-    private object Intents {
-        const val NOW_PLAYING = "now_playing"
-        const val UPCOMING = "upcoming"
-        const val WATCHLIST = "watchlist"
-        const val SEARCH = "search"
     }
 
 }

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProviders
 import javax.inject.Provider
 
 class ViewModelFactory<T : ViewModel>(
-    private val provider: Provider<T>
+    val provider: Provider<T>
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -17,7 +17,16 @@ class ViewModelFactory<T : ViewModel>(
 
 }
 
-fun <T : ViewModel> Fragment.lazyViewModel(block: () -> Provider<T>): Lazy<T> = lazy {
+inline fun <reified T : ViewModel> Fragment.lazyViewModel(
+    noinline block: () -> Provider<T>
+): Lazy<T> = lazy {
     val factory = ViewModelFactory(block())
-    ViewModelProviders.of(this, factory).get(block().get().javaClass)
+    ViewModelProviders.of(this, factory).get(T::class.java)
+}
+
+inline fun <reified T : ViewModel> Fragment.lazyRetainedViewModel(
+    noinline block: () -> Provider<T>
+): Lazy<T> = lazy {
+    val factory = ViewModelFactory(block())
+    ViewModelProviders.of(requireActivity(), factory).get(T::class.java)
 }

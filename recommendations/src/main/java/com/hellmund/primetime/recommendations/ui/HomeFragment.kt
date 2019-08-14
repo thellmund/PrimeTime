@@ -31,7 +31,7 @@ import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
 import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.observe
 import com.hellmund.primetime.ui_common.util.onBottomReached
-import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.viewmodel.lazyRetainedViewModel
 import kotlinx.android.synthetic.main.fragment_home.banner
 import kotlinx.android.synthetic.main.fragment_home.filterFab
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
@@ -65,7 +65,7 @@ class HomeFragment : Fragment(), Reselectable {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private val viewModel: HomeViewModel by lazyViewModel { viewModelProvider }
+    private val viewModel: HomeViewModel by lazyRetainedViewModel { viewModelProvider }
 
     private val type: RecommendationsType by lazy {
         checkNotNull(arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE))

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hellmund.primetime.core.Intents
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
@@ -18,6 +19,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
+
+sealed class Action {
+    data class Search(val query: String) : Action()
+    data class TextChanged(val text: String) : Action()
+    data class AddToHistory(val ratedMovie: RatedMovie) : Action()
+    data class CategorySelected(val category: String) : Action()
+    data class ProcessExtra(val extra: String) : Action()
+}
 
 sealed class Result {
     object Loading : Result()
@@ -92,29 +101,49 @@ class SearchViewModel @Inject constructor(
         return Result.ShowSnackbar(message)
     }
 
-    fun search(query: String) {
+    private suspend fun search(query: String) {
+        store.dispatch(searchMovies(query))
+    }
+
+    private fun onTextChanged(input: String) {
+        store.dispatch(Result.ToggleClearButton(input.isNotEmpty()))
+    }
+
+    private suspend fun addToHistory(historyMovie: HistoryMovie) {
+        store.dispatch(storeInHistory(historyMovie))
+        delay(4_000)
+        store.dispatch(Result.DismissSnackbar)
+    }
+
+    private suspend fun onCategorySelected(category: String) {
+        processNavigation(category)
+    }
+
+    private suspend fun processExtra(extra: String) {
+        val recommendationsType = getRecommendationsTypeFromExtra(extra)
+        _events.value = NavigationEvent(recommendationsType)
+    }
+
+    fun dispatch(action: Action) {
         viewModelScope.launch {
-            store.dispatch(searchMovies(query))
+            when (action) {
+                is Action.AddToHistory -> addToHistory(action.ratedMovie.toHistoryMovie())
+                is Action.CategorySelected -> onCategorySelected(action.category)
+                is Action.ProcessExtra -> processExtra(action.extra)
+                is Action.Search -> search(action.query)
+                is Action.TextChanged -> onTextChanged(action.text)
+            }
         }
     }
 
-    fun onTextChanged(input: String) {
-        viewModelScope.launch {
-            store.dispatch(Result.ToggleClearButton(input.isNotEmpty()))
-        }
-    }
-
-    fun addToHistory(historyMovie: HistoryMovie) {
-        viewModelScope.launch {
-            store.dispatch(storeInHistory(historyMovie))
-            delay(4_000)
-            store.dispatch(Result.DismissSnackbar)
-        }
-    }
-
-    fun onCategorySelected(category: String) {
-        viewModelScope.launch {
-            processNavigation(category)
+    private suspend fun getRecommendationsTypeFromExtra(
+        extra: String
+    ): RecommendationsType = when (extra) {
+        Intents.NOW_PLAYING -> RecommendationsType.NowPlaying
+        Intents.UPCOMING -> RecommendationsType.Upcoming
+        else -> {
+            val genre = genresRepository.getGenre(extra)
+            RecommendationsType.ByGenre(genre)
         }
     }
 
