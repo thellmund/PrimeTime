@@ -18,16 +18,17 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.hellmund.api.model.Review
 import com.hellmund.primetime.core.FragmentArgs
-import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.moviedetails.R
+import com.hellmund.primetime.moviedetails.di.MovieDetailsComponent
 import com.hellmund.primetime.moviedetails.util.EqualHorizontalSpacingItemDecoration
 import com.hellmund.primetime.moviedetails.util.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.dialogs.showLoading
-import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.observe
 import com.hellmund.primetime.ui_common.util.openUrl
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import kotlinx.android.synthetic.main.fragment_movie_details.addToWatchlistButton
 import kotlinx.android.synthetic.main.fragment_movie_details.backdropImageView
 import kotlinx.android.synthetic.main.fragment_movie_details.descriptionTextView
@@ -84,7 +85,10 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (context.applicationContext as Injector).injectMovieDetailsFragment(this, movie)
+        (context.applicationContext as Injector)
+            .movieDetailsComponent()
+            .create(movie)
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -211,10 +215,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     }
 
     interface Injector {
-        fun injectMovieDetailsFragment(
-            movieDetailsFragment: MovieDetailsFragment,
-            movieViewEntity: MovieViewEntity
-        )
+        fun movieDetailsComponent(): MovieDetailsComponent.Factory
     }
 
     companion object {

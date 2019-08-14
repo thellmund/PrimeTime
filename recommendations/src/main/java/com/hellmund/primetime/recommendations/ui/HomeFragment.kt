@@ -22,6 +22,7 @@ import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.model.RecommendationsType.Personalized
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.recommendations.R
+import com.hellmund.primetime.recommendations.di.MoviesComponent
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.Reselectable
@@ -80,7 +81,10 @@ class HomeFragment : Fragment(), Reselectable {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (context.applicationContext as Injector).injectHomeFragment(this, type)
+        (context.applicationContext as Injector)
+            .moviesComponent()
+            .create(type)
+            .inject(this)
     }
 
     override fun onCreateView(
@@ -251,7 +255,7 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     interface Injector {
-        fun injectHomeFragment(homeFragment: HomeFragment, type: RecommendationsType)
+        fun moviesComponent(): MoviesComponent.Factory
     }
 
     companion object {

@@ -1,6 +1,5 @@
 package com.hellmund.primetime.search.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,7 +13,6 @@ import android.widget.TextView
 import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -31,6 +29,7 @@ import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.observe
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView
 import kotlinx.android.synthetic.main.state_layout_search_results.loading
 import kotlinx.android.synthetic.main.state_layout_search_results.placeholder
@@ -47,7 +46,7 @@ import javax.inject.Provider
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class SearchFragment : Fragment(), TextWatcher,
+class SearchFragment : DaggerFragment(), TextWatcher,
     TextView.OnEditorActionListener, Reselectable {
 
     @Inject
@@ -75,11 +74,6 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private val snackbar: Snackbar by lazy {
         Snackbar.make(resultsRecyclerView, "", Snackbar.LENGTH_LONG)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (context.applicationContext as Injector).injectSearchFragment(this)
     }
 
     override fun onCreateView(
@@ -257,10 +251,6 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onDestroyView() {
         searchBox.removeTextChangedListener(this)
         super.onDestroyView()
-    }
-
-    interface Injector {
-        fun injectSearchFragment(searchFragment: SearchFragment)
     }
 
     companion object {

@@ -35,5 +35,8 @@ dependencies {
     implementation project(':data-common')
     implementation project(':ui-common')
 
+    implementation libraries.daggerAndroid
+    implementation libraries.daggerAndroidSupport
+    kapt libraries.daggerAndroidProcessor
     kapt libraries.daggerProcessor
 }

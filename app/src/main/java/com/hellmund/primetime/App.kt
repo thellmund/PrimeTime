@@ -1,16 +1,12 @@
 package com.hellmund.primetime
 
 import android.app.Application
-import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.di.AppComponent
 import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment
 import com.hellmund.primetime.notifications.NotificationUtils.createChannel
 import com.hellmund.primetime.notifications.NotificationUtils.scheduleNotifications
 import com.hellmund.primetime.recommendations.ui.HomeFragment
-import com.hellmund.primetime.search.ui.SearchFragment
-import com.hellmund.primetime.settings.ui.SettingsFragment
-import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -22,8 +18,7 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class App : Application(), SettingsFragment.Injector, SearchFragment.Injector,
-    MovieDetailsFragment.Injector, HomeFragment.Injector, HasAndroidInjector {
+class App : Application(), MovieDetailsFragment.Injector, HomeFragment.Injector, HasAndroidInjector {
 
     lateinit var appComponent: AppComponent
 
@@ -52,27 +47,8 @@ class App : Application(), SettingsFragment.Injector, SearchFragment.Injector,
         Timber.plant(Timber.DebugTree())
     }
 
-    override fun injectSettingsFragment(settingsFragment: SettingsFragment) {
-        appComponent.inject(settingsFragment)
-    }
+    override fun movieDetailsComponent() = appComponent.movieDetailsComponent()
 
-    override fun injectSearchFragment(searchFragment: SearchFragment) {
-        appComponent.inject(searchFragment)
-    }
-
-    override fun injectMovieDetailsFragment(
-        movieDetailsFragment: MovieDetailsFragment,
-        movieViewEntity: MovieViewEntity
-    ) {
-        appComponent.movieDetailsComponent()
-            .create(movieViewEntity)
-            .inject(movieDetailsFragment)
-    }
-
-    override fun injectHomeFragment(homeFragment: HomeFragment, type: RecommendationsType) {
-        appComponent.mainComponent()
-            .create(type)
-            .inject(homeFragment)
-    }
+    override fun moviesComponent() = appComponent.mainComponent()
 
 }

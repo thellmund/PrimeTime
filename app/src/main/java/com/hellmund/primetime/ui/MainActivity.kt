@@ -2,19 +2,18 @@ package com.hellmund.primetime.ui
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
 import com.hellmund.primetime.R
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.repositories.GenresRepository
-import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.hellmund.primetime.workers.GenresPrefetcher
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -25,7 +24,7 @@ private const val SHORTCUT_EXTRA = "intent"
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 
     @Inject
     lateinit var genresRepository: GenresRepository
@@ -57,9 +56,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        injector.inject(this)
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentCallback, false)
-
         bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelected)
         bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
 

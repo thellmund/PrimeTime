@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.work.WorkManager
 import com.hellmund.primetime.App
 import com.hellmund.primetime.history.di.HistoryModule
-import com.hellmund.primetime.history.ui.HistoryFragment
 import com.hellmund.primetime.moviedetails.di.MovieDetailsComponent
 import com.hellmund.primetime.moviedetails.di.MovieDetailsModule
 import com.hellmund.primetime.notifications.NotificationPublisher
@@ -13,17 +12,15 @@ import com.hellmund.primetime.onboarding.selectmovies.di.SelectMoviesModule
 import com.hellmund.primetime.recommendations.di.MoviesComponent
 import com.hellmund.primetime.recommendations.di.MoviesModule
 import com.hellmund.primetime.search.di.SearchModule
-import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.search.util.RealStringProvider
 import com.hellmund.primetime.search.util.StringProvider
-import com.hellmund.primetime.settings.ui.SettingsFragment
+import com.hellmund.primetime.settings.di.SettingsModule
 import com.hellmund.primetime.ui.MainActivity
 import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.PicassoImageLoader
 import com.hellmund.primetime.ui_common.util.RealValueFormatter
 import com.hellmund.primetime.ui_common.util.ValueFormatter
 import com.hellmund.primetime.watchlist.di.WatchlistModule
-import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.hellmund.primetime.workers.GenresPrefetcher
 import dagger.Binds
 import dagger.BindsInstance
@@ -31,6 +28,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import dagger.android.AndroidInjectionModule
+import dagger.android.ContributesAndroidInjector
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Singleton
@@ -49,6 +47,7 @@ import javax.inject.Singleton
     HistoryModule::class,
     GenresModule::class,
     SelectMoviesModule::class,
+    SettingsModule::class,
     WatchlistModule::class
 ])
 interface AppComponent {
@@ -58,12 +57,7 @@ interface AppComponent {
 
     fun inject(app: App)
     fun inject(genresWorker: GenresPrefetcher.RefreshGenresWorker)
-    fun inject(historyFragment: HistoryFragment)
-    fun inject(mainActivity: MainActivity)
     fun inject(notificationPublisher: NotificationPublisher)
-    fun inject(searchFragment: SearchFragment)
-    fun inject(settingsFragment: SettingsFragment)
-    fun inject(watchlistFragment: WatchlistFragment)
 
     @Component.Factory
     interface Factory {
@@ -74,6 +68,9 @@ interface AppComponent {
 
 @Module
 interface AppModule {
+
+    @ContributesAndroidInjector
+    fun contributeAndroidInjector(): MainActivity
 
     @Singleton
     @Binds
