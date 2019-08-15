@@ -35,8 +35,6 @@ dependencies {
     implementation project(':data-common')
     implementation project(':ui-common')
 
-    implementation libraries.material
-
     // Dagger
     kapt libraries.daggerProcessor
 }

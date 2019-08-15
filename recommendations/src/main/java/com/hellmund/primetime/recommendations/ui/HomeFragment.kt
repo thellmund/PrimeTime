@@ -120,9 +120,8 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun setupRecyclerView() {
-        // TODO
-        // swipeRefreshLayout.setColorSchemeResources(R.color.teal_500)
-        // swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(Action.LoadMovies(page = 1)) }
+        swipeRefreshLayout.setColorSchemeResources(R.color.teal_500)
+        swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(Action.LoadMovies(page = 1)) }
 
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -145,8 +144,7 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun render(viewState: HomeViewState) {
-        // TODO
-        // swipeRefreshLayout.isRefreshing = viewState.isLoading
+        swipeRefreshLayout.isRefreshing = viewState.isLoading
 
         if (viewState.isLoading.not()) {
             swipeRefreshLayout.isEnabled = false
