@@ -2,20 +2,26 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/feature/AndroidStudioProjects-PrimeTime-feature.iml" filepath="$PROJECT_DIR$/feature/AndroidStudioProjects-PrimeTime-feature.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature.iml" filepath="$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature.iml" />
       <module fileurl="file://$PROJECT_DIR$/PrimeTime.iml" filepath="$PROJECT_DIR$/PrimeTime.iml" />
-      <module fileurl="file://$PROJECT_DIR$/about/about.iml" filepath="$PROJECT_DIR$/about/about.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/PrimeTime-common.iml" filepath="$PROJECT_DIR$/common/PrimeTime-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/PrimeTime-feature.iml" filepath="$PROJECT_DIR$/feature/PrimeTime-feature.iml" />
       <module fileurl="file://$PROJECT_DIR$/api/api.iml" filepath="$PROJECT_DIR$/api/api.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/data/common-data.iml" filepath="$PROJECT_DIR$/common/data/common-data.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/data-common/data-common.iml" filepath="$PROJECT_DIR$/data-common/data-common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/history/history.iml" filepath="$PROJECT_DIR$/history/history.iml" />
-      <module fileurl="file://$PROJECT_DIR$/movie-details/movie-details.iml" filepath="$PROJECT_DIR$/movie-details/movie-details.iml" />
-      <module fileurl="file://$PROJECT_DIR$/onboarding/onboarding.iml" filepath="$PROJECT_DIR$/onboarding/onboarding.iml" />
-      <module fileurl="file://$PROJECT_DIR$/recommendations/recommendations.iml" filepath="$PROJECT_DIR$/recommendations/recommendations.iml" />
-      <module fileurl="file://$PROJECT_DIR$/search/search.iml" filepath="$PROJECT_DIR$/search/search.iml" />
-      <module fileurl="file://$PROJECT_DIR$/settings/settings.iml" filepath="$PROJECT_DIR$/settings/settings.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui-common/ui-common.iml" filepath="$PROJECT_DIR$/ui-common/ui-common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/watchlist/watchlist.iml" filepath="$PROJECT_DIR$/watchlist/watchlist.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/feature.iml" filepath="$PROJECT_DIR$/feature/feature.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/about/feature-about.iml" filepath="$PROJECT_DIR$/feature/about/feature-about.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/history/feature-history.iml" filepath="$PROJECT_DIR$/feature/history/feature-history.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/movie-details/feature-movie-details.iml" filepath="$PROJECT_DIR$/feature/movie-details/feature-movie-details.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/onboarding/feature-onboarding.iml" filepath="$PROJECT_DIR$/feature/onboarding/feature-onboarding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/recommendations/feature-recommendations.iml" filepath="$PROJECT_DIR$/feature/recommendations/feature-recommendations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/search/feature-search.iml" filepath="$PROJECT_DIR$/feature/search/feature-search.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/settings/feature-settings.iml" filepath="$PROJECT_DIR$/feature/settings/feature-settings.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/watchlist/feature-watchlist.iml" filepath="$PROJECT_DIR$/feature/watchlist/feature-watchlist.iml" />
     </modules>
   </component>
 </project>

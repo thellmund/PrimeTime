@@ -46,18 +46,18 @@ dependencies {
     implementation libraries.kotlin
 
     // Modules
-    implementation project(':about')
     implementation project(':api')
     implementation project(':core')
-    implementation project(':data-common')
-    implementation project(':history')
-    implementation project(':onboarding')
-    implementation project(':movie-details')
-    implementation project(':recommendations')
-    implementation project(':search')
-    implementation project(':settings')
-    implementation project(':ui-common')
-    implementation project(':watchlist')
+    implementation project(':common:data')
+    implementation project(':common:ui')
+    implementation project(':feature:about')
+    implementation project(':feature:history')
+    implementation project(':feature:onboarding')
+    implementation project(':feature:movie-details')
+    implementation project(':feature:recommendations')
+    implementation project(':feature:search')
+    implementation project(':feature:settings')
+    implementation project(':feature:watchlist')
 
     // AndroidX
     implementation libraries.palette
