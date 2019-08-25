@@ -23,10 +23,3 @@ inline fun <reified T : ViewModel> Fragment.viewModel(
     val factory = ViewModelFactory(block())
     ViewModelProviders.of(this, factory).get(T::class.java)
 }
-
-inline fun <reified T : ViewModel> Fragment.activityViewModel(
-    noinline block: () -> Provider<T>
-): Lazy<T> = lazy {
-    val factory = ViewModelFactory(block())
-    ViewModelProviders.of(requireActivity(), factory).get(T::class.java)
-}

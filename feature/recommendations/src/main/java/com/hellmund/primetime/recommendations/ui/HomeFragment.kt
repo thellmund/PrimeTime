@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -31,7 +32,7 @@ import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
 import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.onBottomReached
-import com.hellmund.primetime.ui_common.viewmodel.activityViewModel
+import com.hellmund.primetime.ui_common.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_home.banner
 import kotlinx.android.synthetic.main.fragment_home.filterFab
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
@@ -65,7 +66,14 @@ class HomeFragment : Fragment(), Reselectable {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private val viewModel: HomeViewModel by activityViewModel { viewModelProvider }
+    private val viewModel: HomeViewModel by lazy {
+        val factory = ViewModelFactory(viewModelProvider)
+        val provider = when (type) {
+            is Personalized -> ViewModelProviders.of(requireActivity(), factory)
+            else -> ViewModelProviders.of(this, factory)
+        }
+        provider.get(HomeViewModel::class.java)
+    }
 
     private val type: RecommendationsType by lazy {
         checkNotNull(arguments?.getParcelable<RecommendationsType>(KEY_RECOMMENDATIONS_TYPE))

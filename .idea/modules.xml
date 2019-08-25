@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/common/AndroidStudioProjects-PrimeTime-common.iml" filepath="$PROJECT_DIR$/common/AndroidStudioProjects-PrimeTime-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/feature/AndroidStudioProjects-PrimeTime-feature.iml" filepath="$PROJECT_DIR$/feature/AndroidStudioProjects-PrimeTime-feature.iml" />
       <module fileurl="file://$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature.iml" filepath="$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature.iml" />
+      <module fileurl="file://$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature~1.iml" filepath="$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature~1.iml" />
       <module fileurl="file://$PROJECT_DIR$/PrimeTime.iml" filepath="$PROJECT_DIR$/PrimeTime.iml" />
+      <module fileurl="file://$PROJECT_DIR$/api/PrimeTime-api.iml" filepath="$PROJECT_DIR$/api/PrimeTime-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/PrimeTime-common.iml" filepath="$PROJECT_DIR$/common/PrimeTime-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/feature/PrimeTime-feature.iml" filepath="$PROJECT_DIR$/feature/PrimeTime-feature.iml" />
       <module fileurl="file://$PROJECT_DIR$/api/api.iml" filepath="$PROJECT_DIR$/api/api.iml" />
