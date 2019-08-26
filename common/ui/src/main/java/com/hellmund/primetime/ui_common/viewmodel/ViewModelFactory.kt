@@ -17,7 +17,7 @@ class ViewModelFactory<T : ViewModel>(
 
 }
 
-inline fun <reified T : ViewModel> Fragment.viewModel(
+inline fun <reified T : ViewModel> Fragment.lazyViewModel(
     noinline block: () -> Provider<T>
 ): Lazy<T> = lazy {
     val factory = ViewModelFactory(block())

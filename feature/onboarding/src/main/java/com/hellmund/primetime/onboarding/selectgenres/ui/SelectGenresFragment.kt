@@ -12,7 +12,7 @@ import com.google.android.material.chip.Chip
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
-import com.hellmund.primetime.ui_common.viewmodel.viewModel
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_select_genres.button
 import kotlinx.android.synthetic.main.fragment_select_genres.chipGroup
@@ -29,7 +29,7 @@ class SelectGenresFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelProvider: Provider<SelectGenresViewModel>
 
-    private val viewModel: SelectGenresViewModel by viewModel { viewModelProvider }
+    private val viewModel: SelectGenresViewModel by lazyViewModel { viewModelProvider }
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.fragment.app.transaction
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,10 +24,12 @@ import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
+import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.util.ImageLoader
-import com.hellmund.primetime.ui_common.viewmodel.viewModel
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.pandora.bottomnavigator.BottomNavigator
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView
 import kotlinx.android.synthetic.main.state_layout_search_results.loading
@@ -70,7 +71,7 @@ class SearchFragment : DaggerFragment(), TextWatcher,
         )
     }
 
-    private val viewModel: SearchViewModel by viewModel { viewModelProvider }
+    private val viewModel: SearchViewModel by lazyViewModel { viewModelProvider }
 
     private val snackbar: Snackbar by lazy {
         Snackbar.make(resultsRecyclerView, "", Snackbar.LENGTH_LONG)
@@ -166,10 +167,9 @@ class SearchFragment : DaggerFragment(), TextWatcher,
     private fun openCategory(type: RecommendationsType) {
         val args = bundleOf(FragmentArgs.KEY_RECOMMENDATIONS_TYPE to type)
         val fragment = fragmentFactory.category(args)
-        requireFragmentManager().transaction {
-            replace(R.id.contentFrame, fragment)
-            addToBackStack(null)
-        }
+
+        val navigator = BottomNavigator.provide(requireActivity())
+        navigator.addFragment(fragment)
     }
 
     private fun buildCategories(genres: List<Genre>): List<String> {
@@ -215,13 +215,13 @@ class SearchFragment : DaggerFragment(), TextWatcher,
         return false
     }
 
-    private fun onItemClick(movie: SearchViewEntity) {
+    private fun onItemClick(movie: MovieViewEntity) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
         val fragment = fragmentFactory.movieDetails(args) as BottomSheetDialogFragment
         fragment.show(requireFragmentManager(), fragment.tag)
     }
 
-    private fun onWatched(movie: SearchViewEntity) {
+    private fun onWatched(movie: MovieViewEntity) {
         RateMovieDialog
             .make(requireActivity())
             .setTitle(movie.title)

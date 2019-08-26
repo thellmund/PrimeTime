@@ -76,6 +76,7 @@ dependencies {
     kapt libraries.roomProcessor
 
     implementation libraries.timber
+    implementation libraries.bottomNavigator
 
     // Testing
     testImplementation libraries.jUnit

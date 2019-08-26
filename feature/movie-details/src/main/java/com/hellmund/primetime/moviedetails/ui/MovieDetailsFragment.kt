@@ -28,7 +28,7 @@ import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.dialogs.showLoading
 import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.openUrl
-import com.hellmund.primetime.ui_common.viewmodel.viewModel
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import kotlinx.android.synthetic.main.fragment_movie_details.addToWatchlistButton
 import kotlinx.android.synthetic.main.fragment_movie_details.backdropImageView
 import kotlinx.android.synthetic.main.fragment_movie_details.descriptionTextView
@@ -59,7 +59,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     @Inject
     lateinit var viewModelProvider: Provider<MovieDetailsViewModel>
 
-    private val viewModel: MovieDetailsViewModel by viewModel { viewModelProvider }
+    private val viewModel: MovieDetailsViewModel by lazyViewModel { viewModelProvider }
 
     private val movie: MovieViewEntity by lazy {
         checkNotNull(arguments?.getParcelable<MovieViewEntity>(FragmentArgs.KEY_MOVIE))

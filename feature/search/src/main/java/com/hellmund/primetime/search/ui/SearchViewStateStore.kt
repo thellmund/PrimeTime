@@ -1,12 +1,13 @@
 package com.hellmund.primetime.search.ui
 
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 
 data class SearchViewState(
     val genres: List<Genre> = emptyList(),
-    val data: List<SearchViewEntity> = emptyList(),
+    val data: List<MovieViewEntity> = emptyList(),
     val showClearButton: Boolean = false,
     val didPerformSearch: Boolean = false,
     val isLoading: Boolean = false,

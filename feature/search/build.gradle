@@ -39,4 +39,6 @@ dependencies {
     implementation libraries.daggerAndroidSupport
     kapt libraries.daggerAndroidProcessor
     kapt libraries.daggerProcessor
+
+    implementation libraries.bottomNavigator
 }

@@ -14,6 +14,8 @@ import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.search.data.SearchRepository
 import com.hellmund.primetime.search.util.StringProvider
+import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
+import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,7 +33,7 @@ sealed class Action {
 sealed class Result {
     object Loading : Result()
     data class GenresLoaded(val genres: List<Genre>) : Result()
-    data class Data(val data: List<SearchViewEntity>) : Result()
+    data class Data(val data: List<MovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
     data class ToggleClearButton(val show: Boolean) : Result()
     data class ShowSnackbar(val message: String) : Result()
@@ -46,7 +48,7 @@ class SearchViewModel @Inject constructor(
     private val repository: SearchRepository,
     private val historyRepository: HistoryRepository,
     private val genresRepository: GenresRepository,
-    private val viewEntitiesMapper: SearchViewEntitiesMapper,
+    private val viewEntitiesMapper: MovieViewEntitiesMapper,
     private val stringProvider: StringProvider
 ) : ViewModel() {
 

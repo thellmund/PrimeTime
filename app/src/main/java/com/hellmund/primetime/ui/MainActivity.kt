@@ -1,7 +1,6 @@
 package com.hellmund.primetime.ui
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
@@ -11,6 +10,7 @@ import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
+import com.pandora.bottomnavigator.BottomNavigator
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -25,15 +25,10 @@ class MainActivity : AppCompatActivity() {
         FragmentLifecycleCallback(this)
     }
 
-    private val navigator = TabsNavigator(this)
-
     private val currentFragment: Fragment?
         get() = supportFragmentManager.findFragmentById(R.id.contentFrame)
 
-    private val onNavigationItemSelected = { menuItem: MenuItem ->
-        navigator.open(menuItem.itemId)
-        true
-    }
+    private lateinit var navigator: BottomNavigator
 
     private val onNavigationItemReselected = OnNavigationItemReselectedListener {
         val reselectable = currentFragment as? Reselectable
@@ -46,12 +41,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentCallback, false)
-        bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelected)
         bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
 
-        if (savedInstanceState == null) {
-            navigator.openHome()
-        }
+        navigator = BottomNavigator.onCreate(
+            activity = this,
+            rootFragmentsFactory = mapOf(
+                R.id.home to { HomeFragment.newInstance() },
+                R.id.search to { SearchFragment.newInstance() },
+                R.id.watchlist to { WatchlistFragment.newInstance() }
+            ),
+            defaultTab = R.id.home,
+            fragmentContainer = R.id.contentFrame,
+            bottomNavigationView = bottomNavigation
+        )
 
         intent?.getStringExtra(SHORTCUT_EXTRA)?.let {
             handleShortcutOpen(it)
@@ -67,35 +69,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openSearchFromIntent(extra: String? = null) {
-        navigator.openSearch(extra)
-        bottomNavigation.selectedItemId = R.id.search
+        // navigator.openSearch(extra)
+        // bottomNavigation.selectedItemId = R.id.search
+        TODO()
     }
 
     private fun openWatchlistFromIntent() {
-        navigator.openWatchlist()
-        bottomNavigation.selectedItemId = R.id.watchlist
+        navigator.switchTab(R.id.watchlist)
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStackImmediate()
-            adjustBottomNavigation()
-        } else {
+        if (!navigator.pop()) {
             super.onBackPressed()
         }
-    }
-
-    private fun adjustBottomNavigation() {
-        bottomNavigation.setOnNavigationItemSelectedListener(null)
-        bottomNavigation.setOnNavigationItemReselectedListener(null)
-        bottomNavigation.selectedItemId = when (currentFragment) {
-            is HomeFragment -> R.id.home
-            is SearchFragment -> R.id.search
-            is WatchlistFragment -> R.id.watchlist
-            else -> throw IllegalStateException()
-        }
-        bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelected)
-        bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
     }
 
     override fun onDestroy() {

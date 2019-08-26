@@ -14,7 +14,7 @@ import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.util.showToast
-import com.hellmund.primetime.ui_common.viewmodel.viewModel
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_select_movies.button
 import kotlinx.android.synthetic.main.fragment_select_movies.error_container
@@ -41,7 +41,7 @@ class SelectMoviesFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelProvider: Provider<SelectMoviesViewModel>
 
-    private val viewModel: SelectMoviesViewModel by viewModel { viewModelProvider }
+    private val viewModel: SelectMoviesViewModel by lazyViewModel { viewModelProvider }
 
     private var isLoadingMore: Boolean = false
 

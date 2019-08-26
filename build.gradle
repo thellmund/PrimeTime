@@ -11,6 +11,7 @@ buildscript {
         versions = [
                 adapterDelegates  : '4.1.1',
                 appCompat         : '1.1.0-rc01',
+                bottomNavigator   : '1.1',
                 browser           : '1.0.0',
                 constraintLayout  : '1.1.3',
                 coreKtx           : '1.0.2',
@@ -45,6 +46,7 @@ buildscript {
                 adapterDelegatesDsl            : "com.hannesdorfmann:adapterdelegates4-kotlin-dsl:${versions.adapterDelegates}",
                 adapterDelegatesLayoutContainer: "com.hannesdorfmann:adapterdelegates4-kotlin-dsl-layoutcontainer:${versions.adapterDelegates}",
                 appCompat                      : "androidx.appcompat:appcompat:${versions.appCompat}",
+                bottomNavigator                : "com.pandora.bottomnavigator:bottom-navigator:${versions.bottomNavigator}",
                 browser                        : "androidx.browser:browser:${versions.browser}",
                 constraintLayout               : "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}",
                 coreKtx                        : "androidx.core:core-ktx:${versions.coreKtx}",

@@ -13,7 +13,7 @@ import com.hellmund.primetime.history.R
 import com.hellmund.primetime.ui_common.dialogs.showItemsDialog
 import com.hellmund.primetime.ui_common.dialogs.showSingleSelectDialog
 import com.hellmund.primetime.ui_common.util.showToast
-import com.hellmund.primetime.ui_common.viewmodel.viewModel
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_history.progressBar
 import kotlinx.android.synthetic.main.fragment_history.recyclerView
@@ -29,7 +29,7 @@ class HistoryFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelProvider: Provider<HistoryViewModel>
 
-    private val viewModel: HistoryViewModel by viewModel { viewModelProvider }
+    private val viewModel: HistoryViewModel by lazyViewModel { viewModelProvider }
 
     private val adapter: HistoryAdapter by lazy {
         HistoryAdapter(this::onOpenDialog)
