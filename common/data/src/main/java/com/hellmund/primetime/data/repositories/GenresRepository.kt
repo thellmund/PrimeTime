@@ -1,7 +1,7 @@
 package com.hellmund.primetime.data.repositories
 
 import com.hellmund.api.TmdbApiService
-import com.hellmund.primetime.data.database.AppDatabase
+import com.hellmund.primetime.data.database.GenreDatabase
 import com.hellmund.primetime.data.model.Genre
 import javax.inject.Inject
 
@@ -18,32 +18,34 @@ interface GenresRepository {
 
 class RealGenresRepository @Inject constructor(
     private val apiService: TmdbApiService,
-    private val database: AppDatabase
+    private val database: GenreDatabase
 ) : GenresRepository {
 
-    override suspend fun getAll(): List<Genre> = database.genreDao().getAll()
+    override suspend fun getAll(): List<Genre> = database.getAll()
 
-    override suspend fun getPreferredGenres() = database.genreDao().getPreferredGenres()
+    override suspend fun getPreferredGenres() = database.getPreferredGenres()
 
-    override suspend fun getExcludedGenres() = database.genreDao().getExcludedGenres()
+    override suspend fun getExcludedGenres() = database.getExcludedGenres()
 
     override suspend fun fetchGenres(): List<Genre> {
         val genres = apiService.genres()
-        return genres.genres.map { Genre(it.id, it.name) }
+        return genres.genres.map {
+            Genre.Impl(it.id.toLong(), it.name, isPreferred = false, isExcluded = false)
+        }
     }
 
     override suspend fun getGenre(
         genreId: String
-    ): Genre = database.genreDao().getGenre(genreId.toInt())
+    ): Genre = database.getGenre(genreId.toInt())
 
-    override suspend fun getGenreByName(name: String) = database.genreDao().getGenre(name)
+    override suspend fun getGenreByName(name: String) = database.getGenre(name)
 
     override suspend fun getGenres(genreIds: Set<String>): List<Genre> {
-        return genreIds.map { database.genreDao().getGenre(it.toInt()) }
+        return genreIds.map { database.getGenre(it.toInt()) }
     }
 
     override suspend fun storeGenres(genres: List<Genre>) {
-        database.genreDao().store(genres)
+        database.store(genres)
     }
 
 }

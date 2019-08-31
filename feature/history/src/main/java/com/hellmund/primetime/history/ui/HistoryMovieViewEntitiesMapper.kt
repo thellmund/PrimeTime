@@ -32,7 +32,7 @@ class HistoryMovieViewEntityMapper @Inject constructor(
         val formattedDetailsText = context.getString(R.string.added_on, formattedRating, formattedDate)
 
         return HistoryMovieViewEntity(
-            movie.id,
+            movie.id.toInt(),
             movie.title,
             movie.rating,
             formattedDate,

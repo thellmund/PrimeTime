@@ -103,14 +103,10 @@ class HistoryFragment : DaggerFragment() {
                 if (it != checked) {
                     val newRating = if (it == 0) Rating.Like else Rating.Dislike
                     val ratedMovie = movie.apply(newRating)
-                    updateRating(ratedMovie)
+                    viewModel.dispatch(Action.Update(ratedMovie))
                 }
             }
         )
-    }
-
-    private fun updateRating(ratedMovie: RatedHistoryMovie) {
-        viewModel.dispatch(Action.Update(ratedMovie))
     }
 
     companion object {

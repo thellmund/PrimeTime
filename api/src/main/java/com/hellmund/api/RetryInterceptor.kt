@@ -1,12 +1,10 @@
 package com.hellmund.api
 
-import okhttp3.Interceptor
-import okhttp3.Response
+import org.omg.PortableInterceptor.Interceptor
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class RetryInterceptor @Inject constructor() : Interceptor {
+/*class RetryInterceptor @Inject constructor() : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -25,4 +23,4 @@ class RetryInterceptor @Inject constructor() : Interceptor {
         return response
     }
 
-}
+}*/

@@ -2,12 +2,13 @@ package com.hellmund.primetime.data.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 
 sealed class RecommendationsType : Parcelable {
 
     @Parcelize
     data class Personalized(
-        val genres: List<Genre>? = null
+        val genres: @RawValue List<Genre>? = null // TODO RawValue?
     ) : RecommendationsType()
 
     @Parcelize
@@ -20,6 +21,6 @@ sealed class RecommendationsType : Parcelable {
     object Upcoming : RecommendationsType()
 
     @Parcelize
-    data class ByGenre(val genre: Genre) : RecommendationsType()
+    data class ByGenre(val genre: @RawValue Genre) : RecommendationsType()
 
 }

@@ -25,6 +25,7 @@ class MovieViewEntityMapper @Inject constructor(
 
     suspend operator fun invoke(movie: Movie): MovieViewEntity {
         val genres = if (movie.genres.isNullOrEmpty()) {
+            fetchGenresIfNecessary()
             movie.genreIds.orEmpty().map { genresRepository.getGenre(it.toString()) }
         } else {
             movie.genres.orEmpty()
@@ -45,6 +46,13 @@ class MovieViewEntityMapper @Inject constructor(
             imdbId = movie.imdbId,
             raw = movie
         )
+    }
+
+    private suspend fun fetchGenresIfNecessary() {
+        if (genresRepository.getAll().isEmpty()) {
+            val genres = genresRepository.fetchGenres()
+            genresRepository.storeGenres(genres)
+        }
     }
 
 }

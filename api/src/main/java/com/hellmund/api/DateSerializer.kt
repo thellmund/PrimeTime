@@ -6,9 +6,7 @@ import com.google.gson.JsonElement
 import org.threeten.bp.LocalDate
 import java.lang.reflect.Type
 
-class DateSerializer(
-    private val onError: (String) -> Unit
-) : JsonDeserializer<LocalDate?> {
+class DateSerializer : JsonDeserializer<LocalDate?> {
 
     override fun deserialize(
         json: JsonElement?,
@@ -18,7 +16,6 @@ class DateSerializer(
         return try {
             LocalDate.parse(json?.asString)
         } catch (e: Exception) {
-            onError("Parsing date ${json?.asString} did not work")
             null
         }
     }

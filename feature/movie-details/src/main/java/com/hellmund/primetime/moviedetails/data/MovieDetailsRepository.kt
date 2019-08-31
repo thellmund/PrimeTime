@@ -1,7 +1,7 @@
 package com.hellmund.primetime.moviedetails.data
 
-import com.hellmund.api.model.Review
 import com.hellmund.api.TmdbApiService
+import com.hellmund.api.model.Review
 import com.hellmund.primetime.data.model.Movie
 import javax.inject.Inject
 

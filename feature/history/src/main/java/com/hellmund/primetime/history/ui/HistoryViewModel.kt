@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.repositories.HistoryRepository
+import com.hellmund.primetime.ui_common.util.replace
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
-import com.hellmund.primetime.ui_common.util.replace
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
@@ -41,6 +41,8 @@ class HistoryViewStateReducer : Reducer<HistoryViewState, Result> {
         is Result.Data -> state.copy(data = result.data, isLoading = false, error = null)
         is Result.Error -> state.copy(isLoading = false, error = result.error)
         is Result.Removed -> state.copy(data = state.data.minus(result.movie))
+
+        // TODO Not really necessary, is it?
         is Result.Updated -> {
             val index = state.data.indexOfFirst { it.id == result.movie.id }
             val newData = state.data.replace(index, result.movie)
@@ -82,11 +84,13 @@ class HistoryViewModel @Inject constructor(
     }
 
     private suspend fun updateMovie(ratedMovie: RatedHistoryMovie) {
-        val newMovie = ratedMovie.movie.raw.copy(rating = ratedMovie.rating)
-        repository.store(newMovie)
+        // val newMovie = ratedMovie.movie.raw.copy(rating = ratedMovie.rating)
+        // repository.store(newMovie)
+        repository.updateRating(ratedMovie.movie.raw, ratedMovie.rating)
 
-        val viewEntity = viewEntityMapper(newMovie)
-        store.dispatch(Result.Updated(viewEntity))
+        // TODO
+        // val viewEntity = viewEntityMapper(ratedMovie.)
+        // store.dispatch(Result.Updated(viewEntity))
     }
 
     fun dispatch(action: Action) {

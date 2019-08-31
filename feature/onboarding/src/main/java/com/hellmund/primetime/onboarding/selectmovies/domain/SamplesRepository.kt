@@ -1,10 +1,10 @@
 package com.hellmund.primetime.onboarding.selectmovies.domain
 
-import com.hellmund.api.model.Sample
 import com.hellmund.api.TmdbApiService
-import com.hellmund.primetime.data.repositories.HistoryRepository
+import com.hellmund.api.model.Sample
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.HistoryMovie
+import com.hellmund.primetime.data.repositories.HistoryRepository
 import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ class RealSamplesRepository @Inject constructor(
             val movieResults = mutableListOf<Sample>()
             for (year in years) {
                 val response = apiService.discoverMovies(
-                    genre = genre.id, releaseYear = year, page = page)
+                    genre = genre.id.toInt(), releaseYear = year, page = page)
                 movieResults += response.results
             }
             results += movieResults.subList(0, moviesPerGenre)

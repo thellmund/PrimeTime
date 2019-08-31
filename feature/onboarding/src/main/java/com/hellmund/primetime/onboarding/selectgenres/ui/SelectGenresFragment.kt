@@ -100,7 +100,12 @@ class SelectGenresFragment : DaggerFragment() {
     private fun saveGenres() {
         val checkedItems = chipGroup.children.toList().map { it as Chip }
         val includedGenres = genres.mapIndexed { index, genre ->
-            genre.copy(isPreferred = checkedItems[index].isChecked)
+            Genre.Impl(
+                id = genre.id,
+                name = genre.name,
+                isPreferred = checkedItems[index].isChecked,
+                isExcluded = genre.isExcluded
+            )
         }
         viewModel.dispatch(Action.Store(includedGenres))
     }

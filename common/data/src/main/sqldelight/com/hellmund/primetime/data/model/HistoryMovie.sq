@@ -1,0 +1,44 @@
+import org.threeten.bp.LocalDateTime;
+import com.hellmund.primetime.data.model.Rating;
+
+CREATE TABLE historyMovie (
+    id INTEGER NOT NULL UNIQUE PRIMARY KEY,
+    title TEXT NOT NULL,
+    rating INTEGER AS Rating NOT NULL,
+    timestamp INTEGER AS LocalDateTime NOT NULL
+);
+
+getAll:
+SELECT *
+FROM historyMovie
+ORDER BY timestamp DESC;
+
+getLiked:
+SELECT *
+FROM historyMovie
+WHERE rating = 1
+ORDER BY timestamp DESC;
+
+getCount:
+SELECT COUNT(*)
+FROM historyMovie
+WHERE id = ?;
+
+updateRating:
+UPDATE historyMovie
+SET rating = :rating
+WHERE id = :id;
+
+store:
+INSERT OR REPLACE INTO historyMovie(
+    id,
+    title,
+    rating,
+    timestamp
+)
+VALUES (?, ?, ?, ?);
+
+delete:
+DELETE
+FROM historyMovie
+WHERE id = ?;

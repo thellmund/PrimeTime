@@ -29,5 +29,10 @@ data class MovieViewEntity(
 }
 
 data class RatedMovie(val movie: MovieViewEntity, val rating: Rating) {
-    fun toHistoryMovie() = HistoryMovie(movie.id, movie.title, rating, LocalDateTime.now())
+    fun toHistoryMovie() = HistoryMovie.Impl(
+        id = movie.id.toLong(),
+        title = movie.title,
+        rating = rating,
+        timestamp = LocalDateTime.now()
+    )
 }

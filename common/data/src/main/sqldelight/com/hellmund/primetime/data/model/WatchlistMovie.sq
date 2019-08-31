@@ -1,0 +1,53 @@
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
+
+CREATE TABLE watchlistMovie (
+    id INTEGER NOT NULL UNIQUE PRIMARY KEY,
+    title TEXT NOT NULL,
+    posterUrl TEXT NOT NULL,
+    description TEXT NOT NULL,
+    runtime INTEGER as Int NOT NULL,
+    releaseDate INTEGER as LocalDate NOT NULL,
+    addedAt INTEGER as LocalDateTime NOT NULL,
+    deleted INTEGER AS Boolean DEFAULT 0 NOT NULL,
+    notificationsActivated INTEGER AS Boolean DEFAULT 1 NOT NULL
+);
+
+getAll:
+SELECT *
+FROM watchlistMovie
+ORDER BY addedAt DESC;
+
+getReleases:
+SELECT *
+FROM watchlistMovie
+WHERE addedAt BETWEEN datetime(:minTime, 'unixepoch') AND datetime(:maxTime, 'unixepoch');
+
+getCount:
+SELECT COUNT(*)
+FROM watchlistMovie
+WHERE id = ?;
+
+store:
+INSERT OR REPLACE INTO watchlistMovie(
+    id,
+    title,
+    posterUrl,
+    description,
+    runtime,
+    releaseDate,
+    addedAt,
+    deleted,
+    notificationsActivated
+)
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+toggleNotification:
+UPDATE watchlistMovie
+SET notificationsActivated = :isActivated
+WHERE id = :id;
+
+delete:
+DELETE
+FROM watchlistMovie
+WHERE id = ?;

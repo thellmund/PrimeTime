@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 interface MoviesRepository {
     suspend fun fetchRecommendations(type: RecommendationsType, page: Int): List<Movie>
-    suspend fun fetchSimilarMovies(movieId: Int, page: Int = 1): List<Movie>
+    suspend fun fetchSimilarMovies(movieId: Long, page: Int = 1): List<Movie>
     suspend fun searchMovies(query: String): List<Movie>
     suspend fun fetchPopularMovies(): List<Movie>
 }
@@ -29,10 +29,10 @@ class RealMoviesRepository @Inject constructor(
     ): List<Movie> {
         return when (type) {
             is RecommendationsType.Personalized -> fetchPersonalizedRecommendations(type.genres, page)
-            is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id, page)
+            is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id.toLong(), page)
             is RecommendationsType.NowPlaying -> fetchNowPlayingRecommendations(page)
             is RecommendationsType.Upcoming -> fetchUpcomingRecommendations(page)
-            is RecommendationsType.ByGenre -> fetchGenreRecommendations(type.genre.id, page)
+            is RecommendationsType.ByGenre -> fetchGenreRecommendations(type.genre.id.toInt(), page)
         }
     }
 
@@ -51,14 +51,14 @@ class RealMoviesRepository @Inject constructor(
 
         val personalized = history.map { fetchSimilarMovies(it.id, page) }.flatten()
         val genres = filterGenres ?: genresRepository.getPreferredGenres()
-        val byGenre = genres.map { fetchGenreRecommendations(it.id, page) }.flatten()
+        val byGenre = genres.map { fetchGenreRecommendations(it.id.toInt(), page) }.flatten()
         val topRated = fetchTopRatedMovies(page)
 
         return personalized + byGenre + topRated
     }
 
     private suspend fun fetchMovieBasedRecommendations(
-        movieId: Int,
+        movieId: Long,
         page: Int
     ) = fetchSimilarMovies(movieId, page)
 
@@ -75,9 +75,9 @@ class RealMoviesRepository @Inject constructor(
         .map { Movie.from(it) }
 
     override suspend fun fetchSimilarMovies(
-        movieId: Int,
+        movieId: Long,
         page: Int
-    ): List<Movie> = apiService.recommendations(movieId, page).results
+    ): List<Movie> = apiService.recommendations(movieId.toInt(), page).results
         .filter { it.isValid }
         .map { Movie.from(it) }
 

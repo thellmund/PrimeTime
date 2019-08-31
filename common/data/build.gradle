@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.squareup.sqldelight'
 
 android {
     compileSdkVersion buildConfig.compileSdk
@@ -24,6 +25,10 @@ android {
     androidExtensions {
         experimental = true
     }
+
+    packagingOptions {
+        exclude 'META-INF/*.kotlin_module'
+    }
 }
 
 dependencies {
@@ -36,8 +41,8 @@ dependencies {
     // Dagger
     kapt libraries.daggerProcessor
 
-    // Room
-    api libraries.room
-    api libraries.roomKtx
-    kapt libraries.roomProcessor
+    // SqlDelight
+    implementation libraries.sqlDelightDriver
+    implementation libraries.sqlDelightCoroutines
+    implementation libraries.sqlDelightRuntime
 }

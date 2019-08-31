@@ -6,10 +6,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libraries.kotlin
 
-    api libraries.retrofit
-    api libraries.retrofitGson
-    api libraries.okHttpLogging
-    api libraries.gson
+    api libraries.ktorCore
+    api libraries.ktorAndroid
+    api libraries.ktorGson
 
     implementation libraries.dagger
     kapt libraries.daggerProcessor

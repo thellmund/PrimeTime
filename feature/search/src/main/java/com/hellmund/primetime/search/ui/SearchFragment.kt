@@ -25,6 +25,7 @@ import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.RatedMovie
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.util.ImageLoader

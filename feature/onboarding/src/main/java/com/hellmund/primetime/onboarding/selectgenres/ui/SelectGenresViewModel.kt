@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.data.repositories.GenresRepository
+import com.hellmund.primetime.ui_common.util.replace
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
-import com.hellmund.primetime.ui_common.util.replace
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -87,7 +87,12 @@ class SelectGenresViewModel @Inject constructor(
     }
 
     private fun toggleGenre(genre: Genre) {
-        val newGenre = genre.copy(isPreferred = !genre.isPreferred)
+        val newGenre = Genre.Impl(
+            id = genre.id,
+            name = genre.name,
+            isPreferred = !genre.isPreferred,
+            isExcluded = genre.isExcluded
+        )
         store.dispatch(Result.GenreToggled(newGenre))
     }
 

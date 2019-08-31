@@ -21,6 +21,7 @@ buildscript {
                 gson              : '2.8.5',
                 jUnit             : '4.12',
                 kotlin            : '1.3.50',
+                ktor              : '1.2.3',
                 lifecycle         : '2.2.0-alpha02',
                 lifecycleCommon   : '2.0.0',
                 material          : '1.1.0-alpha07',
@@ -30,10 +31,9 @@ buildscript {
                 palette           : '1.0.0',
                 picasso           : '2.71828',
                 preference        : '1.1.0-rc01',
-                retrofit          : '2.6.1',
-                room              : '2.2.0-alpha02',
                 roundedImageView  : '2.3.0',
                 shimmer           : '0.4.0',
+                sqlDelight        : '1.2.0',
                 threeTenAbp       : '1.2.1',
                 timber            : '4.7.1',
                 viewPager         : '1.0.0-beta02',
@@ -61,6 +61,9 @@ buildscript {
                 gson                           : "com.google.code.gson:gson:${versions.gson}",
                 jUnit                          : "junit:junit:${versions.jUnit}",
                 kotlin                         : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
+                ktorAndroid                    : "io.ktor:ktor-client-android:${versions.ktor}",
+                ktorCore                       : "io.ktor:ktor-client-core:${versions.ktor}",
+                ktorGson                      : "io.ktor:ktor-client-gson:${versions.ktor}",
                 lifecycleViewModel             : "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}",
                 lifecycleLiveData              : "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}",
                 lifecycleKtx                   : "androidx.lifecycle:lifecycle-runtime-ktx:${versions.lifecycle}",
@@ -73,13 +76,11 @@ buildscript {
                 palette                        : "androidx.palette:palette:${versions.palette}",
                 picasso                        : "com.squareup.picasso:picasso:${versions.picasso}",
                 preference                     : "androidx.preference:preference:${versions.preference}",
-                retrofit                       : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
-                retrofitGson                   : "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
-                room                           : "androidx.room:room-runtime:${versions.room}",
-                roomKtx                        : "androidx.room:room-ktx:${versions.room}",
-                roomProcessor                  : "androidx.room:room-compiler:${versions.room}",
                 roundedImageView               : "com.makeramen:roundedimageview:${versions.roundedImageView}",
                 shimmer                        : "com.facebook.shimmer:shimmer:${versions.shimmer}",
+                sqlDelightCoroutines           : "com.squareup.sqldelight:coroutines-extensions-jvm:${versions.sqlDelight}",
+                sqlDelightRuntime              : "com.squareup.sqldelight:runtime:${versions.sqlDelight}",
+                sqlDelightDriver               : "com.squareup.sqldelight:android-driver:${versions.sqlDelight}",
                 threeTenAbp                    : "com.jakewharton.threetenabp:threetenabp:${versions.threeTenAbp}",
                 timber                         : "com.jakewharton.timber:timber:${versions.timber}",
                 viewPager                      : "androidx.viewpager2:viewpager2:${versions.viewPager}",
@@ -97,6 +98,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath "com.squareup.sqldelight:gradle-plugin:${versions.sqlDelight}"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

@@ -2,7 +2,9 @@ package com.hellmund.primetime.di
 
 import android.content.Context
 import androidx.work.WorkManager
+import com.hellmund.api.di.NetworkModule
 import com.hellmund.primetime.App
+import com.hellmund.primetime.data.di.DatabaseModule
 import com.hellmund.primetime.history.di.HistoryModule
 import com.hellmund.primetime.moviedetails.di.MovieDetailsComponent
 import com.hellmund.primetime.moviedetails.di.MovieDetailsModule
@@ -39,6 +41,7 @@ import javax.inject.Singleton
 @Component(modules = [
     AndroidInjectionModule::class,
     AppModule::class,
+    DatabaseModule::class,
     NetworkModule::class,
     PersistenceModule::class,
     MoviesModule::class,

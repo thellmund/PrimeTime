@@ -31,8 +31,9 @@ class GenresValidator @Inject constructor(
             val genres = getGenresFromValues(genreIds)
 
             for (genre in genres) {
-                genre.isPreferred = isIncludedGenres
-                genre.isExcluded = isExcludedGenres
+                // TODO
+                // genre.isPreferred = isIncludedGenres
+                // genre.isExcluded = isExcludedGenres
             }
 
             val results = genres.filter { if (isIncludedGenres) it.isPreferred else it.isExcluded }
@@ -45,7 +46,10 @@ class GenresValidator @Inject constructor(
         }
     }
 
-    private suspend fun getOverlappingGenres(pref: Preference, newValues: Set<String>): List<Genre> {
+    private suspend fun getOverlappingGenres(
+        pref: Preference,
+        newValues: Set<String>
+    ): List<Genre> {
         val isIncludedGenres = pref.key == Preferences.KEY_INCLUDED
 
         val includedGenres = if (isIncludedGenres) {

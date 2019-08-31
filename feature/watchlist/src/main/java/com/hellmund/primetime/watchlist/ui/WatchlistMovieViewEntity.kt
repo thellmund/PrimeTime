@@ -5,6 +5,7 @@ import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.data.model.WatchlistMovie
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 import org.threeten.bp.LocalDateTime
 
 @Parcelize
@@ -19,7 +20,7 @@ data class WatchlistMovieViewEntity(
     val savedAt: LocalDateTime = LocalDateTime.now(),
     val notificationsActivated: Boolean = true,
     val isUnreleased: Boolean,
-    val raw: WatchlistMovie
+    val raw: @RawValue WatchlistMovie // TODO RawValue?
 ) : Parcelable {
 
     fun apply(rating: Rating) = RatedWatchlistMovie(this, rating)
@@ -27,5 +28,10 @@ data class WatchlistMovieViewEntity(
 }
 
 data class RatedWatchlistMovie(val movie: WatchlistMovieViewEntity, val rating: Rating) {
-    fun toHistoryMovie() = HistoryMovie(movie.id, movie.title, rating, LocalDateTime.now())
+    fun toHistoryMovie() = HistoryMovie.Impl(
+        id = movie.id.toLong(),
+        title = movie.title,
+        rating = rating,
+        timestamp = LocalDateTime.now()
+    )
 }
