@@ -1,6 +1,6 @@
 package com.hellmund.primetime.data.repositories
 
-import com.hellmund.primetime.data.database.WatchlistDatabase
+import com.hellmund.primetime.data.database.WatchlistDao
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.WatchlistMovie
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -8,48 +8,39 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
 import javax.inject.Inject
 
 interface WatchlistRepository {
     suspend fun getAll(): List<WatchlistMovie>
     suspend fun observeAll(): Flow<List<WatchlistMovie>>
     suspend fun getReleases(date: LocalDate): List<WatchlistMovie>
-    suspend fun count(movieId: Int): Int
+    suspend fun count(movieId: Long): Int
     suspend fun store(movie: Movie)
     suspend fun store(watchlistMovie: WatchlistMovie)
-    suspend fun toggleNotification(movieId: Int)
-    suspend fun remove(movieId: Int)
+    suspend fun toggleNotification(watchlistMovie: WatchlistMovie)
+    suspend fun remove(movieId: Long)
 }
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 class RealWatchlistRepository @Inject constructor(
-    private val database: WatchlistDatabase
+    private val dao: WatchlistDao
 ) : WatchlistRepository {
 
-    override suspend fun getAll() = database.getAll()
+    override suspend fun getAll() = dao.getAll()
 
-    override suspend fun observeAll() = database.observeAll()
+    override suspend fun observeAll() = dao.observeAll()
 
     override suspend fun getReleases(
         date: LocalDate
-    ) = database.getReleases(
-        start = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-        end = date.atStartOfDay(ZoneId.systemDefault())
-            .withHour(23)
-            .withMinute(59)
-            .withSecond(59)
-            .withNano(999_999)
-            .toInstant().toEpochMilli()
-    )
+    ): List<WatchlistMovie> = getAll().filter { it.releaseDate.isEqual(date) }
 
-    override suspend fun count(movieId: Int) = database.count(movieId)
+    override suspend fun count(movieId: Long) = dao.count(movieId)
 
     override suspend fun store(movie: Movie) {
         store(
             WatchlistMovie.Impl(
-                id = movie.id.toLong(),
+                id = movie.id,
                 title = movie.title,
                 posterUrl = movie.posterPath,
                 description = movie.description,
@@ -63,15 +54,15 @@ class RealWatchlistRepository @Inject constructor(
     }
 
     override suspend fun store(watchlistMovie: WatchlistMovie) {
-        database.store(watchlistMovie)
+        dao.store(watchlistMovie)
     }
 
-    override suspend fun toggleNotification(movieId: Int) {
-        // TODO
+    override suspend fun toggleNotification(watchlistMovie: WatchlistMovie) {
+        dao.toggleNotification(watchlistMovie.id, isActive = watchlistMovie.notificationsActivated.not())
     }
 
-    override suspend fun remove(movieId: Int) {
-        database.delete(movieId)
+    override suspend fun remove(movieId: Long) {
+        dao.delete(movieId)
     }
 
 }

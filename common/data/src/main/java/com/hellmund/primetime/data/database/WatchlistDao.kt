@@ -7,18 +7,18 @@ import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface WatchlistDatabase {
+interface WatchlistDao {
     suspend fun getAll(): List<WatchlistMovie>
     fun observeAll(): Flow<List<WatchlistMovie>>
-    suspend fun getReleases(start: Long, end: Long): List<WatchlistMovie>
-    suspend fun count(movieId: Int): Int
+    suspend fun count(movieId: Long): Int
     suspend fun store(vararg movies: WatchlistMovie)
-    suspend fun delete(id: Int)
+    suspend fun toggleNotification(movieId: Long, isActive: Boolean)
+    suspend fun delete(id: Long)
 }
 
-class RealWatchlistDatabase @Inject constructor(
+class RealWatchlistDao @Inject constructor(
     database: Database
-) : WatchlistDatabase {
+) : WatchlistDao {
 
     private val queries = database.watchlistMovieQueries
 
@@ -26,14 +26,9 @@ class RealWatchlistDatabase @Inject constructor(
 
     override fun observeAll(): Flow<List<WatchlistMovie>> = queries.getAll().asFlow().mapToList()
 
-    override suspend fun getReleases(start: Long, end: Long): List<WatchlistMovie> {
-        // TODO queries.getReleases(minTime = start, maxTime =  end)
-        return emptyList()
-    }
-
     override suspend fun count(
-        movieId: Int
-    ): Int = queries.getCount(movieId.toLong()).executeAsOne().toInt()
+        movieId: Long
+    ): Int = queries.getCount(movieId).executeAsOne().toInt()
 
     override suspend fun store(vararg movies: WatchlistMovie) {
         for (movie in movies) {
@@ -51,8 +46,12 @@ class RealWatchlistDatabase @Inject constructor(
         }
     }
 
-    override suspend fun delete(id: Int) {
-        queries.delete(id.toLong())
+    override suspend fun toggleNotification(movieId: Long, isActive: Boolean) {
+        queries.toggleNotification(isActive, movieId)
+    }
+
+    override suspend fun delete(id: Long) {
+        queries.delete(id)
     }
 
 }

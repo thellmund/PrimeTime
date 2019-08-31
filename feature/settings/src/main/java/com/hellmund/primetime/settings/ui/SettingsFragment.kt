@@ -74,6 +74,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasAndroidInjector {
     private suspend fun saveGenresSelection(pref: Preference, newValue: Any): Boolean {
         return when (val result = genresValidator.validate(pref, newValue)) {
             is Success -> {
+                genresDelegate.updateGenres(result.genres)
                 genresDelegate.updateGenresSummary(pref, result.genres)
                 true
             }

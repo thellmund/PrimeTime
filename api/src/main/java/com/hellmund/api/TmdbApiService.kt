@@ -19,7 +19,7 @@ class TmdbApiService @Inject constructor(
     suspend fun genres(): GenresResponse = client.get(path("genre/movie/list"))
 
     suspend fun discoverMovies(
-        genre: Int? = null,
+        genre: Long? = null,
         sortBy: String = "popularity.desc",
         releaseYear: Int? = null,
         page: Int = 1
@@ -49,7 +49,7 @@ class TmdbApiService @Inject constructor(
     }
 
     suspend fun recommendations(
-        movieId: Int,
+        movieId: Long,
         page: Int,
         sortBy: String = "popularity.desc"
     ): MoviesResponse = client.get() {
@@ -59,7 +59,7 @@ class TmdbApiService @Inject constructor(
     }
 
     suspend fun genreRecommendations(
-        genreId: Int,
+        genreId: Long,
         page: Int
     ): MoviesResponse = client.get() {
         url(path("genre/$genreId/movies"))
@@ -67,13 +67,13 @@ class TmdbApiService @Inject constructor(
     }
 
     suspend fun videos(
-        movieId: Int
+        movieId: Long
     ): VideosResponse = client.get() {
         url(path("movie/$movieId/videos"))
     }
 
     suspend fun movie(
-        movieId: Int
+        movieId: Long
     ): ApiMovie = client.get() {
         url(path("movie/$movieId"))
     }
@@ -87,7 +87,7 @@ class TmdbApiService @Inject constructor(
     suspend fun popular(): MoviesResponse = client.get(path("movie/popular"))
 
     suspend fun reviews(
-        movieId: Int
+        movieId: Long
     ): ReviewsResponse = client.get() {
         url(path("movie/$movieId/reviews"))
     }

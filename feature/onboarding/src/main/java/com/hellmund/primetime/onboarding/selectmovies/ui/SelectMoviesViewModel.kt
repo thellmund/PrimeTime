@@ -107,7 +107,7 @@ class SelectMoviesViewModel @Inject constructor(
     private suspend fun storeSelection(samples: List<Sample>) {
         val historyMovies = samples.map {
             HistoryMovie.Impl(
-                id = it.id.toLong(),
+                id = it.id,
                 title = it.title,
                 rating = Rating.Like,
                 timestamp = now()

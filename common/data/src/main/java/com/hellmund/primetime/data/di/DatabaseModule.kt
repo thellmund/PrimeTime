@@ -3,14 +3,14 @@ package com.hellmund.primetime.data.di
 import android.content.Context
 import com.hellmund.primetime.data.Database
 import com.hellmund.primetime.data.database.DateColumnAdapter
-import com.hellmund.primetime.data.database.GenreDatabase
-import com.hellmund.primetime.data.database.HistoryDatabase
+import com.hellmund.primetime.data.database.GenreDao
+import com.hellmund.primetime.data.database.HistoryDao
 import com.hellmund.primetime.data.database.RatingColumnAdapter
-import com.hellmund.primetime.data.database.RealGenreDatabase
-import com.hellmund.primetime.data.database.RealHistoryDatabase
-import com.hellmund.primetime.data.database.RealWatchlistDatabase
+import com.hellmund.primetime.data.database.RealGenreDao
+import com.hellmund.primetime.data.database.RealHistoryDao
+import com.hellmund.primetime.data.database.RealWatchlistDao
 import com.hellmund.primetime.data.database.TimestampColumnAdapter
-import com.hellmund.primetime.data.database.WatchlistDatabase
+import com.hellmund.primetime.data.database.WatchlistDao
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.WatchlistMovie
 import com.squareup.sqldelight.android.AndroidSqliteDriver
@@ -24,13 +24,13 @@ import javax.inject.Singleton
 abstract class DatabaseModule {
 
     @Binds
-    abstract fun bindGenreDao(impl: RealGenreDatabase): GenreDatabase
+    abstract fun bindGenreDao(impl: RealGenreDao): GenreDao
 
     @Binds
-    abstract fun bindHistoryMovieDao(impl: RealHistoryDatabase): HistoryDatabase
+    abstract fun bindHistoryMovieDao(impl: RealHistoryDao): HistoryDao
 
     @Binds
-    abstract fun bindWatchlistMovieDao(impl: RealWatchlistDatabase): WatchlistDatabase
+    abstract fun bindWatchlistMovieDao(impl: RealWatchlistDao): WatchlistDao
 
     @Module
     companion object {

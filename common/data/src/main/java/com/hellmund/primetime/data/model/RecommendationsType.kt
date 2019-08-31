@@ -12,7 +12,7 @@ sealed class RecommendationsType : Parcelable {
     ) : RecommendationsType()
 
     @Parcelize
-    data class BasedOnMovie(val id: Int, val title: String) : RecommendationsType()
+    data class BasedOnMovie(val id: Long, val title: String) : RecommendationsType()
 
     @Parcelize
     object NowPlaying : RecommendationsType()

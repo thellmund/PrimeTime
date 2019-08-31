@@ -33,7 +33,7 @@ class MovieRankingProcessor @Inject constructor(
         return movies
             .asSequence()
             .distinct()
-            .filter { knownMovies.contains(it.id.toLong()).not() }
+            .filter { knownMovies.contains(it.id).not() }
             .filter { isReleased(it, type) }
             .filter { hasEnoughInformation(it) }
             .map { adjustRating(it) }

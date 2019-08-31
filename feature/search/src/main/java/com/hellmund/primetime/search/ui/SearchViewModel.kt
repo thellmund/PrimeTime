@@ -146,7 +146,7 @@ class SearchViewModel @Inject constructor(
         Intents.NOW_PLAYING -> RecommendationsType.NowPlaying
         Intents.UPCOMING -> RecommendationsType.Upcoming
         else -> {
-            val genre = genresRepository.getGenre(extra)
+            val genre = genresRepository.getGenreByName(extra)
             RecommendationsType.ByGenre(genre)
         }
     }

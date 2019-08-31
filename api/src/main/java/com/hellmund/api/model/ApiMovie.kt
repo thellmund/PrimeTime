@@ -6,11 +6,11 @@ import org.threeten.bp.LocalDate
 data class MoviesResponse(val results: List<ApiMovie>)
 
 data class ApiMovie(
-    val id: Int,
+    val id: Long,
     @SerializedName("poster_path") val posterPath: String?,
     @SerializedName("backdrop_path") val backdropPath: String?,
     val title: String,
-    @SerializedName("genre_ids") val genreIds: List<Int>? = emptyList(),
+    @SerializedName("genre_ids") val genreIds: List<Long>? = emptyList(),
     @SerializedName("genres") val genres: List<ApiGenre>? = emptyList(),
     @SerializedName("overview") val description: String,
     @SerializedName("release_date") val releaseDate: LocalDate?,

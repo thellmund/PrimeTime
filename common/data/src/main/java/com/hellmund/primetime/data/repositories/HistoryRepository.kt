@@ -1,6 +1,6 @@
 package com.hellmund.primetime.data.repositories
 
-import com.hellmund.primetime.data.database.HistoryDatabase
+import com.hellmund.primetime.data.database.HistoryDao
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,17 +13,17 @@ interface HistoryRepository {
     suspend fun getAll(): List<HistoryMovie>
     suspend fun observeAll(): Flow<List<HistoryMovie>>
     suspend fun getLiked(): List<HistoryMovie>
-    suspend fun count(movieId: Int): Int
+    suspend fun count(movieId: Long): Int
     suspend fun store(vararg historyMovie: HistoryMovie)
     suspend fun updateRating(historyMovie: HistoryMovie, rating: Rating)
-    suspend fun remove(movieId: Int)
+    suspend fun remove(movieId: Long)
 }
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 @ObsoleteCoroutinesApi
 class RealHistoryRepository @Inject constructor(
-    private val dao: HistoryDatabase
+    private val dao: HistoryDao
 ) : HistoryRepository {
 
     override suspend fun getAll(): List<HistoryMovie> = dao.getAll()
@@ -32,7 +32,7 @@ class RealHistoryRepository @Inject constructor(
 
     override suspend fun getLiked(): List<HistoryMovie> = dao.getLiked()
 
-    override suspend fun count(movieId: Int) = dao.count(movieId)
+    override suspend fun count(movieId: Long) = dao.count(movieId)
 
     override suspend fun store(vararg historyMovie: HistoryMovie) {
         dao.store(*historyMovie)
@@ -42,7 +42,7 @@ class RealHistoryRepository @Inject constructor(
         dao.store()
     }
 
-    override suspend fun remove(movieId: Int) {
+    override suspend fun remove(movieId: Long) {
         dao.delete(movieId)
     }
 

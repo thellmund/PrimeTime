@@ -16,7 +16,10 @@ class TimestampColumnAdapter @Inject constructor() : ColumnAdapter<LocalDateTime
 
     override fun decode(
         databaseValue: Long
-    ): LocalDateTime = Instant.ofEpochMilli(databaseValue).atZone(ZoneId.systemDefault()).toLocalDateTime()
+    ): LocalDateTime = Instant
+        .ofEpochMilli(databaseValue)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
 
 }
 

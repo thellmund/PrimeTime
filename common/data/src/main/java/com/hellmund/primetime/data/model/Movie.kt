@@ -9,11 +9,11 @@ import org.threeten.bp.LocalDate
 
 @Parcelize
 data class Movie(
-    val id: Int,
+    val id: Long,
     @SerializedName("poster_path") val posterPath: String,
     @SerializedName("backdrop_path") val backdropPath: String,
     val title: String,
-    @SerializedName("genre_ids") val genreIds: List<Int>? = emptyList(),
+    @SerializedName("genre_ids") val genreIds: List<Long>? = emptyList(),
     @SerializedName("genres") val genres: @RawValue List<Genre>? = emptyList(), // TODO RawValue?
     @SerializedName("overview") val description: String,
     @SerializedName("release_date") val releaseDate: LocalDate?,
@@ -40,7 +40,7 @@ data class Movie(
             apiMovie.title,
             apiMovie.genreIds,
             apiMovie.genres.orEmpty().map {
-                Genre.Impl(id = it.id.toLong(), name = it.name, isPreferred = false, isExcluded = true)
+                Genre.Impl(id = it.id, name = it.name, isPreferred = false, isExcluded = true)
             },
             apiMovie.description,
             apiMovie.releaseDate,

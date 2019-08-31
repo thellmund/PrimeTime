@@ -9,7 +9,7 @@ import org.threeten.bp.LocalDateTime
 
 @Parcelize
 data class MovieViewEntity(
-    val id: Int,
+    val id: Long,
     val posterUrl: String,
     val backdropUrl: String,
     val title: String,
@@ -30,7 +30,7 @@ data class MovieViewEntity(
 
 data class RatedMovie(val movie: MovieViewEntity, val rating: Rating) {
     fun toHistoryMovie() = HistoryMovie.Impl(
-        id = movie.id.toLong(),
+        id = movie.id,
         title = movie.title,
         rating = rating,
         timestamp = LocalDateTime.now()

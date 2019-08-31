@@ -8,19 +8,19 @@ import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface HistoryDatabase {
+interface HistoryDao {
     suspend fun getAll(): List<HistoryMovie>
     fun observeAll(): Flow<List<HistoryMovie>>
     suspend fun getLiked(): List<HistoryMovie>
-    suspend fun count(movieId: Int): Int
+    suspend fun count(movieId: Long): Int
     suspend fun store(vararg movies: HistoryMovie)
     suspend fun updateRating(movie: HistoryMovie, rating: Rating)
-    suspend fun delete(id: Int)
+    suspend fun delete(id: Long)
 }
 
-class RealHistoryDatabase @Inject constructor(
+class RealHistoryDao @Inject constructor(
     database: Database
-) : HistoryDatabase {
+) : HistoryDao {
 
     private val queries = database.historyMovieQueries
 
@@ -31,8 +31,8 @@ class RealHistoryDatabase @Inject constructor(
     override suspend fun getLiked(): List<HistoryMovie> = queries.getLiked().executeAsList()
 
     override suspend fun count(
-        movieId: Int
-    ): Int = queries.getCount(movieId.toLong()).executeAsOne().toInt()
+        movieId: Long
+    ): Int = queries.getCount(movieId).executeAsOne().toInt()
 
     override suspend fun store(vararg movies: HistoryMovie) {
         for (movie in movies) {
@@ -44,8 +44,8 @@ class RealHistoryDatabase @Inject constructor(
         queries.updateRating(id = movie.id, rating = rating)
     }
 
-    override suspend fun delete(id: Int) {
-        queries.delete(id.toLong())
+    override suspend fun delete(id: Long) {
+        queries.delete(id)
     }
 
 }

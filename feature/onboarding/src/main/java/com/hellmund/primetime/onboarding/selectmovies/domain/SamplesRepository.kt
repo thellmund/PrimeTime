@@ -33,7 +33,7 @@ class RealSamplesRepository @Inject constructor(
             val movieResults = mutableListOf<Sample>()
             for (year in years) {
                 val response = apiService.discoverMovies(
-                    genre = genre.id.toInt(), releaseYear = year, page = page)
+                    genre = genre.id, releaseYear = year, page = page)
                 movieResults += response.results
             }
             results += movieResults.subList(0, moviesPerGenre)

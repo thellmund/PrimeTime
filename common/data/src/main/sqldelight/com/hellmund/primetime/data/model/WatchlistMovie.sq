@@ -18,11 +18,6 @@ SELECT *
 FROM watchlistMovie
 ORDER BY addedAt DESC;
 
-getReleases:
-SELECT *
-FROM watchlistMovie
-WHERE addedAt BETWEEN datetime(:minTime, 'unixepoch') AND datetime(:maxTime, 'unixepoch');
-
 getCount:
 SELECT COUNT(*)
 FROM watchlistMovie

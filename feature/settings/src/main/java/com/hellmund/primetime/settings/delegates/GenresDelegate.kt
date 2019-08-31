@@ -33,13 +33,16 @@ class GenresDelegate @Inject constructor(
         val genreIds = genres.map { it.id.toString() }.toTypedArray()
         val genreNames = genres.map { it.name }.toTypedArray()
 
-        pref.entries = genreNames
-        pref.entryValues = genreIds
-        pref.values = values
-
         withContext(Dispatchers.Main) {
+            pref.entries = genreNames
+            pref.entryValues = genreIds
+            pref.values = values
             updateGenresSummary(pref, preferenceGenres)
         }
+    }
+
+    suspend fun updateGenres(genres: List<Genre>) {
+        genresRepository.storeGenres(genres)
     }
 
     fun updateGenresSummary(preference: Preference, genres: List<Genre>) {

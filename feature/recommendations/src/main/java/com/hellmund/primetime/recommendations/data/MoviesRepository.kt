@@ -29,10 +29,10 @@ class RealMoviesRepository @Inject constructor(
     ): List<Movie> {
         return when (type) {
             is RecommendationsType.Personalized -> fetchPersonalizedRecommendations(type.genres, page)
-            is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id.toLong(), page)
+            is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id, page)
             is RecommendationsType.NowPlaying -> fetchNowPlayingRecommendations(page)
             is RecommendationsType.Upcoming -> fetchUpcomingRecommendations(page)
-            is RecommendationsType.ByGenre -> fetchGenreRecommendations(type.genre.id.toInt(), page)
+            is RecommendationsType.ByGenre -> fetchGenreRecommendations(type.genre.id, page)
         }
     }
 
@@ -51,7 +51,7 @@ class RealMoviesRepository @Inject constructor(
 
         val personalized = history.map { fetchSimilarMovies(it.id, page) }.flatten()
         val genres = filterGenres ?: genresRepository.getPreferredGenres()
-        val byGenre = genres.map { fetchGenreRecommendations(it.id.toInt(), page) }.flatten()
+        val byGenre = genres.map { fetchGenreRecommendations(it.id, page) }.flatten()
         val topRated = fetchTopRatedMovies(page)
 
         return personalized + byGenre + topRated
@@ -77,12 +77,12 @@ class RealMoviesRepository @Inject constructor(
     override suspend fun fetchSimilarMovies(
         movieId: Long,
         page: Int
-    ): List<Movie> = apiService.recommendations(movieId.toInt(), page).results
+    ): List<Movie> = apiService.recommendations(movieId, page).results
         .filter { it.isValid }
         .map { Movie.from(it) }
 
     private suspend fun fetchGenreRecommendations(
-        genreId: Int,
+        genreId: Long,
         page: Int = 1
     ) = apiService.genreRecommendations(genreId, page).results
         .filter { it.isValid }

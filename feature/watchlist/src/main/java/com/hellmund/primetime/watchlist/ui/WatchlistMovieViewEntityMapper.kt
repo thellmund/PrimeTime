@@ -15,7 +15,7 @@ class WatchlistMovieViewEntityMapper @Inject constructor(
 
     private fun convert(movie: WatchlistMovie): WatchlistMovieViewEntity {
         return WatchlistMovieViewEntity(
-            movie.id.toInt(),
+            movie.id,
             movie.title,
             "https://image.tmdb.org/t/p/w500${movie.posterUrl}",
             movie.description,

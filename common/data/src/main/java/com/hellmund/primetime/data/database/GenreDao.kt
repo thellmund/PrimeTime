@@ -4,18 +4,18 @@ import com.hellmund.primetime.data.Database
 import com.hellmund.primetime.data.model.Genre
 import javax.inject.Inject
 
-interface GenreDatabase {
+interface GenreDao {
     suspend fun getAll(): List<Genre>
     suspend fun getPreferredGenres(): List<Genre>
     suspend fun getExcludedGenres(): List<Genre>
-    suspend fun getGenre(id: Int): Genre
-    suspend fun getGenre(name: String): Genre
+    suspend fun getGenreById(id: Long): Genre
+    suspend fun getGenreByName(name: String): Genre
     suspend fun store(genres: List<Genre>)
 }
 
-class RealGenreDatabase @Inject constructor(
+class RealGenreDao @Inject constructor(
     database: Database
-) : GenreDatabase {
+) : GenreDao {
 
     private val queries = database.genreQueries
 
@@ -25,9 +25,9 @@ class RealGenreDatabase @Inject constructor(
 
     override suspend fun getExcludedGenres() = queries.getExcludedGenres().executeAsList()
 
-    override suspend fun getGenre(id: Int): Genre = queries.getGenre(id.toLong()).executeAsOne()
+    override suspend fun getGenreById(id: Long): Genre = queries.getGenre(id).executeAsOne()
 
-    override suspend fun getGenre(name: String): Genre = queries.getGenreByName(name).executeAsOne()
+    override suspend fun getGenreByName(name: String): Genre = queries.getGenreByName(name).executeAsOne()
 
     override suspend fun store(genres: List<Genre>) {
         for (genre in genres) {

@@ -10,18 +10,6 @@ import javax.inject.Singleton
 @Module
 object PersistenceModule {
 
-    /*@JvmStatic
-    @Singleton
-    @Provides
-    fun provideDatabase(
-        context: Context
-    ): AppDatabase {
-        return Room
-            .databaseBuilder(context, AppDatabase::class.java, "db")
-            .fallbackToDestructiveMigration()
-            .build()
-    }*/
-
     @JvmStatic
     @Singleton
     @Provides
