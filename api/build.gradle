@@ -7,8 +7,10 @@ dependencies {
     implementation libraries.kotlin
 
     api libraries.ktorCore
-    api libraries.ktorAndroid
     api libraries.ktorGson
+    api libraries.ktorOkHttp
+
+    api libraries.okHttpLogging
 
     implementation libraries.dagger
     kapt libraries.daggerProcessor
