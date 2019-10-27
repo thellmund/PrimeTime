@@ -4,16 +4,17 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.hellmund.api.model.ApiMovie
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 import org.threeten.bp.LocalDate
 
 @Parcelize
 data class Movie(
-    val id: Int,
+    val id: Long,
     @SerializedName("poster_path") val posterPath: String,
     @SerializedName("backdrop_path") val backdropPath: String,
     val title: String,
-    @SerializedName("genre_ids") val genreIds: List<Int>? = emptyList(),
-    @SerializedName("genres") val genres: List<Genre>? = emptyList(),
+    @SerializedName("genre_ids") val genreIds: List<Long>? = emptyList(),
+    @SerializedName("genres") val genres: @RawValue List<Genre>? = emptyList(), // TODO RawValue?
     @SerializedName("overview") val description: String,
     @SerializedName("release_date") val releaseDate: LocalDate?,
     val popularity: Float,
@@ -38,7 +39,9 @@ data class Movie(
             checkNotNull(apiMovie.backdropPath),
             apiMovie.title,
             apiMovie.genreIds,
-            apiMovie.genres.orEmpty().map { Genre.from(it) },
+            apiMovie.genres.orEmpty().map {
+                Genre.Impl(id = it.id, name = it.name, isPreferred = false, isExcluded = true)
+            },
             apiMovie.description,
             apiMovie.releaseDate,
             apiMovie.popularity,

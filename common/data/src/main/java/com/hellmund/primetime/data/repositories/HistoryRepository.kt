@@ -1,7 +1,8 @@
 package com.hellmund.primetime.data.repositories
 
-import com.hellmund.primetime.data.database.AppDatabase
+import com.hellmund.primetime.data.database.HistoryDao
 import com.hellmund.primetime.data.model.HistoryMovie
+import com.hellmund.primetime.data.model.Rating
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -12,36 +13,37 @@ interface HistoryRepository {
     suspend fun getAll(): List<HistoryMovie>
     suspend fun observeAll(): Flow<List<HistoryMovie>>
     suspend fun getLiked(): List<HistoryMovie>
-    suspend fun count(movieId: Int): Int
+    suspend fun count(movieId: Long): Int
     suspend fun store(vararg historyMovie: HistoryMovie)
-    suspend fun remove(movieId: Int)
+    suspend fun updateRating(historyMovie: HistoryMovie, rating: Rating)
+    suspend fun remove(movieId: Long)
 }
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 @ObsoleteCoroutinesApi
 class RealHistoryRepository @Inject constructor(
-    private val database: AppDatabase
+    private val dao: HistoryDao
 ) : HistoryRepository {
 
-    override suspend fun getAll(): List<HistoryMovie> {
-        return database.historyDao().getAll()
-    }
+    override suspend fun getAll(): List<HistoryMovie> = dao.getAll()
 
-    override suspend fun observeAll(): Flow<List<HistoryMovie>> {
-        return database.historyDao().observeAll()
-    }
+    override suspend fun observeAll(): Flow<List<HistoryMovie>> = dao.observeAll()
 
-    override suspend fun getLiked(): List<HistoryMovie> = database.historyDao().getLiked()
+    override suspend fun getLiked(): List<HistoryMovie> = dao.getLiked()
 
-    override suspend fun count(movieId: Int) = database.historyDao().count(movieId)
+    override suspend fun count(movieId: Long) = dao.count(movieId)
 
     override suspend fun store(vararg historyMovie: HistoryMovie) {
-        database.historyDao().store(*historyMovie)
+        dao.store(*historyMovie)
     }
 
-    override suspend fun remove(movieId: Int) {
-        database.historyDao().delete(movieId)
+    override suspend fun updateRating(historyMovie: HistoryMovie, rating: Rating) {
+        dao.store()
+    }
+
+    override suspend fun remove(movieId: Long) {
+        dao.delete(movieId)
     }
 
 }

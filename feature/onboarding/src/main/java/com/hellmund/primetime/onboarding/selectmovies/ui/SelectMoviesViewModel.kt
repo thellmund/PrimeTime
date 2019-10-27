@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.api.model.Sample
-import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
+import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.onboarding.selectmovies.domain.SamplesRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
@@ -105,7 +105,14 @@ class SelectMoviesViewModel @Inject constructor(
     }
 
     private suspend fun storeSelection(samples: List<Sample>) {
-        val historyMovies = samples.map { HistoryMovie(it.id, it.title, Rating.Like, now()) }
+        val historyMovies = samples.map {
+            HistoryMovie.Impl(
+                id = it.id,
+                title = it.title,
+                rating = Rating.Like,
+                timestamp = now()
+            )
+        }
         repository.store(historyMovies)
         store.dispatch(Result.Finished)
     }

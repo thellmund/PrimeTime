@@ -3,9 +3,9 @@ package com.hellmund.primetime.settings.delegates
 import android.content.Context
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
-import com.hellmund.primetime.data.repositories.GenresRepository
-import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.core.Preferences
+import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.settings.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,13 +33,16 @@ class GenresDelegate @Inject constructor(
         val genreIds = genres.map { it.id.toString() }.toTypedArray()
         val genreNames = genres.map { it.name }.toTypedArray()
 
-        pref.entries = genreNames
-        pref.entryValues = genreIds
-        pref.values = values
-
         withContext(Dispatchers.Main) {
+            pref.entries = genreNames
+            pref.entryValues = genreIds
+            pref.values = values
             updateGenresSummary(pref, preferenceGenres)
         }
+    }
+
+    suspend fun updateGenres(genres: List<Genre>) {
+        genresRepository.storeGenres(genres)
     }
 
     fun updateGenresSummary(preference: Preference, genres: List<Genre>) {

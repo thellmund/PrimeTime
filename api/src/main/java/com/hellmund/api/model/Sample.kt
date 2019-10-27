@@ -6,7 +6,7 @@ import java.util.Date
 data class SamplesResponse(val results: List<Sample>)
 
 data class Sample(
-    val id: Int,
+    val id: Long,
     val title: String,
     @SerializedName("poster_path") val posterPath: String,
     val popularity: Double,

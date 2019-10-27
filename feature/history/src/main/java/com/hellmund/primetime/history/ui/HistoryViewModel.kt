@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
-import com.hellmund.primetime.ui_common.util.replace
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
@@ -30,7 +29,6 @@ sealed class Result {
     data class Data(val data: List<HistoryMovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
     data class Removed(val movie: HistoryMovieViewEntity) : Result()
-    data class Updated(val movie: HistoryMovieViewEntity) : Result()
 }
 
 class HistoryViewStateReducer : Reducer<HistoryViewState, Result> {
@@ -41,11 +39,6 @@ class HistoryViewStateReducer : Reducer<HistoryViewState, Result> {
         is Result.Data -> state.copy(data = result.data, isLoading = false, error = null)
         is Result.Error -> state.copy(isLoading = false, error = result.error)
         is Result.Removed -> state.copy(data = state.data.minus(result.movie))
-        is Result.Updated -> {
-            val index = state.data.indexOfFirst { it.id == result.movie.id }
-            val newData = state.data.replace(index, result.movie)
-            state.copy(data = newData)
-        }
     }
 }
 
@@ -58,8 +51,7 @@ class HistoryViewStateStore : ViewStateStore<HistoryViewState, Result>(
 @FlowPreview
 class HistoryViewModel @Inject constructor(
     private val repository: HistoryRepository,
-    private val viewEntitiesMapper: HistoryMovieViewEntitiesMapper,
-    private val viewEntityMapper: HistoryMovieViewEntityMapper
+    private val viewEntitiesMapper: HistoryMovieViewEntitiesMapper
 ) : ViewModel() {
 
     private val store = HistoryViewStateStore()
@@ -82,11 +74,7 @@ class HistoryViewModel @Inject constructor(
     }
 
     private suspend fun updateMovie(ratedMovie: RatedHistoryMovie) {
-        val newMovie = ratedMovie.movie.raw.copy(rating = ratedMovie.rating)
-        repository.store(newMovie)
-
-        val viewEntity = viewEntityMapper(newMovie)
-        store.dispatch(Result.Updated(viewEntity))
+        repository.updateRating(ratedMovie.movie.raw, ratedMovie.rating)
     }
 
     fun dispatch(action: Action) {

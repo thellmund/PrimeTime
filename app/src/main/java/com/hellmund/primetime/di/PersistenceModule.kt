@@ -3,26 +3,12 @@ package com.hellmund.primetime.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import androidx.room.Room
-import com.hellmund.primetime.data.database.AppDatabase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 @Module
 object PersistenceModule {
-
-    @JvmStatic
-    @Singleton
-    @Provides
-    fun provideDatabase(
-        context: Context
-    ): AppDatabase {
-        return Room
-            .databaseBuilder(context, AppDatabase::class.java, "db")
-            .fallbackToDestructiveMigration()
-            .build()
-    }
 
     @JvmStatic
     @Singleton

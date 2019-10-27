@@ -1,34 +1,57 @@
 package com.hellmund.primetime.data.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import com.hellmund.primetime.data.Database
 import com.hellmund.primetime.data.model.WatchlistMovie
+import com.squareup.sqldelight.runtime.coroutines.asFlow
+import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-@Dao
 interface WatchlistDao {
-
-    @Query("SELECT * FROM watchlist_movies ORDER BY timestamp")
     suspend fun getAll(): List<WatchlistMovie>
-
-    @Query("SELECT * FROM watchlist_movies ORDER BY timestamp")
     fun observeAll(): Flow<List<WatchlistMovie>>
+    suspend fun count(movieId: Long): Int
+    suspend fun store(vararg movies: WatchlistMovie)
+    suspend fun toggleNotification(movieId: Long, isActive: Boolean)
+    suspend fun delete(id: Long)
+}
 
-    @Query("SELECT * FROM watchlist_movies WHERE releaseDate BETWEEN :start AND :end")
-    suspend fun releases(
-        start: Long,
-        end: Long
-    ): List<WatchlistMovie>
+class RealWatchlistDao @Inject constructor(
+    database: Database
+) : WatchlistDao {
 
-    @Query("SELECT COUNT(*) FROM watchlist_movies WHERE id = :movieId")
-    suspend fun count(movieId: Int): Int
+    private val queries = database.watchlistMovieQueries
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun store(vararg movie: WatchlistMovie)
+    override suspend fun getAll(): List<WatchlistMovie> = queries.getAll().executeAsList()
 
-    @Query("DELETE FROM watchlist_movies WHERE id = :id")
-    suspend fun delete(id: Int)
+    override fun observeAll(): Flow<List<WatchlistMovie>> = queries.getAll().asFlow().mapToList()
+
+    override suspend fun count(
+        movieId: Long
+    ): Int = queries.getCount(movieId).executeAsOne().toInt()
+
+    override suspend fun store(vararg movies: WatchlistMovie) {
+        for (movie in movies) {
+            queries.store(
+                id = movie.id,
+                title = movie.title,
+                posterUrl = movie.posterUrl,
+                description = movie.description,
+                runtime = movie.runtime,
+                releaseDate = movie.releaseDate,
+                addedAt = movie.addedAt,
+                deleted = movie.deleted,
+                notificationsActivated = movie.notificationsActivated
+            )
+        }
+    }
+
+    override suspend fun toggleNotification(movieId: Long, isActive: Boolean) {
+        queries.toggleNotification(isActive, movieId)
+    }
+
+    override suspend fun delete(id: Long) {
+        queries.delete(id)
+    }
 
 }

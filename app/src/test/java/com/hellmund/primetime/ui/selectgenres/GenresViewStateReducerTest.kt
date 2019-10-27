@@ -2,7 +2,7 @@ package com.hellmund.primetime.ui.selectgenres
 
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.onboarding.selectgenres.ui.GenresViewStateReducer
-import com.hellmund.primetime.onboarding.selectmovies.ui.Result
+import com.hellmund.primetime.onboarding.selectgenres.ui.Result
 import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresViewState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -81,7 +81,11 @@ class GenresViewStateReducerTest {
     }
 
     private companion object {
-        private val GENRES = listOf(Genre(1, "Genre 1"), Genre(2, "Genre 2"), Genre(3, "Genre 3"))
+        private val GENRES = listOf(
+            Genre.Impl(id = 1, name = "Genre 1", isPreferred = false, isExcluded = false),
+            Genre.Impl(id = 2, name = "Genre 2", isPreferred = false, isExcluded = false),
+            Genre.Impl(id = 3, name = "Genre 3", isPreferred = false, isExcluded = false)
+        )
     }
 
 }

@@ -1,10 +1,10 @@
 package com.hellmund.primetime.onboarding.selectmovies.domain
 
-import com.hellmund.api.model.Sample
 import com.hellmund.api.TmdbApiService
-import com.hellmund.primetime.data.repositories.HistoryRepository
+import com.hellmund.api.model.Sample
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.HistoryMovie
+import com.hellmund.primetime.data.repositories.HistoryRepository
 import org.threeten.bp.LocalDate
 import javax.inject.Inject
 

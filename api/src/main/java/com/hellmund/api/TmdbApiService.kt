@@ -6,64 +6,92 @@ import com.hellmund.api.model.MoviesResponse
 import com.hellmund.api.model.ReviewsResponse
 import com.hellmund.api.model.SamplesResponse
 import com.hellmund.api.model.VideosResponse
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
+import io.ktor.client.request.url
+import javax.inject.Inject
 
-interface TmdbApiService {
+class TmdbApiService @Inject constructor(
+    private val client: HttpClient
+) {
 
-    @GET("genre/movie/list")
-    suspend fun genres(): GenresResponse
+    suspend fun genres(): GenresResponse = client.get(path("genre/movie/list"))
 
-    @GET("discover/movie")
     suspend fun discoverMovies(
-        @Query("with_genres") genre: Int? = null,
-        @Query("sort_by") sortBy: String = "popularity.desc",
-        @Query("primary_release_year") releaseYear: Int? = null,
-        @Query("page") page: Int = 1
-    ): SamplesResponse
+        genre: Long? = null,
+        sortBy: String = "popularity.desc",
+        releaseYear: Int? = null,
+        page: Int = 1
+    ): SamplesResponse = client.get(path("discover/movie")) {
+        parameter("with_genres", genre)
+        parameter("sort_by", sortBy)
+        parameter("primary_release_year", releaseYear)
+        parameter("page", page)
+    }
 
-    @GET("movie/upcoming")
     suspend fun upcoming(
-        @Query("page") page: Int
-    ): MoviesResponse
+        page: Int
+    ): MoviesResponse = client.get(path("movie/upcoming")) {
+        parameter("page", page)
+    }
 
-    @GET("movie/now_playing")
     suspend fun nowPlaying(
-        @Query("page") page: Int
-    ): MoviesResponse
+        page: Int
+    ): MoviesResponse = client.get(path("movie/now_playing")) {
+        parameter("page", page)
+    }
 
-    @GET("movie/top_rated")
     suspend fun topRatedMovies(
-        @Query("page") page: Int
-    ): MoviesResponse
+        page: Int
+    ): MoviesResponse = client.get(path("movie/top_rated")) {
+        parameter("page", page)
+    }
 
-    @GET("movie/{movieId}/recommendations")
     suspend fun recommendations(
-        @Path("movieId") movieId: Int,
-        @Query("page") page: Int,
-        @Query("sort_by") sortBy: String = "popularity.desc"
-    ): MoviesResponse
+        movieId: Long,
+        page: Int,
+        sortBy: String = "popularity.desc"
+    ): MoviesResponse = client.get() {
+        url(path("movie/$movieId/recommendations"))
+        parameter("page", page)
+        parameter("sort_by", sortBy)
+    }
 
-    @GET("genre/{genreId}/movies")
     suspend fun genreRecommendations(
-        @Path("genreId") genreId: Int,
-        @Query("page") page: Int
-    ): MoviesResponse
+        genreId: Long,
+        page: Int
+    ): MoviesResponse = client.get() {
+        url(path("genre/$genreId/movies"))
+        parameter("page", page)
+    }
 
-    @GET("movie/{movieId}/videos")
-    suspend fun videos(@Path("movieId") movieId: Int): VideosResponse
+    suspend fun videos(
+        movieId: Long
+    ): VideosResponse = client.get() {
+        url(path("movie/$movieId/videos"))
+    }
 
-    @GET("movie/{movieId}")
-    suspend fun movie(@Path("movieId") movieId: Int): ApiMovie
+    suspend fun movie(
+        movieId: Long
+    ): ApiMovie = client.get() {
+        url(path("movie/$movieId"))
+    }
 
-    @GET("search/movie")
-    suspend fun search(@Query("query") query: String): MoviesResponse
+    suspend fun search(
+        query: String
+    ): MoviesResponse = client.get(path("search/movie")) {
+        parameter("query", query)
+    }
 
-    @GET("movie/popular")
-    suspend fun popular(): MoviesResponse
+    suspend fun popular(): MoviesResponse = client.get(path("movie/popular"))
 
-    @GET("movie/{movieId}/reviews")
-    suspend fun reviews(@Path("movieId") movieId: Int): ReviewsResponse
+    suspend fun reviews(
+        movieId: Long
+    ): ReviewsResponse = client.get() {
+        url(path("movie/$movieId/reviews"))
+    }
+
+    private fun path(path: String) = "https://api.themoviedb.org/3/$path"
 
 }

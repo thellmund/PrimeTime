@@ -1,31 +1,51 @@
 package com.hellmund.primetime.data.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import com.hellmund.primetime.data.Database
 import com.hellmund.primetime.data.model.HistoryMovie
+import com.hellmund.primetime.data.model.Rating
+import com.squareup.sqldelight.runtime.coroutines.asFlow
+import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-@Dao
 interface HistoryDao {
-
-    @Query("SELECT * FROM history_movies ORDER BY timestamp DESC")
     suspend fun getAll(): List<HistoryMovie>
-
-    @Query("SELECT * FROM history_movies ORDER BY timestamp DESC")
     fun observeAll(): Flow<List<HistoryMovie>>
-
-    @Query("SELECT * FROM history_movies WHERE rating = 1 ORDER BY timestamp DESC")
     suspend fun getLiked(): List<HistoryMovie>
+    suspend fun count(movieId: Long): Int
+    suspend fun store(vararg movies: HistoryMovie)
+    suspend fun updateRating(movie: HistoryMovie, rating: Rating)
+    suspend fun delete(id: Long)
+}
 
-    @Query("SELECT COUNT(*) FROM history_movies WHERE id = :movieId")
-    suspend fun count(movieId: Int): Int
+class RealHistoryDao @Inject constructor(
+    database: Database
+) : HistoryDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun store(vararg movie: HistoryMovie)
+    private val queries = database.historyMovieQueries
 
-    @Query("DELETE FROM history_movies WHERE id = :id")
-    suspend fun delete(id: Int)
+    override suspend fun getAll(): List<HistoryMovie> = queries.getAll().executeAsList()
+
+    override fun observeAll(): Flow<List<HistoryMovie>> = queries.getAll().asFlow().mapToList()
+
+    override suspend fun getLiked(): List<HistoryMovie> = queries.getLiked().executeAsList()
+
+    override suspend fun count(
+        movieId: Long
+    ): Int = queries.getCount(movieId).executeAsOne().toInt()
+
+    override suspend fun store(vararg movies: HistoryMovie) {
+        for (movie in movies) {
+            queries.store(movie.id, movie.title, movie.rating, movie.timestamp)
+        }
+    }
+
+    override suspend fun updateRating(movie: HistoryMovie, rating: Rating) {
+        queries.updateRating(id = movie.id, rating = rating)
+    }
+
+    override suspend fun delete(id: Long) {
+        queries.delete(id)
+    }
 
 }

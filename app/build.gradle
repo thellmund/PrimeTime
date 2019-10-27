@@ -38,6 +38,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/*.kotlin_module'
     }
 }
 
@@ -72,8 +73,6 @@ dependencies {
     implementation libraries.daggerAndroidSupport
     kapt libraries.daggerAndroidProcessor
     kapt libraries.daggerProcessor
-
-    kapt libraries.roomProcessor
 
     implementation libraries.timber
     implementation libraries.bottomNavigator

@@ -1,0 +1,42 @@
+CREATE TABLE genre (
+    id INTEGER NOT NULL UNIQUE PRIMARY KEY,
+    name TEXT NOT NULL,
+    isPreferred INTEGER AS Boolean DEFAULT 0 NOT NULL,
+    isExcluded INTEGER AS Boolean DEFAULT 0 NOT NULL
+);
+
+getAll:
+SELECT *
+FROM genre
+ORDER BY name;
+
+getPreferredGenres:
+SELECT *
+FROM genre
+WHERE isPreferred = 1
+ORDER BY name;
+
+getExcludedGenres:
+SELECT *
+FROM genre
+WHERE isExcluded = 1
+ORDER BY name;
+
+getGenre:
+SELECT *
+FROM genre
+WHERE id = :id;
+
+getGenreByName:
+SELECT *
+FROM genre
+WHERE name = :name;
+
+store:
+INSERT OR REPLACE INTO genre(
+    id,
+    name,
+    isPreferred,
+    isExcluded
+)
+VALUES(?, ?, ?, ?);

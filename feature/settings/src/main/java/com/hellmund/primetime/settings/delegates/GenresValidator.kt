@@ -22,20 +22,21 @@ class GenresValidator @Inject constructor(
     suspend fun validate(pref: Preference, newValue: Any): ValidationResult {
         val genreIds = newValue as Set<String>
 
-        val isIncludedGenres = pref.key == Preferences.KEY_INCLUDED
+        val isPreferredGenres = pref.key == Preferences.KEY_INCLUDED
         val isExcludedGenres = pref.key == Preferences.KEY_EXCLUDED
 
-        val enoughChecked = if (isIncludedGenres) enoughGenresChecked(genreIds) else true
+        val enoughChecked = if (isPreferredGenres) enoughGenresChecked(genreIds) else true
 
         return if (enoughChecked && genresAreDisjoint(pref, newValue)) {
-            val genres = getGenresFromValues(genreIds)
-
-            for (genre in genres) {
-                genre.isPreferred = isIncludedGenres
-                genre.isExcluded = isExcludedGenres
+            val genres = getGenresFromValues(genreIds).map { genre ->
+                Genre.Impl(
+                    id = genre.id,
+                    name = genre.name,
+                    isPreferred = isPreferredGenres,
+                    isExcluded = isExcludedGenres
+                )
             }
-
-            val results = genres.filter { if (isIncludedGenres) it.isPreferred else it.isExcluded }
+            val results = genres.filter { if (isPreferredGenres) it.isPreferred else it.isExcluded }
             ValidationResult.Success(results)
         } else if (!enoughGenresChecked(newValue)) {
             ValidationResult.NotEnough
@@ -45,7 +46,10 @@ class GenresValidator @Inject constructor(
         }
     }
 
-    private suspend fun getOverlappingGenres(pref: Preference, newValues: Set<String>): List<Genre> {
+    private suspend fun getOverlappingGenres(
+        pref: Preference,
+        newValues: Set<String>
+    ): List<Genre> {
         val isIncludedGenres = pref.key == Preferences.KEY_INCLUDED
 
         val includedGenres = if (isIncludedGenres) {
@@ -66,7 +70,7 @@ class GenresValidator @Inject constructor(
 
     private suspend fun getGenresFromValues(values: Set<String>): List<Genre> {
         return values
-            .map { genresRepository.getGenre(it) }
+            .map { genresRepository.getGenreById(it.toLong()) }
             .sortedBy { it.name }
     }
 

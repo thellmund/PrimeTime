@@ -16,6 +16,7 @@ import com.hellmund.primetime.search.data.SearchRepository
 import com.hellmund.primetime.search.util.StringProvider
 import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.RatedMovie
 import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -97,7 +98,8 @@ class SearchViewModel @Inject constructor(
             Rating.Like -> R.string.will_more_like_this
             Rating.Dislike -> R.string.will_less_like_this
         }
-        historyRepository.store(historyMovie)
+
+        // TODO historyRepository.store(historyMovie)
 
         val message = stringProvider.getString(messageResId)
         return Result.ShowSnackbar(message)
@@ -144,7 +146,7 @@ class SearchViewModel @Inject constructor(
         Intents.NOW_PLAYING -> RecommendationsType.NowPlaying
         Intents.UPCOMING -> RecommendationsType.Upcoming
         else -> {
-            val genre = genresRepository.getGenre(extra)
+            val genre = genresRepository.getGenreByName(extra)
             RecommendationsType.ByGenre(genre)
         }
     }

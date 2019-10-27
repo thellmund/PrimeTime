@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 interface MoviesRepository {
     suspend fun fetchRecommendations(type: RecommendationsType, page: Int): List<Movie>
-    suspend fun fetchSimilarMovies(movieId: Int, page: Int = 1): List<Movie>
+    suspend fun fetchSimilarMovies(movieId: Long, page: Int = 1): List<Movie>
     suspend fun searchMovies(query: String): List<Movie>
     suspend fun fetchPopularMovies(): List<Movie>
 }
@@ -58,7 +58,7 @@ class RealMoviesRepository @Inject constructor(
     }
 
     private suspend fun fetchMovieBasedRecommendations(
-        movieId: Int,
+        movieId: Long,
         page: Int
     ) = fetchSimilarMovies(movieId, page)
 
@@ -75,14 +75,14 @@ class RealMoviesRepository @Inject constructor(
         .map { Movie.from(it) }
 
     override suspend fun fetchSimilarMovies(
-        movieId: Int,
+        movieId: Long,
         page: Int
     ): List<Movie> = apiService.recommendations(movieId, page).results
         .filter { it.isValid }
         .map { Movie.from(it) }
 
     private suspend fun fetchGenreRecommendations(
-        genreId: Int,
+        genreId: Long,
         page: Int = 1
     ) = apiService.genreRecommendations(genreId, page).results
         .filter { it.isValid }
