@@ -2,18 +2,24 @@ package com.hellmund.primetime.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
 import com.hellmund.primetime.R
 import com.hellmund.primetime.core.Intents
+import com.hellmund.primetime.di.injector
 import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.ui_common.Reselectable
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.pandora.bottomnavigator.BottomNavigator
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import javax.inject.Inject
+import javax.inject.Provider
 
 private const val SHORTCUT_EXTRA = "intent"
 
@@ -35,10 +41,17 @@ class MainActivity : AppCompatActivity() {
         reselectable?.onReselected()
     }
 
+    @Inject
+    lateinit var viewModelProvider: Provider<MainViewModel>
+
+    private val viewModel: MainViewModel by lazyViewModel { viewModelProvider }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        injector.inject(this)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentCallback, false)
         bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
@@ -55,8 +68,20 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationView = bottomNavigation
         )
 
+        viewModel.watchlistCount.observe(this, this::updateWatchlistBadge)
+
         intent?.getStringExtra(SHORTCUT_EXTRA)?.let {
             handleShortcutOpen(it)
+        }
+    }
+
+    private fun updateWatchlistBadge(count: Int) {
+        if (count > 0) {
+            val badgeDrawable = bottomNavigation.showBadge(R.id.watchlist)
+            badgeDrawable.backgroundColor = ContextCompat.getColor(this, R.color.teal_500)
+            badgeDrawable.number = count
+        } else {
+            bottomNavigation.removeBadge(R.id.watchlist)
         }
     }
 
@@ -69,8 +94,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openSearchFromIntent(extra: String? = null) {
-        // navigator.openSearch(extra)
-        // bottomNavigation.selectedItemId = R.id.search
+        navigator.switchTab(R.id.search)
         TODO()
     }
 

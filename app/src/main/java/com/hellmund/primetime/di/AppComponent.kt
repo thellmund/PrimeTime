@@ -60,6 +60,7 @@ interface AppComponent {
 
     fun inject(app: App)
     fun inject(genresWorker: GenresPrefetcher.RefreshGenresWorker)
+    fun inject(mainActivity: MainActivity)
     fun inject(notificationPublisher: NotificationPublisher)
 
     @Component.Factory

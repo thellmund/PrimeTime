@@ -35,6 +35,7 @@ dependencies {
     implementation project(':common:data')
 
     // AndroidX
+    implementation libraries.appCompat
     implementation libraries.browser
     api libraries.coreKtx
     api libraries.fragmentKtx
