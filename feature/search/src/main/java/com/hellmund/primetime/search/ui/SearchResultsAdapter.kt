@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.util.ImageLoader
-import com.hellmund.primetime.ui_common.util.Transformation
 import kotlinx.android.synthetic.main.list_item_search_results.view.description
 import kotlinx.android.synthetic.main.list_item_search_results.view.genres
 import kotlinx.android.synthetic.main.list_item_search_results.view.posterImageView
@@ -68,9 +67,11 @@ class SearchResultsAdapter(
         }
 
         private fun loadImage(imageLoader: ImageLoader, url: String) = with(itemView) {
-            val transformations = arrayOf<Transformation>(
-                Transformation.Placeholder(R.drawable.poster_placeholder))
-            imageLoader.load(url = url, transformations = transformations, into = posterImageView)
+            imageLoader.load(
+                url = url,
+                placeholderResId = R.drawable.poster_placeholder,
+                into = posterImageView
+            )
         }
 
     }

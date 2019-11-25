@@ -17,7 +17,7 @@ interface ImageLoader {
     fun load(
         url: String,
         into: ImageView,
-        transformations: Array<Transformation> = arrayOf(Transformation.CenterCrop),
+        placeholderResId: Int? = null,
         onComplete: ((Drawable) -> Unit)? = null,
         onError: (() -> Unit)? = null
     )
@@ -38,18 +38,18 @@ class PicassoImageLoader @Inject constructor(context: Context) : ImageLoader {
     override fun load(
         url: String,
         into: ImageView,
-        transformations: Array<Transformation>,
+        placeholderResId: Int?,
         onComplete: ((Drawable) -> Unit)?,
         onError: (() -> Unit)?
     ) {
         val requestCreator = instance.load(url)
-
-        for (transformation in transformations) {
-            when (transformation) {
-                is Transformation.CenterCrop -> requestCreator.fit().centerCrop()
-                is Transformation.Placeholder -> requestCreator.placeholder(transformation.resId)
+            .fit()
+            .centerCrop()
+            .apply {
+                placeholderResId?.let {
+                    placeholder(it)
+                }
             }
-        }
 
         requestCreator.into(into, object : Callback {
             override fun onSuccess() {

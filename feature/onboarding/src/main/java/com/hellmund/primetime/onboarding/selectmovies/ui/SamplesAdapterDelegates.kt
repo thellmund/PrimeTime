@@ -36,7 +36,7 @@ fun movieAdapterDelegate(
         val posterImageView = containerView.findViewById<ImageView>(R.id.posterImageView)
         imageLoader.load(
             url = sample.fullPosterUrl,
-            transformations = arrayOf(Transformation.Placeholder(R.drawable.poster_placeholder)),
+            placeholderResId = R.drawable.poster_placeholder,
             into = posterImageView
         )
     }

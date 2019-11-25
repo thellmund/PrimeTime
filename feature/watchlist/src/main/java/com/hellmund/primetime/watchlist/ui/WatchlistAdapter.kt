@@ -10,9 +10,8 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
-import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.core.Preferences
-import com.hellmund.primetime.ui_common.util.Transformation
+import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.watchlist.R
 import kotlinx.android.synthetic.main.list_item_watchlist.view.card_view
 import kotlinx.android.synthetic.main.list_item_watchlist.view.description
@@ -84,10 +83,7 @@ class WatchlistAdapter(
         ) = with(itemView) {
             imageLoader.load(
                 url = movie.posterUrl,
-                transformations = arrayOf(
-                    Transformation.CenterCrop,
-                    Transformation.Placeholder(R.drawable.poster_placeholder)
-                ),
+                placeholderResId = R.drawable.poster_placeholder,
                 into = posterImageView
             )
 

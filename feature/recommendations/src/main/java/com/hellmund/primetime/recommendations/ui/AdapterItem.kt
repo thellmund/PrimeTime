@@ -1,10 +1,9 @@
 package com.hellmund.primetime.recommendations.ui
 
 import androidx.annotation.LayoutRes
-import com.hellmund.primetime.ui_common.util.ImageLoader
-import com.hellmund.primetime.ui_common.util.Transformation
 import com.hellmund.primetime.recommendations.R
 import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.util.ImageLoader
 import kotlinx.android.synthetic.main.list_item_movies.view.posterImageView
 
 sealed class AdapterItem(@LayoutRes val viewType: Int) {
@@ -41,12 +40,9 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
                 onClick: (MovieViewEntity) -> Unit,
                 onLongClick: (MovieViewEntity) -> Unit
             ) = with(holder.itemView) {
-                val transformations: Array<Transformation> =
-                    arrayOf(Transformation.Placeholder(R.drawable.poster_placeholder))
-
                 imageLoader.load(
                     url = movie.posterUrl,
-                    transformations = transformations,
+                    placeholderResId = R.drawable.poster_placeholder,
                     into = posterImageView
                 )
 
