@@ -7,10 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.WatchlistFragment">
 
-    <include layout="@layout/view_toolbar" />
+    <include
+        android:id="@+id/toolbarContainer"
+        layout="@layout/view_toolbar" />
 
     <LinearLayout
-        android:id="@+id/content"
+        android:id="@+id/contentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
@@ -36,7 +38,7 @@
 
     <!-- Placeholder -->
     <LinearLayout
-        android:id="@+id/placeholder"
+        android:id="@+id/placeholderContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"

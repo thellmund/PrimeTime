@@ -10,7 +10,7 @@
     android:paddingBottom="@dimen/small_space">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_view"
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardCornerRadius="@dimen/corner_radius">

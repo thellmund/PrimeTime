@@ -13,15 +13,7 @@ import androidx.transition.TransitionManager
 import com.hellmund.primetime.core.Preferences
 import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.watchlist.R
-import kotlinx.android.synthetic.main.list_item_watchlist.view.card_view
-import kotlinx.android.synthetic.main.list_item_watchlist.view.description
-import kotlinx.android.synthetic.main.list_item_watchlist.view.infoContainer
-import kotlinx.android.synthetic.main.list_item_watchlist.view.notificationIcon
-import kotlinx.android.synthetic.main.list_item_watchlist.view.posterImageView
-import kotlinx.android.synthetic.main.list_item_watchlist.view.release
-import kotlinx.android.synthetic.main.list_item_watchlist.view.removeButton
-import kotlinx.android.synthetic.main.list_item_watchlist.view.runtime
-import kotlinx.android.synthetic.main.list_item_watchlist.view.watchedButton
+import com.hellmund.primetime.watchlist.databinding.ListItemWatchlistBinding
 
 private const val COLLAPSED_LINES = 2
 
@@ -74,13 +66,15 @@ class WatchlistAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        private val binding = ListItemWatchlistBinding.bind(itemView)
+
         fun bind(
             movie: WatchlistMovieViewEntity,
             imageLoader: ImageLoader,
             onWatchedIt: (WatchlistMovieViewEntity) -> Unit,
             onRemove: (WatchlistMovieViewEntity) -> Unit,
             onNotificationToggle: (WatchlistMovieViewEntity) -> Unit
-        ) = with(itemView) {
+        ) = with(binding) {
             imageLoader.load(
                 url = movie.posterUrl,
                 placeholderResId = R.drawable.poster_placeholder,
@@ -92,7 +86,7 @@ class WatchlistAdapter(
 
             val releaseDate = movie.formattedReleaseDate
             if (movie.isUnreleased) {
-                release.text = context.getString(R.string.release_on, releaseDate)
+                release.text = root.context.getString(R.string.release_on, releaseDate)
             } else {
                 release.text = releaseDate
             }
@@ -103,7 +97,7 @@ class WatchlistAdapter(
             notificationIcon.setOnClickListener { onNotificationToggle(movie) }
 
             infoContainer.setOnClickListener {
-                TransitionManager.beginDelayedTransition(card_view)
+                TransitionManager.beginDelayedTransition(cardView)
                 if (description.maxLines == COLLAPSED_LINES) {
                     description.maxLines = Int.MAX_VALUE
                     description.ellipsize = null
@@ -119,8 +113,8 @@ class WatchlistAdapter(
             }
         }
 
-        private fun setNotificationIcon(movie: WatchlistMovieViewEntity) = with(itemView) {
-            notificationIcon.isVisible = context.areNotificationsEnabled
+        private fun setNotificationIcon(movie: WatchlistMovieViewEntity) = with(binding) {
+            notificationIcon.isVisible = root.context.areNotificationsEnabled
 
             if (movie.notificationsActivated) {
                 notificationIcon.setImageResource(R.drawable.ic_notifications_active_white_24dp)
@@ -129,9 +123,9 @@ class WatchlistAdapter(
             }
         }
 
-        private fun setMovieOverlay(movie: WatchlistMovieViewEntity) = with(itemView) {
+        private fun setMovieOverlay(movie: WatchlistMovieViewEntity) = with(binding) {
             val releaseDate = movie.formattedReleaseDate
-            runtime.text = context.getString(R.string.release_on, releaseDate)
+            runtime.text = root.context.getString(R.string.release_on, releaseDate)
             watchedButton.isVisible = false
         }
 

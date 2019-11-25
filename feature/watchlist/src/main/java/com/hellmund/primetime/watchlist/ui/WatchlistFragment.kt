@@ -14,12 +14,8 @@ import com.hellmund.primetime.ui_common.dialogs.showCancelableDialog
 import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.watchlist.R
+import com.hellmund.primetime.watchlist.databinding.FragmentWatchlistBinding
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_watchlist.content
-import kotlinx.android.synthetic.main.fragment_watchlist.indicator
-import kotlinx.android.synthetic.main.fragment_watchlist.placeholder
-import kotlinx.android.synthetic.main.fragment_watchlist.viewPager
-import kotlinx.android.synthetic.main.view_toolbar.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
@@ -37,6 +33,8 @@ class WatchlistFragment : DaggerFragment() {
 
     private val viewModel: WatchlistViewModel by lazyViewModel { viewModelProvider }
 
+    private lateinit var binding: FragmentWatchlistBinding
+
     private val adapter: WatchlistAdapter by lazy {
         WatchlistAdapter(
             imageLoader = imageLoader,
@@ -50,7 +48,10 @@ class WatchlistFragment : DaggerFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_watchlist, container, false)
+    ): View {
+        binding = FragmentWatchlistBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,6 +61,7 @@ class WatchlistFragment : DaggerFragment() {
     }
 
     private fun initToolbar() {
+        val toolbar = binding.toolbarContainer.toolbar
         toolbar.setTitle(R.string.watchlist)
         toolbar.inflateMenu(R.menu.menu_watchlist)
         toolbar.setOnMenuItemClickListener { menuItem ->
@@ -74,17 +76,18 @@ class WatchlistFragment : DaggerFragment() {
     }
 
     private fun setupViewPager() {
+        val viewPager = binding.viewPager
         viewPager.adapter = adapter
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        indicator.attachTo(viewPager)
+        binding.indicator.attachTo(viewPager)
     }
 
     private fun render(viewState: WatchlistViewState) {
         adapter.update(viewState.data)
-        indicator.reattach()
+        binding.indicator.reattach()
 
-        content.isVisible = viewState.data.isNotEmpty()
-        placeholder.isVisible = viewState.data.isEmpty()
+        binding.contentContainer.isVisible = viewState.data.isNotEmpty()
+        binding.placeholderContainer.isVisible = viewState.data.isEmpty()
     }
 
     private fun onNotificationToggle(movie: WatchlistMovieViewEntity) {
