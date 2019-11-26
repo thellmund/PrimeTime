@@ -8,7 +8,7 @@ sealed class RecommendationsType : Parcelable {
 
     @Parcelize
     data class Personalized(
-        val genres: @RawValue List<Genre>? = null // TODO RawValue?
+        val genres: @RawValue List<Genre>? = null
     ) : RecommendationsType()
 
     @Parcelize

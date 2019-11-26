@@ -12,7 +12,7 @@ data class Movie(
     val posterPath: String,
     val backdropPath: String,
     val title: String,
-    val genres: @RawValue List<Genre>, // TODO RawValue?
+    val genres: @RawValue List<Genre>,
     val description: String,
     val releaseDate: LocalDate,
     val popularity: Float,

@@ -10,8 +10,6 @@ import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import javax.inject.Inject
 
-// TODO Move to data
-
 interface MoviesRepository {
     suspend fun fetchRecommendations(type: RecommendationsType, page: Int): List<Movie>
     suspend fun fetchSimilarMovies(movieId: Long, page: Int = 1): List<Movie>

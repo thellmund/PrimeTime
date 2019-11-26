@@ -44,8 +44,8 @@ class RealWatchlistRepository @Inject constructor(
                 title = movie.title,
                 posterUrl = movie.posterPath,
                 description = movie.description,
-                runtime = movie.runtime ?: -1, // TODO
-                releaseDate = movie.releaseDate ?: LocalDate.now(),
+                runtime = movie.runtime,
+                releaseDate = movie.releaseDate,
                 addedAt = LocalDateTime.now(),
                 deleted = false,
                 notificationsActivated = true

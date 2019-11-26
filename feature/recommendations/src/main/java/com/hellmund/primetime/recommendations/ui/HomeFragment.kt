@@ -36,7 +36,6 @@ import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import kotlinx.android.synthetic.main.fragment_home.banner
 import kotlinx.android.synthetic.main.fragment_home.filterFab
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
-import kotlinx.android.synthetic.main.fragment_home.shimmerLayout
 import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
 import kotlinx.android.synthetic.main.view_toolbar.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -155,13 +154,6 @@ class HomeFragment : Fragment(), Reselectable {
         viewState.filtered?.let {
             adapter.update(it)
         } ?: adapter.update(viewState.data)
-
-        if (viewState.isLoading.not()) {
-            shimmerLayout.stopShimmer()
-            shimmerLayout.setShimmer(null)
-        }
-
-        // TODO Error handling
     }
 
     private fun openMovieDetails(movie: MovieViewEntity) {

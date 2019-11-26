@@ -105,7 +105,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun openSearchFromIntent(extra: String? = null) {
         navigator.switchTab(R.id.search)
-        TODO()
+
+        if (extra != null) {
+            val searchFragment = navigator.currentFragment() as? SearchFragment
+            searchFragment?.openCategory(extra)
+        }
     }
 
     private fun openWatchlistFromIntent() {

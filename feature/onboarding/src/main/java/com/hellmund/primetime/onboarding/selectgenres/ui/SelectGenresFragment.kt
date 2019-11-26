@@ -76,8 +76,6 @@ class SelectGenresFragment : Fragment() {
 
         showGenres(viewState.data)
         updateNextButton(viewState.data)
-
-        // TODO: Error and loading handling (SwipeRefreshLayout)
     }
 
     private fun navigate(event: SingleLiveDataEvent<Unit>) {

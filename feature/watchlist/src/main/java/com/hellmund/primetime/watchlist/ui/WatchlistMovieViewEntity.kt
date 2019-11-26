@@ -20,7 +20,7 @@ data class WatchlistMovieViewEntity(
     val savedAt: LocalDateTime = LocalDateTime.now(),
     val notificationsActivated: Boolean = true,
     val isUnreleased: Boolean,
-    val raw: @RawValue WatchlistMovie // TODO RawValue?
+    val raw: @RawValue WatchlistMovie
 ) : Parcelable {
 
     fun apply(rating: Rating) = RatedWatchlistMovie(this, rating)

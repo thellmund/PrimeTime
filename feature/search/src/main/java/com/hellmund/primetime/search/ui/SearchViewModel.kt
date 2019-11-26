@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.core.Intents
+import com.hellmund.primetime.core.StringProvider
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
@@ -13,7 +14,6 @@ import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.search.data.SearchRepository
-import com.hellmund.primetime.core.StringProvider
 import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.RatedMovie
@@ -99,8 +99,7 @@ class SearchViewModel @Inject constructor(
             Rating.Dislike -> R.string.will_less_like_this
         }
 
-        // TODO historyRepository.store(historyMovie)
-
+        historyRepository.store(historyMovie)
         val message = stringProvider.getString(messageResId)
         return Result.ShowSnackbar(message)
     }

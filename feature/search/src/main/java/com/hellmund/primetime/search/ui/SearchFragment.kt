@@ -110,6 +110,10 @@ class SearchFragment : Fragment(), TextWatcher,
         }
     }
 
+    fun openCategory(category: String) {
+        viewModel.dispatch(Action.CategorySelected(category))
+    }
+
     private fun render(viewState: SearchViewState) {
         val categories = buildCategories(viewState.genres)
         categoriesAdapter.update(categories)

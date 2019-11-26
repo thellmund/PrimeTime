@@ -107,8 +107,7 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchInformation(): UiEvent {
-        // TODO Suspending no longer necessary
+    private fun fetchInformation(): UiEvent {
         val viewEntity = viewEntitiesMapper(movie.raw)
         return UiEvent.AdditionalInformationLoaded(viewEntity)
     }
@@ -142,8 +141,7 @@ class MovieDetailsViewModel @Inject constructor(
         store.dispatch(fetchTrailer())
     }
 
-    private suspend fun loadImdbId() {
-        // TODO Suspend no longer needed
+    private fun loadImdbId() {
         val imdbId = movie.raw.imdbId
         val link = "http://www.imdb.com/title/$imdbId"
         store.dispatch(UiEvent.ImdbLinkLoaded(link))
