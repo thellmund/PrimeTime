@@ -12,7 +12,7 @@ data class SearchViewState(
     val didPerformSearch: Boolean = false,
     val isLoading: Boolean = false,
     val error: Throwable? = null,
-    val snackbarText: String? = null
+    val snackbarTextResId: Int? = null
 ) {
 
     val showPlaceholder: Boolean
@@ -29,8 +29,8 @@ class SearchViewStateReducer : Reducer<SearchViewState, Result> {
         is Result.Data -> state.copy(data = result.data, isLoading = false, error = null, didPerformSearch = true)
         is Result.Error -> state.copy(isLoading = false, error = result.error, didPerformSearch = true)
         is Result.ToggleClearButton -> state.copy(showClearButton = result.show)
-        is Result.ShowSnackbar -> state.copy(snackbarText = result.message)
-        is Result.DismissSnackbar -> state.copy(snackbarText = null)
+        is Result.ShowSnackbar -> state.copy(snackbarTextResId = result.messageResId)
+        is Result.DismissSnackbar -> state.copy(snackbarTextResId = null)
     }
 }
 

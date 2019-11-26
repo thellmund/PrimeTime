@@ -8,9 +8,7 @@ import com.hellmund.api.TmdbApiService
 import com.hellmund.api.di.NetworkModule
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.PicassoImageLoader
-import com.hellmund.primetime.core.RealStringProvider
 import com.hellmund.primetime.core.RealValueFormatter
-import com.hellmund.primetime.core.StringProvider
 import com.hellmund.primetime.core.ValueFormatter
 import com.hellmund.primetime.data.di.DatabaseModule
 import com.hellmund.primetime.data.repositories.GenresRepository
@@ -37,15 +35,16 @@ interface CoreComponent {
     fun historyRepository(): HistoryRepository
     fun imageLoader(): ImageLoader
     fun sharedPrefs(): SharedPreferences
-    fun stringProvider(): StringProvider
     fun tmdbApiService(): TmdbApiService
     fun valueFormatter(): ValueFormatter
     fun watchlistRepository(): WatchlistRepository
     fun workManager(): WorkManager
 
-    @Component.Factory
-    interface Factory {
-        fun create(@BindsInstance context: Context): CoreComponent
+    @Component.Builder
+    interface Builder {
+        fun context(@BindsInstance context: Context): Builder
+        fun apiKey(@BindsInstance apiKey: String): Builder
+        fun build(): CoreComponent
     }
 }
 
@@ -59,10 +58,6 @@ interface CoreModule {
     @Singleton
     @Binds
     fun bindValueFormatter(impl: RealValueFormatter): ValueFormatter
-
-    @Singleton
-    @Binds
-    fun bindStringProvider(impl: RealStringProvider): StringProvider
 
     @Module
     companion object {

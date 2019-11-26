@@ -5,8 +5,9 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import org.threeten.bp.LocalDate
 import java.lang.reflect.Type
+import javax.inject.Inject
 
-class DateSerializer : JsonDeserializer<LocalDate?> {
+class DateSerializer @Inject constructor() : JsonDeserializer<LocalDate?> {
 
     override fun deserialize(
         json: JsonElement?,

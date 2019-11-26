@@ -17,7 +17,10 @@ import timber.log.Timber
 class App : Application() {
 
     private val coreComponent: CoreComponent by lazy {
-        DaggerCoreComponent.factory().create(this)
+        DaggerCoreComponent.builder()
+            .context(this)
+            .apiKey(BuildConfig.TMDB_API_KEY)
+            .build()
     }
 
     override fun onCreate() {

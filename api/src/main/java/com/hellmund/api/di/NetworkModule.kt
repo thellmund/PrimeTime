@@ -31,17 +31,19 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideHttpClient(
+        tmdbApiKey: String,
         retryInterceptor: RetryInterceptor,
-        loggingInterceptor: HttpLoggingInterceptor
+        loggingInterceptor: HttpLoggingInterceptor,
+        dateSerializer: DateSerializer
     ): HttpClient = HttpClient(OkHttp) {
         install(DefaultRequest) {
-            parameter("api_key", "7564dba629324e3048f362a03c8a76bc") // TODO
+            parameter("api_key", tmdbApiKey)
             parameter("language", Locale.getDefault().language)
         }
 
         install(JsonFeature) {
             serializer = GsonSerializer {
-                registerTypeAdapter(LocalDate::class.java, DateSerializer())
+                registerTypeAdapter(LocalDate::class.java, dateSerializer)
             }
         }
 

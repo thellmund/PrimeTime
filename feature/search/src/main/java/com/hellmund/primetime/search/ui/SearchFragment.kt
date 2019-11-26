@@ -126,7 +126,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
         clearSearchButton.isVisible = viewState.showClearButton
 
-        viewState.snackbarText?.let {
+        viewState.snackbarTextResId?.let {
             snackbar.setText(it).show()
         } ?: snackbar.dismiss()
     }

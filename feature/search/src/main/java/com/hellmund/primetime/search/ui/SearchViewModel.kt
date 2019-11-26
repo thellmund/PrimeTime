@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.core.Intents
-import com.hellmund.primetime.core.StringProvider
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
@@ -37,7 +36,7 @@ sealed class Result {
     data class Data(val data: List<MovieViewEntity>) : Result()
     data class Error(val error: Throwable) : Result()
     data class ToggleClearButton(val show: Boolean) : Result()
-    data class ShowSnackbar(val message: String) : Result()
+    data class ShowSnackbar(val messageResId: Int) : Result()
     object DismissSnackbar : Result()
 }
 
@@ -49,8 +48,7 @@ class SearchViewModel @Inject constructor(
     private val repository: SearchRepository,
     private val historyRepository: HistoryRepository,
     private val genresRepository: GenresRepository,
-    private val viewEntitiesMapper: MovieViewEntitiesMapper,
-    private val stringProvider: StringProvider
+    private val viewEntitiesMapper: MovieViewEntitiesMapper
 ) : ViewModel() {
 
     private val store = SearchViewStateStore()
@@ -100,8 +98,7 @@ class SearchViewModel @Inject constructor(
         }
 
         historyRepository.store(historyMovie)
-        val message = stringProvider.getString(messageResId)
-        return Result.ShowSnackbar(message)
+        return Result.ShowSnackbar(messageResId)
     }
 
     private suspend fun search(query: String) {
