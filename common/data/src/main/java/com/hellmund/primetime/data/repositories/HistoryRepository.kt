@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface HistoryRepository {
-    suspend fun getAll(): List<HistoryMovie>
     suspend fun observeAll(): Flow<List<HistoryMovie>>
     suspend fun getLiked(): List<HistoryMovie>
     suspend fun count(movieId: Long): Int
@@ -25,8 +24,6 @@ interface HistoryRepository {
 class RealHistoryRepository @Inject constructor(
     private val dao: HistoryDao
 ) : HistoryRepository {
-
-    override suspend fun getAll(): List<HistoryMovie> = dao.getAll()
 
     override suspend fun observeAll(): Flow<List<HistoryMovie>> = dao.observeAll()
 

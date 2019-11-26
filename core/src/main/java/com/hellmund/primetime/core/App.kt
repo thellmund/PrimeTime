@@ -8,12 +8,8 @@ import com.hellmund.primetime.core.di.CoreComponent
 import com.hellmund.primetime.core.di.DaggerCoreComponent
 import com.hellmund.primetime.core.notifications.NotificationUtils.Companion.createChannel
 import com.jakewharton.threetenabp.AndroidThreeTen
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 class App : Application() {
 
     private val coreComponent: CoreComponent by lazy {

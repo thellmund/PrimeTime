@@ -43,14 +43,10 @@ import kotlinx.android.synthetic.main.state_layout_search_results.searchResultsC
 import kotlinx.android.synthetic.main.view_search_field.backButton
 import kotlinx.android.synthetic.main.view_search_field.clearSearchButton
 import kotlinx.android.synthetic.main.view_search_field.searchBox
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 class SearchFragment : Fragment(), TextWatcher,
     TextView.OnEditorActionListener, Reselectable {
 

@@ -38,15 +38,11 @@ import kotlinx.android.synthetic.main.fragment_home.filterFab
 import kotlinx.android.synthetic.main.fragment_home.recyclerView
 import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
 import kotlinx.android.synthetic.main.view_toolbar.toolbar
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
-import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.roundToInt
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @ScrollAwareFragment
 class HomeFragment : Fragment(), Reselectable {
 
@@ -131,7 +127,7 @@ class HomeFragment : Fragment(), Reselectable {
             viewModel.dispatch(Action.LoadMore)
         }
 
-        val spacing = round(resources.getDimension(R.dimen.default_space))
+        val spacing = resources.getDimension(R.dimen.default_space).roundToInt()
         recyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
     }
 

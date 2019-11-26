@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface HistoryDao {
-    suspend fun getAll(): List<HistoryMovie>
     fun observeAll(): Flow<List<HistoryMovie>>
     suspend fun getLiked(): List<HistoryMovie>
     suspend fun count(movieId: Long): Int
@@ -23,8 +22,6 @@ class RealHistoryDao @Inject constructor(
 ) : HistoryDao {
 
     private val queries = database.historyMovieQueries
-
-    override suspend fun getAll(): List<HistoryMovie> = queries.getAll().executeAsList()
 
     override fun observeAll(): Flow<List<HistoryMovie>> = queries.getAll().asFlow().mapToList()
 

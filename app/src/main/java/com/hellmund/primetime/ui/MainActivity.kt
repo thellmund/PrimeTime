@@ -18,15 +18,11 @@ import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.hellmund.primetime.workers.GenresPrefetcher
 import com.pandora.bottomnavigator.BottomNavigator
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import javax.inject.Provider
 
 private const val SHORTCUT_EXTRA = "intent"
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 class MainActivity : AppCompatActivity() {
 
     private val fragmentCallback: FragmentLifecycleCallback by lazy {

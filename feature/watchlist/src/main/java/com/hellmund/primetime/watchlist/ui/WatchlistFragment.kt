@@ -24,8 +24,6 @@ import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import javax.inject.Provider
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class WatchlistFragment : Fragment() {
 
     @Inject

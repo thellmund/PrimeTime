@@ -6,14 +6,11 @@ import com.hellmund.primetime.data.model.WatchlistMovie
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import javax.inject.Inject
 
 interface WatchlistRepository {
-    suspend fun getAll(): List<WatchlistMovie>
     suspend fun observeAll(): Flow<List<WatchlistMovie>>
-    suspend fun getReleases(date: LocalDate): List<WatchlistMovie>
     suspend fun count(movieId: Long): Int
     suspend fun store(movie: Movie)
     suspend fun store(watchlistMovie: WatchlistMovie)
@@ -27,13 +24,7 @@ class RealWatchlistRepository @Inject constructor(
     private val dao: WatchlistDao
 ) : WatchlistRepository {
 
-    override suspend fun getAll() = dao.getAll()
-
     override suspend fun observeAll() = dao.observeAll()
-
-    override suspend fun getReleases(
-        date: LocalDate
-    ): List<WatchlistMovie> = getAll().filter { it.releaseDate.isEqual(date) }
 
     override suspend fun count(movieId: Long) = dao.count(movieId)
 

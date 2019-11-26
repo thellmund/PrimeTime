@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface WatchlistDao {
-    suspend fun getAll(): List<WatchlistMovie>
     fun observeAll(): Flow<List<WatchlistMovie>>
     suspend fun count(movieId: Long): Int
     suspend fun store(vararg movies: WatchlistMovie)
@@ -21,8 +20,6 @@ class RealWatchlistDao @Inject constructor(
 ) : WatchlistDao {
 
     private val queries = database.watchlistMovieQueries
-
-    override suspend fun getAll(): List<WatchlistMovie> = queries.getAll().executeAsList()
 
     override fun observeAll(): Flow<List<WatchlistMovie>> = queries.getAll().asFlow().mapToList()
 
