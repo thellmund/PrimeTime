@@ -3,10 +3,9 @@ package com.hellmund.primetime.onboarding.selectmovies.ui
 import android.widget.ImageView
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateLayoutContainer
-import com.hellmund.api.model.Sample
-import com.hellmund.primetime.ui_common.util.ImageLoader
-import com.hellmund.primetime.ui_common.util.Transformation
 import com.hellmund.primetime.onboarding.R
+import com.hellmund.primetime.onboarding.selectmovies.domain.Sample
+import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.ui_common.util.showToast
 
 fun loadMoreAdapterDelegate() = adapterDelegate<AdapterItem.LoadingMore, AdapterItem>(
@@ -31,11 +30,11 @@ fun movieAdapterDelegate(
 
     bind {
         val sample = item.sample
-        containerView.alpha = if (sample.selected) 1f else 0.4f
+        containerView.alpha = if (sample.isSelected) 1f else 0.4f
 
         val posterImageView = containerView.findViewById<ImageView>(R.id.posterImageView)
         imageLoader.load(
-            url = sample.fullPosterUrl,
+            url = sample.posterUrl,
             placeholderResId = R.drawable.poster_placeholder,
             into = posterImageView
         )

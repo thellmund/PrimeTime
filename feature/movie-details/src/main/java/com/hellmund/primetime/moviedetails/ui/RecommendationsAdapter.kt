@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.moviedetails.R
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.util.ImageLoader
-import com.hellmund.primetime.ui_common.util.Transformation
+import com.hellmund.primetime.core.ImageLoader
 import kotlinx.android.synthetic.main.list_item_recommendations.view.posterImageView
 
 class RecommendationsAdapter(

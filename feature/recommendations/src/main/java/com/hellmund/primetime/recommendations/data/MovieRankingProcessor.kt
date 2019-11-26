@@ -23,7 +23,6 @@ class MovieRankingProcessor @Inject constructor(
         movies: List<Movie>,
         type: RecommendationsType
     ): List<Movie> {
-
         val knownMovies = coroutineScope {
             val watchedMovies = async { historyRepo.getAll().map { it.id }.toSet() }
             val watchlist = async { watchlistRepo.getAll().map { it.id }.toSet() }
@@ -50,8 +49,8 @@ class MovieRankingProcessor @Inject constructor(
     }
 
     private fun hasEnoughInformation(movie: Movie): Boolean {
-        val hasNoGenres = movie.genreIds.isNullOrEmpty() && movie.genres.isNullOrEmpty()
-        return hasNoGenres.not() && movie.description.isNotEmpty() && movie.voteAverage > 0f
+        val hasGenres = movie.genres.isNotEmpty()
+        return hasGenres && movie.description.isNotEmpty() && movie.voteAverage > 0f
     }
 
     private fun adjustRating(movie: Movie): MovieWithScore {

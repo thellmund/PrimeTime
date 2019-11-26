@@ -1,4 +1,4 @@
-package com.hellmund.primetime.search.util
+package com.hellmund.primetime.core
 
 import android.content.Context
 import androidx.annotation.StringRes

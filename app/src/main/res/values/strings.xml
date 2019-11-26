@@ -2,10 +2,6 @@
 <resources>
 
     <!-- App and Titles -->
-    <plurals name="new_releases_notif_header">
-        <item quantity="one">%d new release today</item>
-        <item quantity="other">%d new releases today</item>
-    </plurals>
     <string name="app_name">PrimeTime</string>
     <string name="title_activity_about">About</string>
     <string name="title_activity_settings">Settings</string>

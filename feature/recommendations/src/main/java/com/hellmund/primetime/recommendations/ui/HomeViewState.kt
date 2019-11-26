@@ -39,7 +39,7 @@ data class HomeViewState(
 
     fun toFiltered(result: Result.Filter): HomeViewState {
         val genreIds = result.genres.map { it.id }.toSet()
-        val genreMovies = data.filter { genreIds.containsAny(it.raw.genreIds.orEmpty()) }
+        val genreMovies = data.filter { genreIds.containsAny(it.raw.genres) }
         val type = RecommendationsType.Personalized(result.genres)
         return copy(recommendationsType = type, filtered = genreMovies)
     }

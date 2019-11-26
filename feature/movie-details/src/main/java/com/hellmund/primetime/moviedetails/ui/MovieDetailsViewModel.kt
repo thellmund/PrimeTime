@@ -13,7 +13,6 @@ import com.hellmund.primetime.data.repositories.WatchlistRepository
 import com.hellmund.primetime.moviedetails.data.MovieDetailsRepository
 import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.MovieViewEntityMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -46,9 +45,7 @@ class UiEventStore {
 
     val viewState = MutableLiveData<UiEvent>()
 
-    fun dispatch(
-        result: UiEvent
-    ) {
+    fun dispatch(result: UiEvent) {
         viewState.value = result
     }
 
@@ -59,7 +56,6 @@ class MovieDetailsViewModel @Inject constructor(
     private val historyRepository: HistoryRepository,
     private val watchlistRepository: WatchlistRepository,
     private val viewEntitiesMapper: MovieViewEntitiesMapper,
-    private val viewEntityMapper: MovieViewEntityMapper,
     private var movie: MovieViewEntity
 ) : ViewModel() {
 
@@ -113,8 +109,8 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private suspend fun fetchInformation(): UiEvent {
-        val movie = repository.fetchMovie(movie.id)
-        val viewEntity = viewEntityMapper(movie)
+        // TODO Suspending no longer necessary
+        val viewEntity = viewEntitiesMapper(movie.raw)
         return UiEvent.AdditionalInformationLoaded(viewEntity)
     }
 
@@ -133,8 +129,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private suspend fun storeInWatchlist(movie: MovieViewEntity): UiEvent {
-        val fetchedMovie = repository.fetchMovie(movie.id)
-        watchlistRepository.store(fetchedMovie)
+        watchlistRepository.store(movie.raw)
         return UiEvent.AddedToWatchlist
     }
 
@@ -149,11 +144,10 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private suspend fun loadImdbId() {
-        val imdbId = movie.imdbId ?: repository.fetchMovie(movie.id).imdbId
-        imdbId?.let {
-            val link = "http://www.imdb.com/title/$it"
-            store.dispatch(UiEvent.ImdbLinkLoaded(link))
-        }
+        // TODO Suspend no longer needed
+        val imdbId = movie.raw.imdbId
+        val link = "http://www.imdb.com/title/$imdbId"
+        store.dispatch(UiEvent.ImdbLinkLoaded(link))
     }
 
     private suspend fun addToWatchlist() {

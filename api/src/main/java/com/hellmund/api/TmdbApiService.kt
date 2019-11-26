@@ -1,6 +1,6 @@
 package com.hellmund.api
 
-import com.hellmund.api.model.ApiMovie
+import com.hellmund.api.model.FullApiMovie
 import com.hellmund.api.model.GenresResponse
 import com.hellmund.api.model.MoviesResponse
 import com.hellmund.api.model.ReviewsResponse
@@ -52,7 +52,7 @@ class TmdbApiService @Inject constructor(
         movieId: Long,
         page: Int,
         sortBy: String = "popularity.desc"
-    ): MoviesResponse = client.get() {
+    ): MoviesResponse = client.get {
         url(path("movie/$movieId/recommendations"))
         parameter("page", page)
         parameter("sort_by", sortBy)
@@ -61,20 +61,20 @@ class TmdbApiService @Inject constructor(
     suspend fun genreRecommendations(
         genreId: Long,
         page: Int
-    ): MoviesResponse = client.get() {
+    ): MoviesResponse = client.get {
         url(path("genre/$genreId/movies"))
         parameter("page", page)
     }
 
     suspend fun videos(
         movieId: Long
-    ): VideosResponse = client.get() {
+    ): VideosResponse = client.get {
         url(path("movie/$movieId/videos"))
     }
 
     suspend fun movie(
         movieId: Long
-    ): ApiMovie = client.get() {
+    ): FullApiMovie = client.get {
         url(path("movie/$movieId"))
     }
 
@@ -88,7 +88,7 @@ class TmdbApiService @Inject constructor(
 
     suspend fun reviews(
         movieId: Long
-    ): ReviewsResponse = client.get() {
+    ): ReviewsResponse = client.get {
         url(path("movie/$movieId/reviews"))
     }
 

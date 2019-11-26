@@ -5,7 +5,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion buildConfig.compileSdk
-
     defaultConfig {
         minSdkVersion buildConfig.minSdk
         targetSdkVersion buildConfig.targetSdk
@@ -13,22 +12,31 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation libraries.kotlin
 
+    implementation project(':api')
+    implementation project(':common:data')
+
     // AndroidX
     api libraries.appCompat
+    implementation libraries.preference
 
     // Dagger
     api libraries.dagger
@@ -37,4 +45,13 @@ dependencies {
     // Coroutines
     api libraries.coroutines
     api libraries.coroutinesAndroid
+
+    // Helpers
+    implementation libraries.picasso
+    implementation libraries.timber
+    api libraries.threeTenAbp
+
+    // WorkManager
+    implementation libraries.workManager
+    implementation libraries.workManagerKtx
 }

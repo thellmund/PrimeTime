@@ -8,8 +8,9 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.repositories.GenresRepository
-import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.di.DaggerAppComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import java.io.IOException
@@ -45,7 +46,10 @@ class GenresPrefetcher @Inject constructor(
         @FlowPreview
         @ExperimentalCoroutinesApi
         override suspend fun doWork(): Result {
-            injector.inject(this)
+            DaggerAppComponent.builder()
+                .coreComponent(coreComponent)
+                .build()
+                .inject(this)
 
             val genres = genresRepository.getAll()
             if (genres.isNotEmpty()) {

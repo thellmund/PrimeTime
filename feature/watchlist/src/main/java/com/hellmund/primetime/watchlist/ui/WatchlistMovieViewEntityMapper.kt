@@ -1,7 +1,7 @@
 package com.hellmund.primetime.watchlist.ui
 
 import com.hellmund.primetime.data.model.WatchlistMovie
-import com.hellmund.primetime.ui_common.util.ValueFormatter
+import com.hellmund.primetime.core.ValueFormatter
 import org.threeten.bp.LocalDate.now
 import javax.inject.Inject
 

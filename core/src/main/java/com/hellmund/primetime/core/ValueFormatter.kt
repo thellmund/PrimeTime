@@ -1,9 +1,8 @@
-package com.hellmund.primetime.ui_common.util
+package com.hellmund.primetime.core
 
 import android.content.Context
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Rating
-import com.hellmund.primetime.ui_common.R
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDate.now
 import org.threeten.bp.LocalDateTime

@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
-import com.hellmund.api.model.Sample
-import com.hellmund.primetime.ui_common.util.ImageLoader
+import com.hellmund.primetime.onboarding.selectmovies.domain.Sample
+import com.hellmund.primetime.core.ImageLoader
 
 class SamplesAdapter(
     imageLoader: ImageLoader,
@@ -26,7 +26,7 @@ class SamplesAdapter(
         get() = items
             .mapNotNull { it as? AdapterItem.Movie.Item }
             .map { it.sample }
-            .filter { it.selected }
+            .filter { it.isSelected }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return adapterDelegatesManager.onCreateViewHolder(parent, viewType)

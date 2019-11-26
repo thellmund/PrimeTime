@@ -19,14 +19,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.hellmund.api.model.Review
 import com.hellmund.primetime.core.FragmentArgs
+import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.moviedetails.R
-import com.hellmund.primetime.moviedetails.di.MovieDetailsComponent
+import com.hellmund.primetime.moviedetails.di.DaggerMovieDetailsComponent
 import com.hellmund.primetime.moviedetails.util.EqualHorizontalSpacingItemDecoration
 import com.hellmund.primetime.moviedetails.util.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.dialogs.showLoading
-import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.openUrl
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import kotlinx.android.synthetic.main.fragment_movie_details.addToWatchlistButton
@@ -85,9 +86,10 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (context.applicationContext as ComponentProvider)
-            .movieDetailsComponent()
-            .create(movie)
+        DaggerMovieDetailsComponent.builder()
+            .core(coreComponent)
+            .movie(movie)
+            .build()
             .inject(this)
     }
 
@@ -214,9 +216,9 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         removeFromWatchlistButton.strokeColor = colorStateList
     }
 
-    interface ComponentProvider {
-        fun movieDetailsComponent(): MovieDetailsComponent.Factory
-    }
+//    interface ComponentProvider {
+//        fun movieDetailsComponent(): MovieDetailsComponent.Builder
+//    }
 
     companion object {
 

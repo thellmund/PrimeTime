@@ -13,6 +13,12 @@ import com.hellmund.primetime.data.database.TimestampColumnAdapter
 import com.hellmund.primetime.data.database.WatchlistDao
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.WatchlistMovie
+import com.hellmund.primetime.data.repositories.GenresRepository
+import com.hellmund.primetime.data.repositories.HistoryRepository
+import com.hellmund.primetime.data.repositories.RealGenresRepository
+import com.hellmund.primetime.data.repositories.RealHistoryRepository
+import com.hellmund.primetime.data.repositories.RealWatchlistRepository
+import com.hellmund.primetime.data.repositories.WatchlistRepository
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import dagger.Binds
@@ -31,6 +37,15 @@ abstract class DatabaseModule {
 
     @Binds
     abstract fun bindWatchlistMovieDao(impl: RealWatchlistDao): WatchlistDao
+
+    @Binds
+    abstract fun bindGenresRepository(impl: RealGenresRepository): GenresRepository
+
+    @Binds
+    abstract fun bindHistoryRepository(impl: RealHistoryRepository): HistoryRepository
+
+    @Binds
+    abstract fun bindWatchlistRepository(impl: RealWatchlistRepository): WatchlistRepository
 
     @Module
     companion object {

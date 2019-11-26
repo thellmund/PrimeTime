@@ -1,9 +1,4 @@
 <resources>
-    <string name="loading">Loading …</string>
-    <string name="no_information">–</string>
-    <string name="liked">Liked</string>
-    <string name="disliked">Disliked</string>
-    <string name="thousand_votes_format_string">%dK votes</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="like">It was great</string>
@@ -14,9 +9,4 @@
     <string name="show_less_like_this">Show less like this</string>
     <string name="now_playing">Now playing</string>
     <string name="upcoming">Upcoming</string>
-
-    <plurals name="vote_count_format_string">
-        <item quantity="one">%d votes</item>
-        <item quantity="other">%d votes</item>
-    </plurals>
 </resources>

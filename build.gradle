@@ -7,7 +7,6 @@ buildscript {
                 targetSdk : 29,
                 compileSdk: 29
         ]
-
         versions = [
                 adapterDelegates  : '4.1.1',
                 appCompat         : '1.1.0-rc01',
@@ -40,7 +39,6 @@ buildscript {
                 viewPagerIndicator: '0.8.1',
                 workManager       : '2.1.0'
         ]
-
         libraries = [
                 adapterDelegates               : "com.hannesdorfmann:adapterdelegates4:${versions.adapterDelegates}",
                 adapterDelegatesDsl            : "com.hannesdorfmann:adapterdelegates4-kotlin-dsl:${versions.adapterDelegates}",
@@ -55,9 +53,6 @@ buildscript {
                 coroutinesAndroid              : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}",
                 dagger                         : "com.google.dagger:dagger:${versions.dagger}",
                 daggerProcessor                : "com.google.dagger:dagger-compiler:${versions.dagger}",
-                daggerAndroid                  : "com.google.dagger:dagger-android:${versions.dagger}",
-                daggerAndroidSupport           : "com.google.dagger:dagger-android-support:${versions.dagger}",
-                daggerAndroidProcessor         : "com.google.dagger:dagger-android-processor:${versions.dagger}",
                 gson                           : "com.google.code.gson:gson:${versions.gson}",
                 jUnit                          : "junit:junit:${versions.jUnit}",
                 kotlin                         : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
@@ -89,7 +84,6 @@ buildscript {
                 workManager                    : "androidx.work:work-runtime:${versions.workManager}",
                 workManagerKtx                 : "androidx.work:work-runtime-ktx:${versions.workManager}"
         ]
-
     }
     repositories {
         google()

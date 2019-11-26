@@ -1,19 +1,21 @@
 package com.hellmund.primetime.onboarding.selectgenres.ui
 
 import android.animation.LayoutTransition
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.google.android.material.chip.Chip
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.onboarding.R
+import com.hellmund.primetime.onboarding.selectgenres.di.OnboardingComponentProvider
 import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_select_genres.button
 import kotlinx.android.synthetic.main.fragment_select_genres.chipGroup
 import kotlinx.android.synthetic.main.fragment_select_genres.container
@@ -21,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_select_genres.recommendationsProg
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SelectGenresFragment : DaggerFragment() {
+class SelectGenresFragment : Fragment() {
 
     private var onFinishedAction: () -> Unit = {}
     private val genres = mutableListOf<Genre>()
@@ -30,6 +32,12 @@ class SelectGenresFragment : DaggerFragment() {
     lateinit var viewModelProvider: Provider<SelectGenresViewModel>
 
     private val viewModel: SelectGenresViewModel by lazyViewModel { viewModelProvider }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val provider = requireActivity() as OnboardingComponentProvider
+        provider.provideOnboardingComponent().inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

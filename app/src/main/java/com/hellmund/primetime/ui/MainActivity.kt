@@ -8,12 +8,14 @@ import androidx.lifecycle.observe
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
 import com.hellmund.primetime.R
 import com.hellmund.primetime.core.Intents
-import com.hellmund.primetime.di.injector
+import com.hellmund.primetime.core.coreComponent
+import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
+import com.hellmund.primetime.workers.GenresPrefetcher
 import com.pandora.bottomnavigator.BottomNavigator
 import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,6 +43,9 @@ class MainActivity : AppCompatActivity() {
         reselectable?.onReselected()
     }
 
+     @Inject
+     lateinit var genresPrefetcher: GenresPrefetcher
+
     @Inject
     lateinit var viewModelProvider: Provider<MainViewModel>
 
@@ -51,7 +56,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        injector.inject(this)
+        DaggerAppComponent.builder()
+            .coreComponent(coreComponent)
+            .build()
+            .inject(this)
+
+        genresPrefetcher.run()
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentCallback, false)
         bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)

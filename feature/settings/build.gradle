@@ -5,7 +5,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion buildConfig.compileSdk
-
     defaultConfig {
         minSdkVersion buildConfig.minSdk
         targetSdkVersion buildConfig.targetSdk
@@ -13,7 +12,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -30,8 +28,8 @@ dependencies {
     implementation project(':common:data')
     implementation project(':common:ui')
 
-    implementation libraries.daggerAndroid
-    implementation libraries.daggerAndroidSupport
-    kapt libraries.daggerAndroidProcessor
+    implementation libraries.preference
+
+    implementation libraries.dagger
     kapt libraries.daggerProcessor
 }

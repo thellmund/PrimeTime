@@ -1,20 +1,20 @@
-package com.hellmund.primetime.settings.di
+package com.hellmund.primetime.history.di
 
 import com.hellmund.primetime.core.di.ActivityScope
 import com.hellmund.primetime.core.di.CoreComponent
-import com.hellmund.primetime.settings.ui.SettingsFragment
+import com.hellmund.primetime.history.ui.HistoryFragment
 import dagger.Component
 
 @Component(
     dependencies = [CoreComponent::class]
 )
 @ActivityScope
-interface SettingsComponent {
-    fun inject(settingsFragment: SettingsFragment)
+interface HistoryComponent {
+    fun inject(historyFragment: HistoryFragment)
 
     @Component.Builder
     interface Builder {
         fun core(coreComponent: CoreComponent): Builder
-        fun build(): SettingsComponent
+        fun build(): HistoryComponent
     }
 }

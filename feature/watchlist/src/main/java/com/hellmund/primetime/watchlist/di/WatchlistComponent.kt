@@ -1,20 +1,20 @@
-package com.hellmund.primetime.settings.di
+package com.hellmund.primetime.watchlist.di
 
 import com.hellmund.primetime.core.di.ActivityScope
 import com.hellmund.primetime.core.di.CoreComponent
-import com.hellmund.primetime.settings.ui.SettingsFragment
+import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import dagger.Component
 
 @Component(
     dependencies = [CoreComponent::class]
 )
 @ActivityScope
-interface SettingsComponent {
-    fun inject(settingsFragment: SettingsFragment)
+interface WatchlistComponent {
+    fun inject(watchlistFragment: WatchlistFragment)
 
     @Component.Builder
     interface Builder {
         fun core(coreComponent: CoreComponent): Builder
-        fun build(): SettingsComponent
+        fun build(): WatchlistComponent
     }
 }

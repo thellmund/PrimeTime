@@ -7,7 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.util.ImageLoader
+import com.hellmund.primetime.core.ImageLoader
 import kotlinx.android.synthetic.main.list_item_search_results.view.description
 import kotlinx.android.synthetic.main.list_item_search_results.view.genres
 import kotlinx.android.synthetic.main.list_item_search_results.view.posterImageView

@@ -1,5 +1,6 @@
 package com.hellmund.primetime.search.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +14,7 @@ import android.widget.TextView
 import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,18 +22,19 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentFactory
+import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.search.R
+import com.hellmund.primetime.search.di.DaggerSearchComponent
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.RatedMovie
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
-import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.pandora.bottomnavigator.BottomNavigator
-import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView
 import kotlinx.android.synthetic.main.state_layout_search_results.loading
 import kotlinx.android.synthetic.main.state_layout_search_results.placeholder
@@ -42,13 +45,13 @@ import kotlinx.android.synthetic.main.view_search_field.clearSearchButton
 import kotlinx.android.synthetic.main.view_search_field.searchBox
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.roundToInt
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class SearchFragment : DaggerFragment(), TextWatcher,
+class SearchFragment : Fragment(), TextWatcher,
     TextView.OnEditorActionListener, Reselectable {
 
     @Inject
@@ -76,6 +79,14 @@ class SearchFragment : DaggerFragment(), TextWatcher,
 
     private val snackbar: Snackbar by lazy {
         Snackbar.make(resultsRecyclerView, "", Snackbar.LENGTH_LONG)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val component = DaggerSearchComponent.builder()
+            .core(coreComponent)
+            .build()
+        component.inject(this)
     }
 
     override fun onCreateView(
@@ -152,7 +163,7 @@ class SearchFragment : DaggerFragment(), TextWatcher,
         categoriesRecyclerView.itemAnimator = DefaultItemAnimator()
         categoriesRecyclerView.adapter = categoriesAdapter
 
-        val spacing = round(resources.getDimension(R.dimen.default_space))
+        val spacing = resources.getDimension(R.dimen.default_space).roundToInt()
         categoriesRecyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
     }
 

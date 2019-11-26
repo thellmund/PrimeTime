@@ -1,4 +1,4 @@
-package com.hellmund.primetime.ui_common.util
+package com.hellmund.primetime.core
 
 import android.content.Context
 import android.graphics.drawable.Drawable

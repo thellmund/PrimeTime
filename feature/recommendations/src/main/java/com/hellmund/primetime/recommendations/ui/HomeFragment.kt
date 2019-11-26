@@ -17,19 +17,20 @@ import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentArgs.KEY_RECOMMENDATIONS_TYPE
 import com.hellmund.primetime.core.FragmentFactory
+import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.OnboardingHelper
+import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.core.createIntent
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.model.RecommendationsType.Personalized
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.recommendations.R
-import com.hellmund.primetime.recommendations.di.MoviesComponent
+import com.hellmund.primetime.recommendations.di.DaggerMoviesComponent
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
-import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import kotlinx.android.synthetic.main.fragment_home.banner
@@ -81,9 +82,10 @@ class HomeFragment : Fragment(), Reselectable {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (context.applicationContext as ComponentProvider)
-            .moviesComponent()
-            .create(type)
+        DaggerMoviesComponent.builder()
+            .recommendationsType(type)
+            .core(coreComponent)
+            .build()
             .inject(this)
     }
 
@@ -250,10 +252,6 @@ class HomeFragment : Fragment(), Reselectable {
 
     override fun onReselected() {
         recyclerView.smoothScrollToPosition(0)
-    }
-
-    interface ComponentProvider {
-        fun moviesComponent(): MoviesComponent.Factory
     }
 
     companion object {

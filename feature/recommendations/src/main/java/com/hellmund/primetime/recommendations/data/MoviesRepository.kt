@@ -4,10 +4,13 @@ import com.hellmund.api.TmdbApiService
 import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Movie
+import com.hellmund.primetime.data.model.MovieEnricher
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import javax.inject.Inject
+
+// TODO Move to data
 
 interface MoviesRepository {
     suspend fun fetchRecommendations(type: RecommendationsType, page: Int): List<Movie>
@@ -20,7 +23,8 @@ class RealMoviesRepository @Inject constructor(
     private val apiService: TmdbApiService,
     private val genresRepository: GenresRepository,
     private val historyRepository: HistoryRepository,
-    private val onboardingHelper: OnboardingHelper
+    private val onboardingHelper: OnboardingHelper,
+    private val enricher: MovieEnricher
 ) : MoviesRepository {
 
     override suspend fun fetchRecommendations(
@@ -65,43 +69,39 @@ class RealMoviesRepository @Inject constructor(
     private suspend fun fetchNowPlayingRecommendations(
         page: Int
     ) = apiService.nowPlaying(page).results
-        .filter { it.isValid }
-        .map { Movie.from(it) }
+        .mapNotNull { enricher.enrich(it) }
 
     private suspend fun fetchUpcomingRecommendations(
         page: Int
     ): List<Movie> = apiService.upcoming(page).results
-        .filter { it.isValid }
-        .map { Movie.from(it) }
+        .mapNotNull { enricher.enrich(it) }
 
     override suspend fun fetchSimilarMovies(
         movieId: Long,
         page: Int
     ): List<Movie> = apiService.recommendations(movieId, page).results
-        .filter { it.isValid }
-        .map { Movie.from(it) }
+        .mapNotNull { enricher.enrich(it) }
 
     private suspend fun fetchGenreRecommendations(
         genreId: Long,
         page: Int = 1
     ) = apiService.genreRecommendations(genreId, page).results
-        .filter { it.isValid }
-        .map { Movie.from(it) }
+        .mapNotNull { enricher.enrich(it) }
 
     private suspend fun fetchTopRatedMovies(
         page: Int = 1
     ): List<Movie> = apiService.topRatedMovies(page).results
-        .filter { it.isValid }
-        .map { Movie.from(it) }
+        .mapNotNull { enricher.enrich(it) }
 
     override suspend fun searchMovies(
         query: String
     ): List<Movie> = apiService.search(query).results
-        .filter { it.isValid }
-        .map { Movie.from(it) }
+        .mapNotNull { enricher.enrich(it) }
 
     override suspend fun fetchPopularMovies(): List<Movie> {
-        return apiService.popular().results.filter { it.isValid }.map { Movie.from(it) }
+        return apiService.popular()
+            .results
+            .mapNotNull { enricher.enrich(it) }
     }
 
 }

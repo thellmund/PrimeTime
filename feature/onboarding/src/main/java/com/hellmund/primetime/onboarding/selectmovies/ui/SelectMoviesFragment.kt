@@ -1,21 +1,23 @@
 package com.hellmund.primetime.onboarding.selectmovies.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.onboarding.R
+import com.hellmund.primetime.onboarding.selectgenres.di.OnboardingComponentProvider
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
-import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.util.showToast
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_select_movies.button
 import kotlinx.android.synthetic.main.fragment_select_movies.error_container
 import kotlinx.android.synthetic.main.fragment_select_movies.gridView
@@ -25,7 +27,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-class SelectMoviesFragment : DaggerFragment() {
+class SelectMoviesFragment : Fragment() {
 
     private var onFinishedAction: () -> Unit = {}
     private val adapter: SamplesAdapter by lazy {
@@ -44,6 +46,12 @@ class SelectMoviesFragment : DaggerFragment() {
     private val viewModel: SelectMoviesViewModel by lazyViewModel { viewModelProvider }
 
     private var isLoadingMore: Boolean = false
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val provider = requireActivity() as OnboardingComponentProvider
+        provider.provideOnboardingComponent().inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,7 +98,7 @@ class SelectMoviesFragment : DaggerFragment() {
             shimmerLayout.setShimmer(null)
         }
 
-        val selected = viewState.data.filter { it.selected }
+        val selected = viewState.data.filter { it.isSelected }
         updateNextButton(selected.size)
 
         gridView.isVisible = viewState.isError.not()

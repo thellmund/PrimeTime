@@ -1,8 +1,9 @@
 package com.hellmund.primetime.moviedetails.data
 
 import com.hellmund.api.model.Video
+import javax.inject.Inject
 
-object VideoResolver {
+class VideoResolver @Inject constructor() {
 
     fun findBest(title: String, videos: List<Video>): String {
         val youTubeVideos = videos.filter { it.site == "YouTube" }

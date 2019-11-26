@@ -3,10 +3,10 @@ package com.hellmund.primetime.onboarding.selectmovies.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.api.model.Sample
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.data.repositories.GenresRepository
+import com.hellmund.primetime.onboarding.selectmovies.domain.Sample
 import com.hellmund.primetime.onboarding.selectmovies.domain.SamplesRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
@@ -100,7 +100,7 @@ class SelectMoviesViewModel @Inject constructor(
     }
 
     private fun toggleSelection(sample: Sample) {
-        val newSample = sample.copy(selected = sample.selected.not())
+        val newSample = sample.copy(isSelected = sample.isSelected.not())
         store.dispatch(Result.SelectionChanged(newSample))
     }
 

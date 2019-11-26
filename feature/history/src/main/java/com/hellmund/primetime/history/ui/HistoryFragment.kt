@@ -1,20 +1,23 @@
 package com.hellmund.primetime.history.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.history.R
+import com.hellmund.primetime.history.di.DaggerHistoryComponent
 import com.hellmund.primetime.ui_common.dialogs.showItemsDialog
 import com.hellmund.primetime.ui_common.dialogs.showSingleSelectDialog
 import com.hellmund.primetime.ui_common.util.showToast
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_history.progressBar
 import kotlinx.android.synthetic.main.fragment_history.recyclerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,7 +27,7 @@ import javax.inject.Provider
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class HistoryFragment : DaggerFragment() {
+class HistoryFragment : Fragment() {
 
     @Inject
     lateinit var viewModelProvider: Provider<HistoryViewModel>
@@ -33,6 +36,14 @@ class HistoryFragment : DaggerFragment() {
 
     private val adapter: HistoryAdapter by lazy {
         HistoryAdapter(this::onOpenDialog)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val component = DaggerHistoryComponent.builder()
+            .core(coreComponent)
+            .build()
+        component.inject(this)
     }
 
     override fun onCreateView(

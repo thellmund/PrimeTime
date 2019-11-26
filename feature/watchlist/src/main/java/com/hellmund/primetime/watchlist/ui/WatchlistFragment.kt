@@ -1,21 +1,24 @@
 package com.hellmund.primetime.watchlist.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.viewpager2.widget.ViewPager2
 import com.hellmund.primetime.core.AddressableActivity
+import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.core.createIntent
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showCancelableDialog
-import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.watchlist.R
 import com.hellmund.primetime.watchlist.databinding.FragmentWatchlistBinding
-import dagger.android.support.DaggerFragment
+import com.hellmund.primetime.watchlist.di.DaggerWatchlistComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
@@ -23,7 +26,7 @@ import javax.inject.Provider
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class WatchlistFragment : DaggerFragment() {
+class WatchlistFragment : Fragment() {
 
     @Inject
     lateinit var imageLoader: ImageLoader
@@ -42,6 +45,14 @@ class WatchlistFragment : DaggerFragment() {
             onRemove = this::onRemove,
             onNotificationToggle = this::onNotificationToggle
         )
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val component = DaggerWatchlistComponent.builder()
+            .core(coreComponent)
+            .build()
+        component.inject(this)
     }
 
     override fun onCreateView(

@@ -10,8 +10,8 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
+import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.Preferences
-import com.hellmund.primetime.ui_common.util.ImageLoader
 import com.hellmund.primetime.watchlist.R
 import com.hellmund.primetime.watchlist.databinding.ListItemWatchlistBinding
 

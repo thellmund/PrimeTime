@@ -13,7 +13,7 @@ import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.search.data.SearchRepository
-import com.hellmund.primetime.search.util.StringProvider
+import com.hellmund.primetime.core.StringProvider
 import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.RatedMovie

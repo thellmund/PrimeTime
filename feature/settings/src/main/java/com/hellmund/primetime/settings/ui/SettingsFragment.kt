@@ -9,6 +9,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.Preferences
+import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.core.createIntent
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.settings.R
@@ -17,18 +18,15 @@ import com.hellmund.primetime.settings.delegates.GenresValidator
 import com.hellmund.primetime.settings.delegates.ValidationResult.NotEnough
 import com.hellmund.primetime.settings.delegates.ValidationResult.Overlap
 import com.hellmund.primetime.settings.delegates.ValidationResult.Success
+import com.hellmund.primetime.settings.di.DaggerSettingsComponent
 import com.hellmund.primetime.settings.util.doOnPreferenceChange
 import com.hellmund.primetime.settings.util.requirePreference
 import com.hellmund.primetime.ui_common.dialogs.showInfoDialog
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SettingsFragment : PreferenceFragmentCompat(), HasAndroidInjector {
+class SettingsFragment : PreferenceFragmentCompat() {
 
     @Inject
     lateinit var genresDelegate: GenresDelegate
@@ -36,12 +34,12 @@ class SettingsFragment : PreferenceFragmentCompat(), HasAndroidInjector {
     @Inject
     lateinit var genresValidator: GenresValidator
 
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
-
     override fun onAttach(context: Context) {
-        AndroidSupportInjection.inject(this)
         super.onAttach(context)
+        DaggerSettingsComponent.builder()
+            .core(coreComponent)
+            .build()
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,10 +121,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasAndroidInjector {
         }
     }
 
-    override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
-
     companion object {
         fun newInstance() = SettingsFragment()
     }
-
 }

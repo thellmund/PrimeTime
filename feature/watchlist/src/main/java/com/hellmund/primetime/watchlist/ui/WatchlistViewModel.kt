@@ -3,6 +3,7 @@ package com.hellmund.primetime.watchlist.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hellmund.primetime.core.notifications.NotificationUtils
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.repositories.WatchlistRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
@@ -57,7 +58,8 @@ class WatchlistViewStateStore : ViewStateStore<WatchlistViewState, Result>(
 class WatchlistViewModel @Inject constructor(
     private val repository: WatchlistRepository,
     private val historyRepository: HistoryRepository,
-    viewEntityMapper: WatchlistMovieViewEntityMapper
+    viewEntityMapper: WatchlistMovieViewEntityMapper,
+    private val notificationUtils: NotificationUtils
 ) : ViewModel() {
 
     private val store = WatchlistViewStateStore()
@@ -77,6 +79,12 @@ class WatchlistViewModel @Inject constructor(
         repository.toggleNotification(movie.raw)
         val newViewEntity = movie.copy(notificationsActivated = movie.notificationsActivated.not())
         store.dispatch(Result.NotificationToggled(newViewEntity))
+
+        if (newViewEntity.notificationsActivated) {
+            notificationUtils.scheduleNotification(movie.raw)
+        } else {
+            notificationUtils.cancelNotification(movie.raw)
+        }
     }
 
     private suspend fun removeMovie(movie: WatchlistMovieViewEntity) {

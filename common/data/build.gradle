@@ -6,7 +6,6 @@ apply plugin: 'com.squareup.sqldelight'
 
 android {
     compileSdkVersion buildConfig.compileSdk
-
     defaultConfig {
         minSdkVersion buildConfig.minSdk
         targetSdkVersion buildConfig.targetSdk
@@ -14,18 +13,15 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     androidExtensions {
         experimental = true
     }
-
     packagingOptions {
         exclude 'META-INF/*.kotlin_module'
     }
@@ -36,9 +32,9 @@ dependencies {
     implementation libraries.kotlin
 
     implementation project(':api')
-    implementation project(':core')
 
     // Dagger
+    api libraries.dagger
     kapt libraries.daggerProcessor
 
     // SqlDelight

@@ -5,7 +5,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion buildConfig.compileSdk
-
     defaultConfig {
         minSdkVersion buildConfig.minSdk
         targetSdkVersion buildConfig.targetSdk
@@ -13,14 +12,12 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     androidExtensions {
         experimental = true
     }
@@ -40,7 +37,6 @@ dependencies {
     api libraries.coreKtx
     api libraries.fragmentKtx
     api libraries.material
-    api libraries.preference
 
     // Lifecycle & ViewModel
     api libraries.lifecycleViewModel
@@ -53,7 +49,6 @@ dependencies {
     kapt libraries.daggerProcessor
 
     // Helpers
-    implementation libraries.picasso
     api libraries.roundedImageView
     api libraries.shimmer
     api libraries.threeTenAbp

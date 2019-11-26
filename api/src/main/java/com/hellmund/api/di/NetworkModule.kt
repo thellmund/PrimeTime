@@ -33,7 +33,7 @@ object NetworkModule {
     fun provideHttpClient(
         retryInterceptor: RetryInterceptor,
         loggingInterceptor: HttpLoggingInterceptor
-    ) = HttpClient(OkHttp) {
+    ): HttpClient = HttpClient(OkHttp) {
         install(DefaultRequest) {
             parameter("api_key", "7564dba629324e3048f362a03c8a76bc") // TODO
             parameter("language", Locale.getDefault().language)
