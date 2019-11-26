@@ -32,5 +32,4 @@ class RealMovieDetailsRepository @Inject constructor(
     ): List<Movie> = apiService.recommendations(movieId, page = 1)
         .results
         .mapNotNull { enricher.enrich(it) }
-
 }

@@ -51,7 +51,6 @@ class RateMovieDialog(private val activity: FragmentActivity) {
     companion object {
         fun make(activity: FragmentActivity) = RateMovieDialog(activity)
     }
-
 }
 
 class RateMovieDialogFragment : RoundedBottomSheetDialogFragment() {
@@ -96,5 +95,4 @@ class RateMovieDialogFragment : RoundedBottomSheetDialogFragment() {
             this.onItemSelected = onItemSelected
         }
     }
-
 }

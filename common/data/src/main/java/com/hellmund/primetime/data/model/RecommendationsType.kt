@@ -22,5 +22,4 @@ sealed class RecommendationsType : Parcelable {
 
     @Parcelize
     data class ByGenre(val genre: @RawValue Genre) : RecommendationsType()
-
 }

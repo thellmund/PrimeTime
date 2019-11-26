@@ -262,7 +262,5 @@ class HomeFragment : Fragment(), Reselectable {
         ) = HomeFragment().apply {
             arguments = bundleOf(KEY_RECOMMENDATIONS_TYPE to type)
         }
-
     }
-
 }

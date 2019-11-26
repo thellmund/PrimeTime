@@ -22,5 +22,4 @@ class RetryInterceptor @Inject constructor() : Interceptor {
 
         return response
     }
-
 }

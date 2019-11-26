@@ -16,7 +16,6 @@ class HistoryMovieViewEntitiesMapper @Inject constructor(
     operator fun invoke(
         movies: List<HistoryMovie>
     ) = movies.map(internalMapper::invoke)
-
 }
 
 class HistoryMovieViewEntityMapper @Inject constructor(
@@ -40,5 +39,4 @@ class HistoryMovieViewEntityMapper @Inject constructor(
             movie
         )
     }
-
 }

@@ -150,5 +150,4 @@ class SearchViewModel @Inject constructor(
             RecommendationsType.ByGenre(genre)
         }
     }
-
 }

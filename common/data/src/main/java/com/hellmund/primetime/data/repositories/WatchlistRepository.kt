@@ -64,5 +64,4 @@ class RealWatchlistRepository @Inject constructor(
     override suspend fun remove(movieId: Long) {
         dao.delete(movieId)
     }
-
 }

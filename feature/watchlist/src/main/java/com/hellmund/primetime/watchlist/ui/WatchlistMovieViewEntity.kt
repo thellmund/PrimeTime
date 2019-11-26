@@ -24,7 +24,6 @@ data class WatchlistMovieViewEntity(
 ) : Parcelable {
 
     fun apply(rating: Rating) = RatedWatchlistMovie(this, rating)
-
 }
 
 data class RatedWatchlistMovie(val movie: WatchlistMovieViewEntity, val rating: Rating) {

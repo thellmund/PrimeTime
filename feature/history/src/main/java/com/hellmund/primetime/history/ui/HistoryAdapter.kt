@@ -58,7 +58,6 @@ class HistoryAdapter(
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldItems[oldItemPosition] == newItems[newItemPosition]
         }
-
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -71,7 +70,5 @@ class HistoryAdapter(
             subtitle.text = movie.detailsText
             button.setOnClickListener { listener(movie) }
         }
-
     }
-
 }

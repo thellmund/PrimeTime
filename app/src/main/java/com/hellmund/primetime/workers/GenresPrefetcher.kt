@@ -64,7 +64,5 @@ class GenresPrefetcher @Inject constructor(
                 Result.retry()
             }
         }
-
     }
-
 }

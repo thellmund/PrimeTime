@@ -227,7 +227,5 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
                 arguments = bundleOf(FragmentArgs.KEY_MOVIE to movie)
             }
         }
-
     }
-
 }

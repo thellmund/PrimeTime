@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity() {
         reselectable?.onReselected()
     }
 
-     @Inject
-     lateinit var genresPrefetcher: GenresPrefetcher
+    @Inject
+    lateinit var genresPrefetcher: GenresPrefetcher
 
     @Inject
     lateinit var viewModelProvider: Provider<MainViewModel>
@@ -122,5 +122,4 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentCallback)
         super.onDestroy()
     }
-
 }

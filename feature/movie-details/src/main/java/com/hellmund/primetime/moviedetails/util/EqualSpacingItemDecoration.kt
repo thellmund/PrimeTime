@@ -18,5 +18,4 @@ class EqualSpacingItemDecoration(
         val itemCount = state.itemCount
         outRect.bottom = if (position == itemCount - 1) 0 else spacing
     }
-
 }

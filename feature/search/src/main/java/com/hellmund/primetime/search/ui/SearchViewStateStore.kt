@@ -17,7 +17,6 @@ data class SearchViewState(
 
     val showPlaceholder: Boolean
         get() = data.isEmpty() && didPerformSearch
-
 }
 
 class SearchViewStateReducer : Reducer<SearchViewState, Result> {

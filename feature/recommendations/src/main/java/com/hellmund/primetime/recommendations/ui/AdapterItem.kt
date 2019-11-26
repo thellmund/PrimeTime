@@ -29,7 +29,6 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
             ) = with(holder.itemView) {
                 posterImageView.setImageResource(0)
             }
-
         }
 
         data class Item(val movie: MovieViewEntity) : Movie(R.layout.list_item_movies) {
@@ -52,9 +51,6 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
                     true
                 }
             }
-
         }
-
     }
-
 }

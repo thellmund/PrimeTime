@@ -18,5 +18,4 @@ class EqualHorizontalSpacingItemDecoration(
         val itemCount = state.itemCount
         outRect.right = if (position == itemCount - 1) 0 else spacing
     }
-
 }

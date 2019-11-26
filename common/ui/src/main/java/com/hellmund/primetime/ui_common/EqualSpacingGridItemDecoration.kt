@@ -26,5 +26,4 @@ class EqualSpacingGridItemDecoration @JvmOverloads constructor(
         }
         outRect.bottom = spacing
     }
-
 }

@@ -14,5 +14,4 @@ class OnboardingHelper @Inject constructor(
         set(value) {
             sharedPrefs.edit().putBoolean(KEY_FIRST_LAUNCH, value).apply()
         }
-
 }

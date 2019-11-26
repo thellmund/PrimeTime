@@ -15,7 +15,6 @@ class ViewModelFactory<T : ViewModel>(
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return provider.get() as T
     }
-
 }
 
 inline fun <reified T : ViewModel> FragmentActivity.lazyViewModel(

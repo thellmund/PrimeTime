@@ -28,7 +28,7 @@ class MovieRankingProcessor @Inject constructor(
             val watchlist = async { watchlistRepo.getAll().map { it.id }.toSet() }
             watchedMovies.await() + watchlist.await()
         }
-        
+
         return movies
             .asSequence()
             .distinct()
@@ -57,5 +57,4 @@ class MovieRankingProcessor @Inject constructor(
         // TODO Implement this
         return MovieWithScore(movie, movie.voteAverage)
     }
-
 }

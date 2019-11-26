@@ -28,5 +28,4 @@ class WatchlistMovieViewEntityMapper @Inject constructor(
             movie
         )
     }
-
 }

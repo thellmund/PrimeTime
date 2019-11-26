@@ -73,7 +73,5 @@ class SearchResultsAdapter(
                 into = posterImageView
             )
         }
-
     }
-
 }

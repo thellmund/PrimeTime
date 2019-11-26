@@ -124,5 +124,4 @@ class SelectGenresFragment : Fragment() {
             onFinishedAction = onFinished
         }
     }
-
 }

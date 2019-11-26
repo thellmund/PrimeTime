@@ -45,5 +45,4 @@ class RealHistoryRepository @Inject constructor(
     override suspend fun remove(movieId: Long) {
         dao.delete(movieId)
     }
-
 }

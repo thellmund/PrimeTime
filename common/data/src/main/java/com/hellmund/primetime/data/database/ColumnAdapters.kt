@@ -20,7 +20,6 @@ class TimestampColumnAdapter @Inject constructor() : ColumnAdapter<LocalDateTime
         .ofEpochMilli(databaseValue)
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
-
 }
 
 class DateColumnAdapter @Inject constructor() : ColumnAdapter<LocalDate, Long> {
@@ -32,7 +31,6 @@ class DateColumnAdapter @Inject constructor() : ColumnAdapter<LocalDate, Long> {
     override fun decode(
         databaseValue: Long
     ): LocalDate = Instant.ofEpochMilli(databaseValue).atZone(ZoneId.systemDefault()).toLocalDate()
-
 }
 
 class RatingColumnAdapter @Inject constructor() : ColumnAdapter<Rating, Long> {
@@ -42,5 +40,4 @@ class RatingColumnAdapter @Inject constructor() : ColumnAdapter<Rating, Long> {
     override fun decode(
         databaseValue: Long
     ): Rating = if (databaseValue == 1L) Rating.Like else Rating.Dislike
-
 }

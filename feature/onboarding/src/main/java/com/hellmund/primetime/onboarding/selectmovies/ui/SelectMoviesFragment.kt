@@ -145,5 +145,4 @@ class SelectMoviesFragment : Fragment() {
             onFinishedAction = onFinished
         }
     }
-
 }

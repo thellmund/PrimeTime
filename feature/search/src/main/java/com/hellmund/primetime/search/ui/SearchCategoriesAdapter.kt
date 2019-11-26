@@ -37,7 +37,5 @@ class SearchCategoriesAdapter(
             categoryName.text = category
             setOnClickListener { listener(category) }
         }
-
     }
-
 }

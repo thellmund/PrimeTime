@@ -29,5 +29,4 @@ class GenreChip @JvmOverloads constructor(
         textSize = 15f
         setChipBackgroundColorResource(R.color.selector_genre_chip_background)
     }
-
 }

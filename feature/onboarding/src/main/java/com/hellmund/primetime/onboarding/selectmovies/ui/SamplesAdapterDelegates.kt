@@ -49,5 +49,4 @@ sealed class AdapterItem {
         object Empty : Movie()
         data class Item(val sample: Sample) : Movie()
     }
-
 }

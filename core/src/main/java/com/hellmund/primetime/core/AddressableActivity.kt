@@ -35,7 +35,6 @@ class FragmentFactory @Inject constructor(private val context: Context) {
     fun category(bundle: Bundle): Fragment {
         return context.createFragment(AddressableFragment.Home).apply { arguments = bundle }
     }
-
 }
 
 fun Context.createIntent(

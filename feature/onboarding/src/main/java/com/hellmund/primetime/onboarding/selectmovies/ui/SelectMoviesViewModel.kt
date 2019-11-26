@@ -88,7 +88,7 @@ class SelectMoviesViewModel @Inject constructor(
     }
 
     private suspend fun fetchMovies(
-            page: Int
+        page: Int
     ): Result {
         return try {
             val genres = genresRepository.getPreferredGenres()
@@ -126,5 +126,4 @@ class SelectMoviesViewModel @Inject constructor(
             }
         }
     }
-
 }

@@ -29,12 +29,11 @@ class MovieViewEntitiesMapper @Inject constructor(
             raw = movie
         )
     }
-
 }
 
-//class MovieViewEntityMapper @Inject constructor(
+// class MovieViewEntityMapper @Inject constructor(
 //    private val valueFormatter: ValueFormatter
-//) {
+// ) {
 //
 //    operator fun invoke(movie: FullMovie): MovieViewEntity {
 //        return MovieViewEntity(
@@ -54,4 +53,4 @@ class MovieViewEntitiesMapper @Inject constructor(
 //        )
 //    }
 //
-//}
+// }

@@ -123,5 +123,4 @@ class BottomNavigationBehavior : CoordinatorLayout.Behavior<View> {
             this.bottomNavigationHeight = bottomNavigationHeight
         }
     }
-
 }

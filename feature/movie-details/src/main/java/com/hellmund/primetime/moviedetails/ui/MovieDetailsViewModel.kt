@@ -48,7 +48,6 @@ class UiEventStore {
     fun dispatch(result: UiEvent) {
         viewState.value = result
     }
-
 }
 
 class MovieDetailsViewModel @Inject constructor(
@@ -181,5 +180,4 @@ class MovieDetailsViewModel @Inject constructor(
             }
         }
     }
-
 }

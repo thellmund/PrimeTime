@@ -80,7 +80,5 @@ abstract class DatabaseModule {
                 addedAtAdapter = timestampColumnAdapter
             )
         )
-
     }
-
 }

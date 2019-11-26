@@ -53,5 +53,4 @@ class RealWatchlistDao @Inject constructor(
     override suspend fun delete(id: Long) {
         queries.delete(id)
     }
-
 }

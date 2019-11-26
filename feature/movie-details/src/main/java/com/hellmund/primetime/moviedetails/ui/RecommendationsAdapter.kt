@@ -49,7 +49,5 @@ class RecommendationsAdapter(
 
             setOnClickListener { onClick(movie) }
         }
-
     }
-
 }

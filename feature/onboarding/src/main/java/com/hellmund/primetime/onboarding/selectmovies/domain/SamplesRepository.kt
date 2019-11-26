@@ -59,7 +59,6 @@ class RealSamplesRepository @Inject constructor(
     override suspend fun store(movies: List<HistoryMovie>) {
         historyRepository.store(*movies.toTypedArray())
     }
-
 }
 
 class SampleEnricher @Inject constructor() {

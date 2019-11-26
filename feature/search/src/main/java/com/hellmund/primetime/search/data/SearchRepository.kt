@@ -19,5 +19,4 @@ class RealSearchRepository @Inject constructor(
     ): List<Movie> = apiService.search(query)
         .results
         .mapNotNull { enricher.enrich(it) }
-
 }

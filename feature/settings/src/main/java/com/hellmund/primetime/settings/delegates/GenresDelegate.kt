@@ -53,5 +53,4 @@ class GenresDelegate @Inject constructor(
             preference.summary = context.getString(R.string.excluded_genres_summary)
         }
     }
-
 }

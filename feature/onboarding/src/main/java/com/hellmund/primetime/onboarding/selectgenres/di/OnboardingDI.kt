@@ -32,10 +32,7 @@ interface OnboardingComponentProvider {
 
 @Module
 interface OnboardingModule {
-
+    // TODO Use correct Scope for repository
     @Binds
     fun bindSamplesRepository(impl: RealSamplesRepository): SamplesRepository
-
-    // TODO Use correct Scope for repository
-
 }

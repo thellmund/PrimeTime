@@ -14,5 +14,4 @@ open class SingleLiveDataEvent<T>(
             value
         }
     }
-
 }

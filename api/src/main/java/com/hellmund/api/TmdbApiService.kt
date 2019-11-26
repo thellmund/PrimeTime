@@ -93,5 +93,4 @@ class TmdbApiService @Inject constructor(
     }
 
     private fun path(path: String) = "https://api.themoviedb.org/3/$path"
-
 }

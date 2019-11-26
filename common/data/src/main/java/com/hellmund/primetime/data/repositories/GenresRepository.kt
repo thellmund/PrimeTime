@@ -45,5 +45,4 @@ class RealGenresRepository @Inject constructor(
     override suspend fun storeGenres(genres: List<Genre>) {
         dao.store(genres)
     }
-
 }

@@ -47,5 +47,4 @@ data class HomeViewState(
     private fun <T> Set<T>.containsAny(
         elements: Collection<T>
     ): Boolean = elements.any { contains(it) }
-
 }

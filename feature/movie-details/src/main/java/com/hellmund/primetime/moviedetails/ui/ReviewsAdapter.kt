@@ -47,7 +47,5 @@ class ReviewsAdapter : RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
                 }
             }
         }
-
     }
-
 }

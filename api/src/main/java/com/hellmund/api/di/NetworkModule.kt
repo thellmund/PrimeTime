@@ -50,5 +50,4 @@ object NetworkModule {
             addNetworkInterceptor(loggingInterceptor)
         }
     }
-
 }

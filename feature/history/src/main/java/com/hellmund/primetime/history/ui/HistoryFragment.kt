@@ -124,5 +124,4 @@ class HistoryFragment : Fragment() {
         @JvmStatic
         fun newInstance() = HistoryFragment()
     }
-
 }

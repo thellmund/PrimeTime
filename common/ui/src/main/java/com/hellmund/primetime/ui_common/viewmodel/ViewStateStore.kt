@@ -25,7 +25,6 @@ abstract class ViewStateStore<State, Result>(
     }
 
     private fun state() = viewState.value!!
-
 }
 
 interface Reducer<State, Result> {
@@ -34,5 +33,4 @@ interface Reducer<State, Result> {
         state: State,
         result: Result
     ): State
-
 }

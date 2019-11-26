@@ -135,5 +135,4 @@ class WatchlistFragment : Fragment() {
         @JvmStatic
         fun newInstance() = WatchlistFragment()
     }
-
 }

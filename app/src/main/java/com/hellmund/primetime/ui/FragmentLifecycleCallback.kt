@@ -52,5 +52,4 @@ class FragmentLifecycleCallback(
         bottomNavigation.translationY = 0f
         bottomNavigation.requestLayout()
     }
-
 }

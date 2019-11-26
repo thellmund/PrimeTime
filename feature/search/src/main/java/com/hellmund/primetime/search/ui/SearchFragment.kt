@@ -273,7 +273,5 @@ class SearchFragment : Fragment(), TextWatcher,
         ) = SearchFragment().apply {
             arguments = bundleOf(KEY_EXTRA to extra)
         }
-
     }
-
 }

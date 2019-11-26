@@ -65,5 +65,4 @@ class RealValueFormatter @Inject constructor(
             context.getString(R.string.thousand_votes_format_string, value)
         }
     }
-
 }

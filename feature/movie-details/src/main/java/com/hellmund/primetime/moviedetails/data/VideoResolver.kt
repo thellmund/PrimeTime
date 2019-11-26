@@ -21,5 +21,4 @@ class VideoResolver @Inject constructor() {
         val query = "$title Trailer"
         return "http://www.youtube.com/results?search_query=$query"
     }
-
 }

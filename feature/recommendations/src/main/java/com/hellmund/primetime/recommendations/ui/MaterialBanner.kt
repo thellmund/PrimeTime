@@ -42,5 +42,4 @@ class MaterialBanner @JvmOverloads constructor(
         visibility = View.GONE
         container?.updatePadding(top = 0)
     }
-
 }

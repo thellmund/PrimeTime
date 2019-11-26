@@ -61,7 +61,6 @@ class WatchlistAdapter(
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldItems[oldItemPosition] == newItems[newItemPosition]
         }
-
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -134,7 +133,5 @@ class WatchlistAdapter(
                 val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
                 return sharedPrefs.getBoolean(Preferences.KEY_NOTIFICATIONS, true)
             }
-
     }
-
 }

@@ -38,7 +38,6 @@ class App : Application() {
     companion object {
         fun coreComponent(context: Context) = (context.applicationContext as App).coreComponent
     }
-
 }
 
 val Context.coreComponent: CoreComponent get() = App.coreComponent(this)

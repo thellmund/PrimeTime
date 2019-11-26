@@ -103,5 +103,4 @@ class RealMoviesRepository @Inject constructor(
             .results
             .mapNotNull { enricher.enrich(it) }
     }
-
 }

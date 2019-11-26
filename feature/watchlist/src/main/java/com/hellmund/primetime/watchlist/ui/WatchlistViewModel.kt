@@ -45,7 +45,6 @@ class WatchlistViewStateReducer : Reducer<WatchlistViewState, Result> {
             state.copy(data = newData)
         }
     }
-
 }
 
 class WatchlistViewStateStore : ViewStateStore<WatchlistViewState, Result>(
@@ -108,5 +107,4 @@ class WatchlistViewModel @Inject constructor(
             }
         }
     }
-
 }

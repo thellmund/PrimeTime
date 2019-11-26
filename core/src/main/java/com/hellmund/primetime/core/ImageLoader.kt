@@ -61,5 +61,4 @@ class PicassoImageLoader @Inject constructor(context: Context) : ImageLoader {
             }
         })
     }
-
 }

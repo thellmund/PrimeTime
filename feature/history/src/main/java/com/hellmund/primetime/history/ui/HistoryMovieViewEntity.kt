@@ -13,7 +13,6 @@ data class HistoryMovieViewEntity(
 ) {
 
     fun apply(rating: Rating) = RatedHistoryMovie(this, rating)
-
 }
 
 data class RatedHistoryMovie(val movie: HistoryMovieViewEntity, val rating: Rating)

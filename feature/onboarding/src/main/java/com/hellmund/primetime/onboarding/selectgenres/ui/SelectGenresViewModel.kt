@@ -109,5 +109,4 @@ class SelectGenresViewModel @Inject constructor(
             }
         }
     }
-
 }

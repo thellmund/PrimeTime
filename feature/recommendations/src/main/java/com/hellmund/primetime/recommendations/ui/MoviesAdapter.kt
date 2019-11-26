@@ -82,9 +82,7 @@ class MoviesAdapter(
                 else -> false
             }
         }
-
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
 }

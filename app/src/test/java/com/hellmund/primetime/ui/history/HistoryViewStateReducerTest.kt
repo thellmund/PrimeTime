@@ -90,5 +90,4 @@ class HistoryViewStateReducerTest {
             HistoryMovieViewEntity(3, "Title 3", Rating.Like, "Time", "Details", MOCK_MOVIE)
         )
     }
-
 }

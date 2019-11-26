@@ -18,5 +18,4 @@ data class WatchlistViewState(
     }
 
     fun toError(t: Throwable) = copy(error = t, deletedIndex = null)
-
 }

@@ -13,5 +13,4 @@ class RealStringProvider @Inject constructor(
 ) : StringProvider {
 
     override fun getString(resId: Int): String = context.getString(resId)
-
 }

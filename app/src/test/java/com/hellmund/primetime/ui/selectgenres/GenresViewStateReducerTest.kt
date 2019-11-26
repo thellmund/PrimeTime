@@ -87,5 +87,4 @@ class GenresViewStateReducerTest {
             Genre.Impl(id = 3, name = "Genre 3", isPreferred = false, isExcluded = false)
         )
     }
-
 }
