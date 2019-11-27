@@ -25,6 +25,7 @@ import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.model.RecommendationsType.Personalized
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.recommendations.R
+import com.hellmund.primetime.recommendations.databinding.FragmentHomeBinding
 import com.hellmund.primetime.recommendations.di.DaggerMoviesComponent
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
@@ -33,11 +34,6 @@ import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import kotlinx.android.synthetic.main.fragment_home.banner
-import kotlinx.android.synthetic.main.fragment_home.filterFab
-import kotlinx.android.synthetic.main.fragment_home.recyclerView
-import kotlinx.android.synthetic.main.fragment_home.swipeRefreshLayout
-import kotlinx.android.synthetic.main.view_toolbar.toolbar
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Provider
@@ -75,6 +71,8 @@ class HomeFragment : Fragment(), Reselectable {
         )
     }
 
+    private lateinit var binding: FragmentHomeBinding
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         DaggerMoviesComponent.builder()
@@ -88,7 +86,10 @@ class HomeFragment : Fragment(), Reselectable {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -105,6 +106,7 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun setupPersonalizationBanner() {
+        val banner = binding.banner
         if (onboardingHelper.isFirstLaunch && type is Personalized) {
             banner.setOnClickListener {
                 val intent = requireContext().createIntent(AddressableActivity.Onboarding)
@@ -116,7 +118,7 @@ class HomeFragment : Fragment(), Reselectable {
         }
     }
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerView() = with(binding) {
         swipeRefreshLayout.setColorSchemeResources(R.color.teal_500)
         swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(Action.LoadMovies(page = 1)) }
 
@@ -131,7 +133,7 @@ class HomeFragment : Fragment(), Reselectable {
         recyclerView.addItemDecoration(EqualSpacingGridItemDecoration(spacing))
     }
 
-    private fun setupFab() {
+    private fun setupFab() = with(binding) {
         filterFab.isVisible = type is Personalized && onboardingHelper.isFirstLaunch.not()
         filterFab.setOnClickListener {
             lifecycleScope.launch {
@@ -141,10 +143,10 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun render(viewState: HomeViewState) {
-        swipeRefreshLayout.isRefreshing = viewState.isLoading
+        binding.swipeRefreshLayout.isRefreshing = viewState.isLoading
 
         if (viewState.isLoading.not()) {
-            swipeRefreshLayout.isEnabled = false
+            binding.swipeRefreshLayout.isEnabled = false
         }
 
         viewState.filtered?.let {
@@ -173,6 +175,7 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun initToolbar() {
+        val toolbar = binding.toolbarContainer.toolbar
         toolbar.setTitle(R.string.app_name)
         val isInSearchTab = type !is Personalized
 
@@ -204,7 +207,7 @@ class HomeFragment : Fragment(), Reselectable {
             is RecommendationsType.Upcoming -> getString(R.string.upcoming)
             is RecommendationsType.ByGenre -> type.genre.name
         }
-        toolbar.title = title
+        binding.toolbarContainer.toolbar.title = title
     }
 
     private fun openSettings() {
@@ -239,7 +242,7 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     override fun onReselected() {
-        recyclerView.smoothScrollToPosition(0)
+        binding.recyclerView.smoothScrollToPosition(0)
     }
 
     companion object {

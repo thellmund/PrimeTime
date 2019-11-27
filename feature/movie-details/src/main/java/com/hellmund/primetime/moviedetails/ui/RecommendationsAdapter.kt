@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hellmund.primetime.moviedetails.R
-import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.core.ImageLoader
-import kotlinx.android.synthetic.main.list_item_recommendations.view.posterImageView
+import com.hellmund.primetime.moviedetails.R
+import com.hellmund.primetime.moviedetails.databinding.ListItemRecommendationsBinding
+import com.hellmund.primetime.ui_common.MovieViewEntity
 
 class RecommendationsAdapter(
     private val imageLoader: ImageLoader,
@@ -36,18 +36,20 @@ class RecommendationsAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        private val binding = ListItemRecommendationsBinding.bind(itemView)
+
         fun bind(
             movie: MovieViewEntity,
             imageLoader: ImageLoader,
             onClick: (MovieViewEntity) -> Unit
-        ) = with(itemView) {
+        ) = with(binding) {
             imageLoader.load(
                 url = movie.posterUrl,
                 placeholderResId = R.drawable.poster_placeholder,
                 into = posterImageView
             )
 
-            setOnClickListener { onClick(movie) }
+            root.setOnClickListener { onClick(movie) }
         }
     }
 }

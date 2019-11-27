@@ -1,16 +1,18 @@
 package com.hellmund.primetime.settings.ui
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.hellmund.primetime.settings.R
-import kotlinx.android.synthetic.main.view_toolbar.toolbar
+import com.hellmund.primetime.settings.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initToolbar()
 
         if (savedInstanceState == null) {
@@ -22,18 +24,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initToolbar() {
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-
-        if (id == android.R.id.home) {
-            onBackPressed()
-            return true
+        binding.toolbarContainer.toolbar.apply {
+            setTitle(R.string.title_activity_settings)
+            setNavigationIcon(R.drawable.ic_arrow_back)
+            setNavigationOnClickListener { onBackPressed() }
         }
-
-        return super.onOptionsItemSelected(item)
     }
 }

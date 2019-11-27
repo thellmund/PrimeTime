@@ -14,10 +14,4 @@
         <item name="android:windowTranslucentNavigation" tools:targetApi="kitkat">true</item>
     </style>
 
-    <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@drawable/splash_screen</item>
-        <item name="android:navigationBarColor">@color/grey_850</item>
-        <item name="android:statusBarColor">@color/grey_850</item>
-    </style>
-
 </resources>

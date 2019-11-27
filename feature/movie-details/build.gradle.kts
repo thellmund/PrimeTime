@@ -23,6 +23,9 @@ android {
     androidExtensions {
         isExperimental = true
     }
+    viewBinding {
+        isEnabled = true
+    }
 }
 
 dependencies {
@@ -34,6 +37,7 @@ dependencies {
     implementation(project(":common:data"))
     implementation(project(":common:ui"))
 
+    implementation(Libraries.browser)
     implementation(Libraries.palette)
     kapt(Libraries.daggerProcessor)
 }

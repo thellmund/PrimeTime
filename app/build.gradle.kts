@@ -32,6 +32,9 @@ android {
     androidExtensions {
         isExperimental = true
     }
+    viewBinding {
+        isEnabled = true
+    }
     packagingOptions {
         exclude("META-INF/services/javax.annotation.processing.Processor")
         exclude("META-INF/*.kotlin_module")

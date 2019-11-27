@@ -6,9 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.history.R
-import kotlinx.android.synthetic.main.list_item_history.view.button
-import kotlinx.android.synthetic.main.list_item_history.view.subtitle
-import kotlinx.android.synthetic.main.list_item_history.view.title
+import com.hellmund.primetime.history.databinding.ListItemHistoryBinding
 
 class HistoryAdapter(
     private val listener: (HistoryMovieViewEntity) -> Unit
@@ -62,10 +60,12 @@ class HistoryAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        private val binding = ListItemHistoryBinding.bind(itemView)
+
         fun bind(
             movie: HistoryMovieViewEntity,
             listener: (HistoryMovieViewEntity) -> Unit
-        ) = with(itemView) {
+        ) = with(binding) {
             title.text = movie.title
             subtitle.text = movie.detailsText
             button.setOnClickListener { listener(movie) }

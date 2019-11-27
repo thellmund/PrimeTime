@@ -23,6 +23,9 @@ android {
     androidExtensions {
         isExperimental = true
     }
+    viewBinding {
+        isEnabled = true
+    }
 }
 
 dependencies {
@@ -35,7 +38,7 @@ dependencies {
 
     // AndroidX
     implementation(Libraries.appCompat)
-    implementation(Libraries.browser)
+    api(Libraries.constraintLayout)
     api(Libraries.coreKtx)
     api(Libraries.fragmentKtx)
     api(Libraries.material)

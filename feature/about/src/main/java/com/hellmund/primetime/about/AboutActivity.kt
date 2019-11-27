@@ -4,20 +4,23 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.activity_about.headerTextView
-import kotlinx.android.synthetic.main.view_toolbar.toolbar
+import com.hellmund.primetime.about.databinding.ActivityAboutBinding
 
 class AboutActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityAboutBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initToolbar()
         setVersionNumber()
     }
 
     private fun initToolbar() {
+        val toolbar = binding.toolbarContainer.toolbar
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -26,9 +29,9 @@ class AboutActivity : AppCompatActivity() {
         try {
             val versionName = packageManager.getPackageInfo(packageName, 0).versionName
             val versionText = getString(R.string.version, versionName)
-            headerTextView.text = versionText
+            binding.headerTextView.text = versionText
         } catch (e: PackageManager.NameNotFoundException) {
-            headerTextView.isVisible = false
+            binding.headerTextView.isVisible = false
         }
     }
 }

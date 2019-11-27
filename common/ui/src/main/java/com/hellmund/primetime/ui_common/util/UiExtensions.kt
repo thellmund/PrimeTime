@@ -3,7 +3,6 @@
 package com.hellmund.primetime.ui_common.util
 
 import android.content.Context
-import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
@@ -28,13 +27,4 @@ fun RecyclerView.onBottomReached(block: () -> Unit) {
             }
         }
     })
-}
-
-fun View.updatePadding(
-    left: Int = paddingLeft,
-    top: Int = paddingTop,
-    right: Int = paddingRight,
-    bottom: Int = paddingBottom
-) {
-    setPadding(left, top, right, bottom)
 }

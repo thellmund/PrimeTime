@@ -6,6 +6,9 @@
     <string name="no_information">–</string>
     <string name="release_notifications">Release notifications</string>
     <string name="new_release_notif_header">A movie on your watchlist is released today</string>
+    <string name="access_app_icon">App icon</string>
+    <string name="access_logo_tmdb">Logo of The Movie Database</string>
+    <string name="faq_tmdb_notice"><small>This product uses the TMDb API but is not endorsed or certified by TMDb.</small></string>
 
     <plurals name="vote_count_format_string">
         <item quantity="one">%d votes</item>

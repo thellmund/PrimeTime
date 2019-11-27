@@ -14,7 +14,7 @@ class MoviesAdapter(
     private val onLongClick: (MovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
-    private val items = mutableListOf<AdapterItem>()
+    private val items = mutableListOf<MoviesAdapterItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -33,9 +33,9 @@ class MoviesAdapter(
 
     fun update(movies: List<MovieViewEntity>) {
         val newItems = if (movies.isNotEmpty()) {
-            movies.map { AdapterItem.Movie.Item(it) } + AdapterItem.LoadMore
+            movies.map { MoviesAdapterItem.Movie.Item(it) } + MoviesAdapterItem.LoadMore
         } else {
-            MutableList(25) { AdapterItem.Movie.Empty }
+            MutableList(25) { MoviesAdapterItem.Movie.Empty }
         }
 
         val diffResult = DiffUtil.calculateDiff(DiffUtilCallback(items, newItems))
@@ -47,8 +47,8 @@ class MoviesAdapter(
     }
 
     class DiffUtilCallback(
-        private val oldItems: List<AdapterItem>,
-        private val newItems: List<AdapterItem>
+        private val oldItems: List<MoviesAdapterItem>,
+        private val newItems: List<MoviesAdapterItem>
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize(): Int = oldItems.size
@@ -60,11 +60,11 @@ class MoviesAdapter(
             val newItem = newItems[newItemPosition]
 
             return when {
-                oldItem is AdapterItem.Movie.Item && newItem is AdapterItem.Movie.Item -> {
+                oldItem is MoviesAdapterItem.Movie.Item && newItem is MoviesAdapterItem.Movie.Item -> {
                     oldItem.movie.id == newItem.movie.id
                 }
-                oldItem is AdapterItem.Movie.Empty && newItem is AdapterItem.Movie.Empty -> true
-                oldItem is AdapterItem.LoadMore && newItem is AdapterItem.LoadMore -> true
+                oldItem is MoviesAdapterItem.Movie.Empty && newItem is MoviesAdapterItem.Movie.Empty -> true
+                oldItem is MoviesAdapterItem.LoadMore && newItem is MoviesAdapterItem.LoadMore -> true
                 else -> false
             }
         }
@@ -74,11 +74,11 @@ class MoviesAdapter(
             val newItem = newItems[newItemPosition]
 
             return when {
-                oldItem is AdapterItem.Movie.Item && newItem is AdapterItem.Movie.Item -> {
+                oldItem is MoviesAdapterItem.Movie.Item && newItem is MoviesAdapterItem.Movie.Item -> {
                     oldItem.movie == newItem.movie
                 }
-                oldItem is AdapterItem.Movie.Empty && newItem is AdapterItem.Movie.Empty -> true
-                oldItem is AdapterItem.LoadMore && newItem is AdapterItem.LoadMore -> true
+                oldItem is MoviesAdapterItem.Movie.Empty && newItem is MoviesAdapterItem.Movie.Empty -> true
+                oldItem is MoviesAdapterItem.LoadMore && newItem is MoviesAdapterItem.LoadMore -> true
                 else -> false
             }
         }

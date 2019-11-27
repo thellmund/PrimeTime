@@ -2,14 +2,12 @@ package com.hellmund.primetime.recommendations.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.transition.TransitionManager
-import com.hellmund.primetime.recommendations.R
-import com.hellmund.primetime.ui_common.util.updatePadding
-import kotlinx.android.synthetic.main.view_banner.view.negativeButton
-import kotlinx.android.synthetic.main.view_banner.view.positiveButton
+import com.hellmund.primetime.recommendations.databinding.ViewBannerBinding
 
 class MaterialBanner @JvmOverloads constructor(
     context: Context,
@@ -20,13 +18,15 @@ class MaterialBanner @JvmOverloads constructor(
     private val container: ViewGroup?
         get() = parent as? ViewGroup
 
+    private lateinit var binding: ViewBannerBinding
+
     init {
-        View.inflate(context, R.layout.view_banner, this)
-        negativeButton.setOnClickListener { dismiss() }
+        binding = ViewBannerBinding.inflate(LayoutInflater.from(context))
+        binding.negativeButton.setOnClickListener { dismiss() }
     }
 
     fun setOnClickListener(listener: () -> Unit) {
-        positiveButton.setOnClickListener {
+        binding.positiveButton.setOnClickListener {
             listener()
         }
     }
@@ -41,5 +41,14 @@ class MaterialBanner @JvmOverloads constructor(
         TransitionManager.beginDelayedTransition(parent as ViewGroup)
         visibility = View.GONE
         container?.updatePadding(top = 0)
+    }
+
+    private fun View.updatePadding(
+        left: Int = paddingLeft,
+        top: Int = paddingTop,
+        right: Int = paddingRight,
+        bottom: Int = paddingBottom
+    ) {
+        setPadding(left, top, right, bottom)
     }
 }

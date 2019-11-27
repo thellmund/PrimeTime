@@ -43,10 +43,11 @@ sealed class UiEvent {
 
 class UiEventStore {
 
-    val viewState = MutableLiveData<UiEvent>()
+    private val _viewState = MutableLiveData<UiEvent>()
+    val viewState: LiveData<UiEvent> = _viewState
 
     fun dispatch(result: UiEvent) {
-        viewState.value = result
+        _viewState.value = result
     }
 }
 

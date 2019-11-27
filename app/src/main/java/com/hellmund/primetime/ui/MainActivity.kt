@@ -9,6 +9,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavig
 import com.hellmund.primetime.R
 import com.hellmund.primetime.core.Intents
 import com.hellmund.primetime.core.coreComponent
+import com.hellmund.primetime.databinding.ActivityMainBinding
 import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
@@ -17,7 +18,6 @@ import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.hellmund.primetime.workers.GenresPrefetcher
 import com.pandora.bottomnavigator.BottomNavigator
-import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -47,10 +47,13 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by lazyViewModel { viewModelProvider }
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         DaggerAppComponent.builder()
             .coreComponent(coreComponent)
@@ -60,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         genresPrefetcher.run()
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentCallback, false)
-        bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
+        binding.bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
 
         navigator = BottomNavigator.onCreate(
             activity = this,
@@ -71,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             ),
             defaultTab = R.id.home,
             fragmentContainer = R.id.contentFrame,
-            bottomNavigationView = bottomNavigation
+            bottomNavigationView = binding.bottomNavigation
         )
 
         viewModel.watchlistCount.observe(this, this::updateWatchlistBadge)
@@ -82,6 +85,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateWatchlistBadge(count: Int) {
+        val bottomNavigation = binding.bottomNavigation
         if (count > 0) {
             val badgeDrawable = bottomNavigation.showBadge(R.id.watchlist)
             badgeDrawable.backgroundColor = ContextCompat.getColor(this, R.color.teal_500)

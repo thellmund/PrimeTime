@@ -13,13 +13,10 @@ import androidx.lifecycle.observe
 import com.google.android.material.chip.Chip
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.onboarding.R
+import com.hellmund.primetime.onboarding.databinding.FragmentSelectGenresBinding
 import com.hellmund.primetime.onboarding.selectgenres.di.OnboardingComponentProvider
 import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import kotlinx.android.synthetic.main.fragment_select_genres.button
-import kotlinx.android.synthetic.main.fragment_select_genres.chipGroup
-import kotlinx.android.synthetic.main.fragment_select_genres.container
-import kotlinx.android.synthetic.main.fragment_select_genres.recommendationsProgressBar
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -33,6 +30,8 @@ class SelectGenresFragment : Fragment() {
 
     private val viewModel: SelectGenresViewModel by lazyViewModel { viewModelProvider }
 
+    private lateinit var binding: FragmentSelectGenresBinding
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val provider = requireActivity() as OnboardingComponentProvider
@@ -43,12 +42,15 @@ class SelectGenresFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_select_genres, container, false)
+    ): View {
+        binding = FragmentSelectGenresBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        binding.container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         updateNextButton()
-        button.setOnClickListener { saveGenres() }
+        binding.button.setOnClickListener { saveGenres() }
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
         viewModel.navigation.observe(viewLifecycleOwner, this::navigate)
     }
@@ -57,6 +59,7 @@ class SelectGenresFragment : Fragment() {
         val remaining = MIN_COUNT - genres.filter { it.isPreferred }.size
         val hasSelectedEnough = remaining <= 0
 
+        val button = binding.button
         button.isClickable = hasSelectedEnough
         button.isEnabled = hasSelectedEnough
 
@@ -71,8 +74,8 @@ class SelectGenresFragment : Fragment() {
         genres.clear()
         genres += viewState.data
 
-        recommendationsProgressBar.isVisible = viewState.isLoading
-        chipGroup.isVisible = viewState.isLoading.not()
+        binding.recommendationsProgressBar.isVisible = viewState.isLoading
+        binding.chipGroup.isVisible = viewState.isLoading.not()
 
         showGenres(viewState.data)
         updateNextButton(viewState.data)
@@ -85,7 +88,7 @@ class SelectGenresFragment : Fragment() {
     }
 
     private fun showGenres(genres: List<Genre>) {
-        chipGroup.removeAllViews()
+        binding.chipGroup.removeAllViews()
         genres
             .map { genre ->
                 GenreChip(requireContext()).also {
@@ -95,7 +98,7 @@ class SelectGenresFragment : Fragment() {
             }
             .forEach {
                 it.setOnCheckedChangeListener { chip, _ -> onCheckedChange(chip as GenreChip) }
-                chipGroup.addView(it)
+                binding.chipGroup.addView(it)
             }
     }
 
@@ -104,7 +107,7 @@ class SelectGenresFragment : Fragment() {
     }
 
     private fun saveGenres() {
-        val checkedItems = chipGroup.children.toList().map { it as Chip }
+        val checkedItems = binding.chipGroup.children.toList().map { it as Chip }
         val includedGenres = genres.mapIndexed { index, genre ->
             Genre.Impl(
                 id = genre.id,

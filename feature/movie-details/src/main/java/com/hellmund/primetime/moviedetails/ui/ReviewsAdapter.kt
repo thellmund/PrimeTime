@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.api.model.Review
 import com.hellmund.primetime.moviedetails.R
-import kotlinx.android.synthetic.main.list_item_review.view.reviewTextView
+import com.hellmund.primetime.moviedetails.databinding.ListItemReviewBinding
 
 private const val COLLAPSED_LINES = 3
 
@@ -35,9 +35,11 @@ class ReviewsAdapter : RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(review: Review) = with(itemView) {
+        private val binding = ListItemReviewBinding.bind(itemView)
+
+        fun bind(review: Review) = with(binding) {
             reviewTextView.text = review.content
-            setOnClickListener {
+            root.setOnClickListener {
                 if (reviewTextView.maxLines == COLLAPSED_LINES) {
                     reviewTextView.maxLines = Int.MAX_VALUE
                     reviewTextView.ellipsize = null

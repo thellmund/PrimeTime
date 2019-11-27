@@ -1,17 +1,16 @@
 package com.hellmund.primetime.ui_common.dialogs
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.ui_common.R
-import kotlinx.android.synthetic.main.fragment_rate_movie_dialog.negativeButton
-import kotlinx.android.synthetic.main.fragment_rate_movie_dialog.negativeButtonText
-import kotlinx.android.synthetic.main.fragment_rate_movie_dialog.positiveButton
-import kotlinx.android.synthetic.main.fragment_rate_movie_dialog.positiveButtonText
-import kotlinx.android.synthetic.main.fragment_rate_movie_dialog.titleTextView
+import com.hellmund.primetime.ui_common.databinding.FragmentRateMovieDialogBinding
 
 class RateMovieDialog(private val activity: FragmentActivity) {
 
@@ -60,13 +59,18 @@ class RateMovieDialogFragment : RoundedBottomSheetDialogFragment() {
     private var negativeText: String = ""
     private var onItemSelected: (Rating) -> Unit = {}
 
+    private lateinit var binding: FragmentRateMovieDialogBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_rate_movie_dialog, container, false)
+    ): View {
+        binding = FragmentRateMovieDialogBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         titleTextView.text = title
 
         positiveButtonText.text = positiveText
@@ -94,5 +98,14 @@ class RateMovieDialogFragment : RoundedBottomSheetDialogFragment() {
             this.negativeText = negativeText
             this.onItemSelected = onItemSelected
         }
+    }
+}
+
+open class RoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
+
+    override fun getTheme(): Int = R.style.BottomSheetDialogTheme
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return BottomSheetDialog(requireContext(), theme)
     }
 }

@@ -27,6 +27,7 @@ import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.search.R
+import com.hellmund.primetime.search.databinding.FragmentSearchBinding
 import com.hellmund.primetime.search.di.DaggerSearchComponent
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
@@ -35,14 +36,6 @@ import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.pandora.bottomnavigator.BottomNavigator
-import kotlinx.android.synthetic.main.fragment_search.categoriesRecyclerView
-import kotlinx.android.synthetic.main.state_layout_search_results.loading
-import kotlinx.android.synthetic.main.state_layout_search_results.placeholder
-import kotlinx.android.synthetic.main.state_layout_search_results.resultsRecyclerView
-import kotlinx.android.synthetic.main.state_layout_search_results.searchResultsContainer
-import kotlinx.android.synthetic.main.view_search_field.backButton
-import kotlinx.android.synthetic.main.view_search_field.clearSearchButton
-import kotlinx.android.synthetic.main.view_search_field.searchBox
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
@@ -74,8 +67,10 @@ class SearchFragment : Fragment(), TextWatcher,
     private val viewModel: SearchViewModel by lazyViewModel { viewModelProvider }
 
     private val snackbar: Snackbar by lazy {
-        Snackbar.make(resultsRecyclerView, "", Snackbar.LENGTH_LONG)
+        Snackbar.make(binding.root, "", Snackbar.LENGTH_LONG)
     }
+
+    private lateinit var binding: FragmentSearchBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -89,7 +84,10 @@ class SearchFragment : Fragment(), TextWatcher,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_search, container, false)
+    ): View {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -116,11 +114,11 @@ class SearchFragment : Fragment(), TextWatcher,
 
         searchResultsAdapter.update(viewState.data)
 
-        resultsRecyclerView.isVisible = viewState.data.isNotEmpty()
-        loading.isVisible = viewState.isLoading
-        placeholder.isVisible = viewState.showPlaceholder
+        binding.stateLayout.resultsRecyclerView.isVisible = viewState.data.isNotEmpty()
+        binding.stateLayout.loading.isVisible = viewState.isLoading
+        binding.stateLayout.placeholder.isVisible = viewState.showPlaceholder
 
-        clearSearchButton.isVisible = viewState.showClearButton
+        binding.searchContainer.clearSearchButton.isVisible = viewState.showClearButton
 
         viewState.snackbarTextResId?.let {
             snackbar.setText(it).show()
@@ -128,37 +126,41 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun initSearch() {
+        val searchContainer = binding.searchContainer
+        val searchBox = searchContainer.searchBox
+
         searchBox.setOnEditorActionListener(this)
         searchBox.addTextChangedListener(this)
 
-        backButton.setOnClickListener {
+        searchContainer.backButton.setOnClickListener {
             toggleSearchResults(false)
             toggleKeyboard(false)
             clearSearchBarContent()
 
-            it.isVisible = searchBox.hasFocus() || searchResultsContainer.isVisible
+            it.isVisible = searchBox.hasFocus() || binding.stateLayout.root.isVisible
         }
 
         searchBox.setOnFocusChangeListener { _, hasFocus ->
-            backButton.isVisible = hasFocus || searchResultsContainer.isVisible
+            searchContainer.backButton.isVisible = hasFocus || binding.stateLayout.root.isVisible
 
             if (hasFocus) {
                 toggleSearchResults(true)
             }
         }
 
-        clearSearchButton.setOnClickListener {
+        searchContainer.clearSearchButton.setOnClickListener {
             clearSearchBarContent()
             toggleKeyboard(true)
         }
     }
 
-    private fun toggleSearchResults(showSearchResults: Boolean) {
-        searchResultsContainer.isVisible = showSearchResults
+    private fun toggleSearchResults(showSearchResults: Boolean) = with(binding) {
+        stateLayout.root.isVisible = showSearchResults
         categoriesRecyclerView.isVisible = showSearchResults.not()
     }
 
     private fun initCategoriesRecyclerView() {
+        val categoriesRecyclerView = binding.categoriesRecyclerView
         categoriesRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         categoriesRecyclerView.itemAnimator = DefaultItemAnimator()
         categoriesRecyclerView.adapter = categoriesAdapter
@@ -191,6 +193,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun initSearchResultsRecyclerView() {
+        val resultsRecyclerView = binding.stateLayout.resultsRecyclerView
         resultsRecyclerView.itemAnimator = DefaultItemAnimator()
         resultsRecyclerView.adapter = searchResultsAdapter
     }
@@ -211,7 +214,7 @@ class SearchFragment : Fragment(), TextWatcher,
         viewModel.dispatch(Action.AddToHistory(ratedMovie))
     }
 
-    private fun clearSearchBarContent() {
+    private fun clearSearchBarContent() = with(binding.searchContainer) {
         clearSearchButton.isVisible = false
         searchBox.text.clear()
     }
@@ -248,6 +251,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun toggleKeyboard(show: Boolean) {
         val inputMethodManager = requireContext().getSystemService<InputMethodManager>()
+        val searchBox = binding.searchContainer.searchBox
 
         if (show) {
             searchBox.requestFocus()
@@ -259,7 +263,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     override fun onDestroyView() {
-        searchBox.removeTextChangedListener(this)
+        binding.searchContainer.searchBox.removeTextChangedListener(this)
         super.onDestroyView()
     }
 

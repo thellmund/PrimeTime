@@ -1,12 +1,12 @@
 package com.hellmund.primetime.recommendations.ui
 
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.recommendations.R
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.core.ImageLoader
-import kotlinx.android.synthetic.main.list_item_movies.view.posterImageView
 
-sealed class AdapterItem(@LayoutRes val viewType: Int) {
+sealed class MoviesAdapterItem(@LayoutRes val viewType: Int) {
 
     open fun bind(
         holder: MoviesAdapter.ViewHolder,
@@ -15,9 +15,9 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
         onLongClick: (MovieViewEntity) -> Unit
     ) = Unit
 
-    object LoadMore : AdapterItem(R.layout.list_item_load_more)
+    object LoadMore : MoviesAdapterItem(R.layout.list_item_load_more)
 
-    sealed class Movie(viewType: Int) : AdapterItem(viewType) {
+    sealed class Movie(viewType: Int) : MoviesAdapterItem(viewType) {
 
         object Empty : Movie(R.layout.list_item_movies) {
 
@@ -27,6 +27,7 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
                 onClick: (MovieViewEntity) -> Unit,
                 onLongClick: (MovieViewEntity) -> Unit
             ) = with(holder.itemView) {
+                val posterImageView = findViewById<ImageView>(R.id.posterImageView)
                 posterImageView.setImageResource(0)
             }
         }
@@ -39,6 +40,7 @@ sealed class AdapterItem(@LayoutRes val viewType: Int) {
                 onClick: (MovieViewEntity) -> Unit,
                 onLongClick: (MovieViewEntity) -> Unit
             ) = with(holder.itemView) {
+                val posterImageView = findViewById<ImageView>(R.id.posterImageView)
                 imageLoader.load(
                     url = movie.posterUrl,
                     placeholderResId = R.drawable.poster_placeholder,

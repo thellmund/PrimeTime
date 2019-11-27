@@ -13,13 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.history.R
+import com.hellmund.primetime.history.databinding.FragmentHistoryBinding
 import com.hellmund.primetime.history.di.DaggerHistoryComponent
 import com.hellmund.primetime.ui_common.dialogs.showItemsDialog
 import com.hellmund.primetime.ui_common.dialogs.showSingleSelectDialog
 import com.hellmund.primetime.ui_common.util.showToast
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import kotlinx.android.synthetic.main.fragment_history.progressBar
-import kotlinx.android.synthetic.main.fragment_history.recyclerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
@@ -38,6 +37,8 @@ class HistoryFragment : Fragment() {
         HistoryAdapter(this::onOpenDialog)
     }
 
+    private lateinit var binding: FragmentHistoryBinding
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val component = DaggerHistoryComponent.builder()
@@ -50,7 +51,10 @@ class HistoryFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_history, container, false)
+    ): View {
+        binding = FragmentHistoryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,6 +63,7 @@ class HistoryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+        val recyclerView = binding.recyclerView
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -66,8 +71,8 @@ class HistoryFragment : Fragment() {
     }
 
     private fun render(viewState: HistoryViewState) {
-        recyclerView.isVisible = viewState.isLoading.not()
-        progressBar.isVisible = viewState.isLoading
+        binding.recyclerView.isVisible = viewState.isLoading.not()
+        binding.progressBar.isVisible = viewState.isLoading
         adapter.update(viewState.data)
     }
 

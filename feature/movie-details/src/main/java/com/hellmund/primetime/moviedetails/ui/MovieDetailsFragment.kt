@@ -10,6 +10,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
@@ -22,35 +25,18 @@ import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.model.Movie
+import com.hellmund.primetime.data.model.Movie.WatchStatus.ON_WATCHLIST
 import com.hellmund.primetime.moviedetails.R
+import com.hellmund.primetime.moviedetails.databinding.FragmentMovieDetailsBinding
 import com.hellmund.primetime.moviedetails.di.DaggerMovieDetailsComponent
 import com.hellmund.primetime.moviedetails.util.EqualHorizontalSpacingItemDecoration
 import com.hellmund.primetime.moviedetails.util.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.dialogs.showLoading
-import com.hellmund.primetime.ui_common.util.openUrl
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import kotlinx.android.synthetic.main.fragment_movie_details.addToWatchlistButton
-import kotlinx.android.synthetic.main.fragment_movie_details.backdropImageView
-import kotlinx.android.synthetic.main.fragment_movie_details.descriptionTextView
-import kotlinx.android.synthetic.main.fragment_movie_details.durationTextView
-import kotlinx.android.synthetic.main.fragment_movie_details.genresTextView
-import kotlinx.android.synthetic.main.fragment_movie_details.moreInfoButton
-import kotlinx.android.synthetic.main.fragment_movie_details.noRecommendationsPlaceholder
-import kotlinx.android.synthetic.main.fragment_movie_details.noReviewsPlaceholder
-import kotlinx.android.synthetic.main.fragment_movie_details.posterImageView
-import kotlinx.android.synthetic.main.fragment_movie_details.ratingTextView
-import kotlinx.android.synthetic.main.fragment_movie_details.recommendationsProgressBar
-import kotlinx.android.synthetic.main.fragment_movie_details.recommendationsRecyclerView
-import kotlinx.android.synthetic.main.fragment_movie_details.releaseTextView
-import kotlinx.android.synthetic.main.fragment_movie_details.removeFromWatchlistButton
-import kotlinx.android.synthetic.main.fragment_movie_details.reviewsProgressBar
-import kotlinx.android.synthetic.main.fragment_movie_details.reviewsRecyclerView
-import kotlinx.android.synthetic.main.fragment_movie_details.titleTextView
-import kotlinx.android.synthetic.main.fragment_movie_details.votesTextView
-import java.lang.Math.round
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.roundToInt
 
 class MovieDetailsFragment : BottomSheetDialogFragment() {
 
@@ -78,6 +64,8 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     @Suppress("DEPRECATION")
     private var progressDialog: ProgressDialog? = null
 
+    private lateinit var binding: FragmentMovieDetailsBinding
+
     override fun getTheme() = R.style.BottomSheetDialogTheme
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -93,16 +81,19 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
             .inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.uiEvents.observe(this, this::handleViewModelEvent)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.uiEvents.observe(viewLifecycleOwner, this::handleViewModelEvent)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_movie_details, container, false)
+    ): View {
+        binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -110,14 +101,19 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         fillInContent()
         downloadPosters()
 
-        backdropImageView.setOnClickListener { viewModel.dispatch(Action.OpenTrailer) }
-        moreInfoButton.setOnClickListener { viewModel.dispatch(Action.OpenImdb) }
+        binding.backdropImageView.setOnClickListener { viewModel.dispatch(Action.OpenTrailer) }
+        binding.moreInfoButton.setOnClickListener { viewModel.dispatch(Action.OpenImdb) }
 
-        addToWatchlistButton.setOnClickListener { viewModel.dispatch(Action.AddToWatchlist) }
-        removeFromWatchlistButton.setOnClickListener { viewModel.dispatch(Action.RemoveFromWatchlist) }
+        binding.addToWatchlistButton.setOnClickListener {
+            viewModel.dispatch(Action.AddToWatchlist)
+        }
+
+        binding.removeFromWatchlistButton.setOnClickListener {
+            viewModel.dispatch(Action.RemoveFromWatchlist)
+        }
     }
 
-    private fun fillInContent() {
+    private fun fillInContent() = with(binding) {
         titleTextView.text = movie.title
         descriptionTextView.text = movie.description
         genresTextView.text = movie.formattedGenres
@@ -127,7 +123,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         ratingTextView.text = movie.formattedVoteAverage
         votesTextView.text = movie.formattedVoteCount
 
-        val spacing = round(resources.getDimension(R.dimen.small_space))
+        val spacing = resources.getDimension(R.dimen.small_space).roundToInt()
 
         recommendationsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -140,8 +136,16 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     }
 
     private fun downloadPosters() {
-        imageLoader.load(url = movie.posterUrl, into = posterImageView, onComplete = this::onImageLoaded)
-        imageLoader.load(url = movie.backdropUrl, into = backdropImageView)
+        imageLoader.load(
+            url = movie.posterUrl,
+            into = binding.posterImageView,
+            onComplete = this::onImageLoaded
+        )
+
+        imageLoader.load(
+            url = movie.backdropUrl,
+            into = binding.backdropImageView
+        )
     }
 
     private fun handleViewModelEvent(event: UiEvent) {
@@ -160,16 +164,16 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     }
 
     private fun showRecommendations(movies: List<MovieViewEntity>) {
-        recommendationsProgressBar.isVisible = false
-        noRecommendationsPlaceholder.isVisible = movies.isEmpty()
-        recommendationsRecyclerView.isVisible = movies.isNotEmpty()
+        binding.recommendationsProgressBar.isVisible = false
+        binding.noRecommendationsPlaceholder.isVisible = movies.isEmpty()
+        binding.recommendationsRecyclerView.isVisible = movies.isNotEmpty()
         recommendationsAdapter.update(movies)
     }
 
     private fun showReviews(reviews: List<Review>) {
-        reviewsProgressBar.isVisible = false
-        noReviewsPlaceholder.isVisible = reviews.isEmpty()
-        reviewsRecyclerView.isVisible = reviews.isNotEmpty()
+        binding.reviewsProgressBar.isVisible = false
+        binding.noReviewsPlaceholder.isVisible = reviews.isEmpty()
+        binding.reviewsRecyclerView.isVisible = reviews.isNotEmpty()
         reviewsAdapter.update(reviews)
     }
 
@@ -184,15 +188,19 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     private fun openUrl(url: String) {
         progressDialog?.dismiss()
-        requireContext().openUrl(url)
+        val color = ContextCompat.getColor(requireContext(), R.color.grey_900)
+        CustomTabsIntent.Builder()
+            .setToolbarColor(color)
+            .build()
+            .launchUrl(requireContext(), url.toUri())
     }
 
     private fun showMovieDetails(movie: MovieViewEntity) {
-        durationTextView.text = movie.formattedRuntime
+        binding.durationTextView.text = movie.formattedRuntime
     }
 
     private fun onAddedToWatchlist() {
-        updateWatchlistButton(Movie.WatchStatus.ON_WATCHLIST)
+        updateWatchlistButton(ON_WATCHLIST)
     }
 
     private fun onRemovedFromWatchlist() {
@@ -200,8 +208,8 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     }
 
     private fun updateWatchlistButton(watchStatus: Movie.WatchStatus) {
-        addToWatchlistButton.isVisible = watchStatus != Movie.WatchStatus.ON_WATCHLIST
-        removeFromWatchlistButton.isVisible = watchStatus == Movie.WatchStatus.ON_WATCHLIST
+        binding.addToWatchlistButton.isVisible = watchStatus != ON_WATCHLIST
+        binding.removeFromWatchlistButton.isVisible = watchStatus == ON_WATCHLIST
     }
 
     private fun onImageLoaded(drawable: Drawable) {
@@ -212,13 +220,9 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     private fun onCoverPaletteLoaded(palette: Palette) {
         val color = palette.mutedSwatch?.rgb ?: return
         val colorStateList = ColorStateList.valueOf(color)
-        addToWatchlistButton.backgroundTintList = colorStateList
-        removeFromWatchlistButton.strokeColor = colorStateList
+        binding.addToWatchlistButton.backgroundTintList = colorStateList
+        binding.removeFromWatchlistButton.strokeColor = colorStateList
     }
-
-//    interface ComponentProvider {
-//        fun movieDetailsComponent(): MovieDetailsComponent.Builder
-//    }
 
     companion object {
 

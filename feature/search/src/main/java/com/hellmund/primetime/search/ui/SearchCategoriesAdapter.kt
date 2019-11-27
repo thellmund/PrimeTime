@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.search.R
-import kotlinx.android.synthetic.main.list_item_category.view.*
+import com.hellmund.primetime.search.databinding.ListItemCategoryBinding
 
 class SearchCategoriesAdapter(
     private val onItemClick: (String) -> Unit
@@ -33,9 +33,11 @@ class SearchCategoriesAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(category: String, listener: (String) -> Unit) = with(itemView) {
+        private val binding = ListItemCategoryBinding.bind(itemView)
+
+        fun bind(category: String, listener: (String) -> Unit) = with(binding) {
             categoryName.text = category
-            setOnClickListener { listener(category) }
+            root.setOnClickListener { listener(category) }
         }
     }
 }

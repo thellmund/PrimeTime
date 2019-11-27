@@ -23,6 +23,9 @@ android {
     androidExtensions {
         isExperimental = true
     }
+    viewBinding {
+        isEnabled = true
+    }
 }
 
 dependencies {

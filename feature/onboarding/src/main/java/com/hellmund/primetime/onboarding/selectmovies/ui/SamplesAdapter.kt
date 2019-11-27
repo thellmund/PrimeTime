@@ -13,8 +13,8 @@ class SamplesAdapter(
     onItemClick: (Sample) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val adapterDelegatesManager = AdapterDelegatesManager<List<AdapterItem>>()
-    private val items = mutableListOf<AdapterItem>()
+    private val adapterDelegatesManager = AdapterDelegatesManager<List<SamplesAdapterItem>>()
+    private val items = mutableListOf<SamplesAdapterItem>()
 
     init {
         adapterDelegatesManager += emptyMovieAdapterDelegate()
@@ -24,7 +24,7 @@ class SamplesAdapter(
 
     val selected: List<Sample>
         get() = items
-            .mapNotNull { it as? AdapterItem.Movie.Item }
+            .mapNotNull { it as? SamplesAdapterItem.Movie.Item }
             .map { it.sample }
             .filter { it.isSelected }
 
@@ -44,9 +44,9 @@ class SamplesAdapter(
 
     fun update(samples: List<Sample>) {
         val newItems = if (samples.isNotEmpty()) {
-            samples.map { AdapterItem.Movie.Item(it) } + AdapterItem.LoadingMore
+            samples.map { SamplesAdapterItem.Movie.Item(it) } + SamplesAdapterItem.LoadingMore
         } else {
-            MutableList(25) { AdapterItem.Movie.Empty }
+            MutableList(25) { SamplesAdapterItem.Movie.Empty }
         }
 
         items.clear()

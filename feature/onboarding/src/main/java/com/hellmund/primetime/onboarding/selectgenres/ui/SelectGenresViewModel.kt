@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.repositories.GenresRepository
-import com.hellmund.primetime.ui_common.util.replace
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
@@ -108,5 +107,12 @@ class SelectGenresViewModel @Inject constructor(
                 is Action.Store -> storeGenres(action.genres)
             }
         }
+    }
+}
+
+private fun <T> List<T>.replace(index: Int, element: T): List<T> {
+    return toMutableList().apply {
+        removeAt(index)
+        add(index, element)
     }
 }

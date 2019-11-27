@@ -89,7 +89,7 @@ fun Context.showMultiSelectDialog(
         .setCancelable(true)
         .setNegativeButton(R.string.cancel, null)
         .setPositiveButton(positiveResId) { _, _ ->
-            val selected = (0 until items.size).filterIndexed { i, _ -> checkedItems[i] }
+            val selected = items.indices.filter { checkedItems[it] }
             onConfirmed(selected)
         }
         .show()

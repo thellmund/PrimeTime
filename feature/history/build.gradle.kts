@@ -20,6 +20,9 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+    viewBinding {
+        isEnabled = true
+    }
 }
 
 dependencies {

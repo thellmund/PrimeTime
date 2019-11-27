@@ -10,6 +10,7 @@ fun <T : Preference> PreferenceFragmentCompat.requirePreference(key: String): T 
     return checkNotNull(findPreference(key))
 }
 
+@Suppress("UNCHECKED_CAST")
 fun Preference.doOnPreferenceChange(
     lifecycleScope: LifecycleCoroutineScope,
     block: suspend (Preference, Any) -> Boolean

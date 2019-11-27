@@ -20,6 +20,9 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+    viewBinding {
+        isEnabled = true
+    }
 }
 
 dependencies {
@@ -39,6 +42,4 @@ dependencies {
     // Dagger
     implementation(Libraries.dagger)
     kapt(Libraries.daggerProcessor)
-
-    implementation(Libraries.constraintLayout)
 }

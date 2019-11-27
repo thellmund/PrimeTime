@@ -19,6 +19,7 @@
             android:paddingTop="88dp" />
 
         <include
+            android:id="@+id/stateLayout"
             layout="@layout/state_layout_search_results"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -33,7 +34,9 @@
         android:layout_height="wrap_content"
         android:background="@drawable/background_search_field_gradient">
 
-        <include layout="@layout/view_search_field" />
+        <include
+            android:id="@+id/searchContainer"
+            layout="@layout/view_search_field" />
 
     </FrameLayout>
 

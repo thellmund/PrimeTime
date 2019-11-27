@@ -1,2 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hellmund.primetime.settings" />
+<manifest package="com.hellmund.primetime.settings" />

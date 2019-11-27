@@ -1,17 +1,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/settings_container"
     tools:context=".ui.SettingsActivity">
 
-    <include layout="@layout/view_toolbar" />
+    <include
+        android:id="@+id/toolbarContainer"
+        layout="@layout/view_toolbar" />
 
     <FrameLayout
         android:id="@+id/content"
-        android:background="@color/grey_850"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/grey_850" />
 
 </LinearLayout>

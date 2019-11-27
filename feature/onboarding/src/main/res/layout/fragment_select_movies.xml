@@ -36,30 +36,56 @@
                 android:layout_marginBottom="@dimen/default_space"
                 android:text="@string/select_movies_text" />
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmerLayout"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/gridView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:shimmer_auto_start="true">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/gridView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:overScrollMode="never"
-                    android:paddingBottom="80dp" />
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingBottom="80dp" />
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-    <include
-        android:id="@+id/error_container"
-        layout="@layout/view_samples_error"
-        android:visibility="gone" />
+    <LinearLayout
+        android:id="@+id/errorContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/errorHeader"
+            style="@style/TextAppearance.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/error_text" />
+
+        <TextView
+            android:id="@+id/errorText"
+            style="@style/TextAppearance.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large_space"
+            android:layout_marginTop="@dimen/default_space"
+            android:layout_marginEnd="@dimen/large_space"
+            android:gravity="center"
+            android:text="@string/error_select_movie" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/errorButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/large_space"
+            android:textAllCaps="false"
+            tools:text="Lorem ipsum" />
+
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -68,7 +94,7 @@
         android:background="@drawable/background_bottom_button_gradient">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button"
+            android:id="@+id/nextButton"
             style="@style/LargeButton"
             android:layout_gravity="bottom"
             android:clickable="false"

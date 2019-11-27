@@ -5,13 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.hellmund.primetime.search.R
-import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.core.ImageLoader
-import kotlinx.android.synthetic.main.list_item_search_results.view.description
-import kotlinx.android.synthetic.main.list_item_search_results.view.genres
-import kotlinx.android.synthetic.main.list_item_search_results.view.posterImageView
-import kotlinx.android.synthetic.main.list_item_search_results.view.title
+import com.hellmund.primetime.search.R
+import com.hellmund.primetime.search.databinding.ListItemSearchResultsBinding
+import com.hellmund.primetime.ui_common.MovieViewEntity
 
 class SearchResultsAdapter(
     private val imageLoader: ImageLoader,
@@ -46,12 +43,14 @@ class SearchResultsAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        private val binding = ListItemSearchResultsBinding.bind(itemView)
+
         fun bind(
             imageLoader: ImageLoader,
             searchResult: MovieViewEntity,
             onItemClick: (MovieViewEntity) -> Unit,
             onWatchedIt: (MovieViewEntity) -> Unit
-        ) = with(itemView) {
+        ) = with(binding) {
             loadImage(imageLoader, searchResult.posterUrl)
 
             title.text = searchResult.title
@@ -59,14 +58,14 @@ class SearchResultsAdapter(
             genres.text = searchResult.formattedGenres
             description.text = searchResult.description
 
-            setOnClickListener { onItemClick(searchResult) }
-            setOnLongClickListener {
+            root.setOnClickListener { onItemClick(searchResult) }
+            root.setOnLongClickListener {
                 onWatchedIt(searchResult)
                 true
             }
         }
 
-        private fun loadImage(imageLoader: ImageLoader, url: String) = with(itemView) {
+        private fun loadImage(imageLoader: ImageLoader, url: String) = with(binding) {
             imageLoader.load(
                 url = url,
                 placeholderResId = R.drawable.poster_placeholder,
