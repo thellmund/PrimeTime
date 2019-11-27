@@ -19,8 +19,6 @@ import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.watchlist.R
 import com.hellmund.primetime.watchlist.databinding.FragmentWatchlistBinding
 import com.hellmund.primetime.watchlist.di.DaggerWatchlistComponent
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import javax.inject.Provider
 

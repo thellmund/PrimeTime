@@ -15,6 +15,7 @@
       <module fileurl="file://$PROJECT_DIR$/feature/PrimeTime-feature.iml" filepath="$PROJECT_DIR$/feature/PrimeTime-feature.iml" />
       <module fileurl="file://$PROJECT_DIR$/api/api.iml" filepath="$PROJECT_DIR$/api/api.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="PrimeTime/app" />
+      <module fileurl="file://$PROJECT_DIR$/buildSrc/buildSrc.iml" filepath="$PROJECT_DIR$/buildSrc/buildSrc.iml" group="PrimeTime/buildSrc" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/data/common-data.iml" filepath="$PROJECT_DIR$/common/data/common-data.iml" group="PrimeTime/common/data" />
       <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" group="PrimeTime/common/ui" />

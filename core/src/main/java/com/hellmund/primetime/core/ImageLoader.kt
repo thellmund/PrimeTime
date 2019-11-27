@@ -8,11 +8,6 @@ import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
-sealed class Transformation {
-    object CenterCrop : Transformation()
-    data class Placeholder(val resId: Int) : Transformation()
-}
-
 interface ImageLoader {
     fun load(
         url: String,
