@@ -2,11 +2,11 @@ package com.hellmund.primetime.recommendations.ui
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.transition.TransitionManager
+import com.hellmund.primetime.recommendations.R
 import com.hellmund.primetime.recommendations.databinding.ViewBannerBinding
 
 class MaterialBanner @JvmOverloads constructor(
@@ -18,10 +18,11 @@ class MaterialBanner @JvmOverloads constructor(
     private val container: ViewGroup?
         get() = parent as? ViewGroup
 
-    private lateinit var binding: ViewBannerBinding
+    private var binding: ViewBannerBinding
 
     init {
-        binding = ViewBannerBinding.inflate(LayoutInflater.from(context))
+        val view = View.inflate(context, R.layout.view_banner, this)
+        binding = ViewBannerBinding.bind(view)
         binding.negativeButton.setOnClickListener { dismiss() }
     }
 
