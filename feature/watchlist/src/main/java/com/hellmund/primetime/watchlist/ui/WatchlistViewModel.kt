@@ -3,6 +3,7 @@ package com.hellmund.primetime.watchlist.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.core.notifications.NotificationUtils
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.repositories.WatchlistRepository
@@ -27,6 +28,7 @@ sealed class Result {
     data class Error(val error: Throwable) : Result()
     data class Removed(val movie: WatchlistMovieViewEntity) : Result()
     data class NotificationToggled(val movie: WatchlistMovieViewEntity) : Result()
+    data class HistoryButtonToggled(val isVisible: Boolean) : Result()
 }
 
 class WatchlistViewStateReducer : Reducer<WatchlistViewState, Result> {
@@ -44,6 +46,7 @@ class WatchlistViewStateReducer : Reducer<WatchlistViewState, Result> {
             newData[index] = result.movie
             state.copy(data = newData)
         }
+        is Result.HistoryButtonToggled -> state.copy(showHistoryButton = result.isVisible)
     }
 }
 
@@ -57,14 +60,18 @@ class WatchlistViewStateStore : ViewStateStore<WatchlistViewState, Result>(
 class WatchlistViewModel @Inject constructor(
     private val repository: WatchlistRepository,
     private val historyRepository: HistoryRepository,
+    private val notificationUtils: NotificationUtils,
     viewEntityMapper: WatchlistMovieViewEntityMapper,
-    private val notificationUtils: NotificationUtils
+    onboardingHelper: OnboardingHelper
 ) : ViewModel() {
 
     private val store = WatchlistViewStateStore()
     val viewState: LiveData<WatchlistViewState> = store.viewState
 
     init {
+        val isHistoryVisible = onboardingHelper.isFirstLaunch.not()
+        store.dispatch(Result.HistoryButtonToggled(isVisible = isHistoryVisible))
+
         viewModelScope.launch {
             repository
                 .observeAll()

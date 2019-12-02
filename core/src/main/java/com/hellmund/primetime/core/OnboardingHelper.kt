@@ -9,9 +9,10 @@ class OnboardingHelper @Inject constructor(
     private val sharedPrefs: SharedPreferences
 ) {
 
-    var isFirstLaunch: Boolean
+    val isFirstLaunch: Boolean
         get() = sharedPrefs.getBoolean(KEY_FIRST_LAUNCH, true)
-        set(value) {
-            sharedPrefs.edit().putBoolean(KEY_FIRST_LAUNCH, value).apply()
-        }
+
+    fun markFinished() {
+        sharedPrefs.edit().putBoolean(KEY_FIRST_LAUNCH, false).apply()
+    }
 }

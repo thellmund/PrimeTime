@@ -132,7 +132,7 @@ class SelectMoviesFragment : Fragment() {
     }
 
     private fun openNext() {
-        onboardingHelper.isFirstLaunch = false
+        onboardingHelper.markFinished()
         onFinishedAction()
     }
 

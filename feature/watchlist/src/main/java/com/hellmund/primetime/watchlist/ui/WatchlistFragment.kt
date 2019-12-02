@@ -90,6 +90,10 @@ class WatchlistFragment : Fragment() {
     }
 
     private fun render(viewState: WatchlistViewState) {
+        val toolbar = binding.toolbarContainer.toolbar
+        val historyButton = toolbar.menu.findItem(R.id.action_history)
+        historyButton.isVisible = viewState.showHistoryButton
+
         adapter.update(viewState.data)
         binding.indicator.reattach()
 

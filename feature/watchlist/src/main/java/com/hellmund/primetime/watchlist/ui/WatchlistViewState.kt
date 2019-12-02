@@ -3,7 +3,8 @@ package com.hellmund.primetime.watchlist.ui
 data class WatchlistViewState(
     val data: List<WatchlistMovieViewEntity> = emptyList(),
     val error: Throwable? = null,
-    val deletedIndex: Int? = null
+    val deletedIndex: Int? = null,
+    val showHistoryButton: Boolean = false
 ) {
 
     fun toData(
