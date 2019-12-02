@@ -9,8 +9,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.hellmund.primetime.core.coreComponent
-import com.hellmund.primetime.data.repositories.GenresRepository
-import com.hellmund.primetime.di.DaggerAppComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import java.io.IOException
@@ -39,26 +37,13 @@ class GenresPrefetcher @Inject constructor(
         workerParams: WorkerParameters
     ) : CoroutineWorker(context, workerParams) {
 
-        // TODO Constructor injection
-        @Inject
-        lateinit var genresRepository: GenresRepository
-
         @FlowPreview
         @ExperimentalCoroutinesApi
         override suspend fun doWork(): Result {
-            DaggerAppComponent.builder()
-                .coreComponent(coreComponent)
-                .build()
-                .inject(this)
-
-            val genres = genresRepository.getAll()
-            if (genres.isNotEmpty()) {
-                return Result.success()
-            }
-
+            val repository = coreComponent.genresRepository()
             return try {
-                val apiGenres = genresRepository.fetchGenres()
-                genresRepository.storeGenres(apiGenres)
+                val apiGenres = repository.fetchGenres()
+                repository.storeGenres(apiGenres)
                 Result.success()
             } catch (e: IOException) {
                 Result.retry()

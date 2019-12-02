@@ -5,7 +5,6 @@ import com.hellmund.primetime.core.di.ActivityScope
 import com.hellmund.primetime.core.di.CoreComponent
 import com.hellmund.primetime.core.notifications.NotificationReceiver
 import com.hellmund.primetime.ui.MainActivity
-import com.hellmund.primetime.workers.GenresPrefetcher
 import dagger.Component
 
 @ActivityScope
@@ -14,7 +13,6 @@ import dagger.Component
 )
 interface AppComponent {
     fun inject(app: App)
-    fun inject(genresWorker: GenresPrefetcher.RefreshGenresWorker)
     fun inject(mainActivity: MainActivity)
     fun inject(notificationReceiver: NotificationReceiver)
 }
