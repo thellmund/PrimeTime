@@ -15,8 +15,8 @@ import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.onboarding.databinding.FragmentSelectGenresBinding
 import com.hellmund.primetime.onboarding.selectgenres.di.OnboardingComponentProvider
-import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -51,8 +51,9 @@ class SelectGenresFragment : Fragment() {
         binding.container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         updateNextButton()
         binding.button.setOnClickListener { saveGenres() }
+
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
-        viewModel.navigation.observe(viewLifecycleOwner, this::navigate)
+        viewModel.navigationResults.observeSingleEvents(viewLifecycleOwner, this::navigate)
     }
 
     private fun updateNextButton(genres: List<Genre> = emptyList()) {
@@ -81,9 +82,9 @@ class SelectGenresFragment : Fragment() {
         updateNextButton(viewState.data)
     }
 
-    private fun navigate(event: SingleLiveDataEvent<Unit>) {
-        event.getIfNotHandled()?.let {
-            onFinishedAction()
+    private fun navigate(event: NavigationResult) {
+        when (event) {
+            is NavigationResult.OpenNext -> onFinishedAction()
         }
     }
 
@@ -103,7 +104,7 @@ class SelectGenresFragment : Fragment() {
     }
 
     private fun onCheckedChange(chip: GenreChip) {
-        viewModel.dispatch(Action.ToggleGenre(chip.genre))
+        viewModel.dispatch(ViewEvent.ToggleGenre(chip.genre))
     }
 
     private fun saveGenres() {
@@ -116,7 +117,7 @@ class SelectGenresFragment : Fragment() {
                 isExcluded = genre.isExcluded
             )
         }
-        viewModel.dispatch(Action.Store(includedGenres))
+        viewModel.dispatch(ViewEvent.Store(includedGenres))
     }
 
     companion object {

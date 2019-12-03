@@ -1,6 +1,6 @@
 package com.hellmund.primetime.recommendations.data
 
-import com.hellmund.primetime.data.model.Movie
+import com.hellmund.primetime.data.model.PartialMovie
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.repositories.WatchlistRepository
@@ -10,7 +10,7 @@ import org.threeten.bp.LocalDate
 import javax.inject.Inject
 
 data class MovieWithScore(
-    val movie: Movie,
+    val movie: PartialMovie,
     val score: Float
 )
 
@@ -20,9 +20,9 @@ class MovieRankingProcessor @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        movies: List<Movie>,
+        movies: List<PartialMovie>,
         type: RecommendationsType
-    ): List<Movie> {
+    ): List<PartialMovie> {
         val knownMovies = coroutineScope {
             val watchedMovies = historyRepo.observeAll().first().map { it.id }.toSet()
             val watchlist = watchlistRepo.observeAll().first().map { it.id }.toSet()
@@ -41,19 +41,19 @@ class MovieRankingProcessor @Inject constructor(
             .toList()
     }
 
-    private fun isReleased(movie: Movie, type: RecommendationsType): Boolean {
+    private fun isReleased(movie: PartialMovie, type: RecommendationsType): Boolean {
         return when (type) {
             RecommendationsType.Upcoming -> true
-            else -> movie.releaseDate?.isBefore(LocalDate.now()) ?: false
+            else -> movie.releaseDate.isBefore(LocalDate.now()) ?: false
         }
     }
 
-    private fun hasEnoughInformation(movie: Movie): Boolean {
-        val hasGenres = movie.genres.isNotEmpty()
+    private fun hasEnoughInformation(movie: PartialMovie): Boolean {
+        val hasGenres = movie.genreIds.isNotEmpty()
         return hasGenres && movie.description.isNotEmpty() && movie.voteAverage > 0f
     }
 
-    private fun adjustRating(movie: Movie): MovieWithScore {
+    private fun adjustRating(movie: PartialMovie): MovieWithScore {
         // TODO Implement this
         return MovieWithScore(movie, movie.voteAverage)
     }

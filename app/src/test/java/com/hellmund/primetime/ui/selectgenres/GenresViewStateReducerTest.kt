@@ -2,7 +2,7 @@ package com.hellmund.primetime.ui.selectgenres
 
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.onboarding.selectgenres.ui.GenresViewStateReducer
-import com.hellmund.primetime.onboarding.selectgenres.ui.Result
+import com.hellmund.primetime.onboarding.selectgenres.ui.ViewResult
 import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresViewState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -21,7 +21,7 @@ class GenresViewStateReducerTest {
         val underTest = GenresViewStateReducer()
 
         // When
-        val result = Result.Loading
+        val result = ViewResult.Loading
         val newState = underTest(state, result)
 
         // Then
@@ -37,7 +37,7 @@ class GenresViewStateReducerTest {
         val underTest = GenresViewStateReducer()
 
         // When
-        val result = Result.Data(GENRES)
+        val result = ViewResult.Data(GENRES)
         val newState = underTest(state, result)
 
         // Then
@@ -53,7 +53,7 @@ class GenresViewStateReducerTest {
         val underTest = GenresViewStateReducer()
 
         // When
-        val result = Result.Error(IOException())
+        val result = ViewResult.Error(IOException())
         val newState = underTest(state, result)
 
         // Then
@@ -70,7 +70,7 @@ class GenresViewStateReducerTest {
 
         // When
         val updatedGenre = GENRES.first().copy(isPreferred = true)
-        val result = Result.GenreToggled(updatedGenre)
+        val result = ViewResult.GenreToggled(updatedGenre)
         val newState = underTest(state, result)
 
         // Then

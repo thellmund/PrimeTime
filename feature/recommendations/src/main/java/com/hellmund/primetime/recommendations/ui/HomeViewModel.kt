@@ -10,47 +10,54 @@ import com.hellmund.primetime.recommendations.data.MovieRankingProcessor
 import com.hellmund.primetime.recommendations.data.MoviesRepository
 import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.RatedMovie
+import com.hellmund.primetime.ui_common.PartialMovieViewEntity
+import com.hellmund.primetime.ui_common.RatedPartialMovie
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
+import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
+import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed class Action {
-    data class LoadMovies(val page: Int = 1) : Action()
-    object LoadMore : Action()
-    data class StoreRating(val ratedMovie: RatedMovie) : Action()
-    data class Filter(val genres: List<Genre>) : Action()
+sealed class ViewEvent {
+    data class LoadMovies(val page: Int = 1) : ViewEvent()
+    data class LoadFullMovie(val movieId: Long) : ViewEvent()
+    object LoadMore : ViewEvent()
+    data class StoreRating(val ratedMovie: RatedPartialMovie) : ViewEvent()
+    data class Filter(val genres: List<Genre>) : ViewEvent()
 }
 
-sealed class Result {
-    object Loading : Result()
+sealed class ViewResult {
+    object Loading : ViewResult()
     data class Data(
         val type: RecommendationsType,
-        val data: List<MovieViewEntity>,
+        val data: List<PartialMovieViewEntity>,
         val page: Int
-    ) : Result()
-
-    data class Error(val error: Throwable) : Result()
-    data class RatingStored(val movie: MovieViewEntity) : Result()
-    data class Filter(val genres: List<Genre>) : Result()
+    ) : ViewResult()
+    data class Error(val error: Throwable) : ViewResult()
+    data class RatingStored(val movie: PartialMovieViewEntity) : ViewResult()
+    data class Filter(val genres: List<Genre>) : ViewResult()
 }
 
-class HomeViewStateReducer : Reducer<HomeViewState, Result> {
+sealed class NavigationResult {
+    data class ClickedMovieLoaded(val viewEntity: MovieViewEntity) : NavigationResult()
+}
+
+class HomeViewStateReducer : Reducer<HomeViewState, ViewResult> {
     override fun invoke(
         state: HomeViewState,
-        result: Result
-    ) = when (result) {
-        is Result.Loading -> state.toLoading()
-        is Result.Data -> state.toData(result)
-        is Result.Error -> state.toError(result.error)
-        is Result.RatingStored -> state.toData(result)
-        is Result.Filter -> state.toFiltered(result)
+        viewResult: ViewResult
+    ) = when (viewResult) {
+        is ViewResult.Loading -> state.toLoading()
+        is ViewResult.Data -> state.toData(viewResult)
+        is ViewResult.Error -> state.toError(viewResult.error)
+        is ViewResult.RatingStored -> state.toData(viewResult)
+        is ViewResult.Filter -> state.toFiltered(viewResult)
     }
 }
 
-class HomeViewStateStore : ViewStateStore<HomeViewState, Result>(
+class HomeViewStateStore : ViewStateStore<HomeViewState, ViewResult>(
     initialState = HomeViewState(),
     reducer = HomeViewStateReducer()
 )
@@ -66,12 +73,15 @@ class HomeViewModel @Inject constructor(
     private val store = HomeViewStateStore()
     val viewState: LiveData<HomeViewState> = store.viewState
 
+    private val navigationEventsStore = SingleEventStore<NavigationResult>()
+    val navigationEvents: LiveData<SingleEvent<NavigationResult>> = navigationEventsStore.events
+
     private var pagesLoaded: Int = 0
     private var isLoadingMore: Boolean = false
 
     init {
         viewModelScope.launch {
-            store.dispatch(Result.Loading)
+            store.dispatch(ViewResult.Loading)
             fetchRecommendations(recommendationsType, pagesLoaded + 1)
         }
     }
@@ -83,33 +93,40 @@ class HomeViewModel @Inject constructor(
         val result = try {
             val recommendations = repository.fetchRecommendations(type, page)
             val ranked = rankingProcessor(recommendations, type)
-            val viewEntities = viewEntitiesMapper(ranked)
-            Result.Data(type, viewEntities, page)
+            val viewEntities = viewEntitiesMapper.mapPartialMovies(ranked)
+            ViewResult.Data(type, viewEntities, page)
         } catch (e: IOException) {
-            Result.Error(e)
+            ViewResult.Error(e)
         }
         store.dispatch(result)
     }
 
-    private suspend fun storeRating(ratedMovie: RatedMovie) {
+    private suspend fun storeRating(ratedMovie: RatedPartialMovie) {
         val historyMovie = ratedMovie.toHistoryMovie()
         historyRepository.store(historyMovie)
-        store.dispatch(Result.RatingStored(ratedMovie.movie))
+        store.dispatch(ViewResult.RatingStored(ratedMovie.movie))
     }
 
-    fun dispatch(action: Action) {
+    private suspend fun loadFullMovie(movieId: Long) {
+        val movie = checkNotNull(repository.fetchFullMovie(movieId))
+        val viewEntity = viewEntitiesMapper(movie)
+        navigationEventsStore.dispatch(NavigationResult.ClickedMovieLoaded(viewEntity))
+    }
+
+    fun dispatch(viewEvent: ViewEvent) {
         viewModelScope.launch {
-            when (action) {
-                is Action.LoadMovies -> fetchRecommendations(recommendationsType, action.page)
-                is Action.LoadMore -> {
+            when (viewEvent) {
+                is ViewEvent.LoadMovies -> fetchRecommendations(recommendationsType, viewEvent.page)
+                is ViewEvent.LoadFullMovie -> loadFullMovie(viewEvent.movieId)
+                is ViewEvent.LoadMore -> {
                     if (isLoadingMore.not()) {
                         isLoadingMore = true
                         fetchRecommendations(recommendationsType, pagesLoaded + 1)
                         isLoadingMore = false
                     }
                 }
-                is Action.Filter -> store.dispatch(Result.Filter(action.genres))
-                is Action.StoreRating -> storeRating(action.ratedMovie)
+                is ViewEvent.Filter -> store.dispatch(ViewResult.Filter(viewEvent.genres))
+                is ViewEvent.StoreRating -> storeRating(viewEvent.ratedMovie)
             }
         }
     }

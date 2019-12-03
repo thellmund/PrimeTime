@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.moviedetails.R
 import com.hellmund.primetime.moviedetails.databinding.ListItemRecommendationsBinding
-import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 
 class RecommendationsAdapter(
     private val imageLoader: ImageLoader,
-    private val onClick: (MovieViewEntity) -> Unit
+    private val onClick: (PartialMovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<RecommendationsAdapter.ViewHolder>() {
 
-    private val movies = mutableListOf<MovieViewEntity>()
+    private val movies = mutableListOf<PartialMovieViewEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -28,7 +28,7 @@ class RecommendationsAdapter(
 
     override fun getItemCount(): Int = movies.size
 
-    fun update(newItems: List<MovieViewEntity>) {
+    fun update(newItems: List<PartialMovieViewEntity>) {
         movies.clear()
         movies += newItems
         notifyDataSetChanged()
@@ -39,9 +39,9 @@ class RecommendationsAdapter(
         private val binding = ListItemRecommendationsBinding.bind(itemView)
 
         fun bind(
-            movie: MovieViewEntity,
+            movie: PartialMovieViewEntity,
             imageLoader: ImageLoader,
-            onClick: (MovieViewEntity) -> Unit
+            onClick: (PartialMovieViewEntity) -> Unit
         ) = with(binding) {
             imageLoader.load(
                 url = movie.posterUrl,

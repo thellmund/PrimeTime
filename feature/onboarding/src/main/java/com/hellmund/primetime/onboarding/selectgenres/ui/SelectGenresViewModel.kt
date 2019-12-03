@@ -1,13 +1,13 @@
 package com.hellmund.primetime.onboarding.selectgenres.ui
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
-import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
+import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
+import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -19,42 +19,41 @@ data class SelectGenresViewState(
     val error: Throwable? = null
 )
 
-sealed class Action {
-    data class ToggleGenre(val genre: Genre) : Action()
-    data class Store(val genres: List<Genre>) : Action()
+sealed class ViewEvent {
+    data class ToggleGenre(val genre: Genre) : ViewEvent()
+    data class Store(val genres: List<Genre>) : ViewEvent()
 }
 
-sealed class Result {
-    object Loading : Result()
-    data class Data(val data: List<Genre>) : Result()
-    data class Error(val error: Throwable) : Result()
-    data class GenreToggled(val genre: Genre) : Result()
-    object None : Result()
+sealed class ViewResult {
+    object Loading : ViewResult()
+    data class Data(val data: List<Genre>) : ViewResult()
+    data class Error(val error: Throwable) : ViewResult()
+    data class GenreToggled(val genre: Genre) : ViewResult()
+    object None : ViewResult()
 }
 
-class GenresViewStateReducer : Reducer<SelectGenresViewState, Result> {
+sealed class NavigationResult {
+    object OpenNext : NavigationResult()
+}
+
+class GenresViewStateReducer : Reducer<SelectGenresViewState, ViewResult> {
     override fun invoke(
         state: SelectGenresViewState,
-        result: Result
-    ) = when (result) {
-        is Result.Loading -> state.copy(isLoading = true, error = null)
-        is Result.Data -> state.copy(data = result.data, isLoading = false, error = null)
-        is Result.Error -> state.copy(isLoading = false, error = result.error)
-        is Result.GenreToggled -> {
-            val index = state.data.indexOfFirst { it.id == result.genre.id }
-            val newData = state.data.replace(index, result.genre)
+        viewResult: ViewResult
+    ) = when (viewResult) {
+        is ViewResult.Loading -> state.copy(isLoading = true, error = null)
+        is ViewResult.Data -> state.copy(data = viewResult.data, isLoading = false, error = null)
+        is ViewResult.Error -> state.copy(isLoading = false, error = viewResult.error)
+        is ViewResult.GenreToggled -> {
+            val index = state.data.indexOfFirst { it.id == viewResult.genre.id }
+            val newData = state.data.replace(index, viewResult.genre)
             state.copy(data = newData)
         }
-        is Result.None -> state
+        is ViewResult.None -> state
     }
 }
 
-class NavigationEventStore<Event> {
-    val event = MutableLiveData<Event>()
-    fun dispatch(event: Event) { this.event.value = event }
-}
-
-class GenresViewStateStore : ViewStateStore<SelectGenresViewState, Result>(
+class GenresViewStateStore : ViewStateStore<SelectGenresViewState, ViewResult>(
     initialState = SelectGenresViewState(),
     reducer = GenresViewStateReducer()
 )
@@ -64,24 +63,24 @@ class SelectGenresViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val store = GenresViewStateStore()
-    private val navigationStore = NavigationEventStore<SingleLiveDataEvent<Unit>>()
-
     val viewState: LiveData<SelectGenresViewState> = store.viewState
-    val navigation: LiveData<SingleLiveDataEvent<Unit>> = navigationStore.event
+
+    private val navigationResultsStore = SingleEventStore<NavigationResult>()
+    val navigationResults: LiveData<SingleEvent<NavigationResult>> = navigationResultsStore.events
 
     init {
         viewModelScope.launch {
-            store.dispatch(Result.Loading)
+            store.dispatch(ViewResult.Loading)
             store.dispatch(fetchMovies())
         }
     }
 
-    private suspend fun fetchMovies(): Result {
+    private suspend fun fetchMovies(): ViewResult {
         return try {
             val genres = repository.fetchGenres()
-            Result.Data(genres)
+            ViewResult.Data(genres)
         } catch (e: IOException) {
-            Result.Error(e)
+            ViewResult.Error(e)
         }
     }
 
@@ -92,19 +91,19 @@ class SelectGenresViewModel @Inject constructor(
             isPreferred = !genre.isPreferred,
             isExcluded = genre.isExcluded
         )
-        store.dispatch(Result.GenreToggled(newGenre))
+        store.dispatch(ViewResult.GenreToggled(newGenre))
     }
 
     private suspend fun storeGenres(genres: List<Genre>) {
         repository.storeGenres(genres)
-        navigationStore.dispatch(SingleLiveDataEvent(Unit))
+        navigationResultsStore.dispatch(NavigationResult.OpenNext)
     }
 
-    fun dispatch(action: Action) {
+    fun dispatch(viewEvent: ViewEvent) {
         viewModelScope.launch {
-            when (action) {
-                is Action.ToggleGenre -> toggleGenre(action.genre)
-                is Action.Store -> storeGenres(action.genres)
+            when (viewEvent) {
+                is ViewEvent.ToggleGenre -> toggleGenre(viewEvent.genre)
+                is ViewEvent.Store -> storeGenres(viewEvent.genres)
             }
         }
     }

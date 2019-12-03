@@ -11,12 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
-import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -32,8 +30,10 @@ import com.hellmund.primetime.moviedetails.di.DaggerMovieDetailsComponent
 import com.hellmund.primetime.moviedetails.util.EqualHorizontalSpacingItemDecoration
 import com.hellmund.primetime.moviedetails.util.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 import com.hellmund.primetime.ui_common.dialogs.showLoading
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
@@ -68,9 +68,9 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     override fun getTheme() = R.style.BottomSheetDialogTheme
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return BottomSheetDialog(requireContext(), theme)
-    }
+    override fun onCreateDialog(
+        savedInstanceState: Bundle?
+    ): Dialog = BottomSheetDialog(requireContext(), theme)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -83,7 +83,8 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.uiEvents.observe(viewLifecycleOwner, this::handleViewModelEvent)
+        viewModel.viewState.observe(viewLifecycleOwner, this::render)
+        viewModel.navigationResults.observeSingleEvents(viewLifecycleOwner, this::navigate)
     }
 
     override fun onCreateView(
@@ -98,22 +99,44 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fillInContent()
-        downloadPosters()
-
-        binding.backdropImageView.setOnClickListener { viewModel.dispatch(Action.OpenTrailer) }
-        binding.moreInfoButton.setOnClickListener { viewModel.dispatch(Action.OpenImdb) }
+        binding.backdropImageView.setOnClickListener { viewModel.dispatch(ViewEvent.OpenTrailer) }
+        binding.moreInfoButton.setOnClickListener { viewModel.dispatch(ViewEvent.OpenImdb) }
 
         binding.addToWatchlistButton.setOnClickListener {
-            viewModel.dispatch(Action.AddToWatchlist)
+            viewModel.dispatch(ViewEvent.AddToWatchlist)
         }
 
         binding.removeFromWatchlistButton.setOnClickListener {
-            viewModel.dispatch(Action.RemoveFromWatchlist)
+            viewModel.dispatch(ViewEvent.RemoveFromWatchlist)
         }
     }
 
-    private fun fillInContent() = with(binding) {
+    private fun render(viewState: MovieDetailsViewState) = with(binding) {
+        fillInContent(viewState.movie)
+        downloadPosters()
+
+        viewState.color?.let { onMovieColorLoaded(it) }
+        viewState.recommendations?.let { showRecommendations(it) }
+        viewState.reviews?.let { showReviews(it) }
+
+        if (viewState.isTrailerLoading) {
+            progressDialog = requireContext().showLoading(R.string.opening_trailer)
+        } else {
+            progressDialog?.dismiss()
+        }
+
+        updateWatchlistButton(viewState.watchStatus)
+    }
+
+    private fun navigate(result: NavigationResult) {
+        when (result) {
+            is NavigationResult.OpenImdb -> openUrl(result.url)
+            is NavigationResult.OpenSimilarMovie -> openClickedRecommendation(result.viewEntity)
+            is NavigationResult.OpenTrailer -> openUrl(result.url)
+        }
+    }
+
+    private fun fillInContent(movie: MovieViewEntity) = with(binding) {
         titleTextView.text = movie.title
         descriptionTextView.text = movie.description
         genresTextView.text = movie.formattedGenres
@@ -148,22 +171,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         )
     }
 
-    private fun handleViewModelEvent(event: UiEvent) {
-        when (event) {
-            is UiEvent.TrailerLoading -> showDialog()
-            is UiEvent.TrailerLoaded -> openUrl(event.url)
-            is UiEvent.AdditionalInformationLoaded -> showMovieDetails(event.movie)
-            is UiEvent.ImdbLinkLoaded -> openUrl(event.url)
-            is UiEvent.AddedToWatchlist -> onAddedToWatchlist()
-            is UiEvent.RemovedFromWatchlist -> onRemovedFromWatchlist()
-            is UiEvent.WatchStatus -> updateWatchlistButton(event.watchStatus)
-            is UiEvent.RecommendationsLoaded -> showRecommendations(event.movies)
-            is UiEvent.ReviewsLoaded -> showReviews(event.reviews)
-            is UiEvent.ColorPaletteLoaded -> onCoverPaletteLoaded(event.palette)
-        }
-    }
-
-    private fun showRecommendations(movies: List<MovieViewEntity>) {
+    private fun showRecommendations(movies: List<PartialMovieViewEntity>) {
         binding.recommendationsProgressBar.isVisible = false
         binding.noRecommendationsPlaceholder.isVisible = movies.isEmpty()
         binding.recommendationsRecyclerView.isVisible = movies.isNotEmpty()
@@ -177,34 +185,19 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         reviewsAdapter.update(reviews)
     }
 
-    private fun onRecommendationClicked(movie: MovieViewEntity) {
+    private fun onRecommendationClicked(movie: PartialMovieViewEntity) {
+        viewModel.dispatch(ViewEvent.RecommendationClicked(movie.id))
+    }
+
+    private fun openClickedRecommendation(movie: MovieViewEntity) {
         val fragment = newInstance(movie)
         fragment.show(requireFragmentManager(), fragment.tag)
     }
 
-    private fun showDialog() {
-        progressDialog = requireContext().showLoading(R.string.opening_trailer)
-    }
-
     private fun openUrl(url: String) {
-        progressDialog?.dismiss()
-        val color = ContextCompat.getColor(requireContext(), R.color.grey_900)
         CustomTabsIntent.Builder()
-            .setToolbarColor(color)
             .build()
             .launchUrl(requireContext(), url.toUri())
-    }
-
-    private fun showMovieDetails(movie: MovieViewEntity) {
-        binding.durationTextView.text = movie.formattedRuntime
-    }
-
-    private fun onAddedToWatchlist() {
-        updateWatchlistButton(ON_WATCHLIST)
-    }
-
-    private fun onRemovedFromWatchlist() {
-        updateWatchlistButton(Movie.WatchStatus.NOT_WATCHED)
     }
 
     private fun updateWatchlistButton(watchStatus: Movie.WatchStatus) {
@@ -214,11 +207,10 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     private fun onImageLoaded(drawable: Drawable) {
         val cover = (drawable as BitmapDrawable).bitmap
-        viewModel.dispatch(Action.LoadColorPalette(cover))
+        viewModel.dispatch(ViewEvent.LoadColorPalette(cover))
     }
 
-    private fun onCoverPaletteLoaded(palette: Palette) {
-        val color = palette.mutedSwatch?.rgb ?: return
+    private fun onMovieColorLoaded(color: Int) {
         val colorStateList = ColorStateList.valueOf(color)
         binding.addToWatchlistButton.backgroundTintList = colorStateList
         binding.removeFromWatchlistButton.strokeColor = colorStateList

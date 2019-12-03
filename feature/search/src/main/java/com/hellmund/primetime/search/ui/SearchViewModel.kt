@@ -1,7 +1,6 @@
 package com.hellmund.primetime.search.ui
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.core.Intents
@@ -15,34 +14,38 @@ import com.hellmund.primetime.search.R
 import com.hellmund.primetime.search.data.SearchRepository
 import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.RatedMovie
-import com.hellmund.primetime.ui_common.viewmodel.SingleLiveDataEvent
+import com.hellmund.primetime.ui_common.PartialMovieViewEntity
+import com.hellmund.primetime.ui_common.RatedPartialMovie
+import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
+import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed class Action {
-    data class Search(val query: String) : Action()
-    data class TextChanged(val text: String) : Action()
-    data class AddToHistory(val ratedMovie: RatedMovie) : Action()
-    data class CategorySelected(val category: String) : Action()
-    data class ProcessExtra(val extra: String) : Action()
+sealed class ViewEvent {
+    data class Search(val query: String) : ViewEvent()
+    data class TextChanged(val text: String) : ViewEvent()
+    data class AddToHistory(val ratedMovie: RatedPartialMovie) : ViewEvent()
+    data class CategorySelected(val category: String) : ViewEvent()
+    data class ProcessExtra(val extra: String) : ViewEvent()
+    data class MovieClicked(val viewEntity: PartialMovieViewEntity) : ViewEvent()
 }
 
-sealed class Result {
-    object Loading : Result()
-    data class GenresLoaded(val genres: List<Genre>) : Result()
-    data class Data(val data: List<MovieViewEntity>) : Result()
-    data class Error(val error: Throwable) : Result()
-    data class ToggleClearButton(val show: Boolean) : Result()
-    data class ShowSnackbar(val messageResId: Int) : Result()
-    object DismissSnackbar : Result()
+sealed class ViewResult {
+    object Loading : ViewResult()
+    data class GenresLoaded(val genres: List<Genre>) : ViewResult()
+    data class Data(val data: List<PartialMovieViewEntity>) : ViewResult()
+    data class Error(val error: Throwable) : ViewResult()
+    data class ToggleClearButton(val show: Boolean) : ViewResult()
+    data class ShowSnackbar(val messageResId: Int) : ViewResult()
+    object DismissSnackbar : ViewResult()
 }
 
-class NavigationEvent(
-    value: RecommendationsType
-) : SingleLiveDataEvent<RecommendationsType>(value)
+sealed class NavigationResult {
+    data class OpenMovieDetails(val viewEntity: MovieViewEntity) : NavigationResult()
+    data class OpenCategory(val recommendationsType: RecommendationsType) : NavigationResult()
+}
 
 class SearchViewModel @Inject constructor(
     private val repository: SearchRepository,
@@ -54,8 +57,8 @@ class SearchViewModel @Inject constructor(
     private val store = SearchViewStateStore()
     val viewState: LiveData<SearchViewState> = store.viewState
 
-    private val _events = MutableLiveData<NavigationEvent>()
-    val destinations: LiveData<NavigationEvent> = _events
+    private val navigationResultsStore = SingleEventStore<NavigationResult>()
+    val navigationResults: LiveData<SingleEvent<NavigationResult>> = navigationResultsStore.events
 
     init {
         viewModelScope.launch {
@@ -73,32 +76,32 @@ class SearchViewModel @Inject constructor(
             }
         }
 
-        _events.value = NavigationEvent(recommendationsType)
+        navigationResultsStore.dispatch(NavigationResult.OpenCategory(recommendationsType))
     }
 
-    private suspend fun fetchGenres(): Result {
+    private suspend fun fetchGenres(): ViewResult {
         val genres = genresRepository.getAll()
-        return Result.GenresLoaded(genres)
+        return ViewResult.GenresLoaded(genres)
     }
 
-    private suspend fun searchMovies(query: String): Result {
+    private suspend fun searchMovies(query: String): ViewResult {
         return try {
             val movies = repository.searchMovies(query)
-            val mapped = viewEntitiesMapper(movies)
-            Result.Data(mapped)
+            val mapped = viewEntitiesMapper.mapPartialMovies(movies)
+            ViewResult.Data(mapped)
         } catch (e: IOException) {
-            Result.Error(e)
+            ViewResult.Error(e)
         }
     }
 
-    private suspend fun storeInHistory(historyMovie: HistoryMovie): Result {
+    private suspend fun storeInHistory(historyMovie: HistoryMovie): ViewResult {
         val messageResId = when (historyMovie.rating) {
             Rating.Like -> R.string.will_more_like_this
             Rating.Dislike -> R.string.will_less_like_this
         }
 
         historyRepository.store(historyMovie)
-        return Result.ShowSnackbar(messageResId)
+        return ViewResult.ShowSnackbar(messageResId)
     }
 
     private suspend fun search(query: String) {
@@ -106,13 +109,13 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onTextChanged(input: String) {
-        store.dispatch(Result.ToggleClearButton(input.isNotEmpty()))
+        store.dispatch(ViewResult.ToggleClearButton(input.isNotEmpty()))
     }
 
     private suspend fun addToHistory(historyMovie: HistoryMovie) {
         store.dispatch(storeInHistory(historyMovie))
         delay(4_000)
-        store.dispatch(Result.DismissSnackbar)
+        store.dispatch(ViewResult.DismissSnackbar)
     }
 
     private suspend fun onCategorySelected(category: String) {
@@ -121,17 +124,24 @@ class SearchViewModel @Inject constructor(
 
     private suspend fun processExtra(extra: String) {
         val recommendationsType = getRecommendationsTypeFromExtra(extra)
-        _events.value = NavigationEvent(recommendationsType)
+        navigationResultsStore.dispatch(NavigationResult.OpenCategory(recommendationsType))
     }
 
-    fun dispatch(action: Action) {
+    private suspend fun loadFullMovie(movieId: Long) {
+        val movie = checkNotNull(repository.fetchFullMovie(movieId))
+        val viewEntity = viewEntitiesMapper(movie)
+        navigationResultsStore.dispatch(NavigationResult.OpenMovieDetails(viewEntity))
+    }
+
+    fun dispatch(viewEvent: ViewEvent) {
         viewModelScope.launch {
-            when (action) {
-                is Action.AddToHistory -> addToHistory(action.ratedMovie.toHistoryMovie())
-                is Action.CategorySelected -> onCategorySelected(action.category)
-                is Action.ProcessExtra -> processExtra(action.extra)
-                is Action.Search -> search(action.query)
-                is Action.TextChanged -> onTextChanged(action.text)
+            when (viewEvent) {
+                is ViewEvent.AddToHistory -> addToHistory(viewEvent.ratedMovie.toHistoryMovie())
+                is ViewEvent.CategorySelected -> onCategorySelected(viewEvent.category)
+                is ViewEvent.ProcessExtra -> processExtra(viewEvent.extra)
+                is ViewEvent.Search -> search(viewEvent.query)
+                is ViewEvent.TextChanged -> onTextChanged(viewEvent.text)
+                is ViewEvent.MovieClicked -> loadFullMovie(viewEvent.viewEntity.id)
             }
         }
     }

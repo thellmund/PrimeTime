@@ -4,44 +4,42 @@ import com.hellmund.api.TmdbApiService
 import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.data.model.MovieEnricher
+import com.hellmund.primetime.data.model.PartialMovie
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import javax.inject.Inject
 
 interface MoviesRepository {
-    suspend fun fetchRecommendations(type: RecommendationsType, page: Int): List<Movie>
-    suspend fun fetchSimilarMovies(movieId: Long, page: Int = 1): List<Movie>
-    suspend fun searchMovies(query: String): List<Movie>
-    suspend fun fetchPopularMovies(): List<Movie>
+    suspend fun fetchRecommendations(type: RecommendationsType, page: Int): List<PartialMovie>
+    suspend fun fetchSimilarMovies(movieId: Long, page: Int = 1): List<PartialMovie>
+    suspend fun searchMovies(query: String): List<PartialMovie>
+    suspend fun fetchPopularMovies(): List<PartialMovie>
+    suspend fun fetchFullMovie(movieId: Long): Movie?
 }
 
 class RealMoviesRepository @Inject constructor(
     private val apiService: TmdbApiService,
     private val genresRepository: GenresRepository,
     private val historyRepository: HistoryRepository,
-    private val onboardingHelper: OnboardingHelper,
-    private val enricher: MovieEnricher
+    private val onboardingHelper: OnboardingHelper
 ) : MoviesRepository {
 
     override suspend fun fetchRecommendations(
         type: RecommendationsType,
         page: Int
-    ): List<Movie> {
-        return when (type) {
-            is RecommendationsType.Personalized -> fetchPersonalizedRecommendations(type.genres, page)
-            is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id, page)
-            is RecommendationsType.NowPlaying -> fetchNowPlayingRecommendations(page)
-            is RecommendationsType.Upcoming -> fetchUpcomingRecommendations(page)
-            is RecommendationsType.ByGenre -> fetchGenreRecommendations(type.genre.id, page)
-        }
+    ): List<PartialMovie> = when (type) {
+        is RecommendationsType.Personalized -> fetchPersonalizedRecommendations(type.genres, page)
+        is RecommendationsType.BasedOnMovie -> fetchMovieBasedRecommendations(type.id, page)
+        is RecommendationsType.NowPlaying -> fetchNowPlayingRecommendations(page)
+        is RecommendationsType.Upcoming -> fetchUpcomingRecommendations(page)
+        is RecommendationsType.ByGenre -> fetchGenreRecommendations(type.genre.id, page)
     }
 
     private suspend fun fetchPersonalizedRecommendations(
         filterGenres: List<Genre>? = null,
         page: Int
-    ): List<Movie> {
+    ): List<PartialMovie> {
         // TODO: Add new movies to results
         if (onboardingHelper.isFirstLaunch) {
             return fetchTopRatedMovies(page)
@@ -66,39 +64,36 @@ class RealMoviesRepository @Inject constructor(
 
     private suspend fun fetchNowPlayingRecommendations(
         page: Int
-    ) = apiService.nowPlaying(page).results
-        .mapNotNull { enricher.enrich(it) }
+    ) = apiService.nowPlaying(page).results.map { PartialMovie.from(it) }
 
     private suspend fun fetchUpcomingRecommendations(
         page: Int
-    ): List<Movie> = apiService.upcoming(page).results
-        .mapNotNull { enricher.enrich(it) }
+    ) = apiService.upcoming(page).results.map { PartialMovie.from(it) }
+
+    override suspend fun fetchFullMovie(movieId: Long): Movie? {
+        val apiMovie = apiService.movie(movieId)
+        return Movie.from(apiMovie)
+    }
 
     override suspend fun fetchSimilarMovies(
         movieId: Long,
         page: Int
-    ): List<Movie> = apiService.recommendations(movieId, page).results
-        .mapNotNull { enricher.enrich(it) }
+    ) = apiService.recommendations(movieId, page).results.map { PartialMovie.from(it) }
 
     private suspend fun fetchGenreRecommendations(
         genreId: Long,
         page: Int = 1
-    ) = apiService.genreRecommendations(genreId, page).results
-        .mapNotNull { enricher.enrich(it) }
+    ) = apiService.genreRecommendations(genreId, page).results.map { PartialMovie.from(it) }
 
     private suspend fun fetchTopRatedMovies(
         page: Int = 1
-    ): List<Movie> = apiService.topRatedMovies(page).results
-        .mapNotNull { enricher.enrich(it) }
+    ) = apiService.topRatedMovies(page).results.map { PartialMovie.from(it) }
 
     override suspend fun searchMovies(
         query: String
-    ): List<Movie> = apiService.search(query).results
-        .mapNotNull { enricher.enrich(it) }
+    ) = apiService.search(query).results.map { PartialMovie.from(it) }
 
-    override suspend fun fetchPopularMovies(): List<Movie> {
-        return apiService.popular()
-            .results
-            .mapNotNull { enricher.enrich(it) }
+    override suspend fun fetchPopularMovies(): List<PartialMovie> {
+        return apiService.popular().results.map { PartialMovie.from(it) }
     }
 }

@@ -17,40 +17,40 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-sealed class Action {
-    data class Remove(val item: WatchlistMovieViewEntity) : Action()
-    data class ToggleNotification(val item: WatchlistMovieViewEntity) : Action()
-    data class RateMovie(val item: RatedWatchlistMovie) : Action()
+sealed class ViewEvent {
+    data class Remove(val item: WatchlistMovieViewEntity) : ViewEvent()
+    data class ToggleNotification(val item: WatchlistMovieViewEntity) : ViewEvent()
+    data class RateMovie(val item: RatedWatchlistMovie) : ViewEvent()
 }
 
-sealed class Result {
-    data class Data(val data: List<WatchlistMovieViewEntity>) : Result()
-    data class Error(val error: Throwable) : Result()
-    data class Removed(val movie: WatchlistMovieViewEntity) : Result()
-    data class NotificationToggled(val movie: WatchlistMovieViewEntity) : Result()
-    data class HistoryButtonToggled(val isVisible: Boolean) : Result()
+sealed class ViewResult {
+    data class Data(val data: List<WatchlistMovieViewEntity>) : ViewResult()
+    data class Error(val error: Throwable) : ViewResult()
+    data class Removed(val movie: WatchlistMovieViewEntity) : ViewResult()
+    data class NotificationToggled(val movie: WatchlistMovieViewEntity) : ViewResult()
+    data class HistoryButtonToggled(val isVisible: Boolean) : ViewResult()
 }
 
-class WatchlistViewStateReducer : Reducer<WatchlistViewState, Result> {
+class WatchlistViewStateReducer : Reducer<WatchlistViewState, ViewResult> {
 
     override fun invoke(
         state: WatchlistViewState,
-        result: Result
-    ): WatchlistViewState = when (result) {
-        is Result.Data -> state.toData(result.data)
-        is Result.Error -> state.toError(result.error)
-        is Result.Removed -> state.remove(result.movie)
-        is Result.NotificationToggled -> {
-            val index = state.data.indexOfFirst { it.id == result.movie.id }
+        viewResult: ViewResult
+    ): WatchlistViewState = when (viewResult) {
+        is ViewResult.Data -> state.toData(viewResult.data)
+        is ViewResult.Error -> state.toError(viewResult.error)
+        is ViewResult.Removed -> state.remove(viewResult.movie)
+        is ViewResult.NotificationToggled -> {
+            val index = state.data.indexOfFirst { it.id == viewResult.movie.id }
             val newData = state.data.toMutableList()
-            newData[index] = result.movie
+            newData[index] = viewResult.movie
             state.copy(data = newData)
         }
-        is Result.HistoryButtonToggled -> state.copy(showHistoryButton = result.isVisible)
+        is ViewResult.HistoryButtonToggled -> state.copy(showHistoryButton = viewResult.isVisible)
     }
 }
 
-class WatchlistViewStateStore : ViewStateStore<WatchlistViewState, Result>(
+class WatchlistViewStateStore : ViewStateStore<WatchlistViewState, ViewResult>(
     initialState = WatchlistViewState(),
     reducer = WatchlistViewStateReducer()
 )
@@ -70,21 +70,21 @@ class WatchlistViewModel @Inject constructor(
 
     init {
         val isHistoryVisible = onboardingHelper.isFirstLaunch.not()
-        store.dispatch(Result.HistoryButtonToggled(isVisible = isHistoryVisible))
+        store.dispatch(ViewResult.HistoryButtonToggled(isVisible = isHistoryVisible))
 
         viewModelScope.launch {
             repository
                 .observeAll()
                 .map { viewEntityMapper(it) }
                 .filter { true }
-                .collect { store.dispatch(Result.Data(it)) }
+                .collect { store.dispatch(ViewResult.Data(it)) }
         }
     }
 
     private suspend fun toggleAndStoreNotification(movie: WatchlistMovieViewEntity) {
         repository.toggleNotification(movie.raw)
         val newViewEntity = movie.copy(notificationsActivated = movie.notificationsActivated.not())
-        store.dispatch(Result.NotificationToggled(newViewEntity))
+        store.dispatch(ViewResult.NotificationToggled(newViewEntity))
 
         if (newViewEntity.notificationsActivated) {
             notificationUtils.scheduleNotification(movie.raw)
@@ -95,22 +95,22 @@ class WatchlistViewModel @Inject constructor(
 
     private suspend fun removeMovie(movie: WatchlistMovieViewEntity) {
         repository.remove(movie.id)
-        store.dispatch(Result.Removed(movie))
+        store.dispatch(ViewResult.Removed(movie))
     }
 
     private suspend fun rateMovie(ratedMovie: RatedWatchlistMovie) {
         val historyMovie = ratedMovie.toHistoryMovie()
         repository.remove(ratedMovie.movie.id)
         historyRepository.store(historyMovie)
-        store.dispatch(Result.Removed(ratedMovie.movie))
+        store.dispatch(ViewResult.Removed(ratedMovie.movie))
     }
 
-    fun dispatch(action: Action) {
+    fun dispatch(viewEvent: ViewEvent) {
         viewModelScope.launch {
-            when (action) {
-                is Action.Remove -> removeMovie(action.item)
-                is Action.ToggleNotification -> toggleAndStoreNotification(action.item)
-                is Action.RateMovie -> rateMovie(action.item)
+            when (viewEvent) {
+                is ViewEvent.Remove -> removeMovie(viewEvent.item)
+                is ViewEvent.ToggleNotification -> toggleAndStoreNotification(viewEvent.item)
+                is ViewEvent.RateMovie -> rateMovie(viewEvent.item)
             }
         }
     }

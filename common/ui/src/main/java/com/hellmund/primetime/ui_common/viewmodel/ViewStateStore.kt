@@ -31,6 +31,6 @@ interface Reducer<State, Result> {
 
     operator fun invoke(
         state: State,
-        result: Result
+        viewResult: Result
     ): State
 }

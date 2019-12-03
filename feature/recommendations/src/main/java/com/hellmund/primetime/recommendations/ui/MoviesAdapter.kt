@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 
 class MoviesAdapter(
     private val imageLoader: ImageLoader,
-    private val onClick: (MovieViewEntity) -> Unit,
-    private val onLongClick: (MovieViewEntity) -> Unit
+    private val onClick: (PartialMovieViewEntity) -> Unit,
+    private val onLongClick: (PartialMovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
     private val items = mutableListOf<MoviesAdapterItem>()
@@ -31,7 +32,7 @@ class MoviesAdapter(
         return items[position].viewType
     }
 
-    fun update(movies: List<MovieViewEntity>) {
+    fun update(movies: List<PartialMovieViewEntity>) {
         val newItems = if (movies.isNotEmpty()) {
             movies.map { MoviesAdapterItem.Movie.Item(it) } + MoviesAdapterItem.LoadMore
         } else {

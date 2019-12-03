@@ -1,12 +1,12 @@
 package com.hellmund.primetime.recommendations.ui
 
 import com.hellmund.primetime.data.model.RecommendationsType
-import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 
 data class HomeViewState(
     val recommendationsType: RecommendationsType = RecommendationsType.Personalized(),
-    val data: List<MovieViewEntity> = emptyList(),
-    val filtered: List<MovieViewEntity>? = null,
+    val data: List<PartialMovieViewEntity> = emptyList(),
+    val filtered: List<PartialMovieViewEntity>? = null,
     val pagesLoaded: Int = 0,
     val isLoading: Boolean = false,
     val error: Throwable? = null
@@ -20,27 +20,27 @@ data class HomeViewState(
         return copy(isLoading = false, error = t)
     }
 
-    fun toData(result: Result.Data): HomeViewState {
-        val newData = data + result.data
+    fun toData(viewResult: ViewResult.Data): HomeViewState {
+        val newData = data + viewResult.data
         return copy(
-            recommendationsType = result.type,
+            recommendationsType = viewResult.type,
             data = newData,
             filtered = null,
-            pagesLoaded = result.page,
+            pagesLoaded = viewResult.page,
             isLoading = false,
             error = null
         )
     }
 
-    fun toData(result: Result.RatingStored): HomeViewState {
-        val movies = data.minus(result.movie)
+    fun toData(viewResult: ViewResult.RatingStored): HomeViewState {
+        val movies = data.minus(viewResult.movie)
         return copy(data = movies)
     }
 
-    fun toFiltered(result: Result.Filter): HomeViewState {
-        val genreIds = result.genres.map { it.id }.toSet()
-        val genreMovies = data.filter { genreIds.containsAny(it.raw.genres) }
-        val type = RecommendationsType.Personalized(result.genres)
+    fun toFiltered(viewResult: ViewResult.Filter): HomeViewState {
+        val genreIds = viewResult.genres.map { it.id }.toSet()
+        val genreMovies = data.filter { genreIds.containsAny(it.raw.genreIds) }
+        val type = RecommendationsType.Personalized(viewResult.genres)
         return copy(recommendationsType = type, filtered = genreMovies)
     }
 

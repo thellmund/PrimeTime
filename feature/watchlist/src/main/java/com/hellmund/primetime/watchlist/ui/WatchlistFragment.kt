@@ -102,14 +102,14 @@ class WatchlistFragment : Fragment() {
     }
 
     private fun onNotificationToggle(movie: WatchlistMovieViewEntity) {
-        viewModel.dispatch(Action.ToggleNotification(movie))
+        viewModel.dispatch(ViewEvent.ToggleNotification(movie))
     }
 
     private fun onRemove(movie: WatchlistMovieViewEntity) {
         requireContext().showCancelableDialog(
             messageResId = R.string.remove_from_watchlist_header,
             positiveResId = R.string.remove,
-            onPositive = { viewModel.dispatch(Action.Remove(movie)) })
+            onPositive = { viewModel.dispatch(ViewEvent.Remove(movie)) })
     }
 
     private fun onWatchedIt(movie: WatchlistMovieViewEntity) {
@@ -121,7 +121,7 @@ class WatchlistFragment : Fragment() {
             .setNegativeText(R.string.dislike)
             .onItemSelected { rating ->
                 val ratedMovie = movie.apply(rating)
-                viewModel.dispatch(Action.RateMovie(ratedMovie))
+                viewModel.dispatch(ViewEvent.RateMovie(ratedMovie))
             }
             .show()
     }

@@ -2,9 +2,41 @@ package com.hellmund.primetime.data.model
 
 import android.os.Parcelable
 import com.hellmund.api.model.FullApiMovie
+import com.hellmund.api.model.PartialApiMovie
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
 import org.threeten.bp.LocalDate
+
+@Parcelize
+data class PartialMovie(
+    val id: Long,
+    val posterPath: String?,
+    val backdropPath: String?,
+    val title: String,
+    val genreIds: List<Long>,
+    val description: String,
+    val releaseDate: LocalDate,
+    val popularity: Float,
+    val voteAverage: Float,
+    val voteCount: Int
+) : Parcelable {
+
+    companion object {
+
+        fun from(apiMovie: PartialApiMovie) = PartialMovie(
+            id = apiMovie.id,
+            posterPath = apiMovie.posterPath,
+            backdropPath = apiMovie.backdropPath,
+            title = apiMovie.title,
+            genreIds = apiMovie.genreIds,
+            description = apiMovie.description,
+            releaseDate = apiMovie.releaseDate,
+            popularity = apiMovie.popularity,
+            voteAverage = apiMovie.voteAverage,
+            voteCount = apiMovie.voteCount
+        )
+    }
+}
 
 @Parcelize
 data class Movie(

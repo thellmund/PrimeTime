@@ -9,6 +9,8 @@ import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.onboarding.selectmovies.domain.Sample
 import com.hellmund.primetime.onboarding.selectmovies.domain.SamplesRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
+import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
+import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime.now
@@ -20,88 +22,92 @@ data class SelectMoviesViewState(
     val data: List<Sample> = emptyList(),
     val isLoading: Boolean = false,
     val isLoadingMore: Boolean = false,
-    val error: Throwable? = null,
-    val isFinished: Boolean = false
+    val error: Throwable? = null
 ) {
     val isError: Boolean
         get() = error != null
 }
 
-class SamplesViewStateReducer : Reducer<SelectMoviesViewState, Result> {
+sealed class ViewEvent {
+    object Refresh : ViewEvent()
+    data class ItemClicked(val sample: Sample) : ViewEvent()
+    data class Store(val samples: List<Sample>) : ViewEvent()
+}
+
+sealed class ViewResult {
+    object Loading : ViewResult()
+    data class Data(val data: List<Sample>, val page: Int) : ViewResult()
+    data class Error(val error: Throwable) : ViewResult()
+    data class SelectionChanged(val sample: Sample) : ViewResult()
+    object None : ViewResult()
+}
+
+sealed class NavigationResult {
+    object OpenNext : NavigationResult()
+}
+
+class SamplesViewStateReducer : Reducer<SelectMoviesViewState, ViewResult> {
     override fun invoke(
         state: SelectMoviesViewState,
-        result: Result
-    ) = when (result) {
-        is Result.Loading -> state.copy(isLoading = true, error = null)
-        is Result.Data -> {
-            val data = if (result.page == 1) result.data else state.data + result.data
-            state.copy(pages = result.page, data = data, isLoading = false, error = null)
+        viewResult: ViewResult
+    ) = when (viewResult) {
+        is ViewResult.Loading -> state.copy(isLoading = true, error = null)
+        is ViewResult.Data -> {
+            val data = if (viewResult.page == 1) viewResult.data else state.data + viewResult.data
+            state.copy(pages = viewResult.page, data = data, isLoading = false, error = null)
         }
-        is Result.Error -> state.copy(isLoading = false, error = result.error)
-        is Result.SelectionChanged -> {
+        is ViewResult.Error -> state.copy(isLoading = false, error = viewResult.error)
+        is ViewResult.SelectionChanged -> {
             val items = state.data
-            val index = items.indexOfFirst { it.id == result.sample.id }
+            val index = items.indexOfFirst { it.id == viewResult.sample.id }
             val newItems = items.toMutableList()
-            newItems[index] = result.sample
+            newItems[index] = viewResult.sample
             state.copy(data = newItems)
         }
-        is Result.Finished -> state.copy(isFinished = true)
-        is Result.None -> state
+        is ViewResult.None -> state
     }
 }
 
-class SamplesViewStateStore : ViewStateStore<SelectMoviesViewState, Result>(
+class SamplesViewStateStore : ViewStateStore<SelectMoviesViewState, ViewResult>(
     initialState = SelectMoviesViewState(),
     reducer = SamplesViewStateReducer()
 )
-
-sealed class Action {
-    object Refresh : Action()
-    data class ItemClicked(val sample: Sample) : Action()
-    data class Store(val samples: List<Sample>) : Action()
-}
-
-sealed class Result {
-    object Loading : Result()
-    data class Data(val data: List<Sample>, val page: Int) : Result()
-    data class Error(val error: Throwable) : Result()
-    data class SelectionChanged(val sample: Sample) : Result()
-    object Finished : Result()
-    object None : Result()
-}
 
 class SelectMoviesViewModel @Inject constructor(
     private val repository: SamplesRepository,
     private val genresRepository: GenresRepository
 ) : ViewModel() {
 
-    private val store = SamplesViewStateStore()
-    val viewState: LiveData<SelectMoviesViewState> = store.viewState
+    private val navigationResultsStore = SingleEventStore<NavigationResult>()
+    val navigationResults: LiveData<SingleEvent<NavigationResult>> = navigationResultsStore.events
+
+    private val viewStateStore = SamplesViewStateStore()
+    val viewState: LiveData<SelectMoviesViewState> = viewStateStore.viewState
 
     private var page: Int = 1
 
     init {
         viewModelScope.launch {
-            store.dispatch(Result.Loading)
-            store.dispatch(fetchMovies(page))
+            viewStateStore.dispatch(ViewResult.Loading)
+            viewStateStore.dispatch(fetchMovies(page))
         }
     }
 
     private suspend fun fetchMovies(
         page: Int
-    ): Result {
+    ): ViewResult {
         return try {
             val genres = genresRepository.getPreferredGenres()
             val recommendations = repository.fetch(genres, page)
-            Result.Data(recommendations, page)
+            ViewResult.Data(recommendations, page)
         } catch (e: IOException) {
-            Result.Error(e)
+            ViewResult.Error(e)
         }
     }
 
     private fun toggleSelection(sample: Sample) {
         val newSample = sample.copy(isSelected = sample.isSelected.not())
-        store.dispatch(Result.SelectionChanged(newSample))
+        viewStateStore.dispatch(ViewResult.SelectionChanged(newSample))
     }
 
     private suspend fun storeSelection(samples: List<Sample>) {
@@ -114,15 +120,15 @@ class SelectMoviesViewModel @Inject constructor(
             )
         }
         repository.store(historyMovies)
-        store.dispatch(Result.Finished)
+        navigationResultsStore.dispatch(NavigationResult.OpenNext)
     }
 
-    fun dispatch(action: Action) {
+    fun dispatch(viewEvent: ViewEvent) {
         viewModelScope.launch {
-            when (action) {
-                is Action.Refresh -> fetchMovies(page)
-                is Action.ItemClicked -> toggleSelection(action.sample)
-                is Action.Store -> storeSelection(action.samples)
+            when (viewEvent) {
+                is ViewEvent.Refresh -> fetchMovies(page)
+                is ViewEvent.ItemClicked -> toggleSelection(viewEvent.sample)
+                is ViewEvent.Store -> storeSelection(viewEvent.samples)
             }
         }
     }

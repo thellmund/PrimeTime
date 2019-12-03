@@ -19,6 +19,7 @@ import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.util.showToast
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
@@ -27,7 +28,7 @@ class SelectMoviesFragment : Fragment() {
 
     private var onFinishedAction: () -> Unit = {}
     private val adapter: SamplesAdapter by lazy {
-        SamplesAdapter(imageLoader) { viewModel.dispatch(Action.ItemClicked(it)) }
+        SamplesAdapter(imageLoader) { viewModel.dispatch(ViewEvent.ItemClicked(it)) }
     }
 
     @Inject
@@ -65,8 +66,10 @@ class SelectMoviesFragment : Fragment() {
         updateNextButton()
 
         binding.nextButton.setOnClickListener { saveMovies() }
-        binding.errorButton.setOnClickListener { viewModel.dispatch(Action.Refresh) }
+        binding.errorButton.setOnClickListener { viewModel.dispatch(ViewEvent.Refresh) }
+
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
+        viewModel.navigationResults.observeSingleEvents(viewLifecycleOwner, this::navigate)
     }
 
     private fun setupRecyclerView() {
@@ -77,7 +80,7 @@ class SelectMoviesFragment : Fragment() {
 
         gridView.onBottomReached {
             if (isLoadingMore.not()) {
-                viewModel.dispatch(Action.Refresh)
+                viewModel.dispatch(ViewEvent.Refresh)
                 isLoadingMore = true
             }
         }
@@ -87,11 +90,6 @@ class SelectMoviesFragment : Fragment() {
     }
 
     private fun render(viewState: SelectMoviesViewState) {
-        if (viewState.isFinished) {
-            openNext()
-            return
-        }
-
         adapter.update(viewState.data)
 
         val selected = viewState.data.filter { it.isSelected }
@@ -100,6 +98,12 @@ class SelectMoviesFragment : Fragment() {
         binding.gridView.isVisible = viewState.isError.not()
         binding.errorContainer.isVisible = viewState.isError
         binding.nextButton.isVisible = viewState.isError.not()
+    }
+
+    private fun navigate(result: NavigationResult) {
+        when (result) {
+            is NavigationResult.OpenNext -> openNext()
+        }
     }
 
     private fun updateNextButton(count: Int = 0) {
@@ -128,7 +132,7 @@ class SelectMoviesFragment : Fragment() {
 
     private fun saveSelection() {
         val selected = adapter.selected
-        viewModel.dispatch(Action.Store(selected))
+        viewModel.dispatch(ViewEvent.Store(selected))
     }
 
     private fun openNext() {

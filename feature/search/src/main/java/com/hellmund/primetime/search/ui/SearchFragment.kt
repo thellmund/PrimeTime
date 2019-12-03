@@ -31,10 +31,12 @@ import com.hellmund.primetime.search.databinding.FragmentSearchBinding
 import com.hellmund.primetime.search.di.DaggerSearchComponent
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.RatedMovie
+import com.hellmund.primetime.ui_common.PartialMovieViewEntity
+import com.hellmund.primetime.ui_common.RatedPartialMovie
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
 import com.pandora.bottomnavigator.BottomNavigator
 import javax.inject.Inject
 import javax.inject.Provider
@@ -97,15 +99,15 @@ class SearchFragment : Fragment(), TextWatcher,
         initSearchResultsRecyclerView()
 
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
-        viewModel.destinations.observe(viewLifecycleOwner, this::navigate)
+        viewModel.navigationResults.observeSingleEvents(viewLifecycleOwner, this::navigate)
 
         arguments?.getString(KEY_EXTRA)?.let {
-            viewModel.dispatch(Action.ProcessExtra(it))
+            viewModel.dispatch(ViewEvent.ProcessExtra(it))
         }
     }
 
     fun openCategory(category: String) {
-        viewModel.dispatch(Action.CategorySelected(category))
+        viewModel.dispatch(ViewEvent.CategorySelected(category))
     }
 
     private fun render(viewState: SearchViewState) {
@@ -170,12 +172,14 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun onCategorySelected(category: String) {
-        viewModel.dispatch(Action.CategorySelected(category))
+        viewModel.dispatch(ViewEvent.CategorySelected(category))
     }
 
-    private fun navigate(event: NavigationEvent) {
-        val recommendationsType = event.getIfNotHandled() ?: return
-        openCategory(recommendationsType)
+    private fun navigate(result: NavigationResult) {
+        when (result) {
+            is NavigationResult.OpenMovieDetails -> onClickedMovieLoaded(result.viewEntity)
+            is NavigationResult.OpenCategory -> openCategory(result.recommendationsType)
+        }
     }
 
     private fun openCategory(type: RecommendationsType) {
@@ -203,15 +207,15 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        viewModel.dispatch(Action.TextChanged(s.toString()))
+        viewModel.dispatch(ViewEvent.TextChanged(s.toString()))
     }
 
     override fun afterTextChanged(s: Editable?) = Unit
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
-    private fun addRating(ratedMovie: RatedMovie) {
-        viewModel.dispatch(Action.AddToHistory(ratedMovie))
+    private fun addRating(ratedMovie: RatedPartialMovie) {
+        viewModel.dispatch(ViewEvent.AddToHistory(ratedMovie))
     }
 
     private fun clearSearchBarContent() = with(binding.searchContainer) {
@@ -222,7 +226,7 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
             val input = v.text.toString().trim()
-            viewModel.dispatch(Action.Search(input))
+            viewModel.dispatch(ViewEvent.Search(input))
             toggleKeyboard(false)
             return true
         }
@@ -230,20 +234,24 @@ class SearchFragment : Fragment(), TextWatcher,
         return false
     }
 
-    private fun onItemClick(movie: MovieViewEntity) {
+    private fun onItemClick(movie: PartialMovieViewEntity) {
+        viewModel.dispatch(ViewEvent.MovieClicked(movie))
+    }
+
+    private fun onClickedMovieLoaded(movie: MovieViewEntity) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
         val fragment = fragmentFactory.movieDetails(args) as BottomSheetDialogFragment
         fragment.show(requireFragmentManager(), fragment.tag)
     }
 
-    private fun onWatched(movie: MovieViewEntity) {
+    private fun onWatched(movie: PartialMovieViewEntity) {
         RateMovieDialog
             .make(requireActivity())
             .setTitle(movie.title)
             .setPositiveText(R.string.show_more_like_this)
             .setNegativeText(R.string.show_less_like_this)
             .onItemSelected { rating ->
-                val ratedMovie = RatedMovie(movie, rating)
+                val ratedMovie = RatedPartialMovie(movie, rating)
                 addRating(ratedMovie)
             }
             .show()

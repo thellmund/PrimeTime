@@ -8,15 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.search.R
 import com.hellmund.primetime.search.databinding.ListItemSearchResultsBinding
-import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 
 class SearchResultsAdapter(
     private val imageLoader: ImageLoader,
-    private val onItemClick: (MovieViewEntity) -> Unit,
-    private val onWatched: (MovieViewEntity) -> Unit
+    private val onItemClick: (PartialMovieViewEntity) -> Unit,
+    private val onWatched: (PartialMovieViewEntity) -> Unit
 ) : RecyclerView.Adapter<SearchResultsAdapter.ViewHolder>() {
 
-    private val items = mutableListOf<MovieViewEntity>()
+    private val items = mutableListOf<PartialMovieViewEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -30,14 +30,9 @@ class SearchResultsAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    fun update(newItems: List<MovieViewEntity>) {
+    fun update(newItems: List<PartialMovieViewEntity>) {
         items.clear()
         items += newItems
-        notifyDataSetChanged()
-    }
-
-    fun clear() {
-        items.clear()
         notifyDataSetChanged()
     }
 
@@ -47,9 +42,9 @@ class SearchResultsAdapter(
 
         fun bind(
             imageLoader: ImageLoader,
-            searchResult: MovieViewEntity,
-            onItemClick: (MovieViewEntity) -> Unit,
-            onWatchedIt: (MovieViewEntity) -> Unit
+            searchResult: PartialMovieViewEntity,
+            onItemClick: (PartialMovieViewEntity) -> Unit,
+            onWatchedIt: (PartialMovieViewEntity) -> Unit
         ) = with(binding) {
             loadImage(imageLoader, searchResult.posterUrl)
 

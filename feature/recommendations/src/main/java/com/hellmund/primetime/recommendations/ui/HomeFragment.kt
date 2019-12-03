@@ -29,11 +29,13 @@ import com.hellmund.primetime.recommendations.databinding.FragmentHomeBinding
 import com.hellmund.primetime.recommendations.di.DaggerMoviesComponent
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
+import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Provider
@@ -98,6 +100,7 @@ class HomeFragment : Fragment(), Reselectable {
         setupRecyclerView()
         setupFab()
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
+        viewModel.navigationEvents.observeSingleEvents(viewLifecycleOwner, this::handleNavigationResult)
     }
 
     override fun onResume() {
@@ -120,13 +123,13 @@ class HomeFragment : Fragment(), Reselectable {
 
     private fun setupRecyclerView() = with(binding) {
         swipeRefreshLayout.setColorSchemeResources(R.color.teal_500)
-        swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(Action.LoadMovies(page = 1)) }
+        swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(ViewEvent.LoadMovies(page = 1)) }
 
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.adapter = adapter
         recyclerView.onBottomReached {
-            viewModel.dispatch(Action.LoadMore)
+            viewModel.dispatch(ViewEvent.LoadMore)
         }
 
         val spacing = resources.getDimension(R.dimen.default_space).roundToInt()
@@ -154,13 +157,23 @@ class HomeFragment : Fragment(), Reselectable {
         } ?: adapter.update(viewState.data)
     }
 
+    private fun handleNavigationResult(result: NavigationResult) {
+        when (result) {
+            is NavigationResult.ClickedMovieLoaded -> openMovieDetails(result.viewEntity)
+        }
+    }
+
+    private fun openMovieDetails(movie: PartialMovieViewEntity) {
+        viewModel.dispatch(ViewEvent.LoadFullMovie(movie.id))
+    }
+
     private fun openMovieDetails(movie: MovieViewEntity) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
         val fragment = fragmentFactory.movieDetails(args) as BottomSheetDialogFragment
         fragment.show(requireFragmentManager(), fragment.tag)
     }
 
-    private fun openRatingDialog(movie: MovieViewEntity) {
+    private fun openRatingDialog(movie: PartialMovieViewEntity) {
         val header = getString(R.string.rate_movie, movie.title)
         RateMovieDialog
             .make(requireActivity())
@@ -169,7 +182,7 @@ class HomeFragment : Fragment(), Reselectable {
             .setNegativeText(R.string.show_less_like_this)
             .onItemSelected { rating ->
                 val ratedMovie = movie.apply(rating)
-                viewModel.dispatch(Action.StoreRating(ratedMovie))
+                viewModel.dispatch(ViewEvent.StoreRating(ratedMovie))
             }
             .show()
     }
@@ -236,7 +249,7 @@ class HomeFragment : Fragment(), Reselectable {
             positiveResId = R.string.filter,
             onConfirmed = { selected ->
                 val selectedGenres = genres.filterIndexed { i, _ -> selected.contains(i) }
-                viewModel.dispatch(Action.Filter(selectedGenres))
+                viewModel.dispatch(ViewEvent.Filter(selectedGenres))
             }
         )
     }
