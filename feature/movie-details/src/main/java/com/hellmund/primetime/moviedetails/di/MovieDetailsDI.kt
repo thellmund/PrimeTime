@@ -5,7 +5,9 @@ import com.hellmund.primetime.core.di.CoreComponent
 import com.hellmund.primetime.moviedetails.data.MovieDetailsRepository
 import com.hellmund.primetime.moviedetails.data.RealMovieDetailsRepository
 import com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment
+import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
+import com.hellmund.primetime.ui_common.RealMovieViewEntitiesMapper
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
@@ -30,6 +32,10 @@ interface MovieDetailsComponent {
 
 @Module
 interface MovieDetailsModule {
+
     @Binds
     fun bindVideosRepository(impl: RealMovieDetailsRepository): MovieDetailsRepository
+
+    @Binds
+    fun bindViewEntitiesMapper(impl: RealMovieViewEntitiesMapper): MovieViewEntitiesMapper
 }

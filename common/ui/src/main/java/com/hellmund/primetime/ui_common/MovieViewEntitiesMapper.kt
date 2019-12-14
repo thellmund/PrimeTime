@@ -6,12 +6,18 @@ import com.hellmund.primetime.data.model.PartialMovie
 import com.hellmund.primetime.data.repositories.GenresRepository
 import javax.inject.Inject
 
-class MovieViewEntitiesMapper @Inject constructor(
+interface MovieViewEntitiesMapper {
+    suspend fun mapPartialMovies(movies: List<PartialMovie>): List<PartialMovieViewEntity>
+    operator fun invoke(movies: List<Movie>): List<MovieViewEntity>
+    operator fun invoke(movie: Movie): MovieViewEntity
+}
+
+class RealMovieViewEntitiesMapper @Inject constructor(
     private val valueFormatter: ValueFormatter,
     private val genresRepository: GenresRepository
-) {
+) : MovieViewEntitiesMapper {
 
-    suspend fun mapPartialMovies(
+    override suspend fun mapPartialMovies(
         movies: List<PartialMovie>
     ): List<PartialMovieViewEntity> = movies.map { mapPartialMovie(it) }
 
@@ -34,11 +40,11 @@ class MovieViewEntitiesMapper @Inject constructor(
         )
     }
 
-    operator fun invoke(
+    override operator fun invoke(
         movies: List<Movie>
     ): List<MovieViewEntity> = movies.map { invoke(it) }
 
-    operator fun invoke(movie: Movie): MovieViewEntity {
+    override operator fun invoke(movie: Movie): MovieViewEntity {
         return MovieViewEntity(
             id = movie.id,
             posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}",

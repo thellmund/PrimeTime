@@ -39,4 +39,11 @@ dependencies {
 
     // Dagger
     kapt(Libraries.daggerProcessor)
+
+    // Testing
+    testImplementation(Libraries.coreTesting)
+    testImplementation(Libraries.coroutinesTesting)
+    testImplementation(Libraries.jUnit)
+    testImplementation(Libraries.mockitoCore)
+    testCompile(Libraries.threeTen)
 }

@@ -34,6 +34,7 @@ dependencies {
 
     // Modules
     implementation(project(":core"))
+    implementation(project(":core"))
     implementation(project(":common:data"))
 
     // AndroidX

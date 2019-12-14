@@ -5,6 +5,8 @@ import com.hellmund.primetime.core.di.CoreComponent
 import com.hellmund.primetime.search.data.RealSearchRepository
 import com.hellmund.primetime.search.data.SearchRepository
 import com.hellmund.primetime.search.ui.SearchFragment
+import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
+import com.hellmund.primetime.ui_common.RealMovieViewEntitiesMapper
 import dagger.Binds
 import dagger.Component
 import dagger.Module
@@ -26,6 +28,10 @@ interface SearchComponent {
 
 @Module
 interface SearchModule {
+
     @Binds
     fun bindSearchRepository(impl: RealSearchRepository): SearchRepository
+
+    @Binds
+    fun bindViewEntitiesMapper(impl: RealMovieViewEntitiesMapper): MovieViewEntitiesMapper
 }

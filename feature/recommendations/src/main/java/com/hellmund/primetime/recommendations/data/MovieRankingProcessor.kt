@@ -14,12 +14,19 @@ data class MovieWithScore(
     val score: Float
 )
 
-class MovieRankingProcessor @Inject constructor(
+interface MovieRankingProcessor {
+    suspend operator fun invoke(
+        movies: List<PartialMovie>,
+        type: RecommendationsType
+    ): List<PartialMovie>
+}
+
+class RealMovieRankingProcessor @Inject constructor(
     private val historyRepo: HistoryRepository,
     private val watchlistRepo: WatchlistRepository
-) {
+) : MovieRankingProcessor {
 
-    suspend operator fun invoke(
+    override suspend operator fun invoke(
         movies: List<PartialMovie>,
         type: RecommendationsType
     ): List<PartialMovie> {
