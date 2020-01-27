@@ -29,9 +29,7 @@ class HistoryAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    fun canRemove(): Boolean {
-        return itemCount > 4
-    }
+    fun canRemove(): Boolean = itemCount > 4
 
     fun update(newItems: List<HistoryMovieViewEntity>) {
         val diffResult = DiffUtil.calculateDiff(DiffUtilCallback(items, newItems))
