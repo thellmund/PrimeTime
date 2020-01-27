@@ -18,7 +18,7 @@ class SettingsActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
-                .add(R.id.content, SettingsFragment.newInstance())
+                .add(R.id.contentFrame, SettingsFragment.newInstance())
                 .commit()
         }
     }
