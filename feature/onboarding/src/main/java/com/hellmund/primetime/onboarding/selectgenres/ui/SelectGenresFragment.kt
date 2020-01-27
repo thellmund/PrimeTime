@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.google.android.material.chip.Chip
@@ -17,6 +18,7 @@ import com.hellmund.primetime.onboarding.databinding.FragmentSelectGenresBinding
 import com.hellmund.primetime.onboarding.selectgenres.di.OnboardingComponentProvider
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
+import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -51,6 +53,12 @@ class SelectGenresFragment : Fragment() {
         binding.container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         updateNextButton()
         binding.button.setOnClickListener { saveGenres() }
+
+        binding.button.doOnApplyWindowInsets { v, insets, initialState ->
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = initialState.margins.bottom + insets.systemWindowInsetBottom
+            }
+        }
 
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
         viewModel.navigationResults.observeSingleEvents(viewLifecycleOwner, this::navigate)

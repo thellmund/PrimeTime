@@ -8,7 +8,7 @@ buildscript {
         maven(url = "https://plugins.gradle.org/m2/")
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.6.0-beta04")
+        classpath("com.android.tools.build:gradle:3.6.0-beta05")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
         classpath("com.squareup.sqldelight:gradle-plugin:${Versions.sqlDelight}")
         classpath("org.jlleitschuh.gradle:ktlint-gradle:${Versions.ktlint}")

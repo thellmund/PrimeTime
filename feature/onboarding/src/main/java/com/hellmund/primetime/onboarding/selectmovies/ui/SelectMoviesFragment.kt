@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -20,6 +23,7 @@ import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.util.showToast
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
+import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
@@ -67,6 +71,23 @@ class SelectMoviesFragment : Fragment() {
 
         binding.nextButton.setOnClickListener { saveMovies() }
         binding.errorButton.setOnClickListener { viewModel.dispatch(ViewEvent.Refresh) }
+
+        binding.gridView.doOnApplyWindowInsets { v, insets, initialState ->
+            v.updatePadding(
+                bottom = initialState.paddings.bottom + insets.systemWindowInsetBottom
+            )
+        }
+
+        binding.nextButtonContainer.doOnApplyWindowInsets { v, insets, initialState ->
+            val initialHeight = requireContext().resources.getDimensionPixelSize(R.dimen.large_button)
+            v.updateLayoutParams<ViewGroup.LayoutParams> {
+                height = initialHeight + insets.systemWindowInsetBottom
+            }
+
+            v.updatePadding(
+                bottom = initialState.paddings.bottom + insets.systemWindowInsetBottom
+            )
+        }
 
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
         viewModel.navigationResults.observeSingleEvents(viewLifecycleOwner, this::navigate)

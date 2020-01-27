@@ -99,6 +99,9 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupSimilarMoviesList()
+        setupReviewsList()
+
         binding.backdropImageView.setOnClickListener { viewModel.dispatch(ViewEvent.OpenTrailer) }
         binding.moreInfoButton.setOnClickListener { viewModel.dispatch(ViewEvent.OpenImdb) }
 
@@ -109,6 +112,21 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         binding.removeFromWatchlistButton.setOnClickListener {
             viewModel.dispatch(ViewEvent.RemoveFromWatchlist)
         }
+    }
+
+    private fun setupSimilarMoviesList() = with(binding) {
+        val spacing = resources.getDimension(R.dimen.small_space).roundToInt()
+        recommendationsRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        recommendationsRecyclerView.adapter = recommendationsAdapter
+        recommendationsRecyclerView.addItemDecoration(EqualHorizontalSpacingItemDecoration(spacing))
+    }
+
+    private fun setupReviewsList() = with(binding) {
+        val spacing = resources.getDimension(R.dimen.small_space).roundToInt()
+        reviewsRecyclerView.adapter = reviewsAdapter
+        reviewsRecyclerView.setHasFixedSize(true)
+        reviewsRecyclerView.addItemDecoration(EqualSpacingItemDecoration(spacing))
     }
 
     private fun render(viewState: MovieDetailsViewState) = with(binding) {
@@ -145,17 +163,6 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
         durationTextView.text = movie.formattedRuntime
         ratingTextView.text = movie.formattedVoteAverage
         votesTextView.text = movie.formattedVoteCount
-
-        val spacing = resources.getDimension(R.dimen.small_space).roundToInt()
-
-        recommendationsRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        recommendationsRecyclerView.adapter = recommendationsAdapter
-        recommendationsRecyclerView.addItemDecoration(EqualHorizontalSpacingItemDecoration(spacing))
-
-        reviewsRecyclerView.adapter = reviewsAdapter
-        reviewsRecyclerView.setHasFixedSize(true)
-        reviewsRecyclerView.addItemDecoration(EqualSpacingItemDecoration(spacing))
     }
 
     private fun downloadPosters() {
