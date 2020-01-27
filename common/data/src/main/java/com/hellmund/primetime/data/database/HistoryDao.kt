@@ -11,6 +11,7 @@ import javax.inject.Inject
 interface HistoryDao {
     fun observeAll(): Flow<List<HistoryMovie>>
     suspend fun getLiked(): List<HistoryMovie>
+    suspend fun count(): Int
     suspend fun count(movieId: Long): Int
     suspend fun store(vararg movies: HistoryMovie)
     suspend fun updateRating(movie: HistoryMovie, rating: Rating)
@@ -26,6 +27,8 @@ class RealHistoryDao @Inject constructor(
     override fun observeAll(): Flow<List<HistoryMovie>> = queries.getAll().asFlow().mapToList()
 
     override suspend fun getLiked(): List<HistoryMovie> = queries.getLiked().executeAsList()
+
+    override suspend fun count(): Int = queries.getAll().executeAsList().size
 
     override suspend fun count(
         movieId: Long

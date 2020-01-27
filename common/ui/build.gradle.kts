@@ -42,6 +42,8 @@ dependencies {
     api(Libraries.coreKtx)
     api(Libraries.fragmentKtx)
     api(Libraries.material)
+    api(Libraries.insetter)
+    api(Libraries.insetterKtx)
 
     // Lifecycle & ViewModel
     api(Libraries.lifecycleViewModel)

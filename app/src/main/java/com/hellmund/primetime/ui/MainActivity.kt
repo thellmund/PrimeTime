@@ -1,8 +1,11 @@
 package com.hellmund.primetime.ui
 
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
@@ -14,10 +17,12 @@ import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.ui_common.Reselectable
+import com.hellmund.primetime.ui_common.util.requestFullscreenLayout
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
 import com.hellmund.primetime.workers.GenresPrefetcher
 import com.pandora.bottomnavigator.BottomNavigator
+import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -62,6 +67,8 @@ class MainActivity : AppCompatActivity() {
 
         genresPrefetcher.run()
 
+        window.requestFullscreenLayout()
+
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentCallback, false)
         binding.bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
 
@@ -78,6 +85,18 @@ class MainActivity : AppCompatActivity() {
         )
 
         viewModel.watchlistCount.observe(this, this::updateWatchlistBadge)
+
+        binding.contentFrame.doOnApplyWindowInsets { v, insets, initialState ->
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = initialState.margins.top + insets.systemWindowInsetTop
+            }
+        }
+
+        binding.bottomNavigation.doOnApplyWindowInsets { view, insets, initialState ->
+            view.updatePadding(
+                bottom = initialState.paddings.bottom + insets.systemWindowInsetBottom
+            )
+        }
 
         intent?.getStringExtra(SHORTCUT_EXTRA)?.let {
             handleShortcutOpen(it)

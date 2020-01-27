@@ -88,6 +88,7 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/nextButtonContainer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/large_button"
         android:layout_gravity="bottom"

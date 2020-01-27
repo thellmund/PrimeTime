@@ -69,10 +69,10 @@ class WatchlistViewModel @Inject constructor(
     val viewState: LiveData<WatchlistViewState> = store.viewState
 
     init {
-        val isHistoryVisible = onboardingHelper.isFirstLaunch.not()
-        store.dispatch(ViewResult.HistoryButtonToggled(isVisible = isHistoryVisible))
-
         viewModelScope.launch {
+            val isHistoryVisible = historyRepository.count() > 0
+            store.dispatch(ViewResult.HistoryButtonToggled(isVisible = isHistoryVisible))
+
             repository
                 .observeAll()
                 .map { viewEntityMapper(it) }

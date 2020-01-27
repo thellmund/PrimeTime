@@ -9,7 +9,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.history.R
@@ -64,8 +63,6 @@ class HistoryFragment : Fragment() {
 
     private fun setupRecyclerView() {
         val recyclerView = binding.recyclerView
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = adapter
     }
@@ -77,7 +74,10 @@ class HistoryFragment : Fragment() {
     }
 
     private fun onOpenDialog(movie: HistoryMovieViewEntity) {
-        val options = getDialogOptions()
+        val options = arrayOf(
+            getString(R.string.edit_rating),
+            getString(R.string.remove_from_history)
+        )
 
         requireContext().showItemsDialog(
             title = movie.title,
@@ -88,13 +88,6 @@ class HistoryFragment : Fragment() {
                     1 -> removeFromHistory(movie)
                 }
             }
-        )
-    }
-
-    private fun getDialogOptions(): Array<String> {
-        return arrayOf(
-            getString(R.string.edit_rating),
-            getString(R.string.remove_from_history)
         )
     }
 
