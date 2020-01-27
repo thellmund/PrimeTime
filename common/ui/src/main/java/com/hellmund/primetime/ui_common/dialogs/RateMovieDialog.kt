@@ -12,7 +12,7 @@ import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.ui_common.R
 import com.hellmund.primetime.ui_common.databinding.FragmentRateMovieDialogBinding
 
-class RateMovieDialog(private val activity: FragmentActivity) {
+class RateMovieDialog private constructor(private val activity: FragmentActivity) {
 
     private var title: String = ""
     private var positiveText: String = ""
