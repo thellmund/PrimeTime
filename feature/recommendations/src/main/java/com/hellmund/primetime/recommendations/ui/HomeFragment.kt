@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
@@ -36,6 +37,7 @@ import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
+import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Provider
@@ -100,7 +102,7 @@ class HomeFragment : Fragment(), Reselectable {
         setupRecyclerView()
         setupFab()
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
-        viewModel.navigationEvents.observeSingleEvents(viewLifecycleOwner, this::handleNavigationResult)
+        viewModel.navigationEvents.observeSingleEvents(viewLifecycleOwner, this::navigate)
     }
 
     override fun onResume() {
@@ -109,16 +111,19 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun setupPersonalizationBanner() {
-        val banner = binding.banner
         if (onboardingHelper.isFirstLaunch && type is Personalized) {
-            banner.setOnClickListener {
-                val intent = requireContext().createIntent(AddressableActivity.Onboarding)
-                requireContext().startActivity(intent)
-            }
-            banner.show()
+            binding.banner
+                .setOnClickListener(this::openOnboarding)
+                .setOnDismissListener(onboardingHelper::markFinished)
+                .show()
         } else {
-            banner.dismiss()
+            binding.banner.dismiss()
         }
+    }
+
+    private fun openOnboarding() {
+        val intent = requireContext().createIntent(AddressableActivity.Onboarding)
+        requireContext().startActivity(intent)
     }
 
     private fun setupRecyclerView() = with(binding) {
@@ -137,10 +142,15 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun setupFab() = with(binding) {
-        filterFab.isVisible = type is Personalized && onboardingHelper.isFirstLaunch.not()
         filterFab.setOnClickListener {
             lifecycleScope.launch {
                 showFilterDialog()
+            }
+        }
+
+        filterFab.doOnApplyWindowInsets { view, insets, initialState ->
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = initialState.margins.bottom + insets.systemWindowInsetBottom
             }
         }
     }
@@ -155,12 +165,16 @@ class HomeFragment : Fragment(), Reselectable {
         viewState.filtered?.let {
             adapter.update(it)
         } ?: adapter.update(viewState.data)
+
+        binding.filterFab.isVisible = type is Personalized &&
+            onboardingHelper.isFirstLaunch.not() &&
+            viewState.showFilterButton
     }
 
-    private fun handleNavigationResult(result: NavigationResult) {
-        when (result) {
-            is NavigationResult.ClickedMovieLoaded -> openMovieDetails(result.viewEntity)
-        }
+    private fun navigate(
+        result: NavigationResult
+    ) = when (result) {
+        is NavigationResult.ClickedMovieLoaded -> openMovieDetails(result.viewEntity)
     }
 
     private fun openMovieDetails(movie: PartialMovieViewEntity) {

@@ -9,18 +9,10 @@
         android:id="@+id/toolbarContainer"
         layout="@layout/view_toolbar" />
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:orientation="vertical">
-
-        <com.hellmund.primetime.recommendations.ui.MaterialBanner
-            android:id="@+id/banner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:visibility="visible" />
+        android:layout_marginTop="?attr/actionBarSize">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
@@ -34,7 +26,15 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    </LinearLayout>
+        <com.hellmund.primetime.recommendations.ui.MaterialBanner
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/filterFab"

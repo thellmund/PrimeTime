@@ -18,6 +18,7 @@ interface ValueFormatter {
     fun formatDate(date: LocalDateTime): String
     fun formatRating(rating: Rating): String
     fun formatCount(count: Int): String
+    fun formatDescription(description: String?): String
 }
 
 class RealValueFormatter @Inject constructor(
@@ -65,4 +66,8 @@ class RealValueFormatter @Inject constructor(
             context.getString(R.string.thousand_votes_format_string, value)
         }
     }
+
+    override fun formatDescription(
+        description: String?
+    ): String = description ?: context.getString(R.string.no_information)
 }

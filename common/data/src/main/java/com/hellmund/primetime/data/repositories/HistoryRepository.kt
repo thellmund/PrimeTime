@@ -12,7 +12,6 @@ import javax.inject.Inject
 interface HistoryRepository {
     suspend fun observeAll(): Flow<List<HistoryMovie>>
     suspend fun getLiked(): List<HistoryMovie>
-    suspend fun count(): Int
     suspend fun count(movieId: Long): Int
     suspend fun contains(movieId: Long): Boolean
     suspend fun store(vararg historyMovie: HistoryMovie)
@@ -32,8 +31,6 @@ class RealHistoryRepository @Inject constructor(
     override suspend fun getLiked(): List<HistoryMovie> = dao.getLiked()
 
     override suspend fun count(movieId: Long) = dao.count(movieId)
-
-    override suspend fun count(): Int = dao.count()
 
     override suspend fun contains(movieId: Long): Boolean = dao.count(movieId) > 0
 

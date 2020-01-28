@@ -17,7 +17,9 @@ import javax.inject.Inject
 data class HistoryViewState(
     val data: List<HistoryMovieViewEntity> = emptyList(),
     val isLoading: Boolean = false,
-    val error: Throwable? = null
+    val error: Throwable? = null,
+    val movieToBeRated: HistoryMovieViewEntity? = null,
+    val movieToBeEdited: HistoryMovieViewEntity? = null
 )
 
 sealed class Action {
@@ -34,11 +36,11 @@ sealed class Result {
 class HistoryViewStateReducer : Reducer<HistoryViewState, Result> {
     override fun invoke(
         state: HistoryViewState,
-        result: Result
-    ) = when (result) {
-        is Result.Data -> state.copy(data = result.data, isLoading = false, error = null)
-        is Result.Error -> state.copy(isLoading = false, error = result.error)
-        is Result.Removed -> state.copy(data = state.data.minus(result.movie))
+        viewResult: Result
+    ) = when (viewResult) {
+        is Result.Data -> state.copy(data = viewResult.data, isLoading = false, error = null)
+        is Result.Error -> state.copy(isLoading = false, error = viewResult.error)
+        is Result.Removed -> state.copy(data = state.data.minus(viewResult.movie))
     }
 }
 

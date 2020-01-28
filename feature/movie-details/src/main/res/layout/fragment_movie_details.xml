@@ -5,14 +5,14 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_900"
+    android:clipChildren="true"
     tools:context=".ui.MovieDetailsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/backdropImageView"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -22,7 +22,9 @@
             app:layout_constraintDimensionRatio="H,16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_corner_radius_top_left="@dimen/corner_radius"
+            app:riv_corner_radius_top_right="@dimen/corner_radius" />
 
         <ImageView
             android:layout_width="@dimen/default_icon"

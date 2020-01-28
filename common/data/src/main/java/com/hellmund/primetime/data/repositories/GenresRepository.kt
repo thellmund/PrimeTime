@@ -3,10 +3,12 @@ package com.hellmund.primetime.data.repositories
 import com.hellmund.api.TmdbApiService
 import com.hellmund.primetime.data.database.GenreDao
 import com.hellmund.primetime.data.model.Genre
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface GenresRepository {
     suspend fun getAll(): List<Genre>
+    suspend fun observePreferredGenres(): Flow<List<Genre>>
     suspend fun getPreferredGenres(): List<Genre>
     suspend fun getExcludedGenres(): List<Genre>
     suspend fun fetchGenres(): List<Genre>
@@ -22,6 +24,8 @@ class RealGenresRepository @Inject constructor(
 ) : GenresRepository {
 
     override suspend fun getAll(): List<Genre> = dao.getAll()
+
+    override suspend fun observePreferredGenres(): Flow<List<Genre>> = dao.observePreferredGenres()
 
     override suspend fun getPreferredGenres() = dao.getPreferredGenres()
 

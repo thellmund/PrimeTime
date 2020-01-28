@@ -9,7 +9,8 @@ data class HomeViewState(
     val filtered: List<PartialMovieViewEntity>? = null,
     val pagesLoaded: Int = 0,
     val isLoading: Boolean = false,
-    val error: Throwable? = null
+    val error: Throwable? = null,
+    val showFilterButton: Boolean = false
 ) {
 
     fun toLoading(): HomeViewState {

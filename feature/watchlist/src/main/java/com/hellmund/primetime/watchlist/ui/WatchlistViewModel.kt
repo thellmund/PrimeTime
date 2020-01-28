@@ -70,8 +70,10 @@ class WatchlistViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val isHistoryVisible = historyRepository.count() > 0
-            store.dispatch(ViewResult.HistoryButtonToggled(isVisible = isHistoryVisible))
+            historyRepository
+                .observeAll()
+                .map { it.isNotEmpty() }
+                .collect { store.dispatch(ViewResult.HistoryButtonToggled(isVisible = it)) }
 
             repository
                 .observeAll()

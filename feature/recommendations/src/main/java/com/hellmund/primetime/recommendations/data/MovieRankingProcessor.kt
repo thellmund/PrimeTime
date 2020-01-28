@@ -41,16 +41,18 @@ class MovieRankingProcessor @Inject constructor(
             .toList()
     }
 
-    private fun isReleased(movie: PartialMovie, type: RecommendationsType): Boolean {
-        return when (type) {
-            RecommendationsType.Upcoming -> true
-            else -> movie.releaseDate.isBefore(LocalDate.now()) ?: false
-        }
+    private fun isReleased(
+        movie: PartialMovie,
+        type: RecommendationsType
+    ): Boolean = when (type) {
+        RecommendationsType.Upcoming -> true
+        else -> movie.releaseDate?.isBefore(LocalDate.now()) ?: false
     }
 
     private fun hasEnoughInformation(movie: PartialMovie): Boolean {
         val hasGenres = movie.genreIds.isNotEmpty()
-        return hasGenres && movie.description.isNotEmpty() && movie.voteAverage > 0f
+        val hasDescription = movie.description != null
+        return hasGenres && hasDescription && movie.voteAverage > 0f
     }
 
     private fun adjustRating(movie: PartialMovie): MovieWithScore {

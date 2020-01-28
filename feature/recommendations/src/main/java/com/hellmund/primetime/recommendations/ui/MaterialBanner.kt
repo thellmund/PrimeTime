@@ -3,53 +3,60 @@ package com.hellmund.primetime.recommendations.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.transition.TransitionManager
+import android.widget.FrameLayout
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import com.hellmund.primetime.recommendations.R
 import com.hellmund.primetime.recommendations.databinding.ViewBannerBinding
+import dev.chrisbanes.insetter.doOnApplyWindowInsets
 
 class MaterialBanner @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr) {
-
-    private val container: ViewGroup?
-        get() = parent as? ViewGroup
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     private var binding: ViewBannerBinding
+    private var onDismissListener: () -> Unit = {}
 
     init {
         val view = View.inflate(context, R.layout.view_banner, this)
         binding = ViewBannerBinding.bind(view)
-        binding.negativeButton.setOnClickListener { dismiss() }
-    }
+        binding.closeButton.setOnClickListener { dismiss() }
 
-    fun setOnClickListener(listener: () -> Unit) {
-        binding.positiveButton.setOnClickListener {
-            listener()
+        doOnApplyWindowInsets { v, insets, initialState ->
+            v.updateLayoutParams<MarginLayoutParams> {
+                bottomMargin = initialState.margins.bottom + insets.systemWindowInsetBottom
+            }
         }
     }
 
+    fun setOnClickListener(listener: () -> Unit): MaterialBanner {
+        binding.cardView.setOnClickListener { listener() }
+        return this
+    }
+
+    fun setOnDismissListener(listener: () -> Unit): MaterialBanner {
+        onDismissListener = listener
+        return this
+    }
+
     fun show() {
-        TransitionManager.beginDelayedTransition(parent as ViewGroup)
-        visibility = View.VISIBLE
-        container?.updatePadding(top = height)
+        isVisible = true
     }
 
     fun dismiss() {
-        TransitionManager.beginDelayedTransition(parent as ViewGroup)
-        visibility = View.GONE
-        container?.updatePadding(top = 0)
+        hideBanner {
+            onDismissListener.invoke()
+            isVisible = false
+        }
     }
 
-    private fun View.updatePadding(
-        left: Int = paddingLeft,
-        top: Int = paddingTop,
-        right: Int = paddingRight,
-        bottom: Int = paddingBottom
-    ) {
-        setPadding(left, top, right, bottom)
+    private fun hideBanner(block: () -> Unit) {
+        animate()
+            .translationYBy(500f)
+            .setDuration(300)
+            .withEndAction(block)
+            .start()
     }
 }

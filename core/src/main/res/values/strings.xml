@@ -9,6 +9,15 @@
     <string name="access_app_icon">App icon</string>
     <string name="access_logo_tmdb">Logo of The Movie Database</string>
     <string name="faq_tmdb_notice"><small>This product uses the TMDb API but is not endorsed or certified by TMDb.</small></string>
+    <string name="movie_poster">Movie poster</string>
+    <string name="remove_from_watchlist">Remove from watchlist</string>
+    <string name="release">Release</string>
+    <string name="duration">Duration</string>
+    <string name="more_info">More info</string>
+    <string name="similar_movies">Similar movies</string>
+    <string name="no_recommendations_available">No recommendations available</string>
+    <string name="reviews">Reviews</string>
+    <string name="no_reviews_available">No reviews available</string>
 
     <plurals name="vote_count_format_string">
         <item quantity="one">%d votes</item>

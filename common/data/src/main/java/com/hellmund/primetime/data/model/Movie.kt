@@ -14,8 +14,8 @@ data class PartialMovie(
     val backdropPath: String?,
     val title: String,
     val genreIds: List<Long>,
-    val description: String,
-    val releaseDate: LocalDate,
+    val description: String?,
+    val releaseDate: LocalDate?,
     val popularity: Float,
     val voteAverage: Float,
     val voteCount: Int

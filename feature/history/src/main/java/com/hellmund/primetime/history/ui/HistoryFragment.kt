@@ -16,7 +16,6 @@ import com.hellmund.primetime.history.databinding.FragmentHistoryBinding
 import com.hellmund.primetime.history.di.DaggerHistoryComponent
 import com.hellmund.primetime.ui_common.dialogs.showItemsDialog
 import com.hellmund.primetime.ui_common.dialogs.showSingleSelectDialog
-import com.hellmund.primetime.ui_common.util.showToast
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -32,8 +31,8 @@ class HistoryFragment : Fragment() {
 
     private val viewModel: HistoryViewModel by lazyViewModel { viewModelProvider }
 
-    private val adapter: HistoryAdapter by lazy {
-        HistoryAdapter(this::onOpenDialog)
+    private val historyAdapter: HistoryAdapter by lazy {
+        HistoryAdapter(this::openOptionsDialog)
     }
 
     private lateinit var binding: FragmentHistoryBinding
@@ -61,19 +60,18 @@ class HistoryFragment : Fragment() {
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
     }
 
-    private fun setupRecyclerView() {
-        val recyclerView = binding.recyclerView
-        recyclerView.itemAnimator = DefaultItemAnimator()
-        recyclerView.adapter = adapter
+    private fun setupRecyclerView() = with(binding.recyclerView) {
+        itemAnimator = DefaultItemAnimator()
+        adapter = historyAdapter
     }
 
     private fun render(viewState: HistoryViewState) {
         binding.recyclerView.isVisible = viewState.isLoading.not()
         binding.progressBar.isVisible = viewState.isLoading
-        adapter.update(viewState.data)
+        historyAdapter.update(viewState.data)
     }
 
-    private fun onOpenDialog(movie: HistoryMovieViewEntity) {
+    private fun openOptionsDialog(movie: HistoryMovieViewEntity) {
         val options = arrayOf(
             getString(R.string.edit_rating),
             getString(R.string.remove_from_history)
@@ -85,18 +83,10 @@ class HistoryFragment : Fragment() {
             onSelected = { index ->
                 when (index) {
                     0 -> openEditRatingDialog(movie)
-                    1 -> removeFromHistory(movie)
+                    1 -> viewModel.dispatch(Action.Remove(movie))
                 }
             }
         )
-    }
-
-    private fun removeFromHistory(movie: HistoryMovieViewEntity) {
-        if (adapter.canRemove()) {
-            viewModel.dispatch(Action.Remove(movie))
-        } else {
-            requireContext().showToast(R.string.cant_remove_more_items)
-        }
     }
 
     private fun openEditRatingDialog(movie: HistoryMovieViewEntity) {

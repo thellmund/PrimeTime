@@ -1,6 +1,7 @@
 package com.hellmund.primetime.moviedetails.ui
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -69,6 +70,8 @@ class MovieDetailsViewStateReducer : Reducer<MovieDetailsViewState, ViewResult> 
         is ViewResult.LoadedWatchStatus -> state.copy(watchStatus = viewResult.watchStatus)
         is ViewResult.ColorPaletteLoaded -> state.copy(color = viewResult.palette.mutedSwatch?.rgb)
         is ViewResult.None -> state
+    }.also {
+        Log.d("ViewStateReducer", "Reacted to ${viewResult.javaClass.simpleName}")
     }
 }
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
+import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.recommendations.data.MovieRankingProcessor
 import com.hellmund.primetime.recommendations.data.MoviesRepository
@@ -16,6 +17,8 @@ import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -38,6 +41,8 @@ sealed class ViewResult {
     data class Error(val error: Throwable) : ViewResult()
     data class RatingStored(val movie: PartialMovieViewEntity) : ViewResult()
     data class Filter(val genres: List<Genre>) : ViewResult()
+    object ShowFilterButton : ViewResult()
+    object HideFilterButton : ViewResult()
 }
 
 sealed class NavigationResult {
@@ -54,6 +59,8 @@ class HomeViewStateReducer : Reducer<HomeViewState, ViewResult> {
         is ViewResult.Error -> state.toError(viewResult.error)
         is ViewResult.RatingStored -> state.toData(viewResult)
         is ViewResult.Filter -> state.toFiltered(viewResult)
+        is ViewResult.ShowFilterButton -> state.copy(showFilterButton = true)
+        is ViewResult.HideFilterButton -> state.copy(showFilterButton = false)
     }
 }
 
@@ -65,6 +72,7 @@ class HomeViewStateStore : ViewStateStore<HomeViewState, ViewResult>(
 class HomeViewModel @Inject constructor(
     private val repository: MoviesRepository,
     private val historyRepository: HistoryRepository,
+    private val genresRepository: GenresRepository,
     private val rankingProcessor: MovieRankingProcessor,
     private val viewEntitiesMapper: MovieViewEntitiesMapper,
     private val recommendationsType: RecommendationsType
@@ -83,6 +91,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             store.dispatch(ViewResult.Loading)
             fetchRecommendations(recommendationsType, pagesLoaded + 1)
+
+            genresRepository
+                .observePreferredGenres()
+                .map { if (it.isNotEmpty()) ViewResult.ShowFilterButton else ViewResult.HideFilterButton }
+                .collect { store.dispatch(it) }
         }
     }
 

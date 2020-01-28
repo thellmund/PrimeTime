@@ -37,7 +37,8 @@ class PicassoImageLoader @Inject constructor(context: Context) : ImageLoader {
         onComplete: ((Drawable) -> Unit)?,
         onError: (() -> Unit)?
     ) {
-        val requestCreator = instance.load(url)
+        instance
+            .load(url)
             .fit()
             .centerCrop()
             .apply {
@@ -45,15 +46,14 @@ class PicassoImageLoader @Inject constructor(context: Context) : ImageLoader {
                     placeholder(it)
                 }
             }
+            .into(into, object : Callback {
+                override fun onSuccess() {
+                    onComplete?.invoke(into.drawable)
+                }
 
-        requestCreator.into(into, object : Callback {
-            override fun onSuccess() {
-                onComplete?.invoke(into.drawable)
-            }
-
-            override fun onError(e: Exception?) {
-                onError?.invoke()
-            }
-        })
+                override fun onError(e: Exception?) {
+                    onError?.invoke()
+                }
+            })
     }
 }

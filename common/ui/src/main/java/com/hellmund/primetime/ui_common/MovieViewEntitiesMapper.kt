@@ -23,7 +23,7 @@ class MovieViewEntitiesMapper @Inject constructor(
             backdropUrl = "https://image.tmdb.org/t/p/w500${movie.backdropPath}",
             title = movie.title,
             formattedGenres = valueFormatter.formatGenres(genres),
-            description = movie.description,
+            description = valueFormatter.formatDescription(movie.description),
             releaseYear = valueFormatter.formatReleaseYear(movie.releaseDate),
             popularity = movie.popularity,
             formattedVoteAverage = "${movie.voteAverage} / 10",

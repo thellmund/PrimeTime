@@ -49,7 +49,9 @@ class RecommendationsAdapter(
                 into = posterImageView
             )
 
-            root.setOnClickListener { onClick(movie) }
+            posterImageView.setOnClickListener {
+                onClick(movie)
+            }
         }
     }
 }

@@ -99,6 +99,7 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        downloadPosters()
         setupSimilarMoviesList()
         setupReviewsList()
 
@@ -131,7 +132,6 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
 
     private fun render(viewState: MovieDetailsViewState) = with(binding) {
         fillInContent(viewState.movie)
-        downloadPosters()
 
         viewState.color?.let { onMovieColorLoaded(it) }
         viewState.recommendations?.let { showRecommendations(it) }
