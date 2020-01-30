@@ -9,6 +9,7 @@ import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.repositories.WatchlistRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
+import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
@@ -50,11 +51,6 @@ class WatchlistViewStateReducer : Reducer<WatchlistViewState, ViewResult> {
     }
 }
 
-class WatchlistViewStateStore : ViewStateStore<WatchlistViewState, ViewResult>(
-    initialState = WatchlistViewState(),
-    reducer = WatchlistViewStateReducer()
-)
-
 @ExperimentalCoroutinesApi
 @FlowPreview
 class WatchlistViewModel @Inject constructor(
@@ -65,7 +61,11 @@ class WatchlistViewModel @Inject constructor(
     onboardingHelper: OnboardingHelper
 ) : ViewModel() {
 
-    private val store = WatchlistViewStateStore()
+    private val store = viewStateStore(
+        initialState = WatchlistViewState(),
+        reducer = WatchlistViewStateReducer()
+    )
+
     val viewState: LiveData<WatchlistViewState> = store.viewState
 
     init {
@@ -74,7 +74,9 @@ class WatchlistViewModel @Inject constructor(
                 .observeAll()
                 .map { it.isNotEmpty() }
                 .collect { store.dispatch(ViewResult.HistoryButtonToggled(isVisible = it)) }
+        }
 
+        viewModelScope.launch {
             repository
                 .observeAll()
                 .map { viewEntityMapper(it) }

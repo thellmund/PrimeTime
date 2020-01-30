@@ -3,7 +3,6 @@ package com.hellmund.primetime.core
 import android.app.Application
 import android.content.Context
 import androidx.fragment.app.Fragment
-import androidx.work.ListenableWorker
 import com.hellmund.primetime.core.di.CoreComponent
 import com.hellmund.primetime.core.di.DaggerCoreComponent
 import com.hellmund.primetime.core.notifications.NotificationUtils.Companion.createChannel
@@ -41,4 +40,3 @@ class App : Application() {
 
 val Context.coreComponent: CoreComponent get() = App.coreComponent(this)
 val Fragment.coreComponent: CoreComponent get() = App.coreComponent(requireContext())
-val ListenableWorker.coreComponent: CoreComponent get() = App.coreComponent(applicationContext)

@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding.selectgenres.ui
+package com.hellmund.primetime.onboarding.ui.selectgenres
 
 import android.content.Context
 import android.graphics.Color

@@ -1,11 +1,10 @@
-package com.hellmund.primetime.onboarding.selectmovies.ui
+package com.hellmund.primetime.onboarding.ui.selectmovies
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
@@ -14,10 +13,10 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.onboarding.databinding.FragmentSelectMoviesBinding
-import com.hellmund.primetime.onboarding.selectgenres.di.OnboardingComponentProvider
+import com.hellmund.primetime.onboarding.di.OnboardingComponentProvider
+import com.hellmund.primetime.onboarding.ui.OnboardingNavigator
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.util.showToast
@@ -30,7 +29,6 @@ import kotlin.math.roundToInt
 
 class SelectMoviesFragment : Fragment() {
 
-    private var onFinishedAction: () -> Unit = {}
     private val adapter: SamplesAdapter by lazy {
         SamplesAdapter(imageLoader) { viewModel.dispatch(ViewEvent.ItemClicked(it)) }
     }
@@ -39,7 +37,7 @@ class SelectMoviesFragment : Fragment() {
     lateinit var imageLoader: ImageLoader
 
     @Inject
-    lateinit var onboardingHelper: OnboardingHelper
+    lateinit var onboardingNavigator: OnboardingNavigator
 
     @Inject
     lateinit var viewModelProvider: Provider<SelectMoviesViewModel>
@@ -123,7 +121,7 @@ class SelectMoviesFragment : Fragment() {
 
     private fun navigate(result: NavigationResult) {
         when (result) {
-            is NavigationResult.OpenNext -> openNext()
+            is NavigationResult.OpenNext -> onboardingNavigator.next()
         }
     }
 
@@ -156,15 +154,8 @@ class SelectMoviesFragment : Fragment() {
         viewModel.dispatch(ViewEvent.Store(selected))
     }
 
-    private fun openNext() {
-        onboardingHelper.markFinished()
-        onFinishedAction()
-    }
-
     companion object {
         private const val MIN_COUNT = 4
-        fun newInstance(onFinished: () -> Unit) = SelectMoviesFragment().apply {
-            onFinishedAction = onFinished
-        }
+        fun newInstance() = SelectMoviesFragment()
     }
 }

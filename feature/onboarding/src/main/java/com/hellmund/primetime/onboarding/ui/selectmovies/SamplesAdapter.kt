@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding.selectmovies.ui
+package com.hellmund.primetime.onboarding.ui.selectmovies
 
 import android.view.View
 import android.view.ViewGroup
@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.onboarding.selectmovies.domain.Sample
+import com.hellmund.primetime.onboarding.domain.Sample
 
 class SamplesAdapter(
     imageLoader: ImageLoader,

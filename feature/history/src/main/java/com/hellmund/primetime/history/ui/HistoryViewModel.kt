@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
+import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
@@ -44,11 +45,6 @@ class HistoryViewStateReducer : Reducer<HistoryViewState, Result> {
     }
 }
 
-class HistoryViewStateStore : ViewStateStore<HistoryViewState, Result>(
-    initialState = HistoryViewState(),
-    reducer = HistoryViewStateReducer()
-)
-
 @ExperimentalCoroutinesApi
 @FlowPreview
 class HistoryViewModel @Inject constructor(
@@ -56,7 +52,11 @@ class HistoryViewModel @Inject constructor(
     private val viewEntitiesMapper: HistoryMovieViewEntitiesMapper
 ) : ViewModel() {
 
-    private val store = HistoryViewStateStore()
+    private val store = viewStateStore(
+        initialState = HistoryViewState(),
+        reducer = HistoryViewStateReducer()
+    )
+
     val viewState: LiveData<HistoryViewState> = store.viewState
 
     init {

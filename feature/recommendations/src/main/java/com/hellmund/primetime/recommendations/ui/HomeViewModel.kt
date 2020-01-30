@@ -16,7 +16,7 @@ import com.hellmund.primetime.ui_common.RatedPartialMovie
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
-import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
+import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -64,11 +64,6 @@ class HomeViewStateReducer : Reducer<HomeViewState, ViewResult> {
     }
 }
 
-class HomeViewStateStore : ViewStateStore<HomeViewState, ViewResult>(
-    initialState = HomeViewState(),
-    reducer = HomeViewStateReducer()
-)
-
 class HomeViewModel @Inject constructor(
     private val repository: MoviesRepository,
     private val historyRepository: HistoryRepository,
@@ -78,14 +73,20 @@ class HomeViewModel @Inject constructor(
     private val recommendationsType: RecommendationsType
 ) : ViewModel() {
 
-    private val store = HomeViewStateStore()
+    private val store = viewStateStore(
+        initialState = HomeViewState(),
+        reducer = HomeViewStateReducer()
+    )
+
     val viewState: LiveData<HomeViewState> = store.viewState
 
     private val navigationEventsStore = SingleEventStore<NavigationResult>()
     val navigationEvents: LiveData<SingleEvent<NavigationResult>> = navigationEventsStore.events
 
-    private var pagesLoaded: Int = 0
     private var isLoadingMore: Boolean = false
+
+    private val pagesLoaded: Int
+        get() = store.viewState.value?.pagesLoaded ?: 0
 
     init {
         viewModelScope.launch {

@@ -2,7 +2,12 @@ package com.hellmund.primetime.ui_common.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 
-abstract class ViewStateStore<State, Result>(
+fun <State, Result> viewStateStore(
+    initialState: State,
+    reducer: Reducer<State, Result>
+): ViewStateStore<State, Result> = ViewStateStore(initialState, reducer)
+
+class ViewStateStore<State, Result>(
     private val initialState: State,
     private val reducer: Reducer<State, Result>
 ) {

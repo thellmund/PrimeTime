@@ -18,6 +18,7 @@ import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
+import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -75,13 +76,6 @@ class MovieDetailsViewStateReducer : Reducer<MovieDetailsViewState, ViewResult> 
     }
 }
 
-class MovieDetailsViewStateStore(
-    movie: MovieViewEntity
-) : ViewStateStore<MovieDetailsViewState, ViewResult>(
-    initialState = MovieDetailsViewState(movie),
-    reducer = MovieDetailsViewStateReducer()
-)
-
 class MovieDetailsViewModel @Inject constructor(
     private val repository: MovieDetailsRepository,
     private val historyRepository: HistoryRepository,
@@ -90,17 +84,21 @@ class MovieDetailsViewModel @Inject constructor(
     private var movie: MovieViewEntity
 ) : ViewModel() {
 
-    private val viewStateStore = MovieDetailsViewStateStore(movie)
-    val viewState: LiveData<MovieDetailsViewState> = viewStateStore.viewState
+    private val store = viewStateStore(
+        initialState = MovieDetailsViewState(movie),
+        reducer = MovieDetailsViewStateReducer()
+    )
+
+    val viewState: LiveData<MovieDetailsViewState> = store.viewState
 
     private val navigationResultStore = SingleEventStore<NavigationResult>()
     val navigationResults: LiveData<SingleEvent<NavigationResult>> = navigationResultStore.events
 
     init {
         viewModelScope.launch {
-            viewStateStore.dispatch(fetchWatchStatus())
-            viewStateStore.dispatch(fetchSimilarMovies())
-            viewStateStore.dispatch(fetchReviews())
+            store.dispatch(fetchWatchStatus())
+            store.dispatch(fetchSimilarMovies())
+            store.dispatch(fetchReviews())
         }
     }
 
@@ -142,9 +140,9 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private suspend fun loadTrailer() {
-        viewStateStore.dispatch(ViewResult.TrailerLoading)
+        store.dispatch(ViewResult.TrailerLoading)
         val url = repository.fetchVideo(movie.id, movie.title)
-        viewStateStore.dispatch(ViewResult.TrailerLoaded)
+        store.dispatch(ViewResult.TrailerLoaded)
         navigationResultStore.dispatch(NavigationResult.OpenTrailer(url))
     }
 
@@ -164,12 +162,12 @@ class MovieDetailsViewModel @Inject constructor(
         if (count == 0) {
             watchlistRepository.store(movie.raw)
         }
-        viewStateStore.dispatch(ViewResult.LoadedWatchStatus(Movie.WatchStatus.ON_WATCHLIST))
+        store.dispatch(ViewResult.LoadedWatchStatus(Movie.WatchStatus.ON_WATCHLIST))
     }
 
     private suspend fun removeFromWatchlist() {
         watchlistRepository.remove(movie.id)
-        viewStateStore.dispatch(ViewResult.LoadedWatchStatus(Movie.WatchStatus.NOT_WATCHED))
+        store.dispatch(ViewResult.LoadedWatchStatus(Movie.WatchStatus.NOT_WATCHED))
     }
 
     private suspend fun loadColorPalette(bitmap: Bitmap) {
@@ -181,7 +179,7 @@ class MovieDetailsViewModel @Inject constructor(
                 ViewResult.None
             }
         }
-        viewStateStore.dispatch(event)
+        store.dispatch(event)
     }
 
     fun dispatch(viewEvent: ViewEvent) {

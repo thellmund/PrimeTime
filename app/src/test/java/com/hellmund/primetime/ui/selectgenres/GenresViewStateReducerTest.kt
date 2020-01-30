@@ -1,9 +1,9 @@
 package com.hellmund.primetime.ui.selectgenres
 
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.onboarding.selectgenres.ui.GenresViewStateReducer
-import com.hellmund.primetime.onboarding.selectgenres.ui.ViewResult
-import com.hellmund.primetime.onboarding.selectgenres.ui.SelectGenresViewState
+import com.hellmund.primetime.onboarding.ui.selectgenres.GenresViewStateReducer
+import com.hellmund.primetime.onboarding.ui.selectgenres.ViewResult
+import com.hellmund.primetime.onboarding.ui.selectgenres.SelectGenresViewState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull

@@ -18,6 +18,7 @@ import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 import com.hellmund.primetime.ui_common.RatedPartialMovie
 import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
+import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -54,7 +55,11 @@ class SearchViewModel @Inject constructor(
     private val viewEntitiesMapper: MovieViewEntitiesMapper
 ) : ViewModel() {
 
-    private val store = SearchViewStateStore()
+    private val store = viewStateStore(
+        initialState = SearchViewState(),
+        reducer = SearchViewStateReducer()
+    )
+
     val viewState: LiveData<SearchViewState> = store.viewState
 
     private val navigationResultsStore = SingleEventStore<NavigationResult>()

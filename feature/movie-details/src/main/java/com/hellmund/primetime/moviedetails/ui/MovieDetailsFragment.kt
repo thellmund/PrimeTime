@@ -1,6 +1,5 @@
 package com.hellmund.primetime.moviedetails.ui
 
-import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.res.ColorStateList
@@ -16,8 +15,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.hellmund.api.model.Review
 import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.ImageLoader
@@ -27,10 +24,9 @@ import com.hellmund.primetime.data.model.Movie.WatchStatus.ON_WATCHLIST
 import com.hellmund.primetime.moviedetails.R
 import com.hellmund.primetime.moviedetails.databinding.FragmentMovieDetailsBinding
 import com.hellmund.primetime.moviedetails.di.DaggerMovieDetailsComponent
-import com.hellmund.primetime.moviedetails.util.EqualHorizontalSpacingItemDecoration
-import com.hellmund.primetime.moviedetails.util.EqualSpacingItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.PartialMovieViewEntity
+import com.hellmund.primetime.ui_common.dialogs.RoundedBottomSheetDialogFragment
 import com.hellmund.primetime.ui_common.dialogs.showLoading
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
@@ -38,7 +34,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-class MovieDetailsFragment : BottomSheetDialogFragment() {
+class MovieDetailsFragment : RoundedBottomSheetDialogFragment() {
 
     @Inject
     lateinit var imageLoader: ImageLoader
@@ -65,12 +61,6 @@ class MovieDetailsFragment : BottomSheetDialogFragment() {
     private var progressDialog: ProgressDialog? = null
 
     private lateinit var binding: FragmentMovieDetailsBinding
-
-    override fun getTheme() = R.style.BottomSheetDialogTheme
-
-    override fun onCreateDialog(
-        savedInstanceState: Bundle?
-    ): Dialog = BottomSheetDialog(requireContext(), theme)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

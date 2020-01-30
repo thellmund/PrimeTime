@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding.selectmovies.ui
+package com.hellmund.primetime.onboarding.ui.selectmovies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -6,12 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.data.repositories.GenresRepository
-import com.hellmund.primetime.onboarding.selectmovies.domain.Sample
-import com.hellmund.primetime.onboarding.selectmovies.domain.SamplesRepository
+import com.hellmund.primetime.onboarding.domain.Sample
+import com.hellmund.primetime.onboarding.domain.SamplesRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
+import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime.now
 import java.io.IOException
@@ -68,11 +69,6 @@ class SamplesViewStateReducer : Reducer<SelectMoviesViewState, ViewResult> {
     }
 }
 
-class SamplesViewStateStore : ViewStateStore<SelectMoviesViewState, ViewResult>(
-    initialState = SelectMoviesViewState(),
-    reducer = SamplesViewStateReducer()
-)
-
 class SelectMoviesViewModel @Inject constructor(
     private val repository: SamplesRepository,
     private val genresRepository: GenresRepository
@@ -81,15 +77,19 @@ class SelectMoviesViewModel @Inject constructor(
     private val navigationResultsStore = SingleEventStore<NavigationResult>()
     val navigationResults: LiveData<SingleEvent<NavigationResult>> = navigationResultsStore.events
 
-    private val viewStateStore = SamplesViewStateStore()
-    val viewState: LiveData<SelectMoviesViewState> = viewStateStore.viewState
+    private val store = viewStateStore(
+        initialState = SelectMoviesViewState(),
+        reducer = SamplesViewStateReducer()
+    )
+
+    val viewState: LiveData<SelectMoviesViewState> = store.viewState
 
     private var page: Int = 1
 
     init {
         viewModelScope.launch {
-            viewStateStore.dispatch(ViewResult.Loading)
-            viewStateStore.dispatch(fetchMovies(page))
+            store.dispatch(ViewResult.Loading)
+            store.dispatch(fetchMovies(page))
         }
     }
 
@@ -107,7 +107,7 @@ class SelectMoviesViewModel @Inject constructor(
 
     private fun toggleSelection(sample: Sample) {
         val newSample = sample.copy(isSelected = sample.isSelected.not())
-        viewStateStore.dispatch(ViewResult.SelectionChanged(newSample))
+        store.dispatch(ViewResult.SelectionChanged(newSample))
     }
 
     private suspend fun storeSelection(samples: List<Sample>) {

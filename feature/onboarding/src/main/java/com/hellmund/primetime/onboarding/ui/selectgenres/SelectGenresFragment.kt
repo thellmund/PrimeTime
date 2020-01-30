@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding.selectgenres.ui
+package com.hellmund.primetime.onboarding.ui.selectgenres
 
 import android.animation.LayoutTransition
 import android.content.Context
@@ -15,7 +15,8 @@ import com.google.android.material.chip.Chip
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.onboarding.databinding.FragmentSelectGenresBinding
-import com.hellmund.primetime.onboarding.selectgenres.di.OnboardingComponentProvider
+import com.hellmund.primetime.onboarding.di.OnboardingComponentProvider
+import com.hellmund.primetime.onboarding.ui.OnboardingNavigator
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
@@ -24,8 +25,10 @@ import javax.inject.Provider
 
 class SelectGenresFragment : Fragment() {
 
-    private var onFinishedAction: () -> Unit = {}
     private val genres = mutableListOf<Genre>()
+
+    @Inject
+    lateinit var onboardingNavigator: OnboardingNavigator
 
     @Inject
     lateinit var viewModelProvider: Provider<SelectGenresViewModel>
@@ -92,7 +95,7 @@ class SelectGenresFragment : Fragment() {
 
     private fun navigate(event: NavigationResult) {
         when (event) {
-            is NavigationResult.OpenNext -> onFinishedAction()
+            is NavigationResult.OpenNext -> onboardingNavigator.next()
         }
     }
 
@@ -130,8 +133,6 @@ class SelectGenresFragment : Fragment() {
 
     companion object {
         private const val MIN_COUNT = 2
-        fun newInstance(onFinished: () -> Unit) = SelectGenresFragment().apply {
-            onFinishedAction = onFinished
-        }
+        fun newInstance() = SelectGenresFragment()
     }
 }

@@ -3,7 +3,6 @@ package com.hellmund.primetime.search.ui
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
-import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 
 data class SearchViewState(
     val genres: List<Genre> = emptyList(),
@@ -33,8 +32,3 @@ class SearchViewStateReducer : Reducer<SearchViewState, ViewResult> {
         is ViewResult.DismissSnackbar -> state.copy(snackbarTextResId = null)
     }
 }
-
-class SearchViewStateStore : ViewStateStore<SearchViewState, ViewResult>(
-    initialState = SearchViewState(),
-    reducer = SearchViewStateReducer()
-)

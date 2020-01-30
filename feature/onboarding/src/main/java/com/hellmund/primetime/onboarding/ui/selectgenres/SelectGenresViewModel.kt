@@ -1,4 +1,4 @@
-package com.hellmund.primetime.onboarding.selectgenres.ui
+package com.hellmund.primetime.onboarding.ui.selectgenres
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +9,7 @@ import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
+import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -53,16 +54,15 @@ class GenresViewStateReducer : Reducer<SelectGenresViewState, ViewResult> {
     }
 }
 
-class GenresViewStateStore : ViewStateStore<SelectGenresViewState, ViewResult>(
-    initialState = SelectGenresViewState(),
-    reducer = GenresViewStateReducer()
-)
-
 class SelectGenresViewModel @Inject constructor(
     private val repository: GenresRepository
 ) : ViewModel() {
 
-    private val store = GenresViewStateStore()
+    private val store = viewStateStore(
+        initialState = SelectGenresViewState(),
+        reducer = GenresViewStateReducer()
+    )
+
     val viewState: LiveData<SelectGenresViewState> = store.viewState
 
     private val navigationResultsStore = SingleEventStore<NavigationResult>()

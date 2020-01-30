@@ -1,11 +1,11 @@
-package com.hellmund.primetime.onboarding.selectmovies.ui
+package com.hellmund.primetime.onboarding.ui.selectmovies
 
 import android.widget.ImageView
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateLayoutContainer
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.onboarding.R
-import com.hellmund.primetime.onboarding.selectmovies.domain.Sample
+import com.hellmund.primetime.onboarding.domain.Sample
 import com.hellmund.primetime.ui_common.util.showToast
 
 fun loadMoreAdapterDelegate() = adapterDelegate<SamplesAdapterItem.LoadingMore, SamplesAdapterItem>(

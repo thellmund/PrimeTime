@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="true"
+    android:overScrollMode="never"
     tools:context=".ui.MovieDetailsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout

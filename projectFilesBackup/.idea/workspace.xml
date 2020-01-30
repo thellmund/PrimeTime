@@ -1,0 +1,980 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config>
+        <device id="pixel_3_xl" />
+        <target>android-29</target>
+      </config>
+    </shared>
+  </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+    <option name="TOOL_WINDOW_REGEXP_FILTER" value="false" />
+  </component>
+  <component name="AvailableLibraryUpdateStorage">
+    <library-updates>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>percent</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>io.reactivex.rxjava2</group-id>
+        <name>rxandroid</name>
+        <version>2.1.1</version>
+        <repository>Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>palette-v7</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.squareup.okhttp3</group-id>
+        <name>okhttp</name>
+        <version>3.14.0</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>org.jetbrains.kotlin</group-id>
+        <name>kotlin-stdlib-jdk7</name>
+        <version>1.3.21</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>android.arch.persistence.room</group-id>
+        <name>rxjava2</name>
+        <version>1.1.1</version>
+        <repository>Google</repository>
+      </library-update>
+      <library-update>
+        <group-id>android.arch.lifecycle</group-id>
+        <name>compiler</name>
+        <version>1.1.1</version>
+        <repository>Google</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>customtabs</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>me.relex</group-id>
+        <name>circleindicator</name>
+        <version>1.2.2</version>
+        <repository>Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.squareup.retrofit2</group-id>
+        <name>converter-gson</name>
+        <version>2.5.0</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.squareup.okhttp3</group-id>
+        <name>logging-interceptor</name>
+        <version>3.14.0</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>android.arch.lifecycle</group-id>
+        <name>extensions</name>
+        <version>1.1.1</version>
+        <repository>Google</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.jakewharton.rxrelay2</group-id>
+        <name>rxrelay</name>
+        <version>2.1.0</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.squareup.retrofit2</group-id>
+        <name>adapter-rxjava2</name>
+        <version>2.5.0</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.squareup.retrofit2</group-id>
+        <name>retrofit</name>
+        <version>2.5.0</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support.test</group-id>
+        <name>rules</name>
+        <version>1.0.2</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support.test</group-id>
+        <name>runner</name>
+        <version>1.0.2</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>android.arch.persistence.room</group-id>
+        <name>runtime</name>
+        <version>1.1.1</version>
+        <repository>Google</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>support-annotations</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>io.reactivex.rxjava2</group-id>
+        <name>rxjava</name>
+        <version>2.2.8</version>
+        <repository>Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>org.hamcrest</group-id>
+        <name>hamcrest-library</name>
+        <version>2.1</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>recyclerview-v7</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.jakewharton</group-id>
+        <name>butterknife-compiler</name>
+        <version>10.1.0</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>appcompat-v7</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.google.code.gson</group-id>
+        <name>gson</name>
+        <version>2.8.5</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>design</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.jakewharton</group-id>
+        <name>butterknife</name>
+        <version>10.1.0</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>cardview-v7</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.github.bumptech.glide</group-id>
+        <name>glide</name>
+        <version>4.9.0</version>
+        <repository>JCenter,Maven Central</repository>
+      </library-update>
+      <library-update>
+        <group-id>android.arch.persistence.room</group-id>
+        <name>compiler</name>
+        <version>1.1.1</version>
+        <repository>Google</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>support-v4</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+    </library-updates>
+    <last-search-timestamp>1554831542041</last-search-timestamp>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="15fe3621-aee8-401c-b200-80f8a98962ed" name="Default" comment="Hide history button in Watchlist tab if user hasn't completed onboarding">
+      <change beforePath="$PROJECT_DIR$/feature/movie-details/src/main/java/com/hellmund/primetime/moviedetails/ui/MovieDetailsFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/feature/movie-details/src/main/java/com/hellmund/primetime/moviedetails/ui/MovieDetailsFragment.kt" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_3_XL_API_29" />
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="PrimeTime" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="layoutResourceFile" />
+        <option value="Kotlin Enum" />
+        <option value="valueResourceFile" />
+        <option value="layoutResourceFile_vertical" />
+        <option value="Kotlin Object" />
+        <option value="JUnit4 Test Class" />
+        <option value="Kotlin Interface" />
+        <option value="Kotlin File" />
+        <option value="resourceFile" />
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1Qhj42pbI62tbubcJRnc9aMJA2G" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DEBUGGABLE_DEVICE" value="Pixel_3_XL_API_29 [emulator-5554]" />
+    <property name="DEBUGGABLE_PROCESS" value="com.hellmund.primetime" />
+    <property name="DEBUGGER_ID" value="Auto" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="Pixel_3_XL_API_29" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-01-27T02:20:35.554Z" />
+    <property name="GoToClass.includeLibraries" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="SHOW_ALL_PROCESSES" value="false" />
+    <property name="android.project.structure.last.selected" value="app" />
+    <property name="android.project.structure.proportion" value="0.15" />
+    <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4" value="" />
+    <property name="device.picker.selection" value="710KPUU0474166" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/feature/recommendations/src/test/java/com/hellmund/primetime/recommendations" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/common/data/src/main/sqldelight/com/hellmund/primetime/data/model" />
+    <property name="not.eligible.for.single.variant.sync" value="true" />
+    <property name="project.structure.last.edited" value="Dependencies" />
+    <property name="project.structure.proportion" value="0.17" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.language.Kotlin" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+    <property name="sync.plugin.last.upgrade.timestamp" value="1535436909201" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.hellmund.primetime.moviedetails.ui" />
+      <recent name="com.hellmund.primetime.onboarding.ui.selectmovies" />
+      <recent name="com.hellmund.primetime.onboarding.ui.selectgenres" />
+      <recent name="com.hellmund.primetime.onboarding.selectgenres" />
+      <recent name="drawable" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.hellmund.primetime.recommendations.ui" />
+      <recent name="com.hellmund.primetime.ui.selectgenres" />
+      <recent name="com.hellmund.primetime.ui.history" />
+      <recent name="com.hellmund.primetime.ui.search" />
+      <recent name="com.hellmund.primetime.ui.suggestions" />
+    </key>
+    <key name="android.template.packageName">
+      <recent name="com.hellmund.primetime.history.ui" />
+      <recent name="com.hellmund.statelayout" />
+      <recent name="com.hellmund.primetime.ui.selectstreamingservices" />
+      <recent name="com.hellmund.primetime.fragments" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.hellmund.primetime" />
+      <recent name="com.hellmund.primetime.ui.search" />
+      <recent name="com.hellmund.primetime.data" />
+      <recent name="com.hellmund.primetime.ui" />
+      <recent name="com.hellmund.primetime.model2" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/common/data/src/main/sqldelight/com/hellmund/primetime/data/model" />
+      <recent name="$PROJECT_DIR$/app/src/main/res/drawable" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/feature/onboarding/src/main/java/com/hellmund/primetime/onboarding/ui/selectmovies" />
+      <recent name="$PROJECT_DIR$/feature/onboarding/src/main/java/com/hellmund/primetime/onboarding/domain" />
+      <recent name="$PROJECT_DIR$/feature/onboarding/src/main/java/com/hellmund/primetime/onboarding/ui/selectgenres" />
+      <recent name="$PROJECT_DIR$/feature/onboarding/src/main/java/com/hellmund/primetime/onboarding/selectgenres" />
+      <recent name="$PROJECT_DIR$/feature/onboarding/src/main/java/com/hellmund/primetime/onboarding/di" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Android App.app">
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+    </configuration>
+    <configuration name="HistoryViewStateReducerTest" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hellmund.primetime.ui.history.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.hellmund.primetime.ui.history" />
+      <option name="MAIN_CLASS_NAME" value="com.hellmund.primetime.ui.history.HistoryViewStateReducerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HistoryViewStateReducerTest.test that stuff works" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hellmund.primetime.ui.history.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.hellmund.primetime.ui.history" />
+      <option name="MAIN_CLASS_NAME" value="com.hellmund.primetime.ui.history.HistoryViewStateReducerTest" />
+      <option name="METHOD_NAME" value="test that stuff works" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SearchViewModelTest" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hellmund.primetime.ui.search.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.hellmund.primetime.ui.search" />
+      <option name="MAIN_CLASS_NAME" value="com.hellmund.primetime.ui.search.SearchViewModelTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+      <module name="app" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Hybrid>
+      <Java />
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sampled (Java)" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Applet">
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HomeViewModelTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="feature-recommendations" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hellmund.primetime.recommendations.ui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.hellmund.primetime.recommendations.ui" />
+      <option name="MAIN_CLASS_NAME" value="com.hellmund.primetime.recommendations.ui.HomeViewModelTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Android JUnit.SearchViewModelTest" />
+        <item itemvalue="Android JUnit.HistoryViewStateReducerTest.test that stuff works" />
+        <item itemvalue="Android JUnit.HistoryViewStateReducerTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="showServicesTree" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="15fe3621-aee8-401c-b200-80f8a98962ed" name="Default" comment="" />
+      <created>1527173436912</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1527173436912</updated>
+    </task>
+    <task id="LOCAL-00106" summary="Implement refresh in MainFragment">
+      <created>1559683826258</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1559683826259</updated>
+    </task>
+    <task id="LOCAL-00107" summary="Hide bottom navigation when user is scrolling">
+      <created>1559686790056</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1559686790056</updated>
+    </task>
+    <task id="LOCAL-00108" summary="Tweak showing/hiding of bottom navigation">
+      <created>1559688703513</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1559688703513</updated>
+    </task>
+    <task id="LOCAL-00109" summary="Fix inconsistent behavior after closing MovieDetailsFragment">
+      <created>1559752899040</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1559752899041</updated>
+    </task>
+    <task id="LOCAL-00110" summary="Begin transition to Coroutines">
+      <created>1560803989711</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1560803989713</updated>
+    </task>
+    <task id="LOCAL-00111" summary="Remove RxJava from SearchViewModel navigation">
+      <created>1560804528628</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1560804528628</updated>
+    </task>
+    <task id="LOCAL-00112" summary="Clean up back-navigation code">
+      <created>1564174999400</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1564174999401</updated>
+    </task>
+    <task id="LOCAL-00113" summary="Switch to AdapterDelegates in SamplesAdapter">
+      <created>1564178026595</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1564178026595</updated>
+    </task>
+    <task id="LOCAL-00114" summary="Tweak resource files">
+      <created>1564218920871</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1564218920872</updated>
+    </task>
+    <task id="LOCAL-00115" summary="Move Toolbars into Fragments">
+      <created>1564220099043</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1564220099043</updated>
+    </task>
+    <task id="LOCAL-00116" summary="Make SelectGenresFragment remember selected genres when coming back to it">
+      <created>1564225048938</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1564225048938</updated>
+    </task>
+    <task id="LOCAL-00117" summary="Fix merge issues">
+      <created>1564857090126</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1564857090128</updated>
+    </task>
+    <task id="LOCAL-00118" summary="Make various code and UI improvements">
+      <created>1564862602669</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1564862602670</updated>
+    </task>
+    <task id="LOCAL-00119" summary="Simplify process of adding ratings to movies">
+      <created>1564910482557</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1564910482558</updated>
+    </task>
+    <task id="LOCAL-00120" summary="Begin to add tests for Reducers, make minor code tweaks">
+      <created>1564950474937</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1564950474938</updated>
+    </task>
+    <task id="LOCAL-00121" summary="Tweak build.gradle files">
+      <created>1564953612621</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1564953612621</updated>
+    </task>
+    <task id="LOCAL-00122" summary="Fix buggy scroll-aware bottom navigation">
+      <created>1565010302925</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1565010302927</updated>
+    </task>
+    <task id="LOCAL-00123" summary="Fix broken &quot;load more&quot; functionality">
+      <created>1565011550617</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1565011550617</updated>
+    </task>
+    <task id="LOCAL-00124" summary="Use bottom sheet dialog instead of AlertDialog list for ratings">
+      <created>1565036083410</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1565036083426</updated>
+    </task>
+    <task id="LOCAL-00125" summary="Simplify organization of color resources">
+      <created>1565074385922</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1565074385923</updated>
+    </task>
+    <task id="LOCAL-00126" summary="Remove unused libraries">
+      <created>1565121399443</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1565121399444</updated>
+    </task>
+    <task id="LOCAL-00127" summary="Dismiss RateMovieDialog when item was clicked">
+      <created>1565121534539</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1565121534539</updated>
+    </task>
+    <task id="LOCAL-00128" summary="Make various code improvements&#10;&#10;- Use ListAdapter&#10;- Improve ViewModel usage&#10;- Introduce UseCase objects">
+      <created>1565258843337</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1565258843338</updated>
+    </task>
+    <task id="LOCAL-00129" summary="Add core, ui-common and history modules">
+      <created>1565424276879</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1565424276880</updated>
+    </task>
+    <task id="LOCAL-00130" summary="Move onboarding classes to separate module">
+      <created>1565427165313</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1565427165313</updated>
+    </task>
+    <task id="LOCAL-00131" summary="Add about module">
+      <created>1565427687735</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1565427687735</updated>
+    </task>
+    <task id="LOCAL-00132" summary="Move settings to separate module">
+      <created>1565428639355</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1565428639355</updated>
+    </task>
+    <task id="LOCAL-00133" summary="Move watchlist to separate module">
+      <created>1565430201851</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1565430201851</updated>
+    </task>
+    <task id="LOCAL-00134" summary="Move search to separate module">
+      <created>1565433076150</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1565433076150</updated>
+    </task>
+    <task id="LOCAL-00135" summary="Move movie details to separate module">
+      <created>1565435018535</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1565435018535</updated>
+    </task>
+    <task id="LOCAL-00136" summary="Move recommendations to separate module">
+      <created>1565437297219</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1565437297219</updated>
+    </task>
+    <task id="LOCAL-00137" summary="Improve dependency management">
+      <created>1565441957957</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1565441957957</updated>
+    </task>
+    <task id="LOCAL-00138" summary="Add Navigator in MainActivity for more consistent tab navigation">
+      <created>1565445085086</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1565445085086</updated>
+    </task>
+    <task id="LOCAL-00139" summary="Simplify navigation from SearchFragment to HomeFragment">
+      <created>1565448024837</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1565448024838</updated>
+    </task>
+    <task id="LOCAL-00140" summary="Clean up">
+      <created>1565450491748</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1565450491749</updated>
+    </task>
+    <task id="LOCAL-00141" summary="Begin usage of AndroidInjection">
+      <created>1565517708336</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1565517708336</updated>
+    </task>
+    <task id="LOCAL-00142" summary="Make minor code tweaks">
+      <created>1565612137417</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1565612137418</updated>
+    </task>
+    <task id="LOCAL-00143" summary="Fix issue where category list items wouldn't respond to clicks">
+      <created>1565613998709</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1565613998709</updated>
+    </task>
+    <task id="LOCAL-00144" summary="Use AndroidInjection in MainActivity, SearchFragment &amp; SettingsFragment">
+      <created>1565777607196</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1565777607197</updated>
+    </task>
+    <task id="LOCAL-00145" summary="Make minor code tweaks">
+      <created>1565808748543</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1565808748543</updated>
+    </task>
+    <task id="LOCAL-00146" summary="Move logic from MainActivity to SearchFragment, tweak navigation">
+      <created>1565817405875</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1565817405877</updated>
+    </task>
+    <task id="LOCAL-00147" summary="Update project structure">
+      <created>1566236373580</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1566236373581</updated>
+    </task>
+    <task id="LOCAL-00148" summary="Use BottomNavigator library for bottom navigation with multiple stacks">
+      <created>1566834533689</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1566834533690</updated>
+    </task>
+    <task id="LOCAL-00149" summary="Re-add OkHttp interceptors">
+      <created>1567265800334</created>
+      <option name="number" value="00149" />
+      <option name="presentableId" value="LOCAL-00149" />
+      <option name="project" value="LOCAL" />
+      <updated>1567265800335</updated>
+    </task>
+    <task id="LOCAL-00150" summary="Clean up">
+      <created>1567269378261</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1567269378261</updated>
+    </task>
+    <task id="LOCAL-00151" summary="Add badge showing number of movies on watchlist">
+      <created>1572904682499</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1572904682501</updated>
+    </task>
+    <task id="LOCAL-00152" summary="Refactor injection into RefreshGenresWorker">
+      <created>1575299539153</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1575299539154</updated>
+    </task>
+    <task id="LOCAL-00153" summary="Fix issue where genres banner wasn't displayed on first app launch">
+      <created>1575311875226</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1575311875228</updated>
+    </task>
+    <task id="LOCAL-00154" summary="Hide history button in Watchlist tab if user hasn't completed onboarding">
+      <created>1575313542999</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1575313542999</updated>
+    </task>
+    <option name="localTasksCounter" value="155" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Add core, ui-common and history modules" />
+    <MESSAGE value="Move onboarding classes to separate module" />
+    <MESSAGE value="Add about module" />
+    <MESSAGE value="Move settings to separate module" />
+    <MESSAGE value="Move watchlist to separate module" />
+    <MESSAGE value="Move search to separate module" />
+    <MESSAGE value="Move movie details to separate module" />
+    <MESSAGE value="Move recommendations to separate module" />
+    <MESSAGE value="Improve dependency management" />
+    <MESSAGE value="Add Navigator in MainActivity for more consistent tab navigation" />
+    <MESSAGE value="Simplify navigation from SearchFragment to HomeFragment" />
+    <MESSAGE value="Begin usage of AndroidInjection" />
+    <MESSAGE value="Fix issue where category list items wouldn't respond to clicks" />
+    <MESSAGE value="Use AndroidInjection in SearchFragment and SettingsFragment" />
+    <MESSAGE value="Use AndroidInjection in MainActivity, SearchFragment &amp; SettingsFragment" />
+    <MESSAGE value="Make minor code tweaks" />
+    <MESSAGE value="Move logic from MainActivity to SearchFragment, tweak navigation" />
+    <MESSAGE value="Update project structure" />
+    <MESSAGE value="Use BottomNavigator library for bottom navigation with multiple stacks" />
+    <MESSAGE value="Re-add OkHttp interceptors" />
+    <MESSAGE value="Clean up" />
+    <MESSAGE value="Add badge showing number of movies on watchlist" />
+    <MESSAGE value="Refactor injection into RefreshGenresWorker" />
+    <MESSAGE value="Fix issue where genres banner wasn't displayed on first app launch" />
+    <MESSAGE value="Hide history button in Watchlist tab if user hasn't completed onboarding" />
+    <option name="LAST_COMMIT_MESSAGE" value="Hide history button in Watchlist tab if user hasn't completed onboarding" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.thellmund/ViewPagerTwoIndicator/0.8.0/dcbb6913b05c42a5c72c5bee4a898cfdef14e4ef/ViewPagerTwoIndicator-0.8.0-sources.jar!/com/hellmund/viewpager2indicator/ViewPager2Indicator.kt</url>
+          <line>106</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/watchlist/src/main/java/com/hellmund/primetime/watchlist/ui/WatchlistViewModel.kt</url>
+          <line>38</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/watchlist/src/main/java/com/hellmund/primetime/watchlist/ui/WatchlistViewState.kt</url>
+          <line>15</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
