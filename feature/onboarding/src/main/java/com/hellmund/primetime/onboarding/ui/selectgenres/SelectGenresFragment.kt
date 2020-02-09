@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.google.android.material.chip.Chip
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.onboarding.OnboardingActivity
 import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.onboarding.databinding.FragmentSelectGenresBinding
 import com.hellmund.primetime.onboarding.di.OnboardingComponentProvider
@@ -23,7 +24,7 @@ import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 import javax.inject.Provider
 
-class SelectGenresFragment : Fragment() {
+class SelectGenresFragment : Fragment(), OnboardingActivity.BackButtonIconProvider {
 
     private val genres = mutableListOf<Genre>()
 
@@ -130,6 +131,8 @@ class SelectGenresFragment : Fragment() {
         }
         viewModel.dispatch(ViewEvent.Store(includedGenres))
     }
+
+    override fun provideIconResource(): Int = R.drawable.ic_close
 
     companion object {
         private const val MIN_COUNT = 2

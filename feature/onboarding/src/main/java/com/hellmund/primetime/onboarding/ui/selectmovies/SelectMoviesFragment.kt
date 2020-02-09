@@ -13,6 +13,7 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.core.ImageLoader
+import com.hellmund.primetime.onboarding.OnboardingActivity
 import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.onboarding.databinding.FragmentSelectMoviesBinding
 import com.hellmund.primetime.onboarding.di.OnboardingComponentProvider
@@ -27,7 +28,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-class SelectMoviesFragment : Fragment() {
+class SelectMoviesFragment : Fragment(), OnboardingActivity.BackButtonIconProvider {
 
     private val adapter: SamplesAdapter by lazy {
         SamplesAdapter(imageLoader) { viewModel.dispatch(ViewEvent.ItemClicked(it)) }
@@ -153,6 +154,8 @@ class SelectMoviesFragment : Fragment() {
         val selected = adapter.selected
         viewModel.dispatch(ViewEvent.Store(selected))
     }
+
+    override fun provideIconResource(): Int = R.drawable.ic_arrow_back
 
     companion object {
         private const val MIN_COUNT = 4

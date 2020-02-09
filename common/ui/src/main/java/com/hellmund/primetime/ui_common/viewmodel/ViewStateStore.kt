@@ -29,6 +29,10 @@ class ViewStateStore<State, Result>(
         dispatchState(state)
     }
 
+    operator fun plusAssign(result: Result) {
+        dispatch(result)
+    }
+
     private fun state() = viewState.value!!
 }
 

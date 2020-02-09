@@ -8,7 +8,6 @@ import com.hellmund.primetime.core.notifications.NotificationUtils
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.repositories.WatchlistRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
-import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -85,7 +84,9 @@ class WatchlistViewModel @Inject constructor(
         }
     }
 
-    private suspend fun toggleAndStoreNotification(movie: WatchlistMovieViewEntity) {
+    private fun toggleAndStoreNotification(
+        movie: WatchlistMovieViewEntity
+    ) = viewModelScope.launch {
         repository.toggleNotification(movie.raw)
         val newViewEntity = movie.copy(notificationsActivated = movie.notificationsActivated.not())
         store.dispatch(ViewResult.NotificationToggled(newViewEntity))
@@ -97,12 +98,12 @@ class WatchlistViewModel @Inject constructor(
         }
     }
 
-    private suspend fun removeMovie(movie: WatchlistMovieViewEntity) {
+    private fun removeMovie(movie: WatchlistMovieViewEntity) = viewModelScope.launch {
         repository.remove(movie.id)
         store.dispatch(ViewResult.Removed(movie))
     }
 
-    private suspend fun rateMovie(ratedMovie: RatedWatchlistMovie) {
+    private fun rateMovie(ratedMovie: RatedWatchlistMovie) = viewModelScope.launch {
         val historyMovie = ratedMovie.toHistoryMovie()
         repository.remove(ratedMovie.movie.id)
         historyRepository.store(historyMovie)
@@ -110,12 +111,10 @@ class WatchlistViewModel @Inject constructor(
     }
 
     fun dispatch(viewEvent: ViewEvent) {
-        viewModelScope.launch {
-            when (viewEvent) {
-                is ViewEvent.Remove -> removeMovie(viewEvent.item)
-                is ViewEvent.ToggleNotification -> toggleAndStoreNotification(viewEvent.item)
-                is ViewEvent.RateMovie -> rateMovie(viewEvent.item)
-            }
+        when (viewEvent) {
+            is ViewEvent.Remove -> removeMovie(viewEvent.item)
+            is ViewEvent.ToggleNotification -> toggleAndStoreNotification(viewEvent.item)
+            is ViewEvent.RateMovie -> rateMovie(viewEvent.item)
         }
     }
 }

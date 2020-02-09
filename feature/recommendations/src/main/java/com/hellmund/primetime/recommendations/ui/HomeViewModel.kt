@@ -3,6 +3,7 @@ package com.hellmund.primetime.recommendations.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.repositories.GenresRepository
@@ -18,7 +19,6 @@ import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -29,6 +29,7 @@ sealed class ViewEvent {
     object LoadMore : ViewEvent()
     data class StoreRating(val ratedMovie: RatedPartialMovie) : ViewEvent()
     data class Filter(val genres: List<Genre>) : ViewEvent()
+    object DismissPersonalizationBanner : ViewEvent()
 }
 
 sealed class ViewResult {
@@ -43,6 +44,9 @@ sealed class ViewResult {
     data class Filter(val genres: List<Genre>) : ViewResult()
     object ShowFilterButton : ViewResult()
     object HideFilterButton : ViewResult()
+    object ShowPersonalizationBanner : ViewResult()
+    object HidePersonalizationBanner : ViewResult()
+    data class PreferredGenresLoaded(val genres: List<Genre>) : ViewResult()
 }
 
 sealed class NavigationResult {
@@ -61,6 +65,9 @@ class HomeViewStateReducer : Reducer<HomeViewState, ViewResult> {
         is ViewResult.Filter -> state.toFiltered(viewResult)
         is ViewResult.ShowFilterButton -> state.copy(showFilterButton = true)
         is ViewResult.HideFilterButton -> state.copy(showFilterButton = false)
+        is ViewResult.ShowPersonalizationBanner -> state.copy(showPersonalizationBanner = true)
+        is ViewResult.HidePersonalizationBanner -> state.copy(showPersonalizationBanner = false)
+        is ViewResult.PreferredGenresLoaded -> state.copy(preferredGenres = viewResult.genres)
     }
 }
 
@@ -70,7 +77,8 @@ class HomeViewModel @Inject constructor(
     private val genresRepository: GenresRepository,
     private val rankingProcessor: MovieRankingProcessor,
     private val viewEntitiesMapper: MovieViewEntitiesMapper,
-    private val recommendationsType: RecommendationsType
+    private val recommendationsType: RecommendationsType,
+    private val onboardingHelper: OnboardingHelper
 ) : ViewModel() {
 
     private val store = viewStateStore(
@@ -92,18 +100,40 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             store.dispatch(ViewResult.Loading)
             fetchRecommendations(recommendationsType, pagesLoaded + 1)
+        }
 
-            genresRepository
-                .observePreferredGenres()
-                .map { if (it.isNotEmpty()) ViewResult.ShowFilterButton else ViewResult.HideFilterButton }
-                .collect { store.dispatch(it) }
+        viewModelScope.launch {
+            genresRepository.observePreferredGenres().collect {
+                store += ViewResult.PreferredGenresLoaded(it)
+                store += determinePersonalizationBannerState(it)
+                store += determineFilterButtonVisibility(it)
+            }
         }
     }
 
-    private suspend fun fetchRecommendations(
+    private fun determineFilterButtonVisibility(preferredGenres: List<Genre>): ViewResult {
+        val hasSelectedPreferredGenres = preferredGenres.isNotEmpty()
+        val isPersonalized = recommendationsType is RecommendationsType.Personalized
+        val showFilterButton = isPersonalized && hasSelectedPreferredGenres
+        return if (showFilterButton) ViewResult.ShowFilterButton else ViewResult.HideFilterButton
+    }
+
+    private fun determinePersonalizationBannerState(preferredGenres: List<Genre>): ViewResult {
+        val hasNotSelectedPreferredGenres = preferredGenres.isEmpty()
+        val isPersonalized = recommendationsType is RecommendationsType.Personalized
+        val showFilterButton = isPersonalized && hasNotSelectedPreferredGenres
+
+        return if (showFilterButton) {
+            ViewResult.ShowPersonalizationBanner
+        } else {
+            ViewResult.HidePersonalizationBanner
+        }
+    }
+
+    private fun fetchRecommendations(
         type: RecommendationsType,
         page: Int
-    ) {
+    ) = viewModelScope.launch {
         val result = try {
             val recommendations = repository.fetchRecommendations(type, page)
             val ranked = rankingProcessor(recommendations, type)
@@ -115,33 +145,32 @@ class HomeViewModel @Inject constructor(
         store.dispatch(result)
     }
 
-    private suspend fun storeRating(ratedMovie: RatedPartialMovie) {
+    private fun storeRating(ratedMovie: RatedPartialMovie) = viewModelScope.launch {
         val historyMovie = ratedMovie.toHistoryMovie()
         historyRepository.store(historyMovie)
         store.dispatch(ViewResult.RatingStored(ratedMovie.movie))
     }
 
-    private suspend fun loadFullMovie(movieId: Long) {
+    private fun loadFullMovie(movieId: Long) = viewModelScope.launch {
         val movie = checkNotNull(repository.fetchFullMovie(movieId))
         val viewEntity = viewEntitiesMapper(movie)
         navigationEventsStore.dispatch(NavigationResult.ClickedMovieLoaded(viewEntity))
     }
 
     fun dispatch(viewEvent: ViewEvent) {
-        viewModelScope.launch {
-            when (viewEvent) {
-                is ViewEvent.LoadMovies -> fetchRecommendations(recommendationsType, viewEvent.page)
-                is ViewEvent.LoadFullMovie -> loadFullMovie(viewEvent.movieId)
-                is ViewEvent.LoadMore -> {
-                    if (isLoadingMore.not()) {
-                        isLoadingMore = true
-                        fetchRecommendations(recommendationsType, pagesLoaded + 1)
-                        isLoadingMore = false
-                    }
+        when (viewEvent) {
+            is ViewEvent.LoadMovies -> fetchRecommendations(recommendationsType, viewEvent.page)
+            is ViewEvent.LoadFullMovie -> loadFullMovie(viewEvent.movieId)
+            is ViewEvent.LoadMore -> {
+                if (isLoadingMore.not()) {
+                    isLoadingMore = true
+                    fetchRecommendations(recommendationsType, pagesLoaded + 1)
+                    isLoadingMore = false
                 }
-                is ViewEvent.Filter -> store.dispatch(ViewResult.Filter(viewEvent.genres))
-                is ViewEvent.StoreRating -> storeRating(viewEvent.ratedMovie)
             }
+            is ViewEvent.Filter -> store.dispatch(ViewResult.Filter(viewEvent.genres))
+            is ViewEvent.StoreRating -> storeRating(viewEvent.ratedMovie)
+            is ViewEvent.DismissPersonalizationBanner -> onboardingHelper.markFinished()
         }
     }
 }

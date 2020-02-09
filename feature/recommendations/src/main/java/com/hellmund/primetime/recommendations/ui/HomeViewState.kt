@@ -1,5 +1,6 @@
 package com.hellmund.primetime.recommendations.ui
 
+import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 
@@ -10,7 +11,9 @@ data class HomeViewState(
     val pagesLoaded: Int = 0,
     val isLoading: Boolean = false,
     val error: Throwable? = null,
-    val showFilterButton: Boolean = false
+    val showFilterButton: Boolean = false,
+    val showPersonalizationBanner: Boolean = false,
+    val preferredGenres: List<Genre> = emptyList()
 ) {
 
     fun toLoading(): HomeViewState {

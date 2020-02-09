@@ -9,7 +9,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,12 +18,11 @@ import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentArgs.KEY_RECOMMENDATIONS_TYPE
 import com.hellmund.primetime.core.FragmentFactory
 import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.core.createIntent
+import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.model.RecommendationsType.Personalized
-import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.recommendations.R
 import com.hellmund.primetime.recommendations.databinding.FragmentHomeBinding
 import com.hellmund.primetime.recommendations.di.DaggerMoviesComponent
@@ -38,7 +36,6 @@ import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
@@ -50,16 +47,10 @@ class HomeFragment : Fragment(), Reselectable {
     lateinit var imageLoader: ImageLoader
 
     @Inject
-    lateinit var onboardingHelper: OnboardingHelper
-
-    @Inject
-    lateinit var genresRepository: GenresRepository
+    lateinit var fragmentFactory: FragmentFactory
 
     @Inject
     lateinit var viewModelProvider: Provider<HomeViewModel>
-
-    @Inject
-    lateinit var fragmentFactory: FragmentFactory
 
     private val viewModel: HomeViewModel by lazyViewModel { viewModelProvider }
 
@@ -110,15 +101,9 @@ class HomeFragment : Fragment(), Reselectable {
         setToolbarTitle()
     }
 
-    private fun setupPersonalizationBanner() {
-        if (onboardingHelper.isFirstLaunch && type is Personalized) {
-            binding.banner
-                .setOnClickListener(this::openOnboarding)
-                .setOnDismissListener(onboardingHelper::markFinished)
-                .show()
-        } else {
-            binding.banner.dismiss()
-        }
+    private fun setupPersonalizationBanner() = with(binding.banner) {
+        setOnClickListener(this@HomeFragment::openOnboarding)
+        setOnDismissListener { viewModel.dispatch(ViewEvent.DismissPersonalizationBanner) }
     }
 
     private fun openOnboarding() {
@@ -142,12 +127,6 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun setupFab() = with(binding) {
-        filterFab.setOnClickListener {
-            lifecycleScope.launch {
-                showFilterDialog()
-            }
-        }
-
         filterFab.doOnApplyWindowInsets { view, insets, initialState ->
             view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 bottomMargin = initialState.margins.bottom + insets.systemWindowInsetBottom
@@ -166,9 +145,14 @@ class HomeFragment : Fragment(), Reselectable {
             adapter.update(it)
         } ?: adapter.update(viewState.data)
 
-        binding.filterFab.isVisible = type is Personalized &&
-            onboardingHelper.isFirstLaunch.not() &&
-            viewState.showFilterButton
+        binding.filterFab.setOnClickListener { showFilterDialog(viewState.preferredGenres) }
+        binding.filterFab.isVisible = viewState.showFilterButton
+
+        if (viewState.showPersonalizationBanner) {
+            binding.banner.show()
+        } else {
+            binding.banner.dismiss()
+        }
     }
 
     private fun navigate(
@@ -242,8 +226,7 @@ class HomeFragment : Fragment(), Reselectable {
         startActivity(intent)
     }
 
-    private suspend fun showFilterDialog() {
-        val genres = genresRepository.getPreferredGenres()
+    private fun showFilterDialog(genres: List<Genre>) {
         val genreNames = genres
             .map { it.name }
             .toTypedArray()

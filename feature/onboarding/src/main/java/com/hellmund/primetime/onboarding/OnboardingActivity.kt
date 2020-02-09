@@ -3,6 +3,7 @@ package com.hellmund.primetime.onboarding
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
@@ -13,8 +14,6 @@ import com.hellmund.primetime.onboarding.di.DaggerOnboardingComponent
 import com.hellmund.primetime.onboarding.di.OnboardingComponent
 import com.hellmund.primetime.onboarding.di.OnboardingComponentProvider
 import com.hellmund.primetime.onboarding.ui.OnboardingNavigator
-import com.hellmund.primetime.onboarding.ui.selectgenres.SelectGenresFragment
-import com.hellmund.primetime.onboarding.ui.selectmovies.SelectMoviesFragment
 import com.hellmund.primetime.ui_common.util.requestFullscreenLayout
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
@@ -28,12 +27,9 @@ class OnboardingActivity : AppCompatActivity(), OnboardingComponentProvider {
             v: View,
             savedInstanceState: Bundle?
         ) {
-            val backButtonResId = when (f) {
-                is SelectGenresFragment -> R.drawable.ic_close
-                is SelectMoviesFragment -> R.drawable.ic_arrow_back
-                else -> throw IllegalStateException()
-            }
-            binding.closeButton.setImageResource(backButtonResId)
+            val backButtonProvider = f as BackButtonIconProvider
+            val backButtonResource = backButtonProvider.provideIconResource()
+            binding.closeButton.setImageResource(backButtonResource)
         }
     }
 
@@ -81,4 +77,9 @@ class OnboardingActivity : AppCompatActivity(), OnboardingComponentProvider {
     }
 
     override fun provideOnboardingComponent(): OnboardingComponent = onboardingComponent
+
+    interface BackButtonIconProvider {
+        @DrawableRes
+        fun provideIconResource(): Int
+    }
 }

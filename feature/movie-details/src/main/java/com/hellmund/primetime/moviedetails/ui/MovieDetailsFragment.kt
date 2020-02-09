@@ -45,7 +45,7 @@ class MovieDetailsFragment : RoundedBottomSheetDialogFragment() {
     private val viewModel: MovieDetailsViewModel by lazyViewModel { viewModelProvider }
 
     private val movie: MovieViewEntity by lazy {
-        checkNotNull(arguments?.getParcelable<MovieViewEntity>(FragmentArgs.KEY_MOVIE))
+        checkNotNull(requireArguments().getParcelable<MovieViewEntity>(FragmentArgs.KEY_MOVIE))
     }
 
     private val recommendationsAdapter: RecommendationsAdapter by lazy {
