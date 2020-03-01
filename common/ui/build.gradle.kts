@@ -14,6 +14,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
@@ -57,6 +60,5 @@ dependencies {
 
     // Helpers
     api(Libraries.roundedImageView)
-    api(Libraries.shimmer)
     api(Libraries.threeTenAbp)
 }
