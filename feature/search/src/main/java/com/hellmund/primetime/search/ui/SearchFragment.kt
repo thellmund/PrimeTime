@@ -239,8 +239,8 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun onClickedMovieLoaded(movie: MovieViewEntity) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val fragment = fragmentFactory.movieDetails(args)
-        navigator.addFragment(fragment)
+        val intent = fragmentFactory.movieDetailsActivity(args)
+        startActivity(intent)
     }
 
     private fun onWatched(movie: PartialMovieViewEntity) {

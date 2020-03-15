@@ -1,7 +1,9 @@
 package com.hellmund.primetime.ui_common
 
 import com.hellmund.primetime.core.ValueFormatter
+import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.Movie
+import com.hellmund.primetime.data.model.MovieGenre
 import com.hellmund.primetime.data.model.PartialMovie
 import com.hellmund.primetime.data.repositories.GenresRepository
 import javax.inject.Inject
@@ -16,7 +18,10 @@ class MovieViewEntitiesMapper @Inject constructor(
     ): List<PartialMovieViewEntity> = movies.map { mapPartialMovie(it) }
 
     private suspend fun mapPartialMovie(movie: PartialMovie): PartialMovieViewEntity {
-        val genres = movie.genreIds.map { genresRepository.getGenreById(it) }
+        val genres = movie.genreIds
+            .map { genresRepository.getGenreById(it) }
+            .map { it.toMovieGenre() }
+
         return PartialMovieViewEntity(
             id = movie.id,
             posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
@@ -56,3 +61,5 @@ class MovieViewEntitiesMapper @Inject constructor(
         )
     }
 }
+
+private fun Genre.toMovieGenre(): MovieGenre = MovieGenre(id, name, isPreferred, isExcluded)

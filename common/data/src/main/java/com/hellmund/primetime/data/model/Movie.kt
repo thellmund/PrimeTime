@@ -4,7 +4,6 @@ import android.os.Parcelable
 import com.hellmund.api.model.FullApiMovie
 import com.hellmund.api.model.PartialApiMovie
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 import org.threeten.bp.LocalDate
 
 @Parcelize
@@ -39,12 +38,20 @@ data class PartialMovie(
 }
 
 @Parcelize
+data class MovieGenre(
+    val id: Long,
+    val name: String,
+    val isPreferred: Boolean,
+    val isExcluded: Boolean
+) : Parcelable
+
+@Parcelize
 data class Movie(
     val id: Long,
     val posterPath: String,
     val backdropPath: String,
     val title: String,
-    val genres: @RawValue List<Genre>,
+    val genres: List<MovieGenre>,
     val description: String,
     val releaseDate: LocalDate,
     val popularity: Float,
@@ -70,7 +77,7 @@ data class Movie(
                 posterPath = posterPath,
                 title = apiMovie.title,
                 genres = apiMovie.genres.map {
-                    Genre.Impl(it.id, it.name, isPreferred = false, isExcluded = true)
+                    MovieGenre(it.id, it.name, isPreferred = false, isExcluded = true)
                 },
                 description = apiMovie.description,
                 releaseDate = apiMovie.releaseDate,

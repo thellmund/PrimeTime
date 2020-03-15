@@ -27,7 +27,6 @@ import com.hellmund.primetime.moviedetails.databinding.FragmentMovieDetailsBindi
 import com.hellmund.primetime.moviedetails.di.DaggerMovieDetailsComponent
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.PartialMovieViewEntity
-import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.showLoading
 import com.hellmund.primetime.ui_common.util.navigator
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
@@ -36,7 +35,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-class MovieDetailsFragment : Fragment(), Reselectable {
+class MovieDetailsFragment : Fragment() {
 
     @Inject
     lateinit var imageLoader: ImageLoader
@@ -96,7 +95,7 @@ class MovieDetailsFragment : Fragment(), Reselectable {
         setupReviewsList()
 
         binding.backButton.setOnClickListener {
-            navigator.pop()
+            requireActivity().finish()
         }
 
         binding.backdropImageView.setOnClickListener { viewModel.dispatch(ViewEvent.OpenTrailer) }
@@ -216,10 +215,6 @@ class MovieDetailsFragment : Fragment(), Reselectable {
         val colorStateList = ColorStateList.valueOf(color)
         binding.addToWatchlistButton.backgroundTintList = colorStateList
         binding.removeFromWatchlistButton.strokeColor = colorStateList
-    }
-
-    override fun onReselected() {
-        navigator.pop()
     }
 
     companion object {

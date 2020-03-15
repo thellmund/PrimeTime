@@ -2,6 +2,7 @@ package com.hellmund.primetime.core
 
 import android.content.Context
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.data.model.MovieGenre
 import com.hellmund.primetime.data.model.Rating
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDate.now
@@ -12,7 +13,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 interface ValueFormatter {
-    fun formatGenres(genres: List<Genre>): String
+    fun formatGenres(genres: List<MovieGenre>): String
     fun formatReleaseYear(releaseDate: LocalDate?): String
     fun formatRuntime(runtime: Int?): String
     fun formatDate(date: LocalDateTime): String
@@ -27,7 +28,7 @@ class RealValueFormatter @Inject constructor(
 
     private val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 
-    override fun formatGenres(genres: List<Genre>): String {
+    override fun formatGenres(genres: List<MovieGenre>): String {
         return genres.map { it.name }.sorted().joinToString(", ")
     }
 

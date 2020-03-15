@@ -10,6 +10,7 @@ enum class AddressableActivity(val className: String) {
     About("com.hellmund.primetime.about.AboutActivity"),
     History("com.hellmund.primetime.history.ui.HistoryActivity"),
     Main("com.hellmund.primetime.ui.MainActivity"),
+    MovieDetails("com.hellmund.primetime.moviedetails.ui.MovieDetailsActivity"),
     Onboarding("com.hellmund.primetime.onboarding.OnboardingActivity"),
     Settings("com.hellmund.primetime.settings.ui.SettingsActivity")
 }
@@ -30,6 +31,12 @@ class FragmentFactory @Inject constructor(private val context: Context) {
         val fragment = context.createFragment(AddressableFragment.MovieDetails)
         fragment.arguments = bundle
         return fragment
+    }
+
+    fun movieDetailsActivity(bundle: Bundle): Intent {
+        val intent = context.createIntent(AddressableActivity.MovieDetails)
+        intent.putExtras(bundle)
+        return intent
     }
 
     fun category(bundle: Bundle): Fragment {

@@ -168,8 +168,8 @@ class HomeFragment : Fragment(), Reselectable {
 
     private fun openMovieDetails(movie: MovieViewEntity) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val fragment = fragmentFactory.movieDetails(args)
-        navigator.addFragment(fragment)
+        val intent = fragmentFactory.movieDetailsActivity(args)
+        startActivity(intent)
     }
 
     private fun openRatingDialog(movie: PartialMovieViewEntity) {
