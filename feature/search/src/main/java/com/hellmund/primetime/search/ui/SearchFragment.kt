@@ -15,10 +15,10 @@ import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentFactory
@@ -35,6 +35,7 @@ import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 import com.hellmund.primetime.ui_common.RatedPartialMovie
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
+import com.hellmund.primetime.ui_common.util.navigator
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
 import com.pandora.bottomnavigator.BottomNavigator
@@ -185,8 +186,6 @@ class SearchFragment : Fragment(), TextWatcher,
     private fun openCategory(type: RecommendationsType) {
         val args = bundleOf(FragmentArgs.KEY_RECOMMENDATIONS_TYPE to type)
         val fragment = fragmentFactory.category(args)
-
-        val navigator = BottomNavigator.provide(requireActivity())
         navigator.addFragment(fragment)
     }
 
@@ -240,8 +239,8 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun onClickedMovieLoaded(movie: MovieViewEntity) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val fragment = fragmentFactory.movieDetails(args) as BottomSheetDialogFragment
-        fragment.show(requireFragmentManager(), fragment.tag)
+        val fragment = fragmentFactory.movieDetails(args)
+        navigator.addFragment(fragment)
     }
 
     private fun onWatched(movie: PartialMovieViewEntity) {

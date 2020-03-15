@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import javax.inject.Provider
 
 class ViewModelFactory<T : ViewModel>(
@@ -21,12 +20,12 @@ inline fun <reified T : ViewModel> FragmentActivity.lazyViewModel(
     noinline block: () -> Provider<T>
 ): Lazy<T> = lazy {
     val factory = ViewModelFactory(block())
-    ViewModelProviders.of(this, factory).get(T::class.java)
+    ViewModelProvider(this, factory).get(T::class.java)
 }
 
 inline fun <reified T : ViewModel> Fragment.lazyViewModel(
     noinline block: () -> Provider<T>
 ): Lazy<T> = lazy {
     val factory = ViewModelFactory(block())
-    ViewModelProviders.of(this, factory).get(T::class.java)
+    ViewModelProvider(this, factory).get(T::class.java)
 }

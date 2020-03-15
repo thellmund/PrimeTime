@@ -22,12 +22,6 @@ class SettingsActivity : AppCompatActivity() {
         initToolbar()
         window.requestFullscreenLayout()
 
-//        binding.contentFrame.doOnApplyWindowInsets { v, insets, initialState ->
-//            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-//                topMargin = initialState.margins.top + insets.systemWindowInsetTop
-//            }
-//        }
-
         binding.toolbarContainer.root.doOnApplyWindowInsets { v, insets, initialState ->
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 topMargin = initialState.margins.top + insets.systemWindowInsetTop

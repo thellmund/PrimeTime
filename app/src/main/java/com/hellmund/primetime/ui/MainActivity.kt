@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateWatchlistBadge(count: Int) {
         val bottomNavigation = binding.bottomNavigation
         if (count > 0) {
-            val badgeDrawable = bottomNavigation.showBadge(R.id.watchlist)
+            val badgeDrawable = bottomNavigation.getOrCreateBadge(R.id.watchlist)
             badgeDrawable.backgroundColor = ContextCompat.getColor(this, R.color.teal_500)
             badgeDrawable.number = count
         } else {

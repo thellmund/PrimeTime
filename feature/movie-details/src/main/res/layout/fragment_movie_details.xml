@@ -28,6 +28,18 @@
             app:riv_corner_radius_top_right="@dimen/corner_radius" />
 
         <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_space"
+            android:layout_marginTop="@dimen/default_space"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:padding="@dimen/small_space"
+            android:src="@drawable/ic_arrow_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
             android:layout_width="@dimen/default_icon"
             android:layout_height="@dimen/default_icon"
             android:background="@drawable/background_more_button"

@@ -26,6 +26,9 @@ android {
     viewBinding {
         isEnabled = true
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -39,6 +42,4 @@ dependencies {
 
     implementation(Libraries.dagger)
     kapt(Libraries.daggerProcessor)
-
-    implementation(Libraries.bottomNavigator)
 }

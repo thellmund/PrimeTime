@@ -13,6 +13,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.api.model.Review
@@ -26,15 +27,16 @@ import com.hellmund.primetime.moviedetails.databinding.FragmentMovieDetailsBindi
 import com.hellmund.primetime.moviedetails.di.DaggerMovieDetailsComponent
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.PartialMovieViewEntity
-import com.hellmund.primetime.ui_common.dialogs.RoundedBottomSheetDialogFragment
+import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.showLoading
+import com.hellmund.primetime.ui_common.util.navigator
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
 
-class MovieDetailsFragment : RoundedBottomSheetDialogFragment() {
+class MovieDetailsFragment : Fragment(), Reselectable {
 
     @Inject
     lateinit var imageLoader: ImageLoader
@@ -92,6 +94,10 @@ class MovieDetailsFragment : RoundedBottomSheetDialogFragment() {
         downloadPosters()
         setupSimilarMoviesList()
         setupReviewsList()
+
+        binding.backButton.setOnClickListener {
+            navigator.pop()
+        }
 
         binding.backdropImageView.setOnClickListener { viewModel.dispatch(ViewEvent.OpenTrailer) }
         binding.moreInfoButton.setOnClickListener { viewModel.dispatch(ViewEvent.OpenImdb) }
@@ -187,8 +193,7 @@ class MovieDetailsFragment : RoundedBottomSheetDialogFragment() {
     }
 
     private fun openClickedRecommendation(movie: MovieViewEntity) {
-        val fragment = newInstance(movie)
-        fragment.show(requireFragmentManager(), fragment.tag)
+        navigator.addFragment(newInstance(movie))
     }
 
     private fun openUrl(url: String) {
@@ -211,6 +216,10 @@ class MovieDetailsFragment : RoundedBottomSheetDialogFragment() {
         val colorStateList = ColorStateList.valueOf(color)
         binding.addToWatchlistButton.backgroundTintList = colorStateList
         binding.removeFromWatchlistButton.strokeColor = colorStateList
+    }
+
+    override fun onReselected() {
+        navigator.pop()
     }
 
     companion object {

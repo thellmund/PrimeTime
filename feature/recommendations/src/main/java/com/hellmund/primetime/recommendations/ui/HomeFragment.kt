@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentArgs.KEY_RECOMMENDATIONS_TYPE
@@ -32,9 +31,11 @@ import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
+import com.hellmund.primetime.ui_common.util.navigator
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
+import com.pandora.bottomnavigator.BottomNavigator
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 import javax.inject.Provider
@@ -167,8 +168,8 @@ class HomeFragment : Fragment(), Reselectable {
 
     private fun openMovieDetails(movie: MovieViewEntity) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val fragment = fragmentFactory.movieDetails(args) as BottomSheetDialogFragment
-        fragment.show(requireFragmentManager(), fragment.tag)
+        val fragment = fragmentFactory.movieDetails(args)
+        navigator.addFragment(fragment)
     }
 
     private fun openRatingDialog(movie: PartialMovieViewEntity) {

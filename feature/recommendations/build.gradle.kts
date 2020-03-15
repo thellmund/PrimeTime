@@ -26,6 +26,9 @@ android {
     viewBinding {
         isEnabled = true
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -36,6 +39,8 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":common:data"))
     implementation(project(":common:ui"))
+
+    implementation(Libraries.swipeRefreshLayout)
 
     // Dagger
     kapt(Libraries.daggerProcessor)

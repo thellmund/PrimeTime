@@ -59,6 +59,7 @@ dependencies {
     kapt(Libraries.daggerProcessor)
 
     // Helpers
+    api(Libraries.bottomNavigator)
     api(Libraries.roundedImageView)
     api(Libraries.threeTenAbp)
 }
