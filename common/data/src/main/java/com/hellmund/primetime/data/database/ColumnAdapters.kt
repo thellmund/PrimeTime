@@ -2,11 +2,11 @@ package com.hellmund.primetime.data.database
 
 import com.hellmund.primetime.data.model.Rating
 import com.squareup.sqldelight.ColumnAdapter
+import javax.inject.Inject
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
-import javax.inject.Inject
 
 class TimestampColumnAdapter @Inject constructor() : ColumnAdapter<LocalDateTime, Long> {
 

@@ -13,9 +13,9 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.core.AddressableActivity
+import com.hellmund.primetime.core.DestinationFactory
 import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentArgs.KEY_RECOMMENDATIONS_TYPE
-import com.hellmund.primetime.core.DestinationFactory
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.core.createIntent

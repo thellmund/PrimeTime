@@ -17,8 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.api.model.Review
-import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.DestinationFactory
+import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.model.Movie
@@ -138,13 +138,13 @@ class MovieDetailsFragment : Fragment() {
     private fun render(viewState: MovieDetailsViewState) = with(binding) {
         fillInContent(viewState.movie)
 //        viewState.movie.let { movie ->
-////            titleTextView.text = movie.title
-////            descriptionTextView.text = movie.description
-////            genresTextView.text = movie.formattedGenres
-////            releaseTextView.text = movie.releaseYear
+// //            titleTextView.text = movie.title
+// //            descriptionTextView.text = movie.description
+// //            genresTextView.text = movie.formattedGenres
+// //            releaseTextView.text = movie.releaseYear
 //            durationTextView.text = movie.formattedRuntime
-////            ratingTextView.text = movie.formattedVoteAverage
-////            votesTextView.text = movie.formattedVoteCount
+// //            ratingTextView.text = movie.formattedVoteAverage
+// //            votesTextView.text = movie.formattedVoteCount
 //        }
 
         viewState.color?.let { onMovieColorLoaded(it) }

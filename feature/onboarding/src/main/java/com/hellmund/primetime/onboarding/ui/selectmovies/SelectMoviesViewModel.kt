@@ -8,14 +8,14 @@ import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.onboarding.domain.Sample
 import com.hellmund.primetime.onboarding.domain.SamplesRepository
-import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.Event
+import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
-import kotlinx.coroutines.launch
-import org.threeten.bp.LocalDateTime.now
 import java.io.IOException
 import javax.inject.Inject
+import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDateTime.now
 
 data class SelectMoviesViewState(
     val pages: Int = 1,

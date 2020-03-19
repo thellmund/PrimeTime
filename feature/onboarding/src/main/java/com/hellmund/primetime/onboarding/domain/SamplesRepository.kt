@@ -5,9 +5,9 @@ import com.hellmund.api.model.ApiSample
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.repositories.HistoryRepository
-import org.threeten.bp.LocalDate
 import java.util.Date
 import javax.inject.Inject
+import org.threeten.bp.LocalDate
 
 data class Sample(
     val id: Long,

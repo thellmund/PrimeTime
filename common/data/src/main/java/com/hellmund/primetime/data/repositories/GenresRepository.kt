@@ -3,8 +3,8 @@ package com.hellmund.primetime.data.repositories
 import com.hellmund.api.TmdbApiService
 import com.hellmund.primetime.data.database.GenreDao
 import com.hellmund.primetime.data.model.Genre
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 interface GenresRepository {
     suspend fun getAll(): List<Genre>

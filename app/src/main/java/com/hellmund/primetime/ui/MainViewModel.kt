@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    private val repository: WatchlistRepository
+    repository: WatchlistRepository
 ) : ViewModel() {
 
     private val _watchlistCount = MutableLiveData<Int>()

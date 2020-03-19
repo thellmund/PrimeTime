@@ -2,15 +2,15 @@ package com.hellmund.primetime.ui.selectgenres
 
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.onboarding.ui.selectgenres.GenresViewStateReducer
-import com.hellmund.primetime.onboarding.ui.selectgenres.ViewResult
 import com.hellmund.primetime.onboarding.ui.selectgenres.SelectGenresViewState
+import com.hellmund.primetime.onboarding.ui.selectgenres.ViewResult
+import java.io.IOException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.io.IOException
 
 class GenresViewStateReducerTest {
 

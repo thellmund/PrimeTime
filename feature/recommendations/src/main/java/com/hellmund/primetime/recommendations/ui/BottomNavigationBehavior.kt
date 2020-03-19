@@ -115,7 +115,7 @@ class BottomNavigationBehavior : CoordinatorLayout.Behavior<View> {
     }
 
     companion object {
-        fun with(
+        fun create(
             contentFrame: FrameLayout,
             bottomNavigationHeight: Int
         ) = BottomNavigationBehavior().apply {

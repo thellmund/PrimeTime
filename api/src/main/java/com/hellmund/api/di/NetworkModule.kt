@@ -10,10 +10,10 @@ import io.ktor.client.features.DefaultRequest
 import io.ktor.client.features.json.GsonSerializer
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.parameter
-import okhttp3.logging.HttpLoggingInterceptor
-import org.threeten.bp.LocalDate
 import java.util.Locale
 import javax.inject.Singleton
+import okhttp3.logging.HttpLoggingInterceptor
+import org.threeten.bp.LocalDate
 
 @Module
 object NetworkModule {

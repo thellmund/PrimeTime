@@ -6,13 +6,13 @@ import com.hellmund.primetime.history.ui.HistoryMovieViewEntity
 import com.hellmund.primetime.history.ui.HistoryViewState
 import com.hellmund.primetime.history.ui.HistoryViewStateReducer
 import com.hellmund.primetime.history.ui.Result
+import java.io.IOException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.mockito.Mockito.mock
-import java.io.IOException
 
 class HistoryViewStateReducerTest {
 

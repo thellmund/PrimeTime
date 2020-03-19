@@ -5,8 +5,8 @@ import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 interface HistoryDao {
     fun observeAll(): Flow<List<HistoryMovie>>

@@ -18,10 +18,10 @@ import com.hellmund.primetime.ui_common.RatedMovie
 import com.hellmund.primetime.ui_common.viewmodel.Event
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 sealed class ViewEvent {
     data class Search(val query: String) : ViewEvent()

@@ -18,8 +18,8 @@ import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.onboarding.databinding.FragmentSelectGenresBinding
 import com.hellmund.primetime.onboarding.di.OnboardingComponentProvider
 import com.hellmund.primetime.onboarding.ui.OnboardingNavigator
-import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.handle
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 import javax.inject.Provider

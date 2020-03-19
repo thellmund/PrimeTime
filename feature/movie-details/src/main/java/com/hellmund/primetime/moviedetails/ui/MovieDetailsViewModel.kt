@@ -16,11 +16,11 @@ import com.hellmund.primetime.ui_common.viewmodel.Event
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
+import java.io.IOException
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.IOException
-import javax.inject.Inject
 
 sealed class ViewEvent {
     object AddToWatchlist : ViewEvent()

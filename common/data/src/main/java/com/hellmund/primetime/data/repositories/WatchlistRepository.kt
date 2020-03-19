@@ -3,11 +3,11 @@ package com.hellmund.primetime.data.repositories
 import com.hellmund.primetime.data.database.WatchlistDao
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.WatchlistMovie
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.threeten.bp.LocalDateTime
-import javax.inject.Inject
 
 interface WatchlistRepository {
     suspend fun observeAll(): Flow<List<WatchlistMovie>>

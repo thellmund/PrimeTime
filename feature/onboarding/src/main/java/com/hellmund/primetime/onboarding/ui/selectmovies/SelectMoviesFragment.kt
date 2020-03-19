@@ -21,8 +21,8 @@ import com.hellmund.primetime.onboarding.ui.OnboardingNavigator
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.util.showToast
-import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.ui_common.viewmodel.handle
+import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 import javax.inject.Provider

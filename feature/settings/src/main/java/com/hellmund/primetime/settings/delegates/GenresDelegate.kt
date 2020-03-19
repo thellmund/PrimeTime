@@ -7,9 +7,9 @@ import com.hellmund.primetime.core.Preferences
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.settings.R
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class GenresDelegate @Inject constructor(
     private val context: Context,

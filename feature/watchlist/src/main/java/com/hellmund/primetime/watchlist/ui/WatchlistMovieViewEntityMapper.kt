@@ -1,9 +1,9 @@
 package com.hellmund.primetime.watchlist.ui
 
-import com.hellmund.primetime.data.model.WatchlistMovie
 import com.hellmund.primetime.core.ValueFormatter
-import org.threeten.bp.LocalDate.now
+import com.hellmund.primetime.data.model.WatchlistMovie
 import javax.inject.Inject
+import org.threeten.bp.LocalDate.now
 
 class WatchlistMovieViewEntityMapper @Inject constructor(
     private val valueFormatter: ValueFormatter

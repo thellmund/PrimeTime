@@ -3,11 +3,11 @@ package com.hellmund.primetime.data.repositories
 import com.hellmund.primetime.data.database.HistoryDao
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
 interface HistoryRepository {
     suspend fun observeAll(): Flow<List<HistoryMovie>>

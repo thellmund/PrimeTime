@@ -42,7 +42,7 @@ class FragmentLifecycleCallback(
 
     private fun scrollAwareNavigation() {
         val layoutParams = bottomNavigation.layoutParams as CoordinatorLayout.LayoutParams
-        layoutParams.behavior = BottomNavigationBehavior.with(contentFrame, bottomNavHeight)
+        layoutParams.behavior = BottomNavigationBehavior.create(contentFrame, bottomNavHeight)
         bottomNavigation.requestLayout()
     }
 

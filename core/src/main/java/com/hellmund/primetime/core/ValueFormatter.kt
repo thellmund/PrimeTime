@@ -1,16 +1,15 @@
 package com.hellmund.primetime.core
 
 import android.content.Context
-import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.MovieGenre
 import com.hellmund.primetime.data.model.Rating
+import java.util.Locale
+import javax.inject.Inject
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDate.now
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
-import java.util.Locale
-import javax.inject.Inject
 
 interface ValueFormatter {
     fun formatGenres(genres: List<MovieGenre>): String

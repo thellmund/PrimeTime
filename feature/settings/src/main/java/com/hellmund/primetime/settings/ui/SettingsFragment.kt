@@ -22,9 +22,9 @@ import com.hellmund.primetime.settings.di.DaggerSettingsComponent
 import com.hellmund.primetime.settings.util.doOnPreferenceChange
 import com.hellmund.primetime.settings.util.requirePreference
 import com.hellmund.primetime.ui_common.dialogs.showInfoDialog
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class SettingsFragment : PreferenceFragmentCompat() {
 

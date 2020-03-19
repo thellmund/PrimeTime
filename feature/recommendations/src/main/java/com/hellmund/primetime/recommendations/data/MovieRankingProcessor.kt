@@ -4,10 +4,10 @@ import com.hellmund.primetime.data.model.PartialMovie
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.repositories.WatchlistRepository
+import javax.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import org.threeten.bp.LocalDate
-import javax.inject.Inject
 
 data class MovieWithScore(
     val movie: PartialMovie,

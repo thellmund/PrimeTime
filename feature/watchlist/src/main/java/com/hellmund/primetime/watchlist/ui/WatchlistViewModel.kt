@@ -9,13 +9,13 @@ import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.repositories.WatchlistRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 sealed class ViewEvent {
     data class Remove(val item: WatchlistMovieViewEntity) : ViewEvent()

@@ -16,9 +16,9 @@ import androidx.preference.PreferenceManager
 import com.hellmund.primetime.core.Preferences
 import com.hellmund.primetime.core.R
 import com.hellmund.primetime.data.model.WatchlistMovie
+import javax.inject.Inject
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
-import javax.inject.Inject
 
 private const val GROUP_KEY = "releases_group"
 private const val CHANNEL_ID = "releases"

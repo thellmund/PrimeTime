@@ -3,9 +3,9 @@ package com.hellmund.api
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import org.threeten.bp.LocalDate
 import java.lang.reflect.Type
 import javax.inject.Inject
+import org.threeten.bp.LocalDate
 
 class DateSerializer @Inject constructor() : JsonDeserializer<LocalDate?> {
 

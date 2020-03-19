@@ -4,8 +4,8 @@ import com.hellmund.primetime.data.Database
 import com.hellmund.primetime.data.model.WatchlistMovie
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 interface WatchlistDao {
     fun observeAll(): Flow<List<WatchlistMovie>>

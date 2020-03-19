@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.data.model.Genre
-import com.hellmund.primetime.data.model.PartialMovie
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.repositories.HistoryRepository
