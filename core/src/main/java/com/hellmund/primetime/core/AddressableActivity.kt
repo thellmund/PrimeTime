@@ -17,7 +17,6 @@ enum class AddressableActivity(val className: String) {
 
 enum class AddressableFragment(val className: String) {
     Home("com.hellmund.primetime.recommendations.ui.HomeFragment"),
-    MovieDetails("com.hellmund.primetime.moviedetails.ui.MovieDetailsFragment")
 }
 
 object FragmentArgs {
@@ -25,23 +24,15 @@ object FragmentArgs {
     const val KEY_RECOMMENDATIONS_TYPE = "KEY_RECOMMENDATIONS_TYPE"
 }
 
-class FragmentFactory @Inject constructor(private val context: Context) {
+class DestinationFactory @Inject constructor(private val context: Context) {
 
-    fun movieDetails(bundle: Bundle): Fragment {
-        val fragment = context.createFragment(AddressableFragment.MovieDetails)
-        fragment.arguments = bundle
-        return fragment
-    }
+    fun movieDetails(
+        bundle: Bundle
+    ): Intent = context.createIntent(AddressableActivity.MovieDetails).putExtras(bundle)
 
-    fun movieDetailsActivity(bundle: Bundle): Intent {
-        val intent = context.createIntent(AddressableActivity.MovieDetails)
-        intent.putExtras(bundle)
-        return intent
-    }
-
-    fun category(bundle: Bundle): Fragment {
-        return context.createFragment(AddressableFragment.Home).apply { arguments = bundle }
-    }
+    fun category(
+        bundle: Bundle
+    ): Fragment = context.createFragment(AddressableFragment.Home).apply { arguments = bundle }
 }
 
 fun Context.createIntent(

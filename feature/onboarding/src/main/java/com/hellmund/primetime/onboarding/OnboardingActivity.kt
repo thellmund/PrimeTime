@@ -50,10 +50,9 @@ class OnboardingActivity : AppCompatActivity(), OnboardingComponentProvider {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        requestFullscreenLayout()
 
         onboardingComponent.inject(this)
-
-        window.requestFullscreenLayout()
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallback, false)
 
         binding.root.doOnApplyWindowInsets { v, insets, initialState ->

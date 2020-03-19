@@ -15,14 +15,14 @@ class MovieViewEntitiesMapper @Inject constructor(
 
     suspend fun mapPartialMovies(
         movies: List<PartialMovie>
-    ): List<PartialMovieViewEntity> = movies.map { mapPartialMovie(it) }
+    ): List<MovieViewEntity.Partial> = movies.map { mapPartialMovie(it) }
 
-    private suspend fun mapPartialMovie(movie: PartialMovie): PartialMovieViewEntity {
+    private suspend fun mapPartialMovie(movie: PartialMovie): MovieViewEntity.Partial {
         val genres = movie.genreIds
             .map { genresRepository.getGenreById(it) }
             .map { it.toMovieGenre() }
 
-        return PartialMovieViewEntity(
+        return MovieViewEntity.Partial(
             id = movie.id,
             posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
             backdropUrl = "https://image.tmdb.org/t/p/w500${movie.backdropPath}",
@@ -41,10 +41,10 @@ class MovieViewEntitiesMapper @Inject constructor(
 
     operator fun invoke(
         movies: List<Movie>
-    ): List<MovieViewEntity> = movies.map { invoke(it) }
+    ): List<MovieViewEntity.Full> = movies.map { invoke(it) }
 
-    operator fun invoke(movie: Movie): MovieViewEntity {
-        return MovieViewEntity(
+    operator fun invoke(movie: Movie): MovieViewEntity.Full {
+        return MovieViewEntity.Full(
             id = movie.id,
             posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
             backdropUrl = "https://image.tmdb.org/t/p/w500${movie.backdropPath}",

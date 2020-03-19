@@ -1,7 +1,6 @@
 package com.hellmund.primetime.moviedetails.ui
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,11 +12,9 @@ import com.hellmund.primetime.data.repositories.WatchlistRepository
 import com.hellmund.primetime.moviedetails.data.MovieDetailsRepository
 import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.PartialMovieViewEntity
+import com.hellmund.primetime.ui_common.viewmodel.Event
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
-import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
-import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,12 +27,12 @@ sealed class ViewEvent {
     data class LoadColorPalette(val bitmap: Bitmap) : ViewEvent()
     object OpenImdb : ViewEvent()
     object OpenTrailer : ViewEvent()
-    data class RecommendationClicked(val movieId: Long) : ViewEvent()
     object RemoveFromWatchlist : ViewEvent()
 }
 
 sealed class ViewResult {
-    data class RecommendationsLoaded(val movies: List<PartialMovieViewEntity>) : ViewResult()
+    data class MovieLoaded(val movie: MovieViewEntity.Full) : ViewResult()
+    data class RecommendationsLoaded(val movies: List<MovieViewEntity.Partial>) : ViewResult()
     data class ReviewsLoaded(val reviews: List<Review>) : ViewResult()
     object TrailerLoading : ViewResult()
     object TrailerLoaded : ViewResult()
@@ -44,15 +41,15 @@ sealed class ViewResult {
     object None : ViewResult()
 }
 
-sealed class NavigationResult {
-    data class OpenTrailer(val url: String) : NavigationResult()
-    data class OpenImdb(val url: String) : NavigationResult()
-    data class OpenSimilarMovie(val viewEntity: MovieViewEntity) : NavigationResult()
+sealed class ViewEffect {
+    data class OpenTrailer(val url: String) : ViewEffect()
+    data class OpenImdb(val url: String) : ViewEffect()
 }
 
 data class MovieDetailsViewState(
     val movie: MovieViewEntity,
-    val recommendations: List<PartialMovieViewEntity>? = null,
+    val isLoading: Boolean = true,
+    val recommendations: List<MovieViewEntity.Partial>? = null,
     val reviews: List<Review>? = null,
     val watchStatus: Movie.WatchStatus = Movie.WatchStatus.NOT_WATCHED,
     val color: Int? = null,
@@ -64,6 +61,7 @@ class MovieDetailsViewStateReducer : Reducer<MovieDetailsViewState, ViewResult> 
         state: MovieDetailsViewState,
         viewResult: ViewResult
     ) = when (viewResult) {
+        is ViewResult.MovieLoaded -> state.copy(movie = viewResult.movie, isLoading = false)
         is ViewResult.RecommendationsLoaded -> state.copy(recommendations = viewResult.movies)
         is ViewResult.TrailerLoading -> state.copy(isTrailerLoading = true)
         is ViewResult.TrailerLoaded -> state.copy(isTrailerLoading = false)
@@ -71,8 +69,6 @@ class MovieDetailsViewStateReducer : Reducer<MovieDetailsViewState, ViewResult> 
         is ViewResult.LoadedWatchStatus -> state.copy(watchStatus = viewResult.watchStatus)
         is ViewResult.ColorPaletteLoaded -> state.copy(color = viewResult.palette.mutedSwatch?.rgb)
         is ViewResult.None -> state
-    }.also {
-        Log.d("ViewStateReducer", "Reacted to ${viewResult.javaClass.simpleName}")
     }
 }
 
@@ -81,7 +77,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val historyRepository: HistoryRepository,
     private val watchlistRepository: WatchlistRepository,
     private val viewEntitiesMapper: MovieViewEntitiesMapper,
-    private var movie: MovieViewEntity
+    private val movie: MovieViewEntity
 ) : ViewModel() {
 
     private val store = viewStateStore(
@@ -91,43 +87,58 @@ class MovieDetailsViewModel @Inject constructor(
 
     val viewState: LiveData<MovieDetailsViewState> = store.viewState
 
-    private val navigationResultStore = SingleEventStore<NavigationResult>()
-    val navigationResults: LiveData<SingleEvent<NavigationResult>> = navigationResultStore.events
+    private val viewEffectsStore = SingleEventStore<ViewEffect>()
+    val viewEffects: LiveData<Event<ViewEffect>> = viewEffectsStore.events
 
     init {
         viewModelScope.launch {
-            store.dispatch(fetchWatchStatus())
-            store.dispatch(fetchSimilarMovies())
-            store.dispatch(fetchReviews())
+            fetchMovieDetails()
+            fetchWatchStatus()
+            fetchSimilarMovies()
+            fetchReviews()
         }
     }
 
-    private suspend fun fetchSimilarMovies(): ViewResult {
-        return try {
+    private suspend fun fetchMovieDetails() {
+        val viewResult = try {
+            val movie = checkNotNull(repository.fetchFullMovie(movie.id))
+            val entity = viewEntitiesMapper(movie)
+            ViewResult.MovieLoaded(entity)
+        } catch (e: IOException) {
+            ViewResult.None
+        }
+        store.dispatch(viewResult)
+    }
+
+    private suspend fun fetchSimilarMovies() {
+        val viewResult = try {
             val movies = repository.fetchSimilarMovies(movie.id)
             val mapped = viewEntitiesMapper.mapPartialMovies(movies)
             ViewResult.RecommendationsLoaded(mapped)
         } catch (e: IOException) {
             ViewResult.None
         }
+        store.dispatch(viewResult)
     }
 
-    private suspend fun fetchReviews(): ViewResult {
-        return try {
+    private suspend fun fetchReviews() {
+        val viewResult = try {
             val reviews = repository.fetchReviews(movie.id)
             ViewResult.ReviewsLoaded(reviews)
         } catch (e: IOException) {
             ViewResult.None
         }
+        store.dispatch(viewResult)
     }
 
-    private suspend fun fetchWatchStatus(): ViewResult {
+    private suspend fun fetchWatchStatus() {
         val count = historyRepository.count(movie.id)
-        return if (count > 0) {
+        val viewResult = if (count > 0) {
             ViewResult.LoadedWatchStatus(Movie.WatchStatus.WATCHED)
         } else {
             fetchWatchlistStatus()
         }
+        store.dispatch(viewResult)
     }
 
     private suspend fun fetchWatchlistStatus(): ViewResult {
@@ -139,38 +150,36 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadTrailer() {
+    private fun loadTrailer() = viewModelScope.launch {
+        val movie = checkNotNull(store.state().movie)
         store.dispatch(ViewResult.TrailerLoading)
         val url = repository.fetchVideo(movie.id, movie.title)
+
         store.dispatch(ViewResult.TrailerLoaded)
-        navigationResultStore.dispatch(NavigationResult.OpenTrailer(url))
+        viewEffectsStore.dispatch(ViewEffect.OpenTrailer(url))
     }
 
     private fun createImdbLink() {
+        val movie = checkNotNull(store.state().movie as? MovieViewEntity.Full)
         val url = "http://www.imdb.com/title/${movie.raw.imdbId}"
-        navigationResultStore.dispatch(NavigationResult.OpenImdb(url))
+        viewEffectsStore.dispatch(ViewEffect.OpenImdb(url))
     }
 
-    private suspend fun loadFullMovie(movieId: Long) {
-        val movie = checkNotNull(repository.fetchFullMovie(movieId))
-        val viewEntity = viewEntitiesMapper(movie)
-        navigationResultStore.dispatch(NavigationResult.OpenSimilarMovie(viewEntity))
-    }
-
-    private suspend fun addToWatchlist() {
+    private fun addToWatchlist() = viewModelScope.launch {
         val count = watchlistRepository.count(movie.id)
         if (count == 0) {
+            val movie = checkNotNull(store.state().movie as? MovieViewEntity.Full)
             watchlistRepository.store(movie.raw)
         }
         store.dispatch(ViewResult.LoadedWatchStatus(Movie.WatchStatus.ON_WATCHLIST))
     }
 
-    private suspend fun removeFromWatchlist() {
+    private fun removeFromWatchlist() = viewModelScope.launch {
         watchlistRepository.remove(movie.id)
         store.dispatch(ViewResult.LoadedWatchStatus(Movie.WatchStatus.NOT_WATCHED))
     }
 
-    private suspend fun loadColorPalette(bitmap: Bitmap) {
+    private fun loadColorPalette(bitmap: Bitmap) = viewModelScope.launch {
         val event = withContext(Dispatchers.IO) {
             try {
                 val palette = Palette.from(bitmap).generate()
@@ -182,16 +191,13 @@ class MovieDetailsViewModel @Inject constructor(
         store.dispatch(event)
     }
 
-    fun dispatch(viewEvent: ViewEvent) {
-        viewModelScope.launch {
-            when (viewEvent) {
-                is ViewEvent.AddToWatchlist -> addToWatchlist()
-                is ViewEvent.LoadColorPalette -> loadColorPalette(viewEvent.bitmap)
-                is ViewEvent.OpenImdb -> createImdbLink()
-                is ViewEvent.OpenTrailer -> loadTrailer()
-                is ViewEvent.RecommendationClicked -> loadFullMovie(viewEvent.movieId)
-                is ViewEvent.RemoveFromWatchlist -> removeFromWatchlist()
-            }
+    fun handleViewEvent(viewEvent: ViewEvent) {
+        when (viewEvent) {
+            is ViewEvent.AddToWatchlist -> addToWatchlist()
+            is ViewEvent.LoadColorPalette -> loadColorPalette(viewEvent.bitmap)
+            is ViewEvent.OpenImdb -> createImdbLink()
+            is ViewEvent.OpenTrailer -> loadTrailer()
+            is ViewEvent.RemoveFromWatchlist -> removeFromWatchlist()
         }
     }
 }

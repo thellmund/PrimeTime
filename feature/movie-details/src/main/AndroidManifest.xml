@@ -3,7 +3,9 @@
     package="com.hellmund.primetime.moviedetails">
 
     <application>
-        <activity android:name=".ui.MovieDetailsActivity"></activity>
+        <activity
+            android:name=".ui.MovieDetailsActivity"
+            android:theme="@style/AppTheme.MovieDetails" />
     </application>
 
 </manifest>

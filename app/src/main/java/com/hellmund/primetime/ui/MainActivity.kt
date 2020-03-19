@@ -17,6 +17,7 @@ import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.recommendations.ui.HomeFragment
 import com.hellmund.primetime.search.ui.SearchFragment
 import com.hellmund.primetime.ui_common.Reselectable
+import com.hellmund.primetime.ui_common.util.applyExitMaterialTransform
 import com.hellmund.primetime.ui_common.util.requestFullscreenLayout
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
 import com.hellmund.primetime.watchlist.ui.WatchlistFragment
@@ -52,13 +53,15 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by lazyViewModel { viewModelProvider }
 
-    private lateinit var binding: ActivityMainBinding
+    private val binding: ActivityMainBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
+        applyExitMaterialTransform()
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        requestFullscreenLayout()
 
         DaggerAppComponent.builder()
             .coreComponent(coreComponent)
@@ -66,12 +69,19 @@ class MainActivity : AppCompatActivity() {
             .inject(this)
 
         genresPrefetcher.run()
-
-        window.requestFullscreenLayout()
-
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentCallback, false)
-        binding.bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
 
+        setupNavigation()
+        observeWatchlistCount()
+        adjustToWindowInsets()
+
+        intent?.getStringExtra(SHORTCUT_EXTRA)?.let {
+            handleShortcutOpen(it)
+        }
+    }
+
+    private fun setupNavigation() {
+        binding.bottomNavigation.setOnNavigationItemReselectedListener(onNavigationItemReselected)
         navigator = BottomNavigator.onCreate(
             activity = this,
             rootFragmentsFactory = mapOf(
@@ -83,9 +93,13 @@ class MainActivity : AppCompatActivity() {
             fragmentContainer = R.id.contentFrame,
             bottomNavigationView = binding.bottomNavigation
         )
+    }
 
+    private fun observeWatchlistCount() {
         viewModel.watchlistCount.observe(this, this::updateWatchlistBadge)
+    }
 
+    private fun adjustToWindowInsets() {
         binding.contentFrame.doOnApplyWindowInsets { v, insets, initialState ->
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 topMargin = initialState.margins.top + insets.systemWindowInsetTop
@@ -96,10 +110,6 @@ class MainActivity : AppCompatActivity() {
             view.updatePadding(
                 bottom = initialState.paddings.bottom + insets.systemWindowInsetBottom
             )
-        }
-
-        intent?.getStringExtra(SHORTCUT_EXTRA)?.let {
-            handleShortcutOpen(it)
         }
     }
 

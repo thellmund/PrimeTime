@@ -1,6 +1,6 @@
 package com.hellmund.primetime.moviedetails.ui
 
-import android.text.TextUtils
+import android.text.TextUtils.TruncateAt
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +45,7 @@ class ReviewsAdapter : RecyclerView.Adapter<ReviewsAdapter.ViewHolder>() {
                     reviewTextView.ellipsize = null
                 } else {
                     reviewTextView.maxLines = COLLAPSED_LINES
-                    reviewTextView.ellipsize = TextUtils.TruncateAt.END
+                    reviewTextView.ellipsize = TruncateAt.END
                 }
             }
         }

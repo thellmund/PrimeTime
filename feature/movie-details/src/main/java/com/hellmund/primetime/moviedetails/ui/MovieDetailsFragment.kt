@@ -18,6 +18,7 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.api.model.Review
 import com.hellmund.primetime.core.FragmentArgs
+import com.hellmund.primetime.core.DestinationFactory
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.model.Movie
@@ -26,11 +27,12 @@ import com.hellmund.primetime.moviedetails.R
 import com.hellmund.primetime.moviedetails.databinding.FragmentMovieDetailsBinding
 import com.hellmund.primetime.moviedetails.di.DaggerMovieDetailsComponent
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 import com.hellmund.primetime.ui_common.dialogs.showLoading
-import com.hellmund.primetime.ui_common.util.navigator
+import com.hellmund.primetime.ui_common.util.makeSceneTransitionAnimation
+import com.hellmund.primetime.ui_common.util.updateBottomPaddingForFullscreenLayout
+import com.hellmund.primetime.ui_common.util.updateTopMarginForFullscreenLayout
+import com.hellmund.primetime.ui_common.viewmodel.handle
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
@@ -41,12 +43,16 @@ class MovieDetailsFragment : Fragment() {
     lateinit var imageLoader: ImageLoader
 
     @Inject
+    lateinit var destinationFactory: DestinationFactory
+
+    @Inject
     lateinit var viewModelProvider: Provider<MovieDetailsViewModel>
 
     private val viewModel: MovieDetailsViewModel by lazyViewModel { viewModelProvider }
 
-    private val movie: MovieViewEntity by lazy {
-        checkNotNull(requireArguments().getParcelable<MovieViewEntity>(FragmentArgs.KEY_MOVIE))
+    private val movie: MovieViewEntity.Partial by lazy {
+        val intent = requireActivity().intent
+        checkNotNull(intent.getParcelableExtra<MovieViewEntity.Partial>(FragmentArgs.KEY_MOVIE))
     }
 
     private val recommendationsAdapter: RecommendationsAdapter by lazy {
@@ -75,7 +81,7 @@ class MovieDetailsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
-        viewModel.navigationResults.observeSingleEvents(viewLifecycleOwner, this::navigate)
+        viewModel.viewEffects.handle(viewLifecycleOwner, this::handleViewEffect)
     }
 
     override fun onCreateView(
@@ -95,19 +101,23 @@ class MovieDetailsFragment : Fragment() {
         setupReviewsList()
 
         binding.backButton.setOnClickListener {
-            requireActivity().finish()
+            requireActivity().onBackPressed()
         }
 
-        binding.backdropImageView.setOnClickListener { viewModel.dispatch(ViewEvent.OpenTrailer) }
-        binding.moreInfoButton.setOnClickListener { viewModel.dispatch(ViewEvent.OpenImdb) }
+        binding.backdropImageView.setOnClickListener { viewModel.handleViewEvent(ViewEvent.OpenTrailer) }
+        binding.moreInfoButton.setOnClickListener { viewModel.handleViewEvent(ViewEvent.OpenImdb) }
 
         binding.addToWatchlistButton.setOnClickListener {
-            viewModel.dispatch(ViewEvent.AddToWatchlist)
+            viewModel.handleViewEvent(ViewEvent.AddToWatchlist)
         }
 
         binding.removeFromWatchlistButton.setOnClickListener {
-            viewModel.dispatch(ViewEvent.RemoveFromWatchlist)
+            viewModel.handleViewEvent(ViewEvent.RemoveFromWatchlist)
         }
+
+        binding.backButton.updateTopMarginForFullscreenLayout()
+        binding.playButton.updateTopMarginForFullscreenLayout()
+        binding.contentContainer.updateBottomPaddingForFullscreenLayout()
     }
 
     private fun setupSimilarMoviesList() = with(binding) {
@@ -127,6 +137,15 @@ class MovieDetailsFragment : Fragment() {
 
     private fun render(viewState: MovieDetailsViewState) = with(binding) {
         fillInContent(viewState.movie)
+//        viewState.movie.let { movie ->
+////            titleTextView.text = movie.title
+////            descriptionTextView.text = movie.description
+////            genresTextView.text = movie.formattedGenres
+////            releaseTextView.text = movie.releaseYear
+//            durationTextView.text = movie.formattedRuntime
+////            ratingTextView.text = movie.formattedVoteAverage
+////            votesTextView.text = movie.formattedVoteCount
+//        }
 
         viewState.color?.let { onMovieColorLoaded(it) }
         viewState.recommendations?.let { showRecommendations(it) }
@@ -141,11 +160,10 @@ class MovieDetailsFragment : Fragment() {
         updateWatchlistButton(viewState.watchStatus)
     }
 
-    private fun navigate(result: NavigationResult) {
+    private fun handleViewEffect(result: ViewEffect) {
         when (result) {
-            is NavigationResult.OpenImdb -> openUrl(result.url)
-            is NavigationResult.OpenSimilarMovie -> openClickedRecommendation(result.viewEntity)
-            is NavigationResult.OpenTrailer -> openUrl(result.url)
+            is ViewEffect.OpenImdb -> openUrl(result.url)
+            is ViewEffect.OpenTrailer -> openUrl(result.url)
         }
     }
 
@@ -173,7 +191,7 @@ class MovieDetailsFragment : Fragment() {
         )
     }
 
-    private fun showRecommendations(movies: List<PartialMovieViewEntity>) {
+    private fun showRecommendations(movies: List<MovieViewEntity.Partial>) {
         binding.recommendationsProgressBar.isVisible = false
         binding.noRecommendationsPlaceholder.isVisible = movies.isEmpty()
         binding.recommendationsRecyclerView.isVisible = movies.isNotEmpty()
@@ -187,12 +205,11 @@ class MovieDetailsFragment : Fragment() {
         reviewsAdapter.update(reviews)
     }
 
-    private fun onRecommendationClicked(movie: PartialMovieViewEntity) {
-        viewModel.dispatch(ViewEvent.RecommendationClicked(movie.id))
-    }
-
-    private fun openClickedRecommendation(movie: MovieViewEntity) {
-        navigator.addFragment(newInstance(movie))
+    private fun onRecommendationClicked(movie: MovieViewEntity.Partial, startView: View) {
+        val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
+        val intent = destinationFactory.movieDetails(args)
+        val options = requireActivity().makeSceneTransitionAnimation(startView, movie.id.toString())
+        startActivity(intent, options.toBundle())
     }
 
     private fun openUrl(url: String) {
@@ -208,7 +225,7 @@ class MovieDetailsFragment : Fragment() {
 
     private fun onImageLoaded(drawable: Drawable) {
         val cover = (drawable as BitmapDrawable).bitmap
-        viewModel.dispatch(ViewEvent.LoadColorPalette(cover))
+        viewModel.handleViewEvent(ViewEvent.LoadColorPalette(cover))
     }
 
     private fun onMovieColorLoaded(color: Int) {
@@ -218,11 +235,6 @@ class MovieDetailsFragment : Fragment() {
     }
 
     companion object {
-
-        fun newInstance(movie: MovieViewEntity): MovieDetailsFragment {
-            return MovieDetailsFragment().apply {
-                arguments = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-            }
-        }
+        fun newInstance() = MovieDetailsFragment()
     }
 }

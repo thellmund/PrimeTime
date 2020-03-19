@@ -14,9 +14,8 @@ import com.hellmund.primetime.search.R
 import com.hellmund.primetime.search.data.SearchRepository
 import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.PartialMovieViewEntity
-import com.hellmund.primetime.ui_common.RatedPartialMovie
-import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
+import com.hellmund.primetime.ui_common.RatedMovie
+import com.hellmund.primetime.ui_common.viewmodel.Event
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.delay
@@ -27,16 +26,16 @@ import javax.inject.Inject
 sealed class ViewEvent {
     data class Search(val query: String) : ViewEvent()
     data class TextChanged(val text: String) : ViewEvent()
-    data class AddToHistory(val ratedMovie: RatedPartialMovie) : ViewEvent()
+    data class AddToHistory(val ratedMovie: RatedMovie.Partial) : ViewEvent()
     data class CategorySelected(val category: String) : ViewEvent()
     data class ProcessExtra(val extra: String) : ViewEvent()
-    data class MovieClicked(val viewEntity: PartialMovieViewEntity) : ViewEvent()
+    data class MovieClicked(val viewEntity: MovieViewEntity.Partial) : ViewEvent()
 }
 
 sealed class ViewResult {
     object Loading : ViewResult()
     data class GenresLoaded(val genres: List<Genre>) : ViewResult()
-    data class Data(val data: List<PartialMovieViewEntity>) : ViewResult()
+    data class Data(val data: List<MovieViewEntity.Partial>) : ViewResult()
     data class Error(val error: Throwable) : ViewResult()
     data class ToggleClearButton(val show: Boolean) : ViewResult()
     data class ShowSnackbar(val messageResId: Int) : ViewResult()
@@ -44,7 +43,7 @@ sealed class ViewResult {
 }
 
 sealed class NavigationResult {
-    data class OpenMovieDetails(val viewEntity: MovieViewEntity) : NavigationResult()
+    data class OpenMovieDetails(val viewEntity: MovieViewEntity.Full) : NavigationResult()
     data class OpenCategory(val recommendationsType: RecommendationsType) : NavigationResult()
 }
 
@@ -63,7 +62,7 @@ class SearchViewModel @Inject constructor(
     val viewState: LiveData<SearchViewState> = store.viewState
 
     private val navigationResultsStore = SingleEventStore<NavigationResult>()
-    val navigationResults: LiveData<SingleEvent<NavigationResult>> = navigationResultsStore.events
+    val navigationResults: LiveData<Event<NavigationResult>> = navigationResultsStore.events
 
     init {
         viewModelScope.launch {

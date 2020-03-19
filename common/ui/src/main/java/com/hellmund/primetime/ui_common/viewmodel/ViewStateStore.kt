@@ -16,9 +16,7 @@ class ViewStateStore<State, Result>(
         value = initialState
     }
 
-    private fun dispatchState(
-        state: State
-    ) {
+    private fun dispatchState(state: State) {
         viewState.value = state
     }
 
@@ -33,7 +31,7 @@ class ViewStateStore<State, Result>(
         dispatch(result)
     }
 
-    private fun state() = viewState.value!!
+    fun state() = viewState.value!!
 }
 
 interface Reducer<State, Result> {

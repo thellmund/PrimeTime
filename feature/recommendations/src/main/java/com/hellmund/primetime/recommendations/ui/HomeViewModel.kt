@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.data.model.Genre
+import com.hellmund.primetime.data.model.PartialMovie
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.data.repositories.HistoryRepository
@@ -12,11 +13,8 @@ import com.hellmund.primetime.recommendations.data.MovieRankingProcessor
 import com.hellmund.primetime.recommendations.data.MoviesRepository
 import com.hellmund.primetime.ui_common.MovieViewEntitiesMapper
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.PartialMovieViewEntity
-import com.hellmund.primetime.ui_common.RatedPartialMovie
+import com.hellmund.primetime.ui_common.RatedMovie
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
-import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
-import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -25,9 +23,8 @@ import javax.inject.Inject
 
 sealed class ViewEvent {
     data class LoadMovies(val page: Int = 1) : ViewEvent()
-    data class LoadFullMovie(val movieId: Long) : ViewEvent()
     object LoadMore : ViewEvent()
-    data class StoreRating(val ratedMovie: RatedPartialMovie) : ViewEvent()
+    data class StoreRating(val ratedMovie: RatedMovie.Partial) : ViewEvent()
     data class Filter(val genres: List<Genre>) : ViewEvent()
     object DismissPersonalizationBanner : ViewEvent()
 }
@@ -36,21 +33,17 @@ sealed class ViewResult {
     object Loading : ViewResult()
     data class Data(
         val type: RecommendationsType,
-        val data: List<PartialMovieViewEntity>,
+        val data: List<MovieViewEntity.Partial>,
         val page: Int
     ) : ViewResult()
     data class Error(val error: Throwable) : ViewResult()
-    data class RatingStored(val movie: PartialMovieViewEntity) : ViewResult()
+    data class RatingStored(val movie: MovieViewEntity.Partial) : ViewResult()
     data class Filter(val genres: List<Genre>) : ViewResult()
     object ShowFilterButton : ViewResult()
     object HideFilterButton : ViewResult()
     object ShowPersonalizationBanner : ViewResult()
     object HidePersonalizationBanner : ViewResult()
     data class PreferredGenresLoaded(val genres: List<Genre>) : ViewResult()
-}
-
-sealed class NavigationResult {
-    data class ClickedMovieLoaded(val viewEntity: MovieViewEntity) : NavigationResult()
 }
 
 class HomeViewStateReducer : Reducer<HomeViewState, ViewResult> {
@@ -87,9 +80,6 @@ class HomeViewModel @Inject constructor(
     )
 
     val viewState: LiveData<HomeViewState> = store.viewState
-
-    private val navigationEventsStore = SingleEventStore<NavigationResult>()
-    val navigationEvents: LiveData<SingleEvent<NavigationResult>> = navigationEventsStore.events
 
     private var isLoadingMore: Boolean = false
 
@@ -145,22 +135,15 @@ class HomeViewModel @Inject constructor(
         store.dispatch(result)
     }
 
-    private fun storeRating(ratedMovie: RatedPartialMovie) = viewModelScope.launch {
+    private fun storeRating(ratedMovie: RatedMovie.Partial) = viewModelScope.launch {
         val historyMovie = ratedMovie.toHistoryMovie()
         historyRepository.store(historyMovie)
         store.dispatch(ViewResult.RatingStored(ratedMovie.movie))
     }
 
-    private fun loadFullMovie(movieId: Long) = viewModelScope.launch {
-        val movie = checkNotNull(repository.fetchFullMovie(movieId))
-        val viewEntity = viewEntitiesMapper(movie)
-        navigationEventsStore.dispatch(NavigationResult.ClickedMovieLoaded(viewEntity))
-    }
-
     fun dispatch(viewEvent: ViewEvent) {
         when (viewEvent) {
             is ViewEvent.LoadMovies -> fetchRecommendations(recommendationsType, viewEvent.page)
-            is ViewEvent.LoadFullMovie -> loadFullMovie(viewEvent.movieId)
             is ViewEvent.LoadMore -> {
                 if (isLoadingMore.not()) {
                     isLoadingMore = true

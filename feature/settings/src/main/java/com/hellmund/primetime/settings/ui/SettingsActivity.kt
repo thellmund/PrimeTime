@@ -20,7 +20,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initToolbar()
-        window.requestFullscreenLayout()
+        requestFullscreenLayout()
 
         binding.toolbarContainer.root.doOnApplyWindowInsets { v, insets, initialState ->
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {

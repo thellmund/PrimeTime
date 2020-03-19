@@ -6,9 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
-import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
+import com.hellmund.primetime.ui_common.viewmodel.Event
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
-import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -66,7 +65,7 @@ class SelectGenresViewModel @Inject constructor(
     val viewState: LiveData<SelectGenresViewState> = store.viewState
 
     private val navigationResultsStore = SingleEventStore<NavigationResult>()
-    val navigationResults: LiveData<SingleEvent<NavigationResult>> = navigationResultsStore.events
+    val navigationResults: LiveData<Event<NavigationResult>> = navigationResultsStore.events
 
     init {
         viewModelScope.launch {

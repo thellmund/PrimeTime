@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.observe
 
-open class SingleEvent<out T>(private val content: T) {
+open class Event<out T>(private val content: T) {
     private var hasBeenHandled = false
 
     fun ifNotHandled(block: (T) -> Unit) {
@@ -16,7 +16,7 @@ open class SingleEvent<out T>(private val content: T) {
     }
 }
 
-fun <T> LiveData<SingleEvent<T>>.observeSingleEvents(owner: LifecycleOwner, observer: (T) -> Unit) {
+fun <T> LiveData<Event<T>>.handle(owner: LifecycleOwner, observer: (T) -> Unit) {
     observe(owner) { uiEvent ->
         uiEvent.ifNotHandled { content ->
             observer.invoke(content)
@@ -26,10 +26,10 @@ fun <T> LiveData<SingleEvent<T>>.observeSingleEvents(owner: LifecycleOwner, obse
 
 class SingleEventStore<T> {
 
-    private val _events = MutableLiveData<SingleEvent<T>>()
-    val events: LiveData<SingleEvent<T>> = _events
+    private val _events = MutableLiveData<Event<T>>()
+    val events: LiveData<Event<T>> = _events
 
     fun dispatch(content: T) {
-        _events.value = SingleEvent(content)
+        _events.value = Event(content)
     }
 }

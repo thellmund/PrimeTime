@@ -15,13 +15,12 @@ import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.hellmund.primetime.core.FragmentArgs
-import com.hellmund.primetime.core.FragmentFactory
+import com.hellmund.primetime.core.DestinationFactory
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.data.model.Genre
@@ -31,14 +30,12 @@ import com.hellmund.primetime.search.databinding.FragmentSearchBinding
 import com.hellmund.primetime.search.di.DaggerSearchComponent
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.PartialMovieViewEntity
-import com.hellmund.primetime.ui_common.RatedPartialMovie
+import com.hellmund.primetime.ui_common.RatedMovie
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.util.navigator
+import com.hellmund.primetime.ui_common.viewmodel.handle
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
-import com.pandora.bottomnavigator.BottomNavigator
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.math.roundToInt
@@ -53,7 +50,7 @@ class SearchFragment : Fragment(), TextWatcher,
     lateinit var viewModelProvider: Provider<SearchViewModel>
 
     @Inject
-    lateinit var fragmentFactory: FragmentFactory
+    lateinit var destinationFactory: DestinationFactory
 
     private val categoriesAdapter: SearchCategoriesAdapter by lazy {
         SearchCategoriesAdapter(onItemClick = this::onCategorySelected)
@@ -100,7 +97,7 @@ class SearchFragment : Fragment(), TextWatcher,
         initSearchResultsRecyclerView()
 
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
-        viewModel.navigationResults.observeSingleEvents(viewLifecycleOwner, this::navigate)
+        viewModel.navigationResults.handle(viewLifecycleOwner, this::navigate)
 
         arguments?.getString(KEY_EXTRA)?.let {
             viewModel.dispatch(ViewEvent.ProcessExtra(it))
@@ -185,7 +182,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     private fun openCategory(type: RecommendationsType) {
         val args = bundleOf(FragmentArgs.KEY_RECOMMENDATIONS_TYPE to type)
-        val fragment = fragmentFactory.category(args)
+        val fragment = destinationFactory.category(args)
         navigator.addFragment(fragment)
     }
 
@@ -213,7 +210,7 @@ class SearchFragment : Fragment(), TextWatcher,
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
-    private fun addRating(ratedMovie: RatedPartialMovie) {
+    private fun addRating(ratedMovie: RatedMovie.Partial) {
         viewModel.dispatch(ViewEvent.AddToHistory(ratedMovie))
     }
 
@@ -233,24 +230,27 @@ class SearchFragment : Fragment(), TextWatcher,
         return false
     }
 
-    private fun onItemClick(movie: PartialMovieViewEntity) {
-        viewModel.dispatch(ViewEvent.MovieClicked(movie))
+    private fun onItemClick(movie: MovieViewEntity.Partial) {
+        val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
+        val intent = destinationFactory.movieDetails(args)
+        startActivity(intent)
+        // viewModel.dispatch(ViewEvent.MovieClicked(movie))
     }
 
-    private fun onClickedMovieLoaded(movie: MovieViewEntity) {
+    private fun onClickedMovieLoaded(movie: MovieViewEntity.Full) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val intent = fragmentFactory.movieDetailsActivity(args)
+        val intent = destinationFactory.movieDetails(args)
         startActivity(intent)
     }
 
-    private fun onWatched(movie: PartialMovieViewEntity) {
+    private fun onWatched(movie: MovieViewEntity.Partial) {
         RateMovieDialog
             .make(requireActivity())
             .setTitle(movie.title)
             .setPositiveText(R.string.show_more_like_this)
             .setNegativeText(R.string.show_less_like_this)
             .onItemSelected { rating ->
-                val ratedMovie = RatedPartialMovie(movie, rating)
+                val ratedMovie = movie + rating
                 addRating(ratedMovie)
             }
             .show()

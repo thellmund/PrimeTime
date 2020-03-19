@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.FragmentArgs.KEY_RECOMMENDATIONS_TYPE
-import com.hellmund.primetime.core.FragmentFactory
+import com.hellmund.primetime.core.DestinationFactory
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.coreComponent
 import com.hellmund.primetime.core.createIntent
@@ -27,15 +27,12 @@ import com.hellmund.primetime.recommendations.databinding.FragmentHomeBinding
 import com.hellmund.primetime.recommendations.di.DaggerMoviesComponent
 import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.MovieViewEntity
-import com.hellmund.primetime.ui_common.PartialMovieViewEntity
 import com.hellmund.primetime.ui_common.Reselectable
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showMultiSelectDialog
-import com.hellmund.primetime.ui_common.util.navigator
+import com.hellmund.primetime.ui_common.util.makeSceneTransitionAnimation
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
-import com.pandora.bottomnavigator.BottomNavigator
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 import javax.inject.Provider
@@ -48,7 +45,7 @@ class HomeFragment : Fragment(), Reselectable {
     lateinit var imageLoader: ImageLoader
 
     @Inject
-    lateinit var fragmentFactory: FragmentFactory
+    lateinit var destinationFactory: DestinationFactory
 
     @Inject
     lateinit var viewModelProvider: Provider<HomeViewModel>
@@ -78,6 +75,11 @@ class HomeFragment : Fragment(), Reselectable {
             .inject(this)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.viewState.observe(viewLifecycleOwner, this::render)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,8 +95,6 @@ class HomeFragment : Fragment(), Reselectable {
         setupPersonalizationBanner()
         setupRecyclerView()
         setupFab()
-        viewModel.viewState.observe(viewLifecycleOwner, this::render)
-        viewModel.navigationEvents.observeSingleEvents(viewLifecycleOwner, this::navigate)
     }
 
     override fun onResume() {
@@ -156,23 +156,14 @@ class HomeFragment : Fragment(), Reselectable {
         }
     }
 
-    private fun navigate(
-        result: NavigationResult
-    ) = when (result) {
-        is NavigationResult.ClickedMovieLoaded -> openMovieDetails(result.viewEntity)
-    }
-
-    private fun openMovieDetails(movie: PartialMovieViewEntity) {
-        viewModel.dispatch(ViewEvent.LoadFullMovie(movie.id))
-    }
-
-    private fun openMovieDetails(movie: MovieViewEntity) {
+    private fun openMovieDetails(movie: MovieViewEntity.Partial, startView: View) {
         val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val intent = fragmentFactory.movieDetailsActivity(args)
-        startActivity(intent)
+        val intent = destinationFactory.movieDetails(args)
+        val options = requireActivity().makeSceneTransitionAnimation(startView, movie.id.toString())
+        startActivity(intent, options.toBundle())
     }
 
-    private fun openRatingDialog(movie: PartialMovieViewEntity) {
+    private fun openRatingDialog(movie: MovieViewEntity.Partial) {
         val header = getString(R.string.rate_movie, movie.title)
         RateMovieDialog
             .make(requireActivity())
@@ -180,7 +171,7 @@ class HomeFragment : Fragment(), Reselectable {
             .setPositiveText(R.string.show_more_like_this)
             .setNegativeText(R.string.show_less_like_this)
             .onItemSelected { rating ->
-                val ratedMovie = movie.apply(rating)
+                val ratedMovie = movie + rating
                 viewModel.dispatch(ViewEvent.StoreRating(ratedMovie))
             }
             .show()

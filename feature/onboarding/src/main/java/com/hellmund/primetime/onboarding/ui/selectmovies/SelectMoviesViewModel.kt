@@ -9,9 +9,8 @@ import com.hellmund.primetime.data.repositories.GenresRepository
 import com.hellmund.primetime.onboarding.domain.Sample
 import com.hellmund.primetime.onboarding.domain.SamplesRepository
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
-import com.hellmund.primetime.ui_common.viewmodel.SingleEvent
+import com.hellmund.primetime.ui_common.viewmodel.Event
 import com.hellmund.primetime.ui_common.viewmodel.SingleEventStore
-import com.hellmund.primetime.ui_common.viewmodel.ViewStateStore
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime.now
@@ -75,7 +74,7 @@ class SelectMoviesViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val navigationResultsStore = SingleEventStore<NavigationResult>()
-    val navigationResults: LiveData<SingleEvent<NavigationResult>> = navigationResultsStore.events
+    val navigationResults: LiveData<Event<NavigationResult>> = navigationResultsStore.events
 
     private val store = viewStateStore(
         initialState = SelectMoviesViewState(),

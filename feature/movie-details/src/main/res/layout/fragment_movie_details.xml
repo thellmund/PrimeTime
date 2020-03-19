@@ -5,15 +5,17 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey_900"
     android:clipChildren="true"
     android:overScrollMode="never"
     tools:context=".ui.MovieDetailsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contentContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/backdropImageView"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -23,16 +25,14 @@
             app:layout_constraintDimensionRatio="H,16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:riv_corner_radius_top_left="@dimen/corner_radius"
-            app:riv_corner_radius_top_right="@dimen/corner_radius" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_space"
-            android:layout_marginTop="@dimen/default_space"
+            android:layout_marginStart="@dimen/small_space"
+            android:layout_marginTop="@dimen/small_space"
             android:background="?android:selectableItemBackgroundBorderless"
             android:padding="@dimen/small_space"
             android:src="@drawable/ic_arrow_back"
@@ -40,6 +40,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:id="@+id/playButton"
             android:layout_width="@dimen/default_icon"
             android:layout_height="@dimen/default_icon"
             android:background="@drawable/background_more_button"
@@ -337,6 +338,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
+                android:overScrollMode="never"
                 android:paddingStart="@dimen/default_space"
                 android:paddingEnd="@dimen/default_space" />
 
@@ -399,6 +401,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
+                android:overScrollMode="never"
                 android:paddingStart="@dimen/default_space"
                 android:paddingEnd="@dimen/default_space"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

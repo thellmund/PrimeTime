@@ -19,7 +19,7 @@ import com.hellmund.primetime.onboarding.databinding.FragmentSelectGenresBinding
 import com.hellmund.primetime.onboarding.di.OnboardingComponentProvider
 import com.hellmund.primetime.onboarding.ui.OnboardingNavigator
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
+import com.hellmund.primetime.ui_common.viewmodel.handle
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 import javax.inject.Provider
@@ -65,7 +65,7 @@ class SelectGenresFragment : Fragment(), OnboardingActivity.BackButtonIconProvid
         }
 
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
-        viewModel.navigationResults.observeSingleEvents(viewLifecycleOwner, this::navigate)
+        viewModel.navigationResults.handle(viewLifecycleOwner, this::navigate)
     }
 
     private fun updateNextButton(genres: List<Genre> = emptyList()) {

@@ -22,7 +22,7 @@ import com.hellmund.primetime.ui_common.EqualSpacingGridItemDecoration
 import com.hellmund.primetime.ui_common.util.onBottomReached
 import com.hellmund.primetime.ui_common.util.showToast
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
-import com.hellmund.primetime.ui_common.viewmodel.observeSingleEvents
+import com.hellmund.primetime.ui_common.viewmodel.handle
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 import javax.inject.Provider
@@ -89,7 +89,7 @@ class SelectMoviesFragment : Fragment(), OnboardingActivity.BackButtonIconProvid
         }
 
         viewModel.viewState.observe(viewLifecycleOwner, this::render)
-        viewModel.navigationResults.observeSingleEvents(viewLifecycleOwner, this::navigate)
+        viewModel.navigationResults.handle(viewLifecycleOwner, this::navigate)
     }
 
     private fun setupRecyclerView() {
