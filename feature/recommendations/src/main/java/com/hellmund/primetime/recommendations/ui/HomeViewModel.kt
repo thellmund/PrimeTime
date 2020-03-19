@@ -15,10 +15,10 @@ import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.RatedMovie
 import com.hellmund.primetime.ui_common.viewmodel.Reducer
 import com.hellmund.primetime.ui_common.viewmodel.viewStateStore
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 sealed class ViewEvent {
     data class LoadMovies(val page: Int = 1) : ViewEvent()
@@ -30,6 +30,7 @@ sealed class ViewEvent {
 
 sealed class ViewResult {
     object Loading : ViewResult()
+    object LoadingMore : ViewResult()
     data class Data(
         val type: RecommendationsType,
         val data: List<MovieViewEntity.Partial>,
@@ -50,11 +51,27 @@ class HomeViewStateReducer : Reducer<HomeViewState, ViewResult> {
         state: HomeViewState,
         viewResult: ViewResult
     ) = when (viewResult) {
-        is ViewResult.Loading -> state.toLoading()
-        is ViewResult.Data -> state.toData(viewResult)
-        is ViewResult.Error -> state.toError(viewResult.error)
-        is ViewResult.RatingStored -> state.toData(viewResult)
-        is ViewResult.Filter -> state.toFiltered(viewResult)
+        is ViewResult.Loading -> state.copy(isLoading = true)
+        is ViewResult.LoadingMore -> state.copy(isLoadingMore = true)
+        is ViewResult.Data -> state.copy(
+            recommendationsType = viewResult.type,
+            data = state.data + viewResult.data,
+            filtered = null,
+            pagesLoaded = viewResult.page,
+            isLoading = false,
+            isLoadingMore = false,
+            error = null
+        )
+        is ViewResult.Error -> state.copy(
+            isLoading = false,
+            isLoadingMore = false,
+            error = viewResult.error
+        )
+        is ViewResult.RatingStored -> state.copy(data = state.data.minus(viewResult.movie))
+        is ViewResult.Filter -> state.copy(
+            recommendationsType = RecommendationsType.Personalized(viewResult.genres),
+            filtered = state.data.filterWithGenres(viewResult.genres)
+        )
         is ViewResult.ShowFilterButton -> state.copy(showFilterButton = true)
         is ViewResult.HideFilterButton -> state.copy(showFilterButton = false)
         is ViewResult.ShowPersonalizationBanner -> state.copy(showPersonalizationBanner = true)
@@ -62,6 +79,15 @@ class HomeViewStateReducer : Reducer<HomeViewState, ViewResult> {
         is ViewResult.PreferredGenresLoaded -> state.copy(preferredGenres = viewResult.genres)
     }
 }
+
+private fun List<MovieViewEntity.Partial>.filterWithGenres(genres: List<Genre>): List<MovieViewEntity.Partial> {
+    val genreIds = genres.map { it.id }.toSet()
+    return filter { genreIds.containsAny(it.raw.genreIds) }
+}
+
+private fun <T> Set<T>.containsAny(
+    elements: Collection<T>
+): Boolean = elements.any { contains(it) }
 
 class HomeViewModel @Inject constructor(
     private val repository: MoviesRepository,
@@ -80,15 +106,10 @@ class HomeViewModel @Inject constructor(
 
     val viewState: LiveData<HomeViewState> = store.viewState
 
-    private var isLoadingMore: Boolean = false
-
-    private val pagesLoaded: Int
-        get() = store.viewState.value?.pagesLoaded ?: 0
-
     init {
         viewModelScope.launch {
             store.dispatch(ViewResult.Loading)
-            fetchRecommendations(recommendationsType, pagesLoaded + 1)
+            fetchRecommendations(recommendationsType)
         }
 
         viewModelScope.launch {
@@ -121,7 +142,7 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchRecommendations(
         type: RecommendationsType,
-        page: Int
+        page: Int = 1
     ) = viewModelScope.launch {
         val result = try {
             val recommendations = repository.fetchRecommendations(type, page)
@@ -134,21 +155,31 @@ class HomeViewModel @Inject constructor(
         store.dispatch(result)
     }
 
+    private fun loadMoreRecommendations(
+        type: RecommendationsType,
+        isLoadingMore: Boolean,
+        page: Int
+    ) = viewModelScope.launch {
+        if (isLoadingMore.not()) {
+            store += ViewResult.LoadingMore
+            fetchRecommendations(type, page)
+        }
+    }
+
     private fun storeRating(ratedMovie: RatedMovie.Partial) = viewModelScope.launch {
         val historyMovie = ratedMovie.toHistoryMovie()
         historyRepository.store(historyMovie)
         store.dispatch(ViewResult.RatingStored(ratedMovie.movie))
     }
 
-    fun dispatch(viewEvent: ViewEvent) {
+    fun handleViewEvent(viewEvent: ViewEvent) {
         when (viewEvent) {
             is ViewEvent.LoadMovies -> fetchRecommendations(recommendationsType, viewEvent.page)
             is ViewEvent.LoadMore -> {
-                if (isLoadingMore.not()) {
-                    isLoadingMore = true
-                    fetchRecommendations(recommendationsType, pagesLoaded + 1)
-                    isLoadingMore = false
-                }
+                val viewState = store.currentViewState
+                val isLoadingMore = viewState.isLoadingMore
+                val pageToLoad = viewState.pagesLoaded + 1
+                loadMoreRecommendations(recommendationsType, isLoadingMore, pageToLoad)
             }
             is ViewEvent.Filter -> store.dispatch(ViewResult.Filter(viewEvent.genres))
             is ViewEvent.StoreRating -> storeRating(viewEvent.ratedMovie)

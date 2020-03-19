@@ -104,7 +104,7 @@ class HomeFragment : Fragment(), Reselectable {
 
     private fun setupPersonalizationBanner() = with(binding.banner) {
         setOnClickListener(this@HomeFragment::openOnboarding)
-        setOnDismissListener { viewModel.dispatch(ViewEvent.DismissPersonalizationBanner) }
+        setOnDismissListener { viewModel.handleViewEvent(ViewEvent.DismissPersonalizationBanner) }
     }
 
     private fun openOnboarding() {
@@ -114,13 +114,13 @@ class HomeFragment : Fragment(), Reselectable {
 
     private fun setupRecyclerView() = with(binding) {
         swipeRefreshLayout.setColorSchemeResources(R.color.teal_500)
-        swipeRefreshLayout.setOnRefreshListener { viewModel.dispatch(ViewEvent.LoadMovies(page = 1)) }
+        swipeRefreshLayout.setOnRefreshListener { viewModel.handleViewEvent(ViewEvent.LoadMovies(page = 1)) }
 
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.adapter = adapter
         recyclerView.onBottomReached {
-            viewModel.dispatch(ViewEvent.LoadMore)
+            viewModel.handleViewEvent(ViewEvent.LoadMore)
         }
 
         val spacing = resources.getDimension(R.dimen.default_space).roundToInt()
@@ -172,7 +172,7 @@ class HomeFragment : Fragment(), Reselectable {
             .setNegativeText(R.string.show_less_like_this)
             .onItemSelected { rating ->
                 val ratedMovie = movie + rating
-                viewModel.dispatch(ViewEvent.StoreRating(ratedMovie))
+                viewModel.handleViewEvent(ViewEvent.StoreRating(ratedMovie))
             }
             .show()
     }
@@ -238,7 +238,7 @@ class HomeFragment : Fragment(), Reselectable {
             positiveResId = R.string.filter,
             onConfirmed = { selected ->
                 val selectedGenres = genres.filterIndexed { i, _ -> selected.contains(i) }
-                viewModel.dispatch(ViewEvent.Filter(selectedGenres))
+                viewModel.handleViewEvent(ViewEvent.Filter(selectedGenres))
             }
         )
     }

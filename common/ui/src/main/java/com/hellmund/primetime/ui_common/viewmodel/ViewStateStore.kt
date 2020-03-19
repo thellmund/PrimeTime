@@ -16,6 +16,9 @@ class ViewStateStore<State, Result>(
         value = initialState
     }
 
+    val currentViewState: State
+        get() = viewState.value!!
+
     private fun dispatchState(state: State) {
         viewState.value = state
     }

@@ -151,7 +151,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private fun loadTrailer() = viewModelScope.launch {
-        val movie = checkNotNull(store.state().movie)
+        val movie = checkNotNull(store.currentViewState.movie)
         store.dispatch(ViewResult.TrailerLoading)
         val url = repository.fetchVideo(movie.id, movie.title)
 
@@ -160,7 +160,7 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private fun createImdbLink() {
-        val movie = checkNotNull(store.state().movie as? MovieViewEntity.Full)
+        val movie = checkNotNull(store.currentViewState.movie as? MovieViewEntity.Full)
         val url = "http://www.imdb.com/title/${movie.raw.imdbId}"
         viewEffectsStore.dispatch(ViewEffect.OpenImdb(url))
     }
@@ -168,7 +168,7 @@ class MovieDetailsViewModel @Inject constructor(
     private fun addToWatchlist() = viewModelScope.launch {
         val count = watchlistRepository.count(movie.id)
         if (count == 0) {
-            val movie = checkNotNull(store.state().movie as? MovieViewEntity.Full)
+            val movie = checkNotNull(store.currentViewState.movie as? MovieViewEntity.Full)
             watchlistRepository.store(movie.raw)
         }
         store.dispatch(ViewResult.LoadedWatchStatus(Movie.WatchStatus.ON_WATCHLIST))
