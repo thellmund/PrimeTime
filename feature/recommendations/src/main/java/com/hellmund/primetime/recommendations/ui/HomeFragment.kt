@@ -12,13 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import com.hellmund.primetime.core.AddressableActivity
-import com.hellmund.primetime.core.DestinationFactory
-import com.hellmund.primetime.core.FragmentArgs
-import com.hellmund.primetime.core.FragmentArgs.KEY_RECOMMENDATIONS_TYPE
 import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.coreComponent
-import com.hellmund.primetime.core.createIntent
+import com.hellmund.primetime.core.di.coreComponent
+import com.hellmund.primetime.core.navigation.AddressableActivity
+import com.hellmund.primetime.core.navigation.DestinationFactory
+import com.hellmund.primetime.core.navigation.DestinationsArgs.KEY_RECOMMENDATIONS_TYPE
+import com.hellmund.primetime.core.navigation.createIntent
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.data.model.RecommendationsType.Personalized
@@ -157,8 +156,7 @@ class HomeFragment : Fragment(), Reselectable {
     }
 
     private fun openMovieDetails(movie: MovieViewEntity.Partial, startView: View) {
-        val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val intent = destinationFactory.movieDetails(args)
+        val intent = destinationFactory.movieDetails(movie)
         val options = requireActivity().makeSceneTransitionAnimation(startView, movie.id.toString())
         startActivity(intent, options.toBundle())
     }

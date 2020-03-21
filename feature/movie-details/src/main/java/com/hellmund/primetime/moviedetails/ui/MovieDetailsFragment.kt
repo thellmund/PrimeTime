@@ -11,16 +11,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hellmund.api.model.Review
-import com.hellmund.primetime.core.DestinationFactory
-import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.coreComponent
+import com.hellmund.primetime.core.di.coreComponent
+import com.hellmund.primetime.core.navigation.DestinationFactory
+import com.hellmund.primetime.core.navigation.DestinationsArgs
 import com.hellmund.primetime.data.model.Movie
 import com.hellmund.primetime.data.model.Movie.WatchStatus.ON_WATCHLIST
 import com.hellmund.primetime.moviedetails.R
@@ -52,7 +51,7 @@ class MovieDetailsFragment : Fragment() {
 
     private val movie: MovieViewEntity.Partial by lazy {
         val intent = requireActivity().intent
-        checkNotNull(intent.getParcelableExtra<MovieViewEntity.Partial>(FragmentArgs.KEY_MOVIE))
+        checkNotNull(intent.getParcelableExtra<MovieViewEntity.Partial>(DestinationsArgs.KEY_MOVIE))
     }
 
     private val recommendationsAdapter: RecommendationsAdapter by lazy {
@@ -206,8 +205,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun onRecommendationClicked(movie: MovieViewEntity.Partial, startView: View) {
-        val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val intent = destinationFactory.movieDetails(args)
+        val intent = destinationFactory.movieDetails(movie)
         val options = requireActivity().makeSceneTransitionAnimation(startView, movie.id.toString())
         startActivity(intent, options.toBundle())
     }

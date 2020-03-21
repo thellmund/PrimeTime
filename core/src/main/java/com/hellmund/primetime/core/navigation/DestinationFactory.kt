@@ -1,9 +1,12 @@
-package com.hellmund.primetime.core
+package com.hellmund.primetime.core.navigation
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
+import android.os.Parcelable
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import com.hellmund.primetime.core.navigation.DestinationsArgs.KEY_MOVIE
+import com.hellmund.primetime.core.navigation.DestinationsArgs.KEY_RECOMMENDATIONS_TYPE
 import javax.inject.Inject
 
 enum class AddressableActivity(val className: String) {
@@ -19,7 +22,7 @@ enum class AddressableFragment(val className: String) {
     Home("com.hellmund.primetime.recommendations.ui.HomeFragment"),
 }
 
-object FragmentArgs {
+object DestinationsArgs {
     const val KEY_MOVIE = "KEY_MOVIE"
     const val KEY_RECOMMENDATIONS_TYPE = "KEY_RECOMMENDATIONS_TYPE"
 }
@@ -27,12 +30,18 @@ object FragmentArgs {
 class DestinationFactory @Inject constructor(private val context: Context) {
 
     fun movieDetails(
-        bundle: Bundle
-    ): Intent = context.createIntent(AddressableActivity.MovieDetails).putExtras(bundle)
+        movie: Parcelable
+    ): Intent {
+        val args = bundleOf(KEY_MOVIE to movie)
+        return context.createIntent(AddressableActivity.MovieDetails).putExtras(args)
+    }
 
     fun category(
-        bundle: Bundle
-    ): Fragment = context.createFragment(AddressableFragment.Home).apply { arguments = bundle }
+        category: Parcelable
+    ): Fragment {
+        val args = bundleOf(KEY_RECOMMENDATIONS_TYPE to category)
+        return context.createFragment(AddressableFragment.Home).apply { arguments = args }
+    }
 }
 
 fun Context.createIntent(

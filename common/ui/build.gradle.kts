@@ -42,7 +42,6 @@ dependencies {
     // AndroidX
     implementation(Libraries.appCompat)
     api(Libraries.constraintLayout)
-    api(Libraries.coreKtx)
     api(Libraries.fragmentKtx)
     api(Libraries.material)
     api(Libraries.insetter)

@@ -19,15 +19,13 @@ class GenresValidator @Inject constructor(
     private val genresRepository: GenresRepository
 ) {
 
-    suspend fun validate(pref: Preference, newValue: Any): ValidationResult {
-        val genreIds = newValue as Set<String>
-
+    suspend fun validate(pref: Preference, genreIds: Set<String>): ValidationResult {
         val isPreferredGenres = pref.key == Preferences.KEY_INCLUDED
         val isExcludedGenres = pref.key == Preferences.KEY_EXCLUDED
 
         val enoughChecked = if (isPreferredGenres) enoughGenresChecked(genreIds) else true
 
-        return if (enoughChecked && genresAreDisjoint(pref, newValue)) {
+        return if (enoughChecked && genresAreDisjoint(pref, genreIds)) {
             val genres = getGenresFromValues(genreIds).map { genre ->
                 Genre.Impl(
                     id = genre.id,
@@ -38,7 +36,7 @@ class GenresValidator @Inject constructor(
             }
             val results = genres.filter { if (isPreferredGenres) it.isPreferred else it.isExcluded }
             ValidationResult.Success(results)
-        } else if (!enoughGenresChecked(newValue)) {
+        } else if (!enoughGenresChecked(genreIds)) {
             ValidationResult.NotEnough
         } else {
             val overlap = getOverlappingGenres(pref, genreIds)

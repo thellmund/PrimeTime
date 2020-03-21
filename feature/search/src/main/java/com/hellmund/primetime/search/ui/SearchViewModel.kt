@@ -3,7 +3,7 @@ package com.hellmund.primetime.search.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.core.Intents
+import com.hellmund.primetime.core.navigation.Intents
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.HistoryMovie
 import com.hellmund.primetime.data.model.Rating
@@ -137,7 +137,7 @@ class SearchViewModel @Inject constructor(
         navigationResultsStore.dispatch(NavigationResult.OpenMovieDetails(viewEntity))
     }
 
-    fun dispatch(viewEvent: ViewEvent) {
+    fun handleViewEvent(viewEvent: ViewEvent) {
         viewModelScope.launch {
             when (viewEvent) {
                 is ViewEvent.AddToHistory -> addToHistory(viewEvent.ratedMovie.toHistoryMovie())

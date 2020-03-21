@@ -8,7 +8,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.hellmund.primetime.core.App
+import com.hellmund.primetime.core.di.coreComponent
 import java.io.IOException
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,7 +40,7 @@ class GenresPrefetcher @Inject constructor(
         @FlowPreview
         @ExperimentalCoroutinesApi
         override suspend fun doWork(): Result {
-            val repository = App.coreComponent(applicationContext).genresRepository()
+            val repository = applicationContext.coreComponent.genresRepository()
             return try {
                 val apiGenres = repository.fetchGenres()
                 repository.storeGenres(apiGenres)

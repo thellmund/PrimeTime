@@ -3,9 +3,9 @@ package com.hellmund.primetime.onboarding.ui
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.transaction
-import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.OnboardingHelper
-import com.hellmund.primetime.core.createIntent
+import com.hellmund.primetime.core.navigation.AddressableActivity
+import com.hellmund.primetime.core.navigation.createIntent
 import com.hellmund.primetime.onboarding.R
 import com.hellmund.primetime.onboarding.ui.selectgenres.SelectGenresFragment
 import com.hellmund.primetime.onboarding.ui.selectmovies.SelectMoviesFragment

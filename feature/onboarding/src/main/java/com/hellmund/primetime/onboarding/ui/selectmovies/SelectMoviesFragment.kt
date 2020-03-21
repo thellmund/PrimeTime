@@ -31,7 +31,7 @@ import kotlin.math.roundToInt
 class SelectMoviesFragment : Fragment(), OnboardingActivity.BackButtonIconProvider {
 
     private val adapter: SamplesAdapter by lazy {
-        SamplesAdapter(imageLoader) { viewModel.dispatch(ViewEvent.ItemClicked(it)) }
+        SamplesAdapter(imageLoader) { viewModel.handleViewEvent(ViewEvent.ItemClicked(it)) }
     }
 
     @Inject
@@ -69,7 +69,7 @@ class SelectMoviesFragment : Fragment(), OnboardingActivity.BackButtonIconProvid
         updateNextButton()
 
         binding.nextButton.setOnClickListener { saveMovies() }
-        binding.errorButton.setOnClickListener { viewModel.dispatch(ViewEvent.Refresh) }
+        binding.errorButton.setOnClickListener { viewModel.handleViewEvent(ViewEvent.Refresh) }
 
         binding.gridView.doOnApplyWindowInsets { v, insets, initialState ->
             v.updatePadding(
@@ -100,7 +100,7 @@ class SelectMoviesFragment : Fragment(), OnboardingActivity.BackButtonIconProvid
 
         gridView.onBottomReached {
             if (isLoadingMore.not()) {
-                viewModel.dispatch(ViewEvent.Refresh)
+                viewModel.handleViewEvent(ViewEvent.Refresh)
                 isLoadingMore = true
             }
         }
@@ -152,7 +152,7 @@ class SelectMoviesFragment : Fragment(), OnboardingActivity.BackButtonIconProvid
 
     private fun saveSelection() {
         val selected = adapter.selected
-        viewModel.dispatch(ViewEvent.Store(selected))
+        viewModel.handleViewEvent(ViewEvent.Store(selected))
     }
 
     override fun provideIconResource(): Int = R.drawable.ic_arrow_back

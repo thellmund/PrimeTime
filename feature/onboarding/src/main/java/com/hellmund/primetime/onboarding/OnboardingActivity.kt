@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.hellmund.primetime.core.coreComponent
+import com.hellmund.primetime.core.di.coreComponent
 import com.hellmund.primetime.onboarding.databinding.ActivityOnboardingBinding
 import com.hellmund.primetime.onboarding.di.DaggerOnboardingComponent
 import com.hellmund.primetime.onboarding.di.OnboardingComponent

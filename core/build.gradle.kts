@@ -52,6 +52,7 @@ dependencies {
     // Helpers
     implementation(Libraries.picasso)
     implementation(Libraries.timber)
+    api(Libraries.coreKtx)
     api(Libraries.threeTenAbp)
 
     // WorkManager

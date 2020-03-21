@@ -5,7 +5,7 @@ import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.history.ui.HistoryMovieViewEntity
 import com.hellmund.primetime.history.ui.HistoryViewState
 import com.hellmund.primetime.history.ui.HistoryViewStateReducer
-import com.hellmund.primetime.history.ui.Result
+import com.hellmund.primetime.history.ui.ViewResult
 import java.io.IOException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -23,7 +23,7 @@ class HistoryViewStateReducerTest {
         val underTest = HistoryViewStateReducer()
 
         // When
-        val result = Result.Data(emptyList())
+        val result = ViewResult.Data(emptyList())
         val newState = underTest(state, result)
 
         // Then
@@ -39,7 +39,7 @@ class HistoryViewStateReducerTest {
         val underTest = HistoryViewStateReducer()
 
         // When
-        val result = Result.Error(IOException())
+        val result = ViewResult.Error(IOException())
         val newState = underTest(state, result)
 
         // Then
@@ -55,29 +55,11 @@ class HistoryViewStateReducerTest {
         val underTest = HistoryViewStateReducer()
 
         // When
-        val result = Result.Removed(MOVIES.first())
+        val result = ViewResult.Removed(MOVIES.first())
         val newState = underTest(state, result)
 
         // Then
         assertEquals(newState.data, MOVIES.subList(1, MOVIES.size))
-        assertFalse(newState.isLoading)
-        assertNull(newState.error)
-    }
-
-    @Test
-    fun `correct state when updating item`() {
-        // Given
-        val state = HistoryViewState(data = MOVIES)
-        val underTest = HistoryViewStateReducer()
-
-        // When
-        val updatedMovie = MOVIES.first().copy(rating = Rating.Like)
-        val result = Result.Updated(updatedMovie)
-        val newState = underTest(state, result)
-
-        // Then
-        val expected = listOf(updatedMovie) + MOVIES.subList(1, MOVIES.size)
-        assertEquals(newState.data, expected)
         assertFalse(newState.isLoading)
         assertNull(newState.error)
     }

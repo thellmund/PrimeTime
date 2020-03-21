@@ -122,7 +122,7 @@ class SelectMoviesViewModel @Inject constructor(
         navigationResultsStore.dispatch(NavigationResult.OpenNext)
     }
 
-    fun dispatch(viewEvent: ViewEvent) {
+    fun handleViewEvent(viewEvent: ViewEvent) {
         viewModelScope.launch {
             when (viewEvent) {
                 is ViewEvent.Refresh -> fetchMovies(page)

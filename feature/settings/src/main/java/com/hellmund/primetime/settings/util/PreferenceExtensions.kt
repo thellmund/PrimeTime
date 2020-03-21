@@ -10,14 +10,16 @@ fun <T : Preference> PreferenceFragmentCompat.requirePreference(key: String): T 
     return checkNotNull(findPreference(key))
 }
 
-@Suppress("UNCHECKED_CAST")
 fun Preference.doOnPreferenceChange(
     lifecycleScope: LifecycleCoroutineScope,
-    block: suspend (Preference, Any) -> Boolean
+    block: suspend (Preference, Set<String>) -> Boolean
 ) {
     setOnPreferenceChangeListener { pref, newValue ->
         lifecycleScope.launch {
-            val shouldUpdate = block(pref, newValue)
+            @Suppress("UNCHECKED_CAST")
+            val newValueSet = newValue as? Set<String> ?: return@launch
+            val shouldUpdate = block(pref, newValueSet)
+
             if (shouldUpdate) {
                 sharedPreferences.edit {
                     putStringSet(pref.key, newValue as Set<String>)

@@ -19,10 +19,9 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.hellmund.primetime.core.DestinationFactory
-import com.hellmund.primetime.core.FragmentArgs
 import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.coreComponent
+import com.hellmund.primetime.core.di.coreComponent
+import com.hellmund.primetime.core.navigation.DestinationFactory
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.data.model.RecommendationsType
 import com.hellmund.primetime.search.R
@@ -100,12 +99,12 @@ class SearchFragment : Fragment(), TextWatcher,
         viewModel.navigationResults.handle(viewLifecycleOwner, this::navigate)
 
         arguments?.getString(KEY_EXTRA)?.let {
-            viewModel.dispatch(ViewEvent.ProcessExtra(it))
+            viewModel.handleViewEvent(ViewEvent.ProcessExtra(it))
         }
     }
 
     fun openCategory(category: String) {
-        viewModel.dispatch(ViewEvent.CategorySelected(category))
+        viewModel.handleViewEvent(ViewEvent.CategorySelected(category))
     }
 
     private fun render(viewState: SearchViewState) {
@@ -170,7 +169,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun onCategorySelected(category: String) {
-        viewModel.dispatch(ViewEvent.CategorySelected(category))
+        viewModel.handleViewEvent(ViewEvent.CategorySelected(category))
     }
 
     private fun navigate(result: NavigationResult) {
@@ -181,8 +180,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun openCategory(type: RecommendationsType) {
-        val args = bundleOf(FragmentArgs.KEY_RECOMMENDATIONS_TYPE to type)
-        val fragment = destinationFactory.category(args)
+        val fragment = destinationFactory.category(type)
         navigator.addFragment(fragment)
     }
 
@@ -203,7 +201,7 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        viewModel.dispatch(ViewEvent.TextChanged(s.toString()))
+        viewModel.handleViewEvent(ViewEvent.TextChanged(s.toString()))
     }
 
     override fun afterTextChanged(s: Editable?) = Unit
@@ -211,7 +209,7 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
     private fun addRating(ratedMovie: RatedMovie.Partial) {
-        viewModel.dispatch(ViewEvent.AddToHistory(ratedMovie))
+        viewModel.handleViewEvent(ViewEvent.AddToHistory(ratedMovie))
     }
 
     private fun clearSearchBarContent() = with(binding.searchContainer) {
@@ -222,7 +220,7 @@ class SearchFragment : Fragment(), TextWatcher,
     override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
             val input = v.text.toString().trim()
-            viewModel.dispatch(ViewEvent.Search(input))
+            viewModel.handleViewEvent(ViewEvent.Search(input))
             toggleKeyboard(false)
             return true
         }
@@ -231,15 +229,12 @@ class SearchFragment : Fragment(), TextWatcher,
     }
 
     private fun onItemClick(movie: MovieViewEntity.Partial) {
-        val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val intent = destinationFactory.movieDetails(args)
+        val intent = destinationFactory.movieDetails(movie)
         startActivity(intent)
-        // viewModel.dispatch(ViewEvent.MovieClicked(movie))
     }
 
     private fun onClickedMovieLoaded(movie: MovieViewEntity.Full) {
-        val args = bundleOf(FragmentArgs.KEY_MOVIE to movie)
-        val intent = destinationFactory.movieDetails(args)
+        val intent = destinationFactory.movieDetails(movie)
         startActivity(intent)
     }
 

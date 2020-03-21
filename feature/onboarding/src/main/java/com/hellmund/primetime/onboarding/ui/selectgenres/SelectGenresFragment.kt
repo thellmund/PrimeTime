@@ -116,7 +116,7 @@ class SelectGenresFragment : Fragment(), OnboardingActivity.BackButtonIconProvid
     }
 
     private fun onCheckedChange(chip: GenreChip) {
-        viewModel.dispatch(ViewEvent.ToggleGenre(chip.genre))
+        viewModel.handleViewEvent(ViewEvent.ToggleGenre(chip.genre))
     }
 
     private fun saveGenres() {
@@ -129,7 +129,7 @@ class SelectGenresFragment : Fragment(), OnboardingActivity.BackButtonIconProvid
                 isExcluded = genre.isExcluded
             )
         }
-        viewModel.dispatch(ViewEvent.Store(includedGenres))
+        viewModel.handleViewEvent(ViewEvent.Store(includedGenres))
     }
 
     override fun provideIconResource(): Int = R.drawable.ic_close

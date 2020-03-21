@@ -2,7 +2,7 @@ package com.hellmund.primetime.history.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.transaction
+import androidx.fragment.app.commit
 import com.hellmund.primetime.history.R
 import com.hellmund.primetime.history.databinding.ActivityHistoryBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,7 +21,7 @@ class HistoryActivity : AppCompatActivity() {
         initToolbar()
 
         if (savedInstanceState == null) {
-            supportFragmentManager.transaction {
+            supportFragmentManager.commit {
                 replace(R.id.contentFrame, HistoryFragment.newInstance())
             }
         }

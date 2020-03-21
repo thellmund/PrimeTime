@@ -7,10 +7,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.Preferences
-import com.hellmund.primetime.core.coreComponent
-import com.hellmund.primetime.core.createIntent
+import com.hellmund.primetime.core.di.coreComponent
+import com.hellmund.primetime.core.navigation.AddressableActivity
+import com.hellmund.primetime.core.navigation.createIntent
 import com.hellmund.primetime.data.model.Genre
 import com.hellmund.primetime.settings.R
 import com.hellmund.primetime.settings.delegates.GenresDelegate
@@ -69,7 +69,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         preference.doOnPreferenceChange(lifecycleScope, this::saveGenresSelection)
     }
 
-    private suspend fun saveGenresSelection(pref: Preference, newValue: Any): Boolean {
+    private suspend fun saveGenresSelection(pref: Preference, newValue: Set<String>): Boolean {
         return when (val result = genresValidator.validate(pref, newValue)) {
             is Success -> {
                 genresDelegate.updateGenres(result.genres)

@@ -3,7 +3,6 @@ package com.hellmund.primetime.watchlist.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hellmund.primetime.core.OnboardingHelper
 import com.hellmund.primetime.core.notifications.NotificationUtils
 import com.hellmund.primetime.data.repositories.HistoryRepository
 import com.hellmund.primetime.data.repositories.WatchlistRepository
@@ -56,8 +55,7 @@ class WatchlistViewModel @Inject constructor(
     private val repository: WatchlistRepository,
     private val historyRepository: HistoryRepository,
     private val notificationUtils: NotificationUtils,
-    viewEntityMapper: WatchlistMovieViewEntityMapper,
-    onboardingHelper: OnboardingHelper
+    viewEntityMapper: WatchlistMovieViewEntityMapper
 ) : ViewModel() {
 
     private val store = viewStateStore(
@@ -110,7 +108,7 @@ class WatchlistViewModel @Inject constructor(
         store.dispatch(ViewResult.Removed(ratedMovie.movie))
     }
 
-    fun dispatch(viewEvent: ViewEvent) {
+    fun handleViewEvent(viewEvent: ViewEvent) {
         when (viewEvent) {
             is ViewEvent.Remove -> removeMovie(viewEvent.item)
             is ViewEvent.ToggleNotification -> toggleAndStoreNotification(viewEvent.item)

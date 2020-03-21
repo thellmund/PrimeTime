@@ -22,25 +22,25 @@ data class HistoryViewState(
     val movieToBeEdited: HistoryMovieViewEntity? = null
 )
 
-sealed class Action {
-    data class Update(val ratedMovie: RatedHistoryMovie) : Action()
-    data class Remove(val movie: HistoryMovieViewEntity) : Action()
+sealed class ViewEvent {
+    data class Update(val ratedMovie: RatedHistoryMovie) : ViewEvent()
+    data class Remove(val movie: HistoryMovieViewEntity) : ViewEvent()
 }
 
-sealed class Result {
-    data class Data(val data: List<HistoryMovieViewEntity>) : Result()
-    data class Error(val error: Throwable) : Result()
-    data class Removed(val movie: HistoryMovieViewEntity) : Result()
+sealed class ViewResult {
+    data class Data(val data: List<HistoryMovieViewEntity>) : ViewResult()
+    data class Error(val error: Throwable) : ViewResult()
+    data class Removed(val movie: HistoryMovieViewEntity) : ViewResult()
 }
 
-class HistoryViewStateReducer : Reducer<HistoryViewState, Result> {
+class HistoryViewStateReducer : Reducer<HistoryViewState, ViewResult> {
     override fun invoke(
         state: HistoryViewState,
-        viewResult: Result
+        viewResult: ViewResult
     ) = when (viewResult) {
-        is Result.Data -> state.copy(data = viewResult.data, isLoading = false, error = null)
-        is Result.Error -> state.copy(isLoading = false, error = viewResult.error)
-        is Result.Removed -> state.copy(data = state.data.minus(viewResult.movie))
+        is ViewResult.Data -> state.copy(data = viewResult.data, isLoading = false, error = null)
+        is ViewResult.Error -> state.copy(isLoading = false, error = viewResult.error)
+        is ViewResult.Removed -> state.copy(data = state.data.minus(viewResult.movie))
     }
 }
 
@@ -63,26 +63,26 @@ class HistoryViewModel @Inject constructor(
             repository.observeAll()
                 .map { it.sortedByDescending { movie -> movie.timestamp } }
                 .map { viewEntitiesMapper(it) }
-                .map { Result.Data(it) as Result }
-                .catch { emit(Result.Error(it)) }
+                .map { ViewResult.Data(it) as ViewResult }
+                .catch { emit(ViewResult.Error(it)) }
                 .collect { store.dispatch(it) }
         }
     }
 
     private suspend fun removeMovie(movie: HistoryMovieViewEntity) {
         repository.remove(movie.id)
-        store.dispatch(Result.Removed(movie))
+        store.dispatch(ViewResult.Removed(movie))
     }
 
     private suspend fun updateMovie(ratedMovie: RatedHistoryMovie) {
         repository.updateRating(ratedMovie.movie.raw, ratedMovie.rating)
     }
 
-    fun dispatch(action: Action) {
+    fun handleViewEvent(viewEvent: ViewEvent) {
         viewModelScope.launch {
-            when (action) {
-                is Action.Update -> updateMovie(action.ratedMovie)
-                is Action.Remove -> removeMovie(action.movie)
+            when (viewEvent) {
+                is ViewEvent.Update -> updateMovie(viewEvent.ratedMovie)
+                is ViewEvent.Remove -> removeMovie(viewEvent.movie)
             }
         }
     }

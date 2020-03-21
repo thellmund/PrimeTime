@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
 import com.hellmund.primetime.R
-import com.hellmund.primetime.core.Intents
-import com.hellmund.primetime.core.coreComponent
+import com.hellmund.primetime.core.di.coreComponent
+import com.hellmund.primetime.core.navigation.Intents
 import com.hellmund.primetime.databinding.ActivityMainBinding
 import com.hellmund.primetime.di.DaggerAppComponent
 import com.hellmund.primetime.recommendations.ui.HomeFragment

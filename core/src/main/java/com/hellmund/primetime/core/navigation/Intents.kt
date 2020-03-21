@@ -1,4 +1,4 @@
-package com.hellmund.primetime.core
+package com.hellmund.primetime.core.navigation
 
 object Intents {
     const val WATCHLIST = "watchlist"

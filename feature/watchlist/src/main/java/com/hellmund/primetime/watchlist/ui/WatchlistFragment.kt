@@ -9,10 +9,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.viewpager2.widget.ViewPager2
-import com.hellmund.primetime.core.AddressableActivity
 import com.hellmund.primetime.core.ImageLoader
-import com.hellmund.primetime.core.coreComponent
-import com.hellmund.primetime.core.createIntent
+import com.hellmund.primetime.core.di.coreComponent
+import com.hellmund.primetime.core.navigation.AddressableActivity
+import com.hellmund.primetime.core.navigation.createIntent
 import com.hellmund.primetime.ui_common.dialogs.RateMovieDialog
 import com.hellmund.primetime.ui_common.dialogs.showCancelableDialog
 import com.hellmund.primetime.ui_common.viewmodel.lazyViewModel
@@ -102,14 +102,14 @@ class WatchlistFragment : Fragment() {
     }
 
     private fun onNotificationToggle(movie: WatchlistMovieViewEntity) {
-        viewModel.dispatch(ViewEvent.ToggleNotification(movie))
+        viewModel.handleViewEvent(ViewEvent.ToggleNotification(movie))
     }
 
     private fun onRemove(movie: WatchlistMovieViewEntity) {
         requireContext().showCancelableDialog(
             messageResId = R.string.remove_from_watchlist_header,
             positiveResId = R.string.remove,
-            onPositive = { viewModel.dispatch(ViewEvent.Remove(movie)) })
+            onPositive = { viewModel.handleViewEvent(ViewEvent.Remove(movie)) })
     }
 
     private fun onWatchedIt(movie: WatchlistMovieViewEntity) {
@@ -121,7 +121,7 @@ class WatchlistFragment : Fragment() {
             .setNegativeText(R.string.dislike)
             .onItemSelected { rating ->
                 val ratedMovie = movie.apply(rating)
-                viewModel.dispatch(ViewEvent.RateMovie(ratedMovie))
+                viewModel.handleViewEvent(ViewEvent.RateMovie(ratedMovie))
             }
             .show()
     }

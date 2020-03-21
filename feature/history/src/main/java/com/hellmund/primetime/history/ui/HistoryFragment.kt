@@ -9,7 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
-import com.hellmund.primetime.core.coreComponent
+import com.hellmund.primetime.core.di.coreComponent
 import com.hellmund.primetime.data.model.Rating
 import com.hellmund.primetime.history.R
 import com.hellmund.primetime.history.databinding.FragmentHistoryBinding
@@ -83,7 +83,7 @@ class HistoryFragment : Fragment() {
             onSelected = { index ->
                 when (index) {
                     0 -> openEditRatingDialog(movie)
-                    1 -> viewModel.dispatch(Action.Remove(movie))
+                    1 -> viewModel.handleViewEvent(ViewEvent.Remove(movie))
                 }
             }
         )
@@ -102,7 +102,7 @@ class HistoryFragment : Fragment() {
                 if (it != checked) {
                     val newRating = if (it == 0) Rating.Like else Rating.Dislike
                     val ratedMovie = movie.apply(newRating)
-                    viewModel.dispatch(Action.Update(ratedMovie))
+                    viewModel.handleViewEvent(ViewEvent.Update(ratedMovie))
                 }
             }
         )
