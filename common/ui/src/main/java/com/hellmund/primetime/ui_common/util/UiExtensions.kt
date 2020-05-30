@@ -14,12 +14,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialContainerTransformSharedElementCallback
 import com.pandora.bottomnavigator.BottomNavigator
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 
 @JvmOverloads
 fun Context.showToast(resId: Int, length: Int = Toast.LENGTH_SHORT) {
@@ -100,3 +105,9 @@ fun Activity.makeSceneTransitionAnimation(
     startView: View,
     sharedElementName: String
 ) = ActivityOptions.makeSceneTransitionAnimation(this, startView, sharedElementName)
+
+fun <T> StateFlow<T>.observeWhenCreated(scope: LifecycleCoroutineScope, block: (T) -> Unit) {
+    scope.launchWhenCreated {
+        this@observeWhenCreated.collect { block(it) }
+    }
+}

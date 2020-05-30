@@ -9,25 +9,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.observe
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.hellmund.api.model.Review
 import com.hellmund.primetime.core.ImageLoader
 import com.hellmund.primetime.core.di.coreComponent
 import com.hellmund.primetime.core.navigation.DestinationFactory
 import com.hellmund.primetime.core.navigation.DestinationsArgs
 import com.hellmund.primetime.data.model.Movie
-import com.hellmund.primetime.data.model.Movie.WatchStatus.ON_WATCHLIST
+import com.hellmund.primetime.data.model.Movie.WatchStatus.OnWatchlist
 import com.hellmund.primetime.moviedetails.R
 import com.hellmund.primetime.moviedetails.databinding.FragmentMovieDetailsBinding
 import com.hellmund.primetime.moviedetails.di.DaggerMovieDetailsComponent
 import com.hellmund.primetime.ui_common.MovieViewEntity
 import com.hellmund.primetime.ui_common.dialogs.showLoading
 import com.hellmund.primetime.ui_common.util.makeSceneTransitionAnimation
+import com.hellmund.primetime.ui_common.util.observeWhenCreated
 import com.hellmund.primetime.ui_common.util.updateBottomPaddingForFullscreenLayout
 import com.hellmund.primetime.ui_common.util.updateTopMarginForFullscreenLayout
 import com.hellmund.primetime.ui_common.viewmodel.handle
@@ -79,7 +82,8 @@ class MovieDetailsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.viewState.observe(viewLifecycleOwner, this::render)
+
+        viewModel.state.observeWhenCreated(lifecycleScope, this::render)
         viewModel.viewEffects.handle(viewLifecycleOwner, this::handleViewEffect)
     }
 
@@ -103,8 +107,13 @@ class MovieDetailsFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
-        binding.backdropImageView.setOnClickListener { viewModel.handleViewEvent(ViewEvent.OpenTrailer) }
-        binding.moreInfoButton.setOnClickListener { viewModel.handleViewEvent(ViewEvent.OpenImdb) }
+        binding.backdropImageView.setOnClickListener {
+            viewModel.handleViewEvent(ViewEvent.OpenTrailer)
+        }
+
+        binding.moreInfoButton.setOnClickListener {
+            viewModel.handleViewEvent(ViewEvent.OpenImdb)
+        }
 
         binding.addToWatchlistButton.setOnClickListener {
             viewModel.handleViewEvent(ViewEvent.AddToWatchlist)
@@ -136,15 +145,6 @@ class MovieDetailsFragment : Fragment() {
 
     private fun render(viewState: MovieDetailsViewState) = with(binding) {
         fillInContent(viewState.movie)
-//        viewState.movie.let { movie ->
-// //            titleTextView.text = movie.title
-// //            descriptionTextView.text = movie.description
-// //            genresTextView.text = movie.formattedGenres
-// //            releaseTextView.text = movie.releaseYear
-//            durationTextView.text = movie.formattedRuntime
-// //            ratingTextView.text = movie.formattedVoteAverage
-// //            votesTextView.text = movie.formattedVoteCount
-//        }
 
         viewState.color?.let { onMovieColorLoaded(it) }
         viewState.recommendations?.let { showRecommendations(it) }
@@ -159,10 +159,16 @@ class MovieDetailsFragment : Fragment() {
         updateWatchlistButton(viewState.watchStatus)
     }
 
-    private fun handleViewEffect(result: ViewEffect) {
-        when (result) {
-            is ViewEffect.OpenImdb -> openUrl(result.url)
-            is ViewEffect.OpenTrailer -> openUrl(result.url)
+    private fun handleViewEffect(effect: ViewEffect) {
+        when (effect) {
+            is ViewEffect.OpenImdb -> openUrl(effect.url)
+            is ViewEffect.OpenTrailer -> openUrl(effect.url)
+            is ViewEffect.ShowError -> {
+                Toast.makeText(requireContext(), effect.message, Toast.LENGTH_SHORT).show()
+                if (effect.closeScreen) {
+                    requireActivity().onBackPressed()
+                }
+            }
         }
     }
 
@@ -217,8 +223,8 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun updateWatchlistButton(watchStatus: Movie.WatchStatus) {
-        binding.addToWatchlistButton.isVisible = watchStatus != ON_WATCHLIST
-        binding.removeFromWatchlistButton.isVisible = watchStatus == ON_WATCHLIST
+        binding.addToWatchlistButton.isVisible = watchStatus != OnWatchlist
+        binding.removeFromWatchlistButton.isVisible = watchStatus == OnWatchlist
     }
 
     private fun onImageLoaded(drawable: Drawable) {

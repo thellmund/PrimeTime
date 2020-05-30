@@ -62,7 +62,7 @@ data class Movie(
 ) : Parcelable {
 
     enum class WatchStatus {
-        NOT_WATCHED, ON_WATCHLIST, WATCHED
+        NotWatched, OnWatchlist, Watched
     }
 
     companion object {

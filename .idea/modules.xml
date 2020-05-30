@@ -5,14 +5,20 @@
       <module fileurl="file://$PROJECT_DIR$/api/AndroidStudioProjects-PrimeTime-api.iml" filepath="$PROJECT_DIR$/api/AndroidStudioProjects-PrimeTime-api.iml" group="PrimeTime/api" />
       <module fileurl="file://$PROJECT_DIR$/common/AndroidStudioProjects-PrimeTime-common.iml" filepath="$PROJECT_DIR$/common/AndroidStudioProjects-PrimeTime-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/feature/AndroidStudioProjects-PrimeTime-feature.iml" filepath="$PROJECT_DIR$/feature/AndroidStudioProjects-PrimeTime-feature.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api/Hellmund-AndroidStudioProjects-PrimeTime-api.iml" filepath="$PROJECT_DIR$/.idea/modules/api/Hellmund-AndroidStudioProjects-PrimeTime-api.iml" group="PrimeTime/api" />
       <module fileurl="file://$PROJECT_DIR$/common/Hellmund-AndroidStudioProjects-PrimeTime-common.iml" filepath="$PROJECT_DIR$/common/Hellmund-AndroidStudioProjects-PrimeTime-common.iml" group="PrimeTime/common" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/Hellmund-AndroidStudioProjects-PrimeTime-common~1.iml" filepath="$PROJECT_DIR$/.idea/modules/common/Hellmund-AndroidStudioProjects-PrimeTime-common~1.iml" group="PrimeTime/common" />
       <module fileurl="file://$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature.iml" filepath="$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature.iml" />
       <module fileurl="file://$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature~1.iml" filepath="$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature~1.iml" />
       <module fileurl="file://$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature~2.iml" filepath="$PROJECT_DIR$/feature/Hellmund-AndroidStudioProjects-PrimeTime-feature~2.iml" group="PrimeTime/feature" />
       <module fileurl="file://$PROJECT_DIR$/PrimeTime.iml" filepath="$PROJECT_DIR$/PrimeTime.iml" group="PrimeTime" />
       <module fileurl="file://$PROJECT_DIR$/api/PrimeTime-api.iml" filepath="$PROJECT_DIR$/api/PrimeTime-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PrimeTime-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PrimeTime-app.iml" group="PrimeTime/app" />
       <module fileurl="file://$PROJECT_DIR$/common/PrimeTime-common.iml" filepath="$PROJECT_DIR$/common/PrimeTime-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/PrimeTime-core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/PrimeTime-core.iml" group="PrimeTime/core" />
       <module fileurl="file://$PROJECT_DIR$/feature/PrimeTime-feature.iml" filepath="$PROJECT_DIR$/feature/PrimeTime-feature.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PrimeTime_buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/PrimeTime_buildSrc.iml" group="PrimeTime/PrimeTime_buildSrc" />
+      <module fileurl="file://$PROJECT_DIR$/feature/about/about.iml" filepath="$PROJECT_DIR$/feature/about/about.iml" group="PrimeTime/feature/about" />
       <module fileurl="file://$PROJECT_DIR$/api/api.iml" filepath="$PROJECT_DIR$/api/api.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="PrimeTime/app" />
       <module fileurl="file://$PROJECT_DIR$/buildSrc/buildSrc.iml" filepath="$PROJECT_DIR$/buildSrc/buildSrc.iml" group="PrimeTime/buildSrc" />
@@ -20,6 +26,7 @@
       <module fileurl="file://$PROJECT_DIR$/common/data/common-data.iml" filepath="$PROJECT_DIR$/common/data/common-data.iml" group="PrimeTime/common/data" />
       <module fileurl="file://$PROJECT_DIR$/common/ui/common-ui.iml" filepath="$PROJECT_DIR$/common/ui/common-ui.iml" group="PrimeTime/common/ui" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" group="PrimeTime/core" />
+      <module fileurl="file://$PROJECT_DIR$/common/data/data.iml" filepath="$PROJECT_DIR$/common/data/data.iml" group="PrimeTime/common/data" />
       <module fileurl="file://$PROJECT_DIR$/feature/feature.iml" filepath="$PROJECT_DIR$/feature/feature.iml" />
       <module fileurl="file://$PROJECT_DIR$/feature/about/feature-about.iml" filepath="$PROJECT_DIR$/feature/about/feature-about.iml" group="PrimeTime/feature/about" />
       <module fileurl="file://$PROJECT_DIR$/feature/history/feature-history.iml" filepath="$PROJECT_DIR$/feature/history/feature-history.iml" group="PrimeTime/feature/history" />
@@ -29,6 +36,15 @@
       <module fileurl="file://$PROJECT_DIR$/feature/search/feature-search.iml" filepath="$PROJECT_DIR$/feature/search/feature-search.iml" group="PrimeTime/feature/search" />
       <module fileurl="file://$PROJECT_DIR$/feature/settings/feature-settings.iml" filepath="$PROJECT_DIR$/feature/settings/feature-settings.iml" group="PrimeTime/feature/settings" />
       <module fileurl="file://$PROJECT_DIR$/feature/watchlist/feature-watchlist.iml" filepath="$PROJECT_DIR$/feature/watchlist/feature-watchlist.iml" group="PrimeTime/feature/watchlist" />
+      <module fileurl="file://$PROJECT_DIR$/feature/history/history.iml" filepath="$PROJECT_DIR$/feature/history/history.iml" group="PrimeTime/feature/history" />
+      <module fileurl="file://$PROJECT_DIR$/feature/movie-details/movie-details.iml" filepath="$PROJECT_DIR$/feature/movie-details/movie-details.iml" group="PrimeTime/feature/movie-details" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/feature/null.iml" filepath="$PROJECT_DIR$/.idea/modules/feature/null.iml" group="PrimeTime/feature" />
+      <module fileurl="file://$PROJECT_DIR$/feature/onboarding/onboarding.iml" filepath="$PROJECT_DIR$/feature/onboarding/onboarding.iml" group="PrimeTime/feature/onboarding" />
+      <module fileurl="file://$PROJECT_DIR$/feature/recommendations/recommendations.iml" filepath="$PROJECT_DIR$/feature/recommendations/recommendations.iml" group="PrimeTime/feature/recommendations" />
+      <module fileurl="file://$PROJECT_DIR$/feature/search/search.iml" filepath="$PROJECT_DIR$/feature/search/search.iml" group="PrimeTime/feature/search" />
+      <module fileurl="file://$PROJECT_DIR$/feature/settings/settings.iml" filepath="$PROJECT_DIR$/feature/settings/settings.iml" group="PrimeTime/feature/settings" />
+      <module fileurl="file://$PROJECT_DIR$/common/ui/ui.iml" filepath="$PROJECT_DIR$/common/ui/ui.iml" group="PrimeTime/common/ui" />
+      <module fileurl="file://$PROJECT_DIR$/feature/watchlist/watchlist.iml" filepath="$PROJECT_DIR$/feature/watchlist/watchlist.iml" group="PrimeTime/feature/watchlist" />
     </modules>
   </component>
 </project>
